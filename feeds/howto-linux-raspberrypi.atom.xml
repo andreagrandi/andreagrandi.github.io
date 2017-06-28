@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andrea Grandi - HowTo, Linux, RaspberryPi</title><link href="https://andreagrandi.github.io/" rel="alternate"></link><link href="https://andreagrandi.github.io/feeds/howto-linux-raspberrypi.atom.xml" rel="self"></link><id>https://andreagrandi.github.io/</id><updated>2014-09-02T18:21:00+01:00</updated><entry><title>How to configure Edimax EW-7811UN Wifi dongle on Raspbian</title><link href="https://andreagrandi.github.io/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="alternate"></link><published>2014-09-02T18:21:00+01:00</published><updated>2014-09-02T18:21:00+01:00</updated><author><name>admin</name></author><id>tag:andreagrandi.github.io,2014-09-02:/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/</id><summary type="html">&lt;p&gt;If you want to connect your &lt;strong&gt;RaspberryPi&lt;/strong&gt; to your home network and you
+want to avoid cables, I suggest you to use the &lt;strong&gt;Edimax wifi adapter&lt;/strong&gt;.
+This device is quite cheap (around £8 on
+&lt;a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/"&gt;Amazon&lt;/a&gt;)
+and it's very easy to configure on Raspbian (I assume you are using a
+recent …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you want to connect your &lt;strong&gt;RaspberryPi&lt;/strong&gt; to your home network and you
+want to avoid cables, I suggest you to use the &lt;strong&gt;Edimax wifi adapter&lt;/strong&gt;.
+This device is quite cheap (around £8 on
+&lt;a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/"&gt;Amazon&lt;/a&gt;)
+and it's very easy to configure on Raspbian (I assume you are using a
+recent version of Raspbian. I'm using the one released on 20/06/2014).&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png"&gt;&lt;img alt="edimax-pi3" src="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png"&gt;{.aligncenter
+.wp-image-895 width="708"
+height="398"}&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Configure the wifi adapter&lt;/h2&gt;
+&lt;p&gt;Edit &lt;strong&gt;/etc/network/interfaces&lt;/strong&gt; and insert these configuration values:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auto lo
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+auto wlan0
+
+iface wlan0 inet dhcp
+wpa-ssid YOURESSID
+wpa-psk YOURWPAPASSWORD
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Power management issue&lt;/h2&gt;
+&lt;p&gt;There is a known "issue" with this adapter default configuration that
+makes it to turn off if the wlan interface is not in use for some
+minutes. To avoid this you have to customize the parameters used to load
+the kernel module. First check that your adapter is using &lt;strong&gt;8192cu&lt;/strong&gt;
+module:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo lsmod | grep 8192
+8192cu 551136 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create the file &lt;strong&gt;/etc/modprobe.d/8192cu.conf&lt;/strong&gt; and insert the following
+lines inside:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# prevent power down of wireless when idle
+options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I also suggest to create a little entry in crontab to make the
+RaspberryPi ping your router every minute. This will ensure that your
+wifi connection will stay alive. To edit crontab just type (from pi
+user, you don't need to be root):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;crontab -e
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and insert this line at the end:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;*/1 * * * * ping -c 1 192.168.0.1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;where 192.168.0.1 is the IP of your router (of course substitute this
+value with the ip of your router).&lt;/p&gt;
+&lt;h3&gt;Keep Alive Script&lt;/h3&gt;
+&lt;p&gt;I created a further script to keep my WIFI alive. This script will ping
+the router (change the IP using the one of your router) every 5 minutes
+and if the ping fails it brings down the wlan0 interface, the kernel
+module for the wifi and bring them up again.&lt;/p&gt;
+&lt;p&gt;
+&lt;script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"&gt;&lt;/script&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Just put this script in &lt;strong&gt;/root/wifi_recover.sh&lt;/strong&gt; and then execute from
+&lt;strong&gt;root&lt;/strong&gt; user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod +x wifi_recover.sh
+crontab -e
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Insert this line inside the crontab editor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;*/5 * * * * /root/wifi_recover.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The configuration is done. Just reboot your RaspberryPi and enjoy your
+wifi connection.&lt;/p&gt;</content></entry></feed>

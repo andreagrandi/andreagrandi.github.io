@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andrea Grandi - Android, Google, Linux</title><link href="https://andreagrandi.github.io/" rel="alternate"></link><link href="https://andreagrandi.github.io/feeds/android-google-linux.atom.xml" rel="self"></link><id>https://andreagrandi.github.io/</id><updated>2011-08-13T22:08:00+01:00</updated><entry><title>HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</title><link href="https://andreagrandi.github.io/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/" rel="alternate"></link><published>2011-08-13T22:08:00+01:00</published><updated>2011-08-13T22:08:00+01:00</updated><author><name>admin</name></author><id>tag:andreagrandi.github.io,2011-08-13:/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/</id><summary type="html">&lt;p&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/08/htc-desire-300x260.jpg" title="htc-desire"&gt;{.alignright
+.size-medium .wp-image-547 width="192" height="166"}&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Even if it's not a new model, the &lt;strong&gt;HTC Desire&lt;/strong&gt; is still a very good
+Android device, thanks to its &lt;strong&gt;1Ghz&lt;/strong&gt; CPU and &lt;strong&gt;512 Mb RAM&lt;/strong&gt;, but one
+of the biggest problems of this phone is that it comes with &lt;strong&gt;only
+148Mb …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/08/htc-desire-300x260.jpg" title="htc-desire"&gt;{.alignright
+.size-medium .wp-image-547 width="192" height="166"}&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Even if it's not a new model, the &lt;strong&gt;HTC Desire&lt;/strong&gt; is still a very good
+Android device, thanks to its &lt;strong&gt;1Ghz&lt;/strong&gt; CPU and &lt;strong&gt;512 Mb RAM&lt;/strong&gt;, but one
+of the biggest problems of this phone is that it comes with &lt;strong&gt;only
+148Mb&lt;/strong&gt; available in the ROM. Once the operating system is installed
+(ROM I mean), after installing few useful applications you'll end the
+available space very soon. There are many apps available, like App2SD
+that move your applications to the SD card, but it's not enough because
+only the application is moved, not the data. To move the data to the SD
+card, there is a very nice utility called &lt;strong&gt;Data2SD&lt;/strong&gt;. Please note that
+this procedure requires you to reflash your device and partition your SD
+card, so &lt;strong&gt;please do a complete backup&lt;/strong&gt; before proceding.&lt;/p&gt;
+&lt;h2&gt;What you need&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;a &lt;strong&gt;rooted&lt;/strong&gt; HTC Desire (you need to have a rooted phone with a
+    &lt;strong&gt;recovery&lt;/strong&gt; already installed)&lt;/li&gt;
+&lt;li&gt;a &lt;strong&gt;4Gb&lt;/strong&gt; (or bigger) &lt;strong&gt;microSD&lt;/strong&gt;, at least &lt;strong&gt;class 4&lt;/strong&gt; (class 6 is
+    even better while class 10 is reported not working with this phone)&lt;/li&gt;
+&lt;li&gt;a &lt;strong&gt;microSD&lt;/strong&gt; card &lt;strong&gt;reader&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CyanogenMod
+    7&lt;/strong&gt;: http://download.cyanogenmod.com/get/update-cm-7.0.3-Desire-signed.zip&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Data2SD&lt;/strong&gt;: &lt;a href="http://www.droidzone.in/roms/index.php?dir=StarBurst%2Fdata2sd%2F&amp;amp;download=Data2SDInstallerX1.zip"&gt;Data2SDInstallerX1.zip&lt;/a&gt;
+    and
+    &lt;a href="http://www.droidzone.in/roms/index.php?dir=StarBurst%2Fdata2sd%2F&amp;amp;download=Data2SDReInstallerX1.zip"&gt;Data2SDReInstallerX1.zip&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Google
+    Apps&lt;/strong&gt;: &lt;a href="http://wiki.cyanogenmod.com/wiki/Latest_Version#Google_Apps"&gt;http://wiki.cyanogenmod.com/wiki/Latest_Version#Google_Apps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GParted&lt;/strong&gt;: you can use the version available on Ubuntu Linux or
+    you can download a live Linux image with GParted
+    installed: &lt;a href="http://gparted.sourceforge.net/livecd.php"&gt;http://gparted.sourceforge.net/livecd.php&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Procedure&lt;/h2&gt;
+&lt;h3&gt;Backup your data&lt;/h3&gt;
+&lt;div&gt;
+
+Before following these instructions, please **do a complete backup** of
+your microSD, of your original ROM (using Nandroid or similar) ecc...
+
+&lt;/div&gt;
+
+&lt;h3&gt;Prepare the microSD card&lt;/h3&gt;
+&lt;div&gt;
+
+-   Open GParted on your Ubuntu Linux or use the GParted Live CD/USB.
+-   Delete all partitions on this microSD
+-   Create the first one using FAT32 filesystem, leaving 2Gb
+    (**2047Mb**) available at the end.
+-   Create a second partition using **ext4** filesystem.
+-   Confirm your changes
+-   Copy CyanogenMod7 rom, Data2SD installers and Google Apps on FAT32
+    partition
+
+&lt;/div&gt;
+
+&lt;h3&gt;CyanogenMod 7 installation&lt;/h3&gt;
+&lt;div&gt;
+
+-   Reboot your phone into **Recovery** (turn it off then press volume
+    down + power)
+-   **WIPE** all data (userdata, cache ecc...)
+-   Choose "Install from SD card" and select CyanogenMod7 installation
+    zip
+-   when finished reboot your phone
+-   Enter your Wifi settings, language ecc.... **DO NOT enter** your
+    Google account settings.
+-   reboot your phone
+
+### Data2SD installation
+
+&lt;/div&gt;
+
+&lt;div&gt;
+
+-   Boot into **Recovery** again
+-   Choose "Install from SD card" and select **Data2SDInstallerX1.zip**
+    (please note, you may have to **turn off the signature
+    verification** in Other-&amp;gt;Turn off ecc...)
+-   when finished reboot your phone
+-   now you should see **1,97Gb** if you go in
+    Settings-&amp;gt;Storage-&amp;gt;Internal Storage-&amp;gt;Total space
+
+### Google Apps installation
+
+&lt;/div&gt;
+
+&lt;div&gt;
+
+-   Reboot your phone into Recovery
+-   Choose "Install from SD card" and select the Google Apps zip file
+-   reboot your phone
+
+Conclusion
+----------
+
+&lt;/div&gt;
+
+&lt;div&gt;
+
+You now have **1,97Gb total space available** instead of 148Mb. Enjoy
+your HTC Desire!
+
+&lt;/div&gt;
+
+&lt;div&gt;
+
+&lt;/div&gt;
+
+&lt;h3&gt;&lt;strong&gt;Update Aug 1, 2012: since December 2011 I don't have an HTC Desire anymore. These informations could be still valid but in any other case I don't have the possibility to help you more.&lt;/strong&gt;&lt;/h3&gt;</content></entry></feed>

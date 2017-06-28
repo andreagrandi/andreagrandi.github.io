@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andrea Grandi - Django, Python</title><link href="https://andreagrandi.github.io/" rel="alternate"></link><link href="https://andreagrandi.github.io/feeds/django-python.atom.xml" rel="self"></link><id>https://andreagrandi.github.io/</id><updated>2015-07-23T22:41:00+01:00</updated><entry><title>Django Notes: tests, setUp method and db data</title><link href="https://andreagrandi.github.io/2015/07/23/django-notes-tests-setup-method-and-db-data/" rel="alternate"></link><published>2015-07-23T22:41:00+01:00</published><updated>2015-07-23T22:41:00+01:00</updated><author><name>admin</name></author><id>tag:andreagrandi.github.io,2015-07-23:/2015/07/23/django-notes-tests-setup-method-and-db-data/</id><summary type="html">&lt;p&gt;This won't be a full post, but just a quick note (probably the first one
+of a serie) about development with Django.&lt;/p&gt;
+&lt;p&gt;When we write a &lt;strong&gt;TestCase&lt;/strong&gt; test, if we have defined a &lt;strong&gt;setUp&lt;/strong&gt;
+method, it will be called before the execution of each test. One could
+think that the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This won't be a full post, but just a quick note (probably the first one
+of a serie) about development with Django.&lt;/p&gt;
+&lt;p&gt;When we write a &lt;strong&gt;TestCase&lt;/strong&gt; test, if we have defined a &lt;strong&gt;setUp&lt;/strong&gt;
+method, it will be called before the execution of each test. One could
+think that the database is completely reset after each test, but this is
+not true (not like I was thinking). After each test, whatever we wrote
+on the database is rolled back. If we create a "Client" row (assuming we
+have a model called Clients) in our setUp, when we call it the second
+time the ID won't be 1 as someone (me included) could expect. It will be
+2 instead, because the database has not completely deleted and created
+from scratch.&lt;/p&gt;
+&lt;p&gt;This means that we can't assume that our Client ID will always be 1 for
+each test and we should rather reference to it in a dinamic way like:
+&lt;strong&gt;self.client.id&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This could be a trivial thing for many people but I was not 100% sure
+about this so I asked for a confirmation on &lt;strong&gt;#django&lt;/strong&gt; IRC room and
+people (expecially &lt;strong&gt;apollo13&lt;/strong&gt;) was kind enough to explain me how it
+works.&lt;/p&gt;</content></entry></feed>

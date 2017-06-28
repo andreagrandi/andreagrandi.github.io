@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andrea Grandi - Go</title><link href="https://andreagrandi.github.io/" rel="alternate"></link><link href="https://andreagrandi.github.io/feeds/go.atom.xml" rel="self"></link><id>https://andreagrandi.github.io/</id><updated>2015-03-16T20:24:00+00:00</updated><entry><title>Go: defining methods on struct types</title><link href="https://andreagrandi.github.io/2015/03/16/go-defining-methods-on-struct-types/" rel="alternate"></link><published>2015-03-16T20:24:00+00:00</published><updated>2015-03-16T20:24:00+00:00</updated><author><name>admin</name></author><id>tag:andreagrandi.github.io,2015-03-16:/2015/03/16/go-defining-methods-on-struct-types/</id><summary type="html">&lt;p&gt;In &lt;strong&gt;Go&lt;/strong&gt; it's possible to define &lt;strong&gt;methods&lt;/strong&gt; on &lt;strong&gt;struct types&lt;/strong&gt;. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.&lt;/p&gt;
+&lt;p&gt;In my case for example I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In &lt;strong&gt;Go&lt;/strong&gt; it's possible to define &lt;strong&gt;methods&lt;/strong&gt; on &lt;strong&gt;struct types&lt;/strong&gt;. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.&lt;/p&gt;
+&lt;p&gt;In my case for example I needed something that could contain a Timer
+object, a string and a method that could start the timer and call a
+method at the end of the Timer execution. I implemented it in this way:&lt;/p&gt;
+&lt;p&gt;``` {.toolbar:2 .lang:go .decode:true}
+type DeviceTimer struct {
+    DeviceID    string
+    DeviceTimer *time.Timer
+}&lt;/p&gt;
+&lt;p&gt;func (timer DeviceTimer) startTimer() {
+    &amp;lt;-timer.DeviceTimer.C
+    notifyDeviceTimerExpired(timer.DeviceID)
+}&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The key point is **row 6** &amp;quot;*func (timer DeviceTimer) startTimer() { ...
+}*&amp;quot; where I defined a method called **startTimer** and I specify timer
+**DeviceTimer** inside the func definition. This basically &amp;quot;extends&amp;quot; the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:
+
+``` {.toolbar:2 .lang:go .decode:true}
+timer := time.NewTimer(time.Millisecond * 300)
+device_timer := DeviceTimer{&amp;quot;abc123&amp;quot;, timer}
+go device_timer.startTimer()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is all you need to do. If you want to read more about this subject,
+I can suggest to read these two articles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Go by Example: Methods&lt;/strong&gt; &lt;a href="https://gobyexample.com/methods"&gt;https://gobyexample.com/methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Inheritance and subclassing in Go - or its near likeness&lt;/strong&gt;
+    &lt;a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html"&gt;http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; I'm not a Go expert and these are just my personal notes I'm
+taking during my learning experience. I'm very keen to share my notes
+with everyone, but please don't take them as notes from an expert Go
+developer.&lt;/p&gt;</content><category term="go"></category><category term="golang"></category><category term="programming"></category><category term="struct"></category></entry></feed>

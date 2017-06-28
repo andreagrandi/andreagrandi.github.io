@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andrea Grandi - HowTo, Linux, Programmazione, Python, Ubuntu (EN)</title><link href="https://andreagrandi.github.io/" rel="alternate"></link><link href="https://andreagrandi.github.io/feeds/howto-linux-programmazione-python-ubuntu-en.atom.xml" rel="self"></link><id>https://andreagrandi.github.io/</id><updated>2013-05-02T16:09:00+01:00</updated><entry><title>How to fix pip under Debian 6.0 (squeeze): ImportError: cannot import name parser</title><link href="https://andreagrandi.github.io/2013/05/02/how-to-fix-pip-under-debian-6-0-squeeze-importerror-cannot-import-name-parser/" rel="alternate"></link><published>2013-05-02T16:09:00+01:00</published><updated>2013-05-02T16:09:00+01:00</updated><author><name>admin</name></author><id>tag:andreagrandi.github.io,2013-05-02:/2013/05/02/how-to-fix-pip-under-debian-6-0-squeeze-importerror-cannot-import-name-parser/</id><summary type="html">&lt;p&gt;The &lt;strong&gt;pip&lt;/strong&gt; utility distributed with Debian 6.0 has a bug once you
+upgrade it with &lt;strong&gt;pip install -U pip&lt;/strong&gt;. You will easily get this error
+when you try to install a new package with it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nd"&gt;@worker2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="c1"&gt;# pip install setproctitle&lt;/span&gt;
+&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/bin/pip …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;The &lt;strong&gt;pip&lt;/strong&gt; utility distributed with Debian 6.0 has a bug once you
+upgrade it with &lt;strong&gt;pip install -U pip&lt;/strong&gt;. You will easily get this error
+when you try to install a new package with it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nd"&gt;@worker2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="c1"&gt;# pip install setproctitle&lt;/span&gt;
+&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/bin/pip&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; 
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pip.baseparser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;parser&lt;/span&gt;
+&lt;span class="ne"&gt;ImportError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;cannot&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;name&lt;/span&gt; &lt;span class="nn"&gt;parser&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luckly there is a very easy workaround:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;easy_install pip
+rm /usr/bin/pip
+ln -sv /usr/local/bin/pip-2.6 /usr/bin/pip
+pip install pip --upgrade
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Reference: &lt;a href="http://blog.102web.ru/tag/virtualenvs/"&gt;http://blog.102web.ru/tag/virtualenvs/&lt;/a&gt;&lt;/p&gt;</content></entry><entry><title>Using virtualenv to manage multiple Python/Django environments in the same machine</title><link href="https://andreagrandi.github.io/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/" rel="alternate"></link><published>2013-04-25T22:58:00+01:00</published><updated>2013-04-25T22:58:00+01:00</updated><author><name>admin</name></author><id>tag:andreagrandi.github.io,2013-04-25:/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/</id><summary type="html">&lt;p&gt;Developing Python applications sometimes it's useful to be able to test
+the code with different environments, for example a particular version
+of Python or a specific Django version etc... Setting up many different
+virtual machines would be really too much work and even using a chroot
+environment is not what …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Developing Python applications sometimes it's useful to be able to test
+the code with different environments, for example a particular version
+of Python or a specific Django version etc... Setting up many different
+virtual machines would be really too much work and even using a chroot
+environment is not what you need in some cases. Thanks to
+&lt;a href="https://github.com/pypa/virtualenv"&gt;&lt;strong&gt;virtualenv&lt;/strong&gt;&lt;/a&gt; is it possible to
+create a self contained Python environment with all the specific
+libraries you may need. Using virtualenv is very easy:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creating the virtual environment: &lt;strong&gt;virtualenv
+    myenv --no-site-packages&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Entering the virtual environment: &lt;strong&gt;source myenv/bin/activate&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Deactivating the virtual environment: &lt;strong&gt;deactivate&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That's it! Once you're inside the virtual environment you will be using
+the Python libraries inside it. I suggest you to install all the Python
+libraries you need using &lt;a href="https://pypi.python.org/pypi/pip"&gt;&lt;strong&gt;pip&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;</content><category term="Django"></category><category term="Python"></category><category term="virtualenv"></category></entry></feed>
