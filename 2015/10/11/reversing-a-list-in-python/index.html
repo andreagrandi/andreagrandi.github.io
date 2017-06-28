@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Reversing a List in Python</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
+           title="Permalink to Reversing a List in Python">Reversing a List in Python</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 11 October 2015</span>
+<span>| tags: <a href="/tag/lists.html">lists</a><a href="/tag/python.html">Python</a><a href="/tag/reversed.html">reversed</a></span>
+</footer><!-- /.post-info -->      <p>Sometimes we need to reverse the order of the elements in a Python list.
+While there can be many different ways of implementing this task, I
+found three in particular that I appreciate for different reasons. Let's
+define first a list of integers that we will reverse later.</p>
+<p>``` {.lang:python .decode:true}
+l = [1, 2, 3, 4, 5, 6]</p>
+<div class="highlight"><pre><span></span><span class="nv">List</span> <span class="s s-Atom">slicing</span>
+<span class="s s-Atom">------------</span>
+
+<span class="nv">This</span> <span class="s s-Atom">method</span> <span class="s s-Atom">can</span> <span class="s s-Atom">be</span> <span class="s s-Atom">a</span> <span class="s s-Atom">bit</span> <span class="s s-Atom">obscure</span> <span class="s s-Atom">at</span> <span class="s s-Atom">first</span> <span class="s s-Atom">read</span><span class="p">,</span> <span class="s s-Atom">but</span> <span class="s s-Atom">basically</span> <span class="s s-Atom">it</span> <span class="s s-Atom">slices</span>
+<span class="s s-Atom">the</span> <span class="s s-Atom">whole</span> <span class="s s-Atom">list</span> <span class="s s-Atom">proceding</span> <span class="s s-Atom">in</span> <span class="s s-Atom">the</span> <span class="s s-Atom">reverse</span> <span class="nn">order</span><span class="p">:</span>
+
+<span class="err">```</span> <span class="p">{.</span><span class="nn">lang</span><span class="p">:</span><span class="s s-Atom">python</span> <span class="p">.</span><span class="nn">decode</span><span class="p">:</span><span class="s s-Atom">true</span><span class="p">}</span>
+<span class="p">[</span><span class="s s-Atom">input</span><span class="p">]</span><span class="s s-Atom">:</span> <span class="s s-Atom">print</span> <span class="s s-Atom">l</span><span class="p">[</span><span class="s s-Atom">::-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="s s-Atom">output</span><span class="p">]</span><span class="s s-Atom">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h2>Reversed method</h2>
+<p>We use the
+<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
+that returns an iterable object and a list comprehension to generate the
+new list</p>
+<p>``` {.lang:python .decode:true}
+[input]: print [x for x in reversed(l)]
+[output]: [6, 5, 4, 3, 2, 1]</p>
+<div class="highlight"><pre><span></span><span class="gh">Swapping values in place</span>
+<span class="gh">------------------------</span>
+
+This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...
+
+<span class="s">``` {.lang:python .decode:true}</span>
+<span class="s">[input]:</span>
+<span class="s">for i in range(0, len(l) / 2):</span>
+<span class="s">    l[i], l[len(l) -1 -i] = l[len(l) -1 -i], l[i]</span>
+<span class="s">print l</span>
+
+<span class="s">[output]: [6, 5, 4, 3, 2, 1]</span>
+</pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

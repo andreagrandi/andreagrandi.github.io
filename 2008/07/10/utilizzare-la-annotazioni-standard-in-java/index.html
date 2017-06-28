@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Utilizzare le annotazioni standard in Java</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2008/07/10/utilizzare-la-annotazioni-standard-in-java/" rel="bookmark"
+           title="Permalink to Utilizzare le annotazioni standard in Java">Utilizzare le annotazioni standard in Java</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 10 July 2008</span>
+<span>| tags: <a href="/tag/annotazioni.html">annotazioni</a><a href="/tag/compilatore.html">compilatore</a><a href="/tag/java.html">Java</a><a href="/tag/jdk.html">jdk</a></span>
+</footer><!-- /.post-info -->      <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/07/java_logo.jpg" title="java_logo">{.alignright
+.size-full .wp-image-80 width="109" height="223"}Premetto di non aver
+certo scoperto l'acqua calda, visto che si tratta di una feature di
+<strong>Java 5</strong>. Pochi giorni fa mi sono imbattuto in una funzionalità di
+Java che non avevo mai avuto modo di utilizzare. Si tratta della
+annotazioni standard.</p>
+<p>Grazie alla segnalazione di un amico ed al
+<a href="http://www.javalobby.org/java/forums/t17297">post</a> che mi ha passato,
+ho potuto fare chiarezza su questo argomento.</p>
+<p>Si tratta di tre annotazioni che possiamo utilizzare nel codice Java:
+<strong>@Deprecated</strong>, <strong>@Override</strong>, <strong>@SuppressWarnings</strong>.</p>
+<p><strong>@Deprecated:</strong> come il nome ci suggerisce, se utilizzato prima della
+definizione di un metodo o di una classe, fara' stampare un messaggio di
+avviso al compilatore Java che ci avviserà che il metodo è appunto
+obsoleto. Un esempio del suo utilizzo:</p>
+<p>[sourcecode language='java']<br>
+// class<br>
+@Deprecated<br>
+public class SomeClass {</p>
+<p>// field<br>
+@Deprecated<br>
+public int field;</p>
+<p>// constructor<br>
+@Deprecated<br>
+public SomeClass() {</p>
+<p>}</p>
+<p>// method<br>
+@Deprecated<br>
+public void method() {</p>
+<p>}<br>
+}<br>
+[/sourcecode]</p>
+<p><strong>@Override:</strong> si utilizza per avvisare esplicitamente il compilatore
+che stiamo ridefinendo un metodo. Nel caso commettessimo un errore di
+digitazione nel scrivere il nome del metodo, il compilatore ci
+avviserebbe che nella classe padre non esiste un nome con quel metodo
+che abbiamo specificato. Un esempio del suo utilizzo:</p>
+<p>[sourcecode language='java']<br>
+public class MyClass {</p>
+<p>// Won't compile - there is no toStirng method on java.lang.Object.<br>
+@Override<br>
+public String toStirng() {<br>
+return "MyClass toString implementation";<br>
+}<br>
+}<br>
+[/sourcecode]</p>
+<p><strong>@SuppressWarnings:</strong> quest'ultima notazione invece, viene utilizzata
+per fare in modo che il compilatore "chiuda un occhio" su eventuali
+warnings rilevati nel codice.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

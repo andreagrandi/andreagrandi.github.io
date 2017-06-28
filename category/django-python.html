@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - Django, Python</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2015/07/23/django-notes-tests-setup-method-and-db-data/">Django Notes: tests, setUp method and db data</a></h1>
+<footer class="post-info">
+        <span>Thu 23 July 2015</span>
+
+</footer><!-- /.post-info --><p>This won't be a full post, but just a quick note (probably the first one
+of a serie) about development with Django.</p>
+<p>When we write a <strong>TestCase</strong> test, if we have defined a <strong>setUp</strong>
+method, it will be called before the execution of each test. One could
+think that the database is completely reset after each test, but this is
+not true (not like I was thinking). After each test, whatever we wrote
+on the database is rolled back. If we create a "Client" row (assuming we
+have a model called Clients) in our setUp, when we call it the second
+time the ID won't be 1 as someone (me included) could expect. It will be
+2 instead, because the database has not completely deleted and created
+from scratch.</p>
+<p>This means that we can't assume that our Client ID will always be 1 for
+each test and we should rather reference to it in a dinamic way like:
+<strong>self.client.id</strong></p>
+<p>This could be a trivial thing for many people but I was not 100% sure
+about this so I asked for a confirmation on <strong>#django</strong> IRC room and
+people (expecially <strong>apollo13</strong>) was kind enough to explain me how it
+works.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

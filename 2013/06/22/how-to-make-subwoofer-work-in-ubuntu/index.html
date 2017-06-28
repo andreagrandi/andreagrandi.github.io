@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>How to make subwoofer work in Ubuntu</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/" rel="bookmark"
+           title="Permalink to How to make subwoofer work in Ubuntu">How to make subwoofer work in Ubuntu</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 22 June 2013</span>
+<span>| tags: <a href="/tag/sound.html">sound</a><a href="/tag/subwoofer.html">subwoofer</a><a href="/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info -->      <p>Using the same computer with Windows 8 and Ubuntu I noticed that the
+sound was worse in Ubuntu and I discovered why soon: <strong>subwoofer</strong>
+doesn't work out of the box!</p>
+<h2>How to fix it</h2>
+<p>The fix is quite easy to apply (but it was not easy to find the right
+one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
+the end:</p>
+<div class="highlight"><pre><span></span>load-module module-combine channels=6 channel_map=front-left,front-right,rear-left,rear-right,front-center,lfe
+</pre></div>
+
+
+<p>then edit <strong>/etc/pulse/daemon.conf</strong>, modify the line
+"enable-lfe-remixing: no" to "<strong>enable-lfe-remixing: yes</strong>", then
+uncomment it (remove the semicolon in front of it). Reboot your PC and
+enjoy the subwoofer!</p>
+<h2>References</h2>
+<ul>
+<li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
+<li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>
+</ul>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

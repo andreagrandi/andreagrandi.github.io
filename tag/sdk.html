@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - SDK</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/">Using QtCreator to deploy and run a Qt application to a remote Linux device</a></h1>
+<footer class="post-info">
+        <span>Thu 17 January 2013</span>
+<span>| tags: <a href="/tag/deploy.html">deploy</a><a href="/tag/linux.html">Linux</a><a href="/tag/qt.html">Qt</a><a href="/tag/qtcreator.html">QtCreator</a><a href="/tag/sdk.html">SDK</a><a href="/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info --><p>QtCreator is a very flexible IDE and can really be adapted for a lot of
+things. I usually use it to develop mobile applications for Nokia N9 and
+BlackBerry 10, but it can be used for more generic tasks. In my case I
+wanted to be able to develop a Qt application using my desktop PC,
+deploy it and run on a remote (actually it's on the same desk) Linux
+machine running Xubuntu.</p>
+<p>Doing this is quite easy and you don't need any specific plugin on
+QtCreator, but be sure to have at least version 2.6.x. Other than
+QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
+development machine and Xubuntu 12.10 for the remote netbook) and an SSH
+account on the remote PC.</p>
+<h2 id="add-the-remote-device-to-qtcreator" style="text-align: left;">Add the remote device to QtCreator</h2>
+<p><img alt="QtCreatorDevice" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorDevice.png">{.aligncenter
+.wp-image-748 width="488" height="282"}</p>
+<p>To add the remote Linux device on QtCreator, use the
+<strong>Tools-&gt;Options</strong> menu and click on "<strong>Devices</strong>" item. At this
+point click on "<strong>Add</strong>" button and fill the fields using values similar
+to the screenshot. In particular specify a <strong>name</strong> for the device, the
+<strong>IP</strong> of the remote machine and a <strong>username</strong> and <strong>password</strong> that
+must already exist (I just created the user "andrea" on the Xubuntu
+machine and used the same password). I also had to set the <strong>timeout</strong>
+to 20 seconds, because I had some connection problems and the connection
+kept dropping after 10 seconds trying. To verify if everything is
+working fine, just click on <strong>Test</strong> button.</p>
+<h2>Add a specific Qt version</h2>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"><img alt="QtCreatorQtVersion" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png">{.aligncenter
+.size-full .wp-image-754 width="488"
+height="282"}</a></p>
+<p>To write your application you may need a specific Qt version that is
+different from the one distributed by your Linux distribution. There's
+no problem, QtCreator let you add different Qt versions without any
+conflict. In my case I installed the Qt5 version distributed by
+<strong>Canonical Qt5 Edgers
+Team</strong>: <a href="https://launchpad.net/~canonical-qt5-edgers">https://launchpad.net/~canonical-qt5-edgers</a><br>
+Once it's installed, just click on "<strong>Add</strong>" button and select the qmake
+specific to the version you want to add (in my case it was in
+<strong>/opt/qt5/bin/qmake</strong> ).</p>
+<h2>Add a Qt Kit</h2>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"><img alt="QtCreatorQtKits" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png">{.aligncenter
+.size-full .wp-image-757 width="488"
+height="282"}</a></p>
+<p>QtCreator permits to add new <strong>Kit</strong> (development configurations) and
+these kits are used during project creation to specify what you want to
+target. In my example I added a new kit choosing an appropriate <strong>name</strong>
+"Qt5 Ubuntu", the <strong>device type</strong>, the actual <strong>device</strong> previously
+configured and finally the <strong>Qt version</strong> that we added before. With a
+kit I have a complete "toolchain" that allow me to write applications
+for a particular device, with a specific Qt version.</p>
+<h2>Putting the pieces together</h2>
+<p>At this point you just have to create a new "<strong>Qt Quick 2</strong>"
+application, and select the new kit you just created instead of the
+"Desktop" one. <strong>Please note</strong> that there is a little problem that I
+haven't fixed yet (but I'm working on it): if you create, for example, a
+project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
+on the remote machine. By default your user doesn't have read+write
+permissions for that folder so I manualy created the folder and I gave a
+chmod 777 on it, just for testing. There are two possible ways to fix
+this: you could create a specific user that has read+write permissions
+on /opt/ or you could modify the deployment configuration to have the
+app deployed to the user /home (I will investigate on this possibility
+and I will write something in one of the next posts).</p>
+<h2>Final thoughts</h2>
+<p>What all of this could be useful for? Well, do 2+2 and you'll easily
+guess ;) In the next weeks I will post more specific informations and I
+will update everyone with my progresses. Any comment is welcome! If you
+want to contribute to this you're welcome too of course.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/" rel="bookmark"
+                           title="Permalink to Nokia QtSDK installer crash on Ubuntu: how to fix it">Nokia QtSDK installer crash on Ubuntu: how to fix it</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 12 January 2012</span>
+<span>| tags: <a href="/tag/1104.html">11.04</a><a href="/tag/1110.html">11.10</a><a href="/tag/installer.html">installer</a><a href="/tag/natty.html">Natty</a><a href="/tag/nokia.html">nokia</a><a href="/tag/oneiric.html">Oneiric</a><a href="/tag/qt.html">Qt</a><a href="/tag/sdk.html">SDK</a><a href="/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info -->                <p>If you try to install <strong>Nokia QtSDK</strong> on Ubuntu using the Nokia
+installer (that provides a newer version than the one distributed in
+Ubuntu Software Center) you could get an error like this:</p>
+<p>[sourcecode lang="text"]<br>
+(Qt_SDK_Lin32_offline_v1_1_3_en.run:3126): Gtk-CRITICAL **:
+IA__gtk_widget_style_get: assertion `GTK_IS_WIDGET (widget)'
+failed<br>
+[/sourcecode]</p>
+<p>to fix it, you …</p>
+                <a class="readmore" href="/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/" rel="bookmark"
+                           title="Permalink to Develop a GPS-aware application for the Nokia N810">Develop a GPS-aware application for the Nokia N810</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 24 February 2009</span>
+<span>| tags: <a href="/tag/eclipse.html">eclipse</a><a href="/tag/gps.html">gps</a><a href="/tag/python.html">Python</a><a href="/tag/sdk.html">SDK</a></span>
+</footer><!-- /.post-info -->                <p><strong>Paul Ferrill</strong> has written a serie of three articles about writing a
+GPS-aware application for the Nokia N810, using the Maemo SDK, Eclipse
+and PluThon plugin.</p>
+<p>Here is the complete serie:</p>
+<ul>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia1/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 1:
+    Development
+    environment:</a>
+    Learn how to configure a development environment …</li></ul>
+                <a class="readmore" href="/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/04/21/scratchbox-on-ubuntu-hardy-troubleshooting/" rel="bookmark"
+                           title="Permalink to Scratchbox on Ubuntu Hardy troubleshooting">Scratchbox on Ubuntu Hardy troubleshooting</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 21 April 2008</span>
+<span>| tags: <a href="/tag/maemo.html">maemo</a><a href="/tag/nokia.html">nokia</a><a href="/tag/scratchbox.html">scratchbox</a><a href="/tag/sdk.html">SDK</a><a href="/tag/tablet.html">tablet</a></span>
+</footer><!-- /.post-info -->                <p>Yesterday I <strong>upgraded</strong> from <strong>Ubuntu 7.10</strong> to the new <strong>8.04 RC</strong> and
+I "broke" my Scratchbox installation. I tried to install it again and I
+had still some problems logging into <strong>Scratchbox</strong> and installing the
+<strong>SDK</strong>.</p>
+<p>The I found this page:
+<a href="http://suppressingfire.livejournal.com/35277.html">http://suppressingfire.livejournal.com/35277.html</a></p>
+<p>that …</p>
+                <a class="readmore" href="/2008/04/21/scratchbox-on-ubuntu-hardy-troubleshooting/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/04/17/installing-maemo-sdk-4-howto-updated/" rel="bookmark"
+                           title="Permalink to Installing Maemo SDK 4 HowTo Updated">Installing Maemo SDK 4 HowTo Updated</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 17 April 2008</span>
+<span>| tags: <a href="/tag/chinook.html">chinook</a><a href="/tag/howto.html">HowTo</a><a href="/tag/maemo.html">maemo</a><a href="/tag/nokia.html">nokia</a><a href="/tag/sdk.html">SDK</a></span>
+</footer><!-- /.post-info -->                <p>I've updated my previous howto that explain how to install [Maemo SDK 4
+(Chinook)]{style="font-weight: bold;"}. The other howto was written when
+Maemo SDK 4 Beta was out, now it's updated to
+[4.0.1]{style="font-weight: bold;"} version of the SDK.</p>
+<p>You can find it, as usual, on …</p>
+                <a class="readmore" href="/2008/04/17/installing-maemo-sdk-4-howto-updated/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/02/14/android-rilasciata-la-m5-rc14-dellsdk/" rel="bookmark"
+                           title="Permalink to Android: rilasciata la m5-rc14 dell'SDK">Android: rilasciata la m5-rc14 dell'SDK</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 14 February 2008</span>
+<span>| tags: <a href="/tag/android.html">android</a><a href="/tag/cellulari.html">cellulari</a><a href="/tag/eclipse.html">eclipse</a><a href="/tag/google.html">Google</a><a href="/tag/java.html">Java</a><a href="/tag/linux.html">Linux</a><a href="/tag/programmazione.html">Programmazione</a><a href="/tag/sdk.html">SDK</a><a href="/tag/telefonino.html">telefonino</a></span>
+</footer><!-- /.post-info -->                <p><img alt="android_google" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/android_robot.thumbnail.gif">I
+laboratori di Google hanno da poco rilasciato una <a href="http://code.google.com/android/download.html">versione
+aggiornata</a> di
+<strong>Android</strong>, l'SDK che permette di sviluppare applicazioni per i futuri
+telefonini Google, si tratta della versione <strong>m5-rc14</strong>.</p>
+<p>Le principali novità di questa release sono le seguenti:</p>
+<ul>
+<li><strong>Nuova interfaccia utente:</strong> anche se si tratta di una versione
+    ancora in …</li></ul>
+                <a class="readmore" href="/2008/02/14/android-rilasciata-la-m5-rc14-dellsdk/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2007/12/17/wxgtk-working-on-maemo/" rel="bookmark"
+                           title="Permalink to wxGTK working on Maemo">wxGTK working on Maemo</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 17 December 2007</span>
+<span>| tags: <a href="/tag/maemo.html">maemo</a><a href="/tag/sdk.html">SDK</a><a href="/tag/tablet.html">tablet</a><a href="/tag/wx.html">wx</a></span>
+</footer><!-- /.post-info -->                <p>Reading the <a href="http://wxwidgets.blogspot.com/2007/11/hildonizing-wxgtk.html">official WxWidget
+blog</a>, I
+discovered that one of their developer was working to hildonize
+[WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
+just a test or if this library could work in Maemo, so I followed his
+suggestion and I grabbed the latest SVN sources …</p>
+                <a class="readmore" href="/2007/12/17/wxgtk-working-on-maemo/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/" rel="bookmark"
+                           title="Permalink to Installing qemu-arm-eabi patch into Scratchbox">Installing qemu-arm-eabi patch into Scratchbox</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 16 November 2007</span>
+<span>| tags: <a href="/tag/maemo.html">maemo</a><a href="/tag/qemu.html">qemu</a><a href="/tag/scratchbox.html">scratchbox</a><a href="/tag/sdk.html">SDK</a></span>
+</footer><!-- /.post-info -->                <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
+often when we try to execute some application we can get into this kind
+of errors (for example):</p>
+<p><code>sem_post: Function not implemented</code></p>
+<p>This happens because not all the functions have been implemented in the
+emulated environment.[ Lauro Venâncio …</p>
+                <a class="readmore" href="/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/" rel="bookmark"
+                           title="Permalink to Upgrading Maemo SDK 4 Beta to Maemo SDK 4 final release">Upgrading Maemo SDK 4 Beta to Maemo SDK 4 final release</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 11 November 2007</span>
+<span>| tags: <a href="/tag/maemo.html">maemo</a><a href="/tag/sdk.html">SDK</a></span>
+</footer><!-- /.post-info -->                <p>The final version of <a href="http://maemo.org/development/sdks/maemo_4_0_chinook_sdk.html">Maemo SDK
+4</a> is out.
+Like most other people I couldn't wait for the final release and I
+installed the beta version. The big question, when I did read about the
+final version was "how can I upgrade to the final version without
+installing it from …</p>
+                <a class="readmore" href="/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2007/10/25/installing-maemo-sdk-4-beta/" rel="bookmark"
+                           title="Permalink to Installing Maemo SDK 4 Beta">Installing Maemo SDK 4 Beta</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 25 October 2007</span>
+<span>| tags: <a href="/tag/maemo.html">maemo</a><a href="/tag/nokia.html">nokia</a><a href="/tag/sdk.html">SDK</a><a href="/tag/tablet.html">tablet</a></span>
+</footer><!-- /.post-info -->                <h2>Introduction</h2>
+<p><strong>Maemo</strong> is an opensource development platform for <strong>Linux</strong> based
+devices. Actually is the base for the operating system installed on
+<strong>Nokia</strong>
+<a href="http://www.nokia.it/770" title="http://www.nokia.it/770">N770</a>{.external
+.text},
+<a href="http://europe.nokia.com/phones/n800" title="http://europe.nokia.com/phones/n800">N800</a>{.external
+.text} and the upcoming
+<a href="http://www.nokia.com/N810" title="http://www.nokia.com/N810">N810</a>{.external
+.text} but it could be adopted, with few changes, even by other similar
+devices.</p>
+<p>In particular, this …</p>
+                <a class="readmore" href="/2007/10/25/installing-maemo-sdk-4-beta/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

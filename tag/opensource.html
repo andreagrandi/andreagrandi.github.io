@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - opensource</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2008/02/05/mysql-quando-si-deve-pagare-la-licenza/">MySQL: quando si deve pagare la licenza?</a></h1>
+<footer class="post-info">
+        <span>Tue 05 February 2008</span>
+<span>| tags: <a href="/tag/commerciale.html">commerciale</a><a href="/tag/licenza.html">licenza</a><a href="/tag/mysql.html">MySQL</a><a href="/tag/opensource.html">opensource</a><a href="/tag/pagamento.html">pagamento</a><a href="/tag/programma.html">programma</a><a href="/tag/programmi.html">programmi</a><a href="/tag/vendita.html">vendita</a></span>
+</footer><!-- /.post-info --><p><img alt="mysql_logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/mysql_logo.thumbnail.jpg">Una
+delle domande che mi vengono fatte piu' di frequente è "<em>MySQL si paga
+per uso commerciale?</em>". La risposta non è delle piu' semplici.</p>
+<p>Leggendo direttamente il sito web di <strong>MySQL</strong>, si possono trovare due
+pagine dedicate alle licenze: una per chi fa sviluppo di <a href="http://www.mysql.com/company/legal/licensing/opensource-license.html">software
+opensource</a>
+ed una per chi sviluppa <a href="http://www.mysql.com/company/legal/licensing/commercial-license.html">software
+commerciale</a>.</p>
+<p>Dopo una lettura superficiale delle due pagine, potremmo essere tratti
+in inganno e pensare che sviluppando un'applicazione commerciale, si
+debba per forza acquistare una licenza commerciale di MySQL. Questo non
+è vero.</p>
+<p>Tutto dipende dal tipo di librerie di interfacciamento che vogliamo
+utilizzare. MySQL mette a disposizione due modi per interfacciarsi al
+database: una propria <strong>API</strong> scritta in linguaggio C ed un <strong>socket</strong>
+in ascolto che riceve comandi tramite una normale connessione TCP/IP.</p>
+<p>E' chiaro che scrivendo un'applicazione che va a fare l'include di
+(faccio un esempio) mysql.h poi io debba rilasciarne i sorgenti. La
+licenza GPL con il quale è stato rilasciato MySQL (ed anche le sue
+librerie client) dice chiaramente che quando si "<em>linka</em>" codice GPL ad
+altro codice, il risultato deve essere per forza rilasciato sotto
+licenza GPL.</p>
+<p>La licenza GPL però non impone vincoli di utilizzo dell'applicazione
+stessa. Utilizzare quindi una libreria client che al posto delle API,
+usa il socket TCP/IP, ci permette di utilizzare MySQL anche da
+un'applicazione closed-source, senza bisogno di ottenere una licenza
+commerciale.</p>
+<p>E' esattamente quello che fa la libreria di interfacciamento di
+<strong>Python</strong> oppure di <strong>PHP</strong>. Esse utilizzando il metodo di connessione
+al socket, senza fare l'include del codice di MySQL.</p>
+<p><strong>Riassumendo:</strong> se ci troviamo a scrivere un'applicazione commerciale
+che sappiamo non verrà distribuita insieme al codice sorgente, dobbiamo
+preoccuparci solo di utilizzare una libreria client che utilizzi il
+metodo di connessione tramite socket al database.</p>
+<p>C'è infine da aggiungere una cosa: se si utilizza codice opensource per
+uso personale oppure interno alla propria azienda, senza distribuirlo in
+giro, la GPL non ci impone di rilasciare le modifiche che abbiamo fatto
+ai sorgenti GPL che stiamo utilizzando.</p>
+<p>Il caso piu' lampante è quello di <strong>Google</strong>: essi utilizzano tonnellate
+di codice GPL, però non distribuiscono un programma, offrono un
+servizio. Questo gli permette di non dover rendere pubbliche le
+modifiche fatte al codice originale.</p>
+<p><em>Credits: questo articolo è stato possibile in gran parte grazie
+all'aiuto ed ai consigli di <strong>Giovanni Bajo</strong> (che pur chiedendomi di
+specificare che non è un avvocato e che quindi potrebbe anche
+sbagliarsi, ha senz'altro fatto un ottimo lavoro) .</em></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

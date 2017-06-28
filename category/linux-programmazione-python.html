@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - Linux, Programmazione, Python</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
+<footer class="post-info">
+        <span>Sun 02 March 2014</span>
+
+</footer><!-- /.post-info --><p>Developing a large web application or before deploying some code is very
+important to verify the quality of the code itself, check if we have
+introduced any regression or bug and have something that tell us if we
+are increasing or decreasing the quality of the code.</p>
+<p>Suppose we are in an organization or a company where the basic rule is:
+<strong>master</strong> branch is always ready/stable to be deployed. In a team
+usually people work on personal branches, then when the code is stable
+it's merged with master.</p>
+<p>How do we check if the code is stable and ready to be merged? First of
+all we need to cover all our code with <strong>proper tests</strong> (I won't go in
+details about unit testing here, I assume that the reader knows what I'm
+talking about), then we need to actually run them, possibly in an
+isolated environment that is similar to the production one, and check if
+they all pass. If they do, we are quite safe to merge our code with
+master branch.</p>
+<p>How can we ensure that all the developers remember to run tests when
+they push some new code? To make things a bit more real, let's take the
+example of a Python/Django product (or even a library) that currently
+supports <strong>Python 2.6, 2.7, 3.3</strong> and <strong>Django 1.4.x, 1.5.x, 1.6.x</strong>.
+The whole matrix consists of <strong>9 possible combinations</strong>. Do we have to
+manually run tests on 9 configurations? No, we don't.</p>
+<h2>Travis-ci.org</h2>
+<p><strong>Travis</strong> is a continuous integration tool that, once configured, takes
+care of these tasks and let us save lot of time (that we can use to
+actually write code). <a href="https://travis-ci.org">Travis-ci.org</a> is an
+online service that works with <a href="https://github.com"><strong>GitHub</strong></a> (it
+requires we use GitHub as repository for our code), and once we have
+connected the two accounts and configured a very simple file in our
+projects, it's automatically triggered when we push on our GitHub
+repository.</p>
+<p>The configuration consists of adding a file named <strong>.travis.yml</strong> in the
+root of our project. A working example is available here
+<a href="https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml">https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml</a>
+(all the env variables I set are not required normally, but that's where
+I save the values of my configuration, so they need to be initialized
+before I can run tests).</p>
+<p>The service supports most of the languages that are commonly used and
+even a good number of PAAS, making it very easy to automatically
+<strong>deploy</strong> our code. If it should not be enough for your needs, they
+also expose a public <strong>API</strong>. I suggest you to give a look at the
+official documentation that will explain everything in details
+<a href="http://docs.travis-ci.com">http://docs.travis-ci.com</a></p>
+<p>Once everything is configured, we will have something like this on our
+console
+<a href="https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128">https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128</a></p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console.png"><img alt="travis-ci-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console-1024x544.png">{.aligncenter
+.wp-image-832 width="614"
+height="326"}</a></p>
+<p>If something goes wrong (if tests don't pass for example) we receive a
+notification with all the informations about the failing build, and if
+we had configured an automatic deployment of course the code would not
+be deployed in case of a failing build.</p>
+<p>Travis-ci.org is <strong>completly free</strong> for opensource projects and has also
+a paid version for private repositories.</p>
+<h2 id="coveralls.io" style="text-align: left;">Coveralls.io</h2>
+<p>There is a nice tool available for Python called
+<a href="http://nedbatchelder.com/code/coverage"><strong>coverage</strong></a>. Basically it
+runs tests and checks the percentage of the source code that is covered
+by tests, producing a nice report that shows us the percentage for every
+single file/module and even the lines of code that have been tested.</p>
+<p>Thanks to Coveralls.io and the use of Travis, even these tasks are
+completly automatized and the results are available online like in this
+example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds/560853</a></p>
+<p>The configuration is quite easy. We need to connect our Coveralls.io
+profile with GitHub, like we did for Travis-ci.org and then enable the
+repository. To trigger Coveralls after a successful Travis build, we
+need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
+<div class="highlight"><pre><span></span>after_success:
+  - coveralls
+</pre></div>
+
+
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console.png"><img alt="coveralls-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console-1024x767.png">{.aligncenter
+.wp-image-836 width="614"
+height="460"}</a><br>
+Even Coveralls.io is <strong>completly free</strong> for opensource projects and
+offers a paid version for private repositories.</p>
+<h2>Heroku</h2>
+<p>I use <a href="https://www.heroku.com"><strong>Heroku</strong></a> to host and run my web
+application. Normally to deploy on Heroku you so something like this:
+<strong>git push heroku master</strong></p>
+<p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
+deploy the application on Heroku, if the build was successful:</p>
+<div class="highlight"><pre><span></span><span class="n">deploy</span><span class="o">:</span>
+  <span class="n">provider</span><span class="o">:</span> <span class="n">heroku</span>
+  <span class="n">api_key</span><span class="o">:</span>
+    <span class="n">secure</span><span class="o">:</span> <span class="n">R4LFkVu1</span><span class="sr">/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/</span><span class="n">FeUk0Yl</span><span class="o">+</span><span class="n">I</span><span class="o">=</span>
+  <span class="n">app</span><span class="o">:</span> <span class="n">workshopvenues</span>
+  <span class="n">on</span><span class="o">:</span>
+    <span class="n">repo</span><span class="o">:</span> <span class="n">andreagrandi</span><span class="o">/</span><span class="n">workshopvenues</span>
+  <span class="n">run</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py syncdb&quot;</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py migrate&quot;</span>
+</pre></div>
+
+
+<p>Not only the code is deployed, after deployment the <strong>South migrations</strong>
+are executed.</p>
+<h2>Conclusion</h2>
+<p>These two tools are saving me lot of time and are ensuring that the code
+I release for a project I'm working on
+(<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
+is always tested when I push it on my repository.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/05/09/inizia-il-pycon-richard-stallman-oggi-a-palazzo-vecchio-firenze-ore-1600/" rel="bookmark"
+                           title="Permalink to Inizia il PyCon: Richard Stallman oggi a Palazzo Vecchio (Firenze) ore 16:00">Inizia il PyCon: Richard Stallman oggi a Palazzo Vecchio (Firenze) ore 16:00</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 09 May 2008</span>
+<span>| tags: <a href="/tag/conferenza.html">conferenza</a><a href="/tag/firenze.html">firenze</a><a href="/tag/palazzo.html">palazzo</a><a href="/tag/pycon.html">pycon</a><a href="/tag/richard.html">richard</a><a href="/tag/stallman.html">stallman</a><a href="/tag/talk.html">talk</a><a href="/tag/vecchio.html">vecchio</a></span>
+</footer><!-- /.post-info -->                <p><img alt="Richard
+Stallman" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/rms1.thumbnail.jpg">Come
+da programma, oggi a <a href="http://maps.google.it/maps?f=q&amp;hl=it&amp;geocode=&amp;q=palazzo+vecchio&amp;sll=43.97404,10.93689&amp;sspn=0.470428,1.284027&amp;ie=UTF8&amp;ll=43.769792,11.25663&amp;spn=0.007376,0.020063&amp;t=h&amp;z=16"><strong>Palazzo
+Vecchio</strong></a>
+(Firenze) ci sarà il talk di apertura del <strong>PyCon Italia 2008</strong>, tenuto
+dal leader e fondatore della <a href="http://www.fsf.org/"><strong>Free Software
+Foundation</strong></a>, <a href="http://it.wikipedia.org/wiki/Stallman"><strong>Richard
+Stallman</strong></a>.</p>
+<p>Richard Stallman parlerà degli obiettivi e della filosofica del
+Movimento per il Software Libero, e della storia e stato attuale del …</p>
+                <a class="readmore" href="/2008/05/09/inizia-il-pycon-richard-stallman-oggi-a-palazzo-vecchio-firenze-ore-1600/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" rel="bookmark"
+                           title="Permalink to Using GtkIconView in Python: a small tutorial">Using GtkIconView in Python: a small tutorial</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 15 April 2008</span>
+<span>| tags: <a href="/tag/gtk.html">gtk</a><a href="/tag/gtkiconview.html">gtkiconview</a><a href="/tag/gtkliststore.html">gtkliststore</a><a href="/tag/howto.html">HowTo</a><a href="/tag/programming.html">programming</a><a href="/tag/python.html">Python</a><a href="/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>In these days I was looking for a simple tutorial to understand how to
+use <strong>GtkIconView</strong>, but the only thing I was able to find was an
+example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
+thinking it would be useful for other people trying to use …</p>
+                <a class="readmore" href="/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/04/06/pycon2-conferenza-italiana-dedicata-al-linguaggio-python/" rel="bookmark"
+                           title="Permalink to PyCon2: conferenza italiana dedicata al linguaggio Python">PyCon2: conferenza italiana dedicata al linguaggio Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 06 April 2008</span>
+<span>| tags: <a href="/tag/conferenza.html">conferenza</a><a href="/tag/firenze.html">firenze</a><a href="/tag/italiana.html">italiana</a><a href="/tag/linguaggio.html">linguaggio</a><a href="/tag/programmazione.html">Programmazione</a><a href="/tag/pycon.html">pycon</a><a href="/tag/pycon2.html">pycon2</a><a href="/tag/python.html">Python</a><a href="/tag/sviluppatori.html">sviluppatori</a></span>
+</footer><!-- /.post-info -->                <p><img alt="Python" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/python-powered-h-140x182.thumbnail.jpg"><strong>PyCon
+Due</strong> è la seconda conferenza italiana dedicata al linguaggio di
+programmazione <strong>Python</strong>. La conferenza è organizzata da un gruppo di
+appassionati e senza finalità di lucro; si prefigge la divulgazione di
+Python, e di dare visibilità agli sviluppatori professionisti, studenti,
+aziende e semplici interessati al linguaggio.</p>
+<p><strong>Dove e quando …</strong></p>
+                <a class="readmore" href="/2008/04/06/pycon2-conferenza-italiana-dedicata-al-linguaggio-python/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

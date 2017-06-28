@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Configuring ddclient to update your dynamic DNS at noip.com</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/" rel="bookmark"
+           title="Permalink to Configuring ddclient to update your dynamic DNS at noip.com">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 02 September 2014</span>
+
+</footer><!-- /.post-info -->      <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
+services that are reliable to use. If you have, like in my situation, a
+RaspberryPi connected to your home DSL and you want it to be always
+reachable without knowing the current IP address (the IP could change if
+you have a normal DSL service at home), you need a dynamic DNS service.</p>
+<p>To update the noip.com one you just need <strong>ddclient,</strong> a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install ddclient
+</pre></div>
+
+
+<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
+<div class="highlight"><pre><span></span>protocol=dyndns2
+use=web, web=checkip.dyndns.com/, web-skip=&#39;IP Address&#39;
+server=dynupdate.no-ip.com
+login=yourusername
+password=yourpassword
+yourhostname.no-ip.org
+</pre></div>
+
+
+<p>and restart the client:</p>
+<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
+</pre></div>
+
+
+<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
+<strong>limitation</strong>: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

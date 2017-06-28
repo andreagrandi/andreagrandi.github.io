@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Installazione e configurazione di Ubuntu Eee 8.04.1 su Asus EeePC 901</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2008/10/05/installazione-e-configurazione-di-ubuntu-eee-8041-su-asus-eeepc-901/" rel="bookmark"
+           title="Permalink to Installazione e configurazione di Ubuntu Eee 8.04.1 su Asus EeePC 901">Installazione e configurazione di Ubuntu Eee 8.04.1 su Asus EeePC 901</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 05 October 2008</span>
+<span>| tags: <a href="/tag/asus.html">asus</a><a href="/tag/eeepc.html">EeePC</a><a href="/tag/ubuntu-eee.html">ubuntu-eee</a></span>
+</footer><!-- /.post-info -->      <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/asus_ubuntueee.jpg" title="asus_ubuntueee">{.alignright
+.size-full .wp-image-128 width="240" height="197"}La versione di Linux
+che viene installata sugli EeePC (<strong>Xandros</strong> Linux) da Asus, sebbene
+sia l'ideale per chi non ha mai utilizzato Linux e desidera un netbook
+semplice da usare, tuttavia <strong>non permette di sfruttare pienamente le
+potenzialità</strong> che l'EeePC ha.</p>
+<p>Poco tempo dopo l'uscita dei primi modelli degli EeePC sono iniziate
+quindi ad essere rilasciate distribuzioni alternative alla Xandros,
+ottimizzate per il netbook di Asus. E' ovviamente possibile installare
+una qualsiasi distribuzione Linux, ma ovviamente il lavoro da compiere
+per far funzionare tutte le periferiche sarà maggiore rispetto a quello
+necessario con una distribuzione realizzata ad hoc.</p>
+<p>La distribuzione che ho deciso di installare sul mio <strong>EeePC 901</strong> è la
+<a href="http://www.ubuntu-eee.com">Ubuntu Eee 8.04.1</a>.</p>
+<p>Per installare la <strong>Ubuntu Eee</strong> è necessario scaricarla dal <a href="http://www.ubuntu-eee.com/wiki/index.php5?title=Get_Ubuntu_Eee">sito web
+dedicato</a>
+e poi trasferirla su una chiavetta USB o su un disco USB esterno (visto
+che l'EeePC non è dotato di lettore CD/DVD) utilizzando una utility
+chiamata <strong>Unetbootin</strong> e seguendo le <a href="http://www.ubuntu-eee.com/wiki/index.php5?title=How_to:_Using_Unetbootin">istruzioni presenti sul
+wiki</a>.</p>
+<p>Dopo aver trasferito l'installazione sulla chiavetta USB dobbiamo
+inserirla nell'EeePC ed avviare premendo piu' volte il tasto <strong>Esc</strong>.
+Quando compare il menu di avvio, dobbiamo selezionare il disco USB dalla
+lista e premere <strong>Invio</strong> per continuare.</p>
+<p>Nel caso la Ubuntu Eee non si dovesse avviare, i motivi possono essere
+diversi. Per prima cosa dobbiamo controllare nella sezione Boot del
+<strong>BIOS</strong> se il disco USB è al primo posto nell'ordine dei dischi da cui
+fare il boot. Se non dovesse avviarsi nemmeno in questo caso, è
+possibile che la <strong>chiavetta</strong> USB <strong>non sia compatibile</strong>: a me è
+successo di non essere in grado di utilizzare una chiavetta USB da 1 Gb
+che avevo e sono dovuto ricorrere ad un disco esterno USB.</p>
+<p>Se riusciamo ad avviare la Ubuntu Eee, saremo in grado di utilizzare
+l'installer grafico senza alcun problema. Il mio consiglio è quello di
+scegliere il <strong>partizionamento manuale</strong> e di utilizzare il primo
+<strong>disco SSD</strong> da <strong>4 Gb per la root /</strong> ed il <strong>disco SSD</strong> da <strong>16 Gb
+per la /home</strong>.</p>
+<p>Le <strong>caratteristiche</strong> della <strong>Ubuntu Eee</strong> la rendono praticamente la
+distribuzione perfetta per gli EeePC:</p>
+<ul>
+<li>supporto per gli Asus EeePC 701, 900, 900A, 901, 1000 e 1000H</li>
+<li>occupa 1.8 Gb di spazio</li>
+<li>Kernel ottimizzato di <a href="http://www.array.org/ubuntu/">Adam</a> con
+    supporto per tutte le periferiche degli EeePC</li>
+<li>interfaccia Notebook Remix predefinita (è possibile cambiarla
+    tramite un'apposita utility)</li>
+</ul>
+<p>Sebbene il setup e la configurazione predefiniti di Ubuntu Eee siano
+quasi perfetti, tuttavia sono necessari ancora alcuni ritocchi per fare
+in modo che tutto funzioni regolarmente.</p>
+<p>Per prima cosa occorre <strong>commentare</strong> l'ultima riga di <strong>/etc/fstab</strong>,
+quella relativa al cdrom, altrimenti si otterrà un errore durante la
+fase di mount quando si inserisce una chiavetta USB.</p>
+<p>Per ottenere il meglio dal <strong>risparmio energetico</strong>, consiglio di
+installare gli <strong>script ACPI</strong> di <strong>Murat</strong> che potete trovare a questo
+indirizzo:
+<a href="http://www.informatik.uni-bremen.de/~elmurato/EeePC/Hardy_ACPI_scripts-EeePC_900A_901_1000.tar.gz">http://www.informatik.uni-bremen.de/~elmurato/EeePC/Hardy_ACPI_scripts-EeePC_900A_901_1000.tar.gz</a></p>
+<p>Gli script permettono di attivare/disattivare alcune periferiche come il
+bluetooth, la webcam, la wifi ecc... consentendo alla batteria di durare
+piu' a lungo. Per l'installazione sono sufficienti i seguenti passaggi:</p>
+<p><code>tar xfvz Ubuntu_ACPI_scripts-EeePC_900A_901_1000.tar.gz cd Ubuntu_ACPI_scripts-EeePC_900A_901_1000/ chmod +x install.sh sudo ./install.sh</code></p>
+<p>In particolare le funzionalità che vengono aggiunte sono le seguenti
+(gli hotkey sono quei tasti hardware posizionati sopra ad i tasti F1,
+F2, ecc...):</p>
+<ul>
+<li>Fn+F1 Standby</li>
+<li>Fn+F2 WLAN-toggle</li>
+<li>Fn+F3/F4 Brightness</li>
+<li>Fn+F5 VGA-toggle</li>
+<li>Fn+F6 Taskmanager</li>
+<li>Fn+F7/F8/F9 Volume</li>
+<li>1. new hotkey Display-toggle (internal)</li>
+<li>2. new hotkey Bluetooth-toggle</li>
+<li>3. new hotkey CPU frequency control or user-defined</li>
+<li>4. new hotkey Webcam-toggle or user-defined</li>
+</ul>
+<p>Gli script di Murat purtroppo introducono un <strong>piccolo bug</strong>: viene
+disattivata la funzionalità <strong>"Dim when idle"</strong> del display (in pratica
+non viene abbuiato lo schermo quando non si usa l'EeePC). Per
+ripristinare questa funzionalità è sufficiente eseguire questo comando:<br>
+<code>sudo cp /etc/acpi/backup/hal-system-lcd-set-brightness-linux /usr/lib/hal/scripts/linux/</code></p>
+<p>A questo punto la configurazione dovrebbe essere al completo. Si
+consiglia di <strong>riavviare l'EeePC</strong> per rendere effettive tutte le
+modifiche. Per ulteriori trucchetti su come ottimizzare la
+configurazione, vi consiglio di visitare direttamente il <a href="http://www.ubuntu-eee.com/wiki/index.php5?title=User_Guides">wiki di Ubuntu
+Eee</a> dove
+potrete trovare articoli piu' approfonditi.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

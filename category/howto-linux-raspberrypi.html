@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - HowTo, Linux, RaspberryPi</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
+<footer class="post-info">
+        <span>Tue 02 September 2014</span>
+
+</footer><!-- /.post-info --><p>If you want to connect your <strong>RaspberryPi</strong> to your home network and you
+want to avoid cables, I suggest you to use the <strong>Edimax wifi adapter</strong>.
+This device is quite cheap (around £8 on
+<a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/">Amazon</a>)
+and it's very easy to configure on Raspbian (I assume you are using a
+recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png">{.aligncenter
+.wp-image-895 width="708"
+height="398"}</a></p>
+<h2>Configure the wifi adapter</h2>
+<p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
+<div class="highlight"><pre><span></span>auto lo
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+auto wlan0
+
+iface wlan0 inet dhcp
+wpa-ssid YOURESSID
+wpa-psk YOURWPAPASSWORD
+</pre></div>
+
+
+<h2>Power management issue</h2>
+<p>There is a known "issue" with this adapter default configuration that
+makes it to turn off if the wlan interface is not in use for some
+minutes. To avoid this you have to customize the parameters used to load
+the kernel module. First check that your adapter is using <strong>8192cu</strong>
+module:</p>
+<div class="highlight"><pre><span></span>sudo lsmod | grep 8192
+8192cu 551136 0
+</pre></div>
+
+
+<p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
+lines inside:</p>
+<div class="highlight"><pre><span></span># prevent power down of wireless when idle
+options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+</pre></div>
+
+
+<p>I also suggest to create a little entry in crontab to make the
+RaspberryPi ping your router every minute. This will ensure that your
+wifi connection will stay alive. To edit crontab just type (from pi
+user, you don't need to be root):</p>
+<div class="highlight"><pre><span></span>crontab -e
+</pre></div>
+
+
+<p>and insert this line at the end:</p>
+<div class="highlight"><pre><span></span>*/1 * * * * ping -c 1 192.168.0.1
+</pre></div>
+
+
+<p>where 192.168.0.1 is the IP of your router (of course substitute this
+value with the ip of your router).</p>
+<h3>Keep Alive Script</h3>
+<p>I created a further script to keep my WIFI alive. This script will ping
+the router (change the IP using the one of your router) every 5 minutes
+and if the ping fails it brings down the wlan0 interface, the kernel
+module for the wifi and bring them up again.</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
+</p>
+
+<p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
+<strong>root</strong> user:</p>
+<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+crontab -e
+</pre></div>
+
+
+<p>Insert this line inside the crontab editor:</p>
+<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
+</pre></div>
+
+
+<h2>Conclusion</h2>
+<p>The configuration is done. Just reboot your RaspberryPi and enjoy your
+wifi connection.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - security</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/">Fix encfs under OSX after upgrading to 10.11.2</a></h1>
+<footer class="post-info">
+        <span>Wed 09 December 2015</span>
+<span>| tags: <a href="/tag/bug.html">bug</a><a href="/tag/encfs.html">encfs</a><a href="/tag/security.html">security</a></span>
+</footer><!-- /.post-info --><p>After having upgraded <strong>OSX</strong> to <strong>10.11.2</strong> on my MacBook, I noticed
+that my <strong>encfs</strong> volume didn't mount after reboot. I tried to run the
+script manually and all I got was this error:</p>
+<p>``` {.lang:default .decode:true}
+dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
+  Referenced from: /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
+  Expected in: /usr/local/lib/libboost_serialization-mt.dylib
+ in /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib</p>
+<div class="highlight"><pre><span></span>I quickly found that was a common problem caused by a new version of
+**Boost** being
+installed: &lt;https://github.com/Homebrew/homebrew/issues/46254&gt;
+
+To fix it, you just need to **reinstall encfs** using this command
+
+``` {.lang:default .decode:true}
+brew reinstall -s encfs
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/" rel="bookmark"
+                           title="Permalink to Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal">Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 06 December 2015</span>
+<span>| tags: <a href="/tag/encryption.html">encryption</a><a href="/tag/letsencrypt.html">letsencrypt</a><a href="/tag/security.html">security</a><a href="/tag/ssl.html">ssl</a></span>
+</footer><!-- /.post-info -->                <p>Finally <strong><a href="https://letsencrypt.org/">Letsencrypt</a></strong> went to <strong>public
+beta</strong> and I really couldn't wait to use it on my VPS (where this blog
+is hosted). Until few days ago I was using a <strong>free SSL</strong> certificate
+from <a href="https://www.startssl.com/">StartSSL</a>. The service is nice and I'm
+grateful to them for this important resource they are …</p>
+                <a class="readmore" href="/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/" rel="bookmark"
+                           title="Permalink to How to configure EncFS on OSX 10.10 (Yosemite)">How to configure EncFS on OSX 10.10 (Yosemite)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 11 October 2015</span>
+<span>| tags: <a href="/tag/cloud.html">cloud</a><a href="/tag/encfs.html">encfs</a><a href="/tag/encryption.html">encryption</a><a href="/tag/osx.html">OSX</a><a href="/tag/security.html">security</a></span>
+</footer><!-- /.post-info -->                <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc...), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It's
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.</p>
+<h2>Installing …</h2>
+                <a class="readmore" href="/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/" rel="bookmark"
+                           title="Permalink to How to fix encfs installation on OSX 10.9 (Mavericks) and brew">How to fix encfs installation on OSX 10.9 (Mavericks) and brew</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 08 November 2013</span>
+<span>| tags: <a href="/tag/cloud.html">cloud</a><a href="/tag/encfs.html">encfs</a><a href="/tag/encryption.html">encryption</a><a href="/tag/fuse4x.html">fuse4x</a><a href="/tag/osx.html">OSX</a><a href="/tag/security.html">security</a></span>
+</footer><!-- /.post-info -->                <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
+broken. First of all you have to fix a problem with a library header:</p>
+<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+</pre></div>
+
+
+<p>then you can install encfs using this remote brew …</p>
+                <a class="readmore" href="/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

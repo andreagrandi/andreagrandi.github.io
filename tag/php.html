@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - php</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2008/10/09/dieci-buoni-motivi-per-non-utilizzare-php/">Dieci buoni motivi per non utilizzare PHP</a></h1>
+<footer class="post-info">
+        <span>Thu 09 October 2008</span>
+<span>| tags: <a href="/tag/difetti.html">difetti</a><a href="/tag/linguaggi.html">linguaggi</a><a href="/tag/php.html">php</a><a href="/tag/programmazione.html">Programmazione</a></span>
+</footer><!-- /.post-info --><p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/php-logo.jpg" title="php-logo">{.alignright
+.size-full .wp-image-130 width="202" height="106"}Quando in questi
+giorni ho appreso la triste notizia che il <strong>progetto</strong> da consegnare
+per l'<strong>esame</strong> di <strong>Laboratorio di Reti</strong> avrebbe dovuto essere
+realizzato in <strong>PHP</strong>, sono stato preso un po' dallo sconforto.</p>
+<p>Per anni mi sono sempre rifiutato di imparare ed utilizzare questo
+linguaggio ed ho persino declinato diverse offerte di lavoro, visto che
+già sulla carta ne avevo sempre sentito parlare male. Adesso è arrivato
+il momento di ingollare il rospo ed imparare almeno il minimo
+indispensabile alla realizzazione del progetto.</p>
+<p>Ho approfittato della situazione per documentarmi un po' sul PHP e per
+ribadire alcuni motivi che per anni mi hanno tenuto lontano da questo
+linguaggio. I punti che seguono prendono spunto sia da considerazioni
+personali, sia da un <a href="http://www.bitstorm.org/edwin/en/php/">ottimo
+articolo</a> di <strong>Edwin Martin</strong>.</p>
+<h2>1. Ricorsione?! Chi era costei...</h2>
+<p>La <strong><a href="http://it.wikipedia.org/wiki/Ricorsione">ricorsione</a></strong>, come molti
+di voi sapranno, è un meccanismo che permette ad una funzione di
+chiamare se stessa. Viene impiegata nell'implementazione di moltissimi
+algoritmi, come ad esempio il <a href="http://it.wikipedia.org/wiki/Quick_sort"><strong>Quick
+Sort</strong></a>. Se vengono generate
+troppe chiamate ricorsive in PHP, il linguaggio va letteralmente in
+palla e non funziona piu' correttamente. Questa cosa è stata <a href="http://bugs.php.net/bug.php?id=1901">segnalata
+come bug</a> e la motivazione che è
+stata data dagli sviluppatori è che PHP utilizza lo stack al posto
+dell'heap per le chiamate ricorsive. Questo cosa c'entra? Mi viene da
+chiedere... eppure in altri linguaggi la ricorsione funziona benissimo!</p>
+<h2>2. Molti moduli PHP non sono thread safe</h2>
+<p>Anche se tutti i moduli del core di PHP sono garantiti <strong>thread safe</strong>,
+la <strong>maggior parte</strong> degli altri moduli <strong>non lo sono</strong>. Questo rende
+completamente inutile il fatto che Apache 2 supporti la modalità
+multithreaded: gli sviluppatori di PHP
+<a href="http://www.php.net/manual/en/install.unix.apache2.php">sconsigliano</a>
+pure di utilizzare questa versione di Apache.</p>
+<h2>3. PHP è azzoppato per motivi commerciali</h2>
+<p>Vi sembra che <strong>PHP</strong> sia un po' <strong>lento</strong>? Non avete provato la
+<strong>versione commerciale</strong> di <strong>Zend PHP</strong>, che garantisce maggiori
+prestazioni! La versione gratuita di PHP infatti non ha alcuna
+ottimizzazione e a meno di non utilizzare un qualche meccanismo di cache
+(come ad esempio
+<a href="http://pecl.php.net/package-info.php?package=APC">APC</a>) le prestazioni
+saranno basse.</p>
+<h2>4. Nessun supporto ai Namespace</h2>
+<p>Se due moduli hanno una funzione che si chiama read, non possono essere
+utilizzati contemporaneamente. Era stata proposta una soluzione a questo
+problema in PHP5, ma alla fine <a href="http://www.php.net/ChangeLog-5.php#5.0.0b2">non è stata
+inclusa</a> nella release
+definitiva. L'unico modo per evitare la collisione dei nomi dei metodi è
+quello di nominarli aggiungendo il nome del modulo all'inizio. Ecco
+perchè non è strano trovare metodi che ad esempio si chiamano
+<strong>xsl_xsltprocessor_transform_to_xml</strong> che di sicuro non aumentano
+la leggibilità del codice.</p>
+<h2>5. Caratteri di formattazione delle date non standard</h2>
+<p>La maggior parte dei linguaggi di programmazione utilizza uno
+<a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?date">standard</a> per quanto
+riguarda i caratteri di formattazione delle date, che deriva da Unix e
+dal linguaggio C. PHP utilizza un <a href="http://www.php.net/manual/en/function.date.php">proprio
+formato</a>, completamente
+incompatibile.</p>
+<h2>6. Inconsistenza nei nomi delle funzioni</h2>
+<p>Quando i nomi dei metodi contengono piu' di una parola, solitamente ci
+sono tre modi diversi per poterli scrivere. Prendiamo ad esempio
+un'ipotetica funzione che restituisce il numero dei file aperti.
+Potremmo chiamarla <strong>getnumberofopenfiles</strong>,
+<strong>get_number_of_open_files</strong> oppure <strong>getNumberOfOpenFiles</strong>.
+<strong>Quale</strong> metodo utilizza <strong>PHP</strong>? <strong>Tutti e tre</strong> ovviamente! Oltre a
+questo è opportuno far notare che i nomi dei metodi e delle funzioni
+<strong>non sono case sensitive</strong>.</p>
+<h2>7. Assenza di un framework integrato</h2>
+<p>Il modello piu' corretto per sviluppare un'applicazione web, sarebbe
+quello chiamato <strong>MVC</strong>, dove la parte di <strong>visualizzazione</strong>, la
+<strong>business logic</strong> e la validazione dei dati ed infine l'<strong>interazione
+con il database</strong>, sono <strong>parti separate</strong> del progetto.</p>
+<p>Nella maggior parte dei <strong>siti scritti in PHP</strong> è molto comune trovare
+sorgenti che <strong>includono tutti e tre questi aspetti in un unico file!</strong>
+Poche righe sopra viene fatta la connessione al database, poi c'è una
+parte di visualizzazione di alcuni dati, verso la metà ci sono le
+funzioni di validazione ed infine di nuovo altro codice html di
+visualizzazione. Credo che questo sia il peggiore dei modi di realizzare
+un'applicazione web. Pensate che sia facile per un grafico dover
+apportare modifiche alla parte di visualizzazione senza toccare il
+codice PHP? E viceversa... pensate che sia facile per un programmatore,
+aggiungere codice PHP senza rischiare di scombinare il layout della
+pagina?</p>
+<p>Altri linguaggi con <strong>Ruby</strong> o <strong>Python</strong> ci hanno ormai abituati a
+framework come <a href="http://www.rubyonrails.org/"><strong>Rails</strong></a> e
+<a href="http://www.djangoproject.com/"><strong>Django</strong></a>, rispettivamente. Per
+fortuna le cose sono in miglioramento anche su PHP, grazie a framework
+come <a href="http://www.cakephp.org/">CakePHP</a> o
+<a href="http://www.symfony-project.com/">Symfony</a>.</p>
+<h2>8. Mancanza del supporto Unicode</h2>
+<p>Questa lacuna forse potra' non riguardarci da vicino, visto che il set
+di caratteri che utilizziamo in Europa ed in America è ampiamente
+supportato, ma non è certo così per <strong>Cina</strong>, <strong>Giappone</strong> ed altre
+nazioni dove viene utilzzato un set di caratteri e di simboli molto
+diverso dal nostro. Tramite
+<a href="http://it.wikipedia.org/wiki/Unicode"><strong>Unicode</strong></a> è possibile
+supportare anche questi caratteri. <strong>PHP</strong> avrà il <strong>supporto per
+Unicode</strong> solo <strong>nella futura versione 6</strong>.</p>
+<h2>9. Lentezza</h2>
+<p>Pensate che il Java sia un linguaggio lento? Beh, niente a confronto di
+PHP! Leggendo <a href="http://shootout.alioth.debian.org/debian/benchmark.php?test=all&amp;lang=java&amp;lang2=php">questo
+report</a>
+si mettono in evidenza le scarse prestazioni di questo linguaggio.
+Persino <strong>Rasmus Lerdorf</strong>, il creatore di PHP <a href="http://www.sitepoint.com/blogs/2008/08/29/rasmus-lerdorf-php-frameworks-think-again/">ammette che non c'è modo
+di migliorare le
+prestazioni</a>
+di PHP. Rasmus tra l'altro sconsiglia persino l'utilizzo dei frameworks
+sopra citati (CakePHP e Symfony) perchè rallenterebbero inutilmente le
+prestazioni dei siti web.</p>
+<h2>10. Estrema facilità di utilizzo</h2>
+<p>Ammetto che questo ultimo punto <strong>possa essere non condiviso da molte
+persone</strong>, si tratta infatti di una <strong>mia personalissima opinione</strong>. Il
+fatto che un linguaggio di programmazione sia troppo facile da usare,
+secondo me puo' presentare anche degli svantaggi. Permette infatti anche
+a chi ha scarse conoscenze di programmazione, di cimentarsi in progetti,
+con il rischio poi di far abbassare notevolmente la qualità del codice
+che si trova in giro. Non è difficile infatti imbattersi in programmi
+scritti in PHP che all'apparenza possono risultare gradevoli ed
+accattivanti (magari perchè scritti da persone che principalmente si
+occupano di web design), ma che sotto sotto sono dei veri e propri
+pastoni di <strong>codice mal scritto</strong>.</p>
+<h2>Conclusioni</h2>
+<p>A favore di PHP possiamo sicuramente dire che si tratti di un linguaggio
+<strong>molto semplice da imparare</strong> ed <strong>ampiamente supportato</strong> dalla
+maggior parte dei <strong>servizi di hosting</strong> in tutto il mondo. A parte
+queste due motivazioni però, non mi sentirei in alcun modo di
+consigliarlo per sviluppare un'applicazione web.</p>
+<p>Sicuramente qualcuno mi fara' notare che lo stesso blog sul quale sto
+scrivendo è scritto in linguaggio PHP. Per l'utilizzo che ne devo fare,
+Wordpress va piu' che bene, almeno per le mie esigenze. Questo non
+toglie che PHP soffra ugualmente di tutti i problemi che sono stati
+esposti sopra.</p>
+<p>E' mia intenzione che questo articolo sia di avvertimento a chi si sta
+per avvicinare per la prima volta al PHP o chi già lo utilizza. <strong>Ci
+tengo</strong> però al fatto che <strong>non contenga imprecisioni</strong>, perchè credo
+che servirebbero solo a screditare la natura stessa dell'articolo.
+<strong>Invito</strong> quindi i lettori che rilevassero imprecisioni a
+<strong>segnalarmele</strong>, indicandomi dove poter trovare maggiori informazioni
+per verificare la validità di quanto riportato.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

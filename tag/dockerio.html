@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - docker.io</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">Automatically pull updated Docker images and restart containers with docker-puller</a></h1>
+<footer class="post-info">
+        <span>Sat 25 October 2014</span>
+<span>| tags: <a href="/tag/containers.html">containers</a><a href="/tag/docker.html">docker</a><a href="/tag/dockerio.html">docker.io</a><a href="/tag/flask.html">Flask</a><a href="/tag/python.html">Python</a></span>
+</footer><!-- /.post-info --><p>If you use <a href="http://docker.io">docker.io</a> (or any similar service) to
+build your <strong>Docker</strong> containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h2 id="how-to-use-docker-puller" style="color: #333333;">How to use docker-puller</h2>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span>{
+    &quot;host&quot;: &quot;localhost&quot;,
+    &quot;port&quot;: 8000,
+    &quot;token&quot;: &quot;abc123&quot;,
+    &quot;hooks&quot;: {
+        &quot;hello&quot;: &quot;scripts/hello.sh&quot;
+    }
+}
+</pre></div>
+
+
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+docker stop test
+docker rm test
+docker run --name test -d -p 8000:80 andreagrandi/test:latest
+</pre></div>
+
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

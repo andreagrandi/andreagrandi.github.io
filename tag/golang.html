@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - golang</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2015/04/19/goenv-go-environment-manager/">Goenv - Go Environment Manager</a></h1>
+<footer class="post-info">
+        <span>Sun 19 April 2015</span>
+<span>| tags: <a href="/tag/go.html">go</a><a href="/tag/golang.html">golang</a></span>
+</footer><!-- /.post-info --><p>To briefly explain what
+<a href="https://bitbucket.org/ymotongpoo/goenv"><strong>Goenv</strong></a> is, I will assume
+you have previously worked with <strong>Python</strong>. Basically it's what
+<strong>Virtualenv</strong> is for Python. Goenv (and it's wrapper <strong>goof</strong>) creates
+a folder for a new project and set the <strong>\$GOPATH</strong> env variable to that
+folder path. At this point every time you do <strong>go get</strong>, the libraries
+will be installed in that specific <strong>\$GOPATH</strong>.</p>
+<p>It's very important to use separate \$GOPATH for each project, because
+this allow us to use different library versions for each project and
+<strong>avoid version conflicts</strong>.</p>
+<h1>Installation</h1>
+<p>``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
+$ git clone https://bitbucket.org/ymotongpoo/goenv
+$ cd goenv
+$ go build -o goenv *.go
+$ chmod +x goenv
+$ sudo cp goenv /usr/bin</p>
+<div class="highlight"><pre><span></span>Goenv is now installed, we will now install its wrapper **goof**:
+
+``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
+$ sudo cp shellscripts/goenvwrapper.sh /usr/bin
+</pre></div>
+
+
+<p>Edit <strong>.bashrc</strong> (or <strong>.zshrc</strong> if you use zsh) and append these lines:</p>
+<p>``` {.toolbar:2 .lang:zsh .decode:true}
+export GOENVHOME=$HOME/goenvs
+source /usr/bin/goenvwrapper.sh</p>
+<div class="highlight"><pre><span></span><span class="gh">How to use it</span>
+<span class="gh">=============</span>
+
+To <span class="gs">**create**</span> a new go environment use <span class="gs">**make**</span>:
+
+<span class="s">``` {.toolbar:2 .lang:default .highlight:0 .decode:true}</span>
+<span class="s">➜  ~  goof make go-test</span>
+<span class="s">Do you want to create all parental directory of &#39;/Users/andrea/goenvs/go-test&#39;? [y/N]: y</span>
+<span class="s">Environment /Users/andrea/goenvs/go-test created!</span>
+<span class="s">(go:go-test) ➜  go-test</span>
+</pre></div>
+
+
+<p>To exit the go environment use <strong>deactivate</strong>:</p>
+<p>``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
+(go:go-test) ➜  go-test  deactivate
+➜  go-test</p>
+<div class="highlight"><pre><span></span>To use an environment use **workon**:
+
+``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
+➜  go-test  goof workon go-test
+(go:go-test) ➜  go-test
+</pre></div>
+
+
+<p>To show available environments use <strong>show</strong>:</p>
+<p><code>{.toolbar:2 .lang:default .highlight:0 .decode:true}
+(go:go-test) ➜  go-test  goof show
+* go-test</code></p>
+<p>Goenv itself is not enough to manage Go packages. It would be like using
+<strong>Virtualenv</strong> only and not using <strong>pip</strong> and <strong>requirements</strong>. In a
+future post I will explain how to use
+<a href="https://github.com/tools/godep"><strong>Godep</strong></a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2015/03/16/go-defining-methods-on-struct-types/" rel="bookmark"
+                           title="Permalink to Go: defining methods on struct types">Go: defining methods on struct types</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 16 March 2015</span>
+<span>| tags: <a href="/tag/go.html">go</a><a href="/tag/golang.html">golang</a><a href="/tag/programming.html">programming</a><a href="/tag/struct.html">struct</a></span>
+</footer><!-- /.post-info -->                <p>In <strong>Go</strong> it's possible to define <strong>methods</strong> on <strong>struct types</strong>. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.</p>
+<p>In my case for example I …</p>
+                <a class="readmore" href="/2015/03/16/go-defining-methods-on-struct-types/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

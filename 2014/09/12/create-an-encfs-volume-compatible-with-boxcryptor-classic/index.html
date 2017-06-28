@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Create an EncFS volume compatible with BoxCryptor Classic</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/" rel="bookmark"
+           title="Permalink to Create an EncFS volume compatible with BoxCryptor Classic">Create an EncFS volume compatible with BoxCryptor Classic</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 12 September 2014</span>
+<span>| tags: <a href="/tag/boxcryptor.html">boxcryptor</a><a href="/tag/dropbox.html">dropbox</a><a href="/tag/encfs.html">encfs</a></span>
+</footer><!-- /.post-info -->      <p>If you are planning to share an encrypted volume between Linux/OSX and
+Windows (I will assume you are sharing it on Dropbox, but you could use
+any similar service) and you are using
+<a href="http://www.arg0.net/encfs"><strong>EncFS</strong></a> under Linux/OSX and
+<a href="https://www.boxcryptor.com"><strong>BoxCryptor</strong></a> under Windows, there are
+some specifig settings to use when you create the EncFS volume. Infact
+even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
+<p>Suppose you want to create an encrypted volume located at
+<strong>\$HOME/.TestTmpEncrypted</strong> and mounted at <strong>\$HOME/TestTmp</strong> you need
+the following command:</p>
+<div class="highlight"><pre><span></span>andrea-Inspiron-660:~ andrea $ encfs ~/.TestTmpEncrypted ~/TestTmp
+</pre></div>
+
+
+<p>answer "Y" when you are asked if you want to create the folders:</p>
+<div class="highlight"><pre><span></span>The directory &quot;/home/andrea/.TestTmpEncrypted/&quot; does not exist. Should it be created? (y,n) y
+The directory &quot;/home/andrea/TestTmp&quot; does not exist. Should it be created? (y,n) y
+</pre></div>
+
+
+<p>At this point you will need to select between default paranoia mode or
+advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
+<div class="highlight"><pre><span></span>Creating new encrypted volume.
+Please choose from one of the following options:
+ enter &quot;x&quot; for expert configuration mode,
+ enter &quot;p&quot; for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?&gt; x
+</pre></div>
+
+
+<p>Manual configuration mode selected.</p>
+<div class="highlight"><pre><span></span>Select AES as cypher algorithm:
+
+The following cypher algorithms are available:
+1. AES : 16 byte block cipher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+2. Blowfish : 8 byte block cypher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+
+Enter the number corresponding to your choice: 1
+
+Selected algorithm &quot;AES&quot;
+</pre></div>
+
+
+<p>Select <strong>256</strong> as key size:</p>
+<div class="highlight"><pre><span></span>Please select a key size in bits. The cypher you have chosen
+supports sizes from 128 to 256 bits in increments of 64 bits.
+For example:
+128, 192, 256
+Selected key size: 256
+
+Using key size of 256 bits
+</pre></div>
+
+
+<p>Choose <strong>1024</strong> as block size:</p>
+<div class="highlight"><pre><span></span>Select a block size in bytes. The cypher you have chosen
+supports sizes from 64 to 4096 bytes in increments of 16.
+Alternatively, just press enter for the default (1024 bytes)
+
+filesystem block size:
+
+Using filesystem block size of 1024 bytes
+</pre></div>
+
+
+<p>Select <strong>Stream</strong> as filename encoding:</p>
+<div class="highlight"><pre><span></span>The following filename encoding algorithms are available:
+1. Block : Block encoding, hides file name size somewhat
+2. Null : No encryption of filenames
+3. Stream : Stream encoding, keeps filenames as short as possible
+
+Enter the number corresponding to your choice: 3
+
+Selected algorithm &quot;Stream&quot;&quot;
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
+<div class="highlight"><pre><span></span>Enable filename initialization vector chaining?
+This makes filename encoding dependent on the complete path,
+rather then encoding each path element individually.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
+<div class="highlight"><pre><span></span>Enable per-file initialization vectors?
+This adds about 8 bytes per file to the storage requirements.
+It should not affect performance except possibly with applications
+which rely on block-aligned file io for performance.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
+<div class="highlight"><pre><span></span>External chained IV disabled, as both &#39;IV chaining&#39;
+and &#39;unique IV&#39; features are required for this option.
+Enable block authentication code headers
+on every block in a file? This adds about 12 bytes per block
+to the storage requirements for a file, and significantly affects
+performance but it also means [almost] any modifications or errors
+within a block will be caught and will cause a read error.
+The default here is No.
+Any response that does not begin with &#39;y&#39; will mean No: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
+<div class="highlight"><pre><span></span>Add random bytes to each block header?
+This adds a performance penalty, but ensures that blocks
+have different authentication codes. Note that you can
+have the same benefits by enabling per-file initialisation
+vectors, which does not come with as great a performance
+penalty.
+Select a number of bytes, from 0 (no random bytes) to 8: 0
+</pre></div>
+
+
+<p>Enable <strong>file-hole pass-through</strong>:</p>
+<div class="highlight"><pre><span></span>Enable file-hole pass-through?
+This avoids writing encrypted blocks when file holes are created.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: yes
+</pre></div>
+
+
+<p>Finally you will see:</p>
+<div class="highlight"><pre><span></span>Configuration finished. The filesystem to be created has
+the following properties:
+Filesystem cypher: &quot;ssl/aes&quot;, version 3:0:2
+Filename encoding: &quot;nameio/stream&quot;, version 2:1:2
+Key Size: 256 bits
+Block Size: 1024 bytes
+File holes passed through to ciphertext.
+</pre></div>
+
+
+<p>At this point set a passphrase for your new volume:</p>
+<div class="highlight"><pre><span></span>Now you will need to enter a password for your filesystem.
+You will need to remember this password, as there is absolutely
+no recovery mechanism. However, the password can be changed
+later using encfsctl.
+
+New Encfs Password:
+Verify Encfs Password:
+</pre></div>
+
+
+<p>You should be able to mount this volume using BoxCryptor.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

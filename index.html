@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">Creating a production ready API with Python and Django Rest Framework – part 3</a></h1>
+<footer class="post-info">
+        <span>Sun 12 March 2017</span>
+
+</footer><!-- /.post-info --><p>In the <a href="/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">previous
+part</a>
+we implemented authentication, permissions and the possibility to POST
+new products for admins. In this new episode we will see how to
+implement <strong>details</strong> management, <strong>relations</strong> between models, <strong>nested
+APIs</strong> and a different level of permissions.</p>
+<p>If you haven't completed the previous parts or if you want to begin from
+this one, checkout the right code first:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.10
+</pre></div>
+
+
+<h3>Handling Product Details</h3>
+<p>Our current API methods allow us to list all the products we have in our
+catalog and to create a new one (if we have admin permissions), but what
+if we wanted to delete or update a single one? What if we wanted to get
+only a specific product? We need to handle details.</p>
+<p>As first thing we need to change the <strong>ProductSerializer</strong> to return the
+id of the product. Edit <strong>catalog/serializers.py</strong> and change the class
+in this way:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>After changing the serializer we need to implement a new view called
+<strong>ProductDetail</strong>. Edit <strong>catalog/views.py</strong> and add the following
+imports:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+</pre></div>
+
+
+<p>and the following class:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Product</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_204_NO_CONTENT</span><span class="p">)</span>
+</pre></div>
+
+
+<p>let's connect the new view to the urls, editing catalog/urls.py and
+changing the code in this way:</p>
+<div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>If we try to <strong>PUT</strong>, <strong>DELETE</strong> or <strong>GET</strong> a product like
+<strong>/products/1/</strong> we can now update, delete or retrieve an existing item,
+but there is a little problem: we haven't set any permission on this
+class, so anyone can do it. The previous view was also more compact, why
+don't we use a generic view to perform these basic operations? Let's
+refactor <strong>ProductDetail</strong> with a
+<a href="http://www.django-rest-framework.org/api-guide/generic-views/#retrieveupdatedestroyapiview"><strong>RetrieveUpdateDestroyAPIView</strong></a>
+generic class. Open <strong>catalog/views.py</strong> and change the class code in
+this way:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
+</pre></div>
+
+
+<p>That's it! With just three lines of code we have now implemented the
+same feature of the previous class, plus we have set the correct
+permissions.</p>
+<p>To checkout the code at this point:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.12
+</pre></div>
+
+
+<h3>Reviews - Relations between models</h3>
+<p>As many online catalogs already have, it would be nice if our API had an
+endpoint where it is possible to leave a review for a product and get a
+list of reviews for a specific product. To implement this feature we
+need to add a new model to our application. Edit <strong>catalog/models.py</strong>
+adding this import:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+</pre></div>
+
+
+<p>and this Django model:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Review</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">review</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+</pre></div>
+
+
+<p>after creating the model, please remember to create the related DB
+<strong>migration</strong>:</p>
+<div class="highlight"><pre><span></span>$ ./manage.py makemigrations catalog
+</pre></div>
+
+
+<p>When the model is ready, we have to do some changes to the serializers.
+First of all we need to write a new one, for our new <strong>Review</strong> model.
+Then we have to change our <strong>ProductSerializer</strong> so that it will return
+its related reviews. Each Product can have multiple Review. And each
+Review will be always linked to a specific Product. Edit
+<strong>catalog/serializers.py</strong> and change it in this way:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+
+<span class="k">class</span> <span class="nc">ReviewSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ReadOnlyField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">&#39;created_by.username&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Review</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;review&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;created_by&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">reviews</span> <span class="o">=</span> <span class="n">ReviewSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>Note:</strong> in <strong>ReviewSerializer</strong> when we serialise the user contained
+in <strong>created_by</strong> field, return the username instead of the id (to make
+it more human readable). Another important thing to notice is that the
+value of the <strong>related_name</strong> we have set in the <strong>Review</strong> model must
+match with the field name we have added in <strong>ProductSerializer fields</strong>
+property. In this case we have set it to <strong>reviews</strong>.</p>
+<p>At this point we need to add a new view. Edit <strong>catalog/views.py</strong> and
+add the following imports:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">IsAuthenticatedOrReadOnly</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span><span class="p">,</span> <span class="n">ReviewSerializer</span>
+</pre></div>
+
+
+<p>then add this class:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ReviewList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="n">created_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+            <span class="n">product_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
+</pre></div>
+
+
+<p>As you can notice, I had to customise the <strong>perform_create</strong> method
+because the default one doesn't know anything about the fact we want to
+set the <strong>created_by</strong> and <strong>product_id</strong> fields. Finally we need to
+bind this new view to a specific url, so we need to edit
+<strong>catalog/urls.py</strong> and add this:</p>
+<div class="highlight"><pre><span></span><span class="o">...</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>At this point any authenticated user should be able to <strong>POST a review</strong>
+for a product and anyone should be able to get the <strong>list of reviews</strong>
+for each product. If you have any problem with the code and want to move
+to this point, please checkout this:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.13
+</pre></div>
+
+
+<h3>Nested APIs details</h3>
+<p>To complete our API endpoints for Review, we need to add an additional
+feature that will let users to edit/delete their own review. Before
+implementing the new view, we need a little bit of refactoring and a new
+permission class. Edit <strong>catalog/permissions.py</strong> and add this new
+class:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IsOwnerOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">has_object_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">created_by</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+</pre></div>
+
+
+<p>Basically this will permit changes to the review only to its author. Now
+we are going to add new urls and doing some refactoring at the same
+time. Edit <strong>catalog/urls.py</strong> and change the urls in this way:</p>
+<div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span>
+        <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
+    <span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span>
+        <span class="n">views</span><span class="o">.</span><span class="n">ReviewDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>You may have noticed that I substituted <strong>pk</strong> with <strong>product_id</strong>. In
+the latest url I added, we need to be able to identify two primary keys:
+the one for the product and the one for the review. I renamed the
+previous ones for consistency. Now it's time to add the new view for
+Review details. Edit <strong>catalog/view.py</strong> and add this class:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ReviewDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="n">IsOwnerOrReadOnly</span><span class="p">)</span>
+    <span class="n">lookup_url_kwarg</span> <span class="o">=</span> <span class="s1">&#39;review_id&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;review_id&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">review</span><span class="p">)</span>
+</pre></div>
+
+
+<p>What are we doing here? You may have noticed that we set a new property
+called <strong>lookup_url_kwarg</strong>. That property is being used to determine
+the keyword in <strong>urls.py</strong> to be used for the primary key lookup.</p>
+<p>You will also need to do some refactoring to the other views, to adapt
+them to the changes we just did to the urls. I suggest you to have a
+look at the diffs
+here: <a href="https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14">https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14</a>
+or you can have a look at the whole file
+here <a href="https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py">https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py</a></p>
+<p>In alternative, you can fetch the whole source code at this point:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.14
+</pre></div>
+
+
+<h3>Wrapping Up</h3>
+<p>In this third part of the tutorial you learned how to handle model
+details in the API and how relations between different model work. In
+the next part of the tutorial we will do something we should have done
+since the beginning: adding tests to our code and learn how to properly
+test the API.</p>
+<h3>Feedback Please</h3>
+<p>I know, this blog doesn’t have any “comment” feature (I was tired of
+dealing with spam), but if you want to provide some feedback you can
+still do it by email. Just visit my
+<a href="https://www.andreagrandi.it/about/"><strong>About</strong></a> page, you will find my
+email there.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/" rel="bookmark"
+                           title="Permalink to Creating a production ready API with Python and Django Rest Framework – part 2">Creating a production ready API with Python and Django Rest Framework – part 2</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 01 October 2016</span>
+<span>| tags: <a href="/tag/api.html">API</a><a href="/tag/django.html">Django</a><a href="/tag/framework.html">framework</a><a href="/tag/python.html">Python</a><a href="/tag/rest.html">rest</a><a href="/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>In the <a href="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/">first
+part</a>
+of this tutorial we have seen how to create a basic API using <strong>Django
+Rest Framework</strong>. This second part will explain how to implement
+<strong>POST</strong> methods and add different levels of <strong>permissions</strong> and
+<strong>authentication</strong>. If you are starting from part 2, you may want to
+checkout …</p>
+                <a class="readmore" href="/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/" rel="bookmark"
+                           title="Permalink to Creating a production ready API with Python and Django Rest Framework - part 1">Creating a production ready API with Python and Django Rest Framework - part 1</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 28 September 2016</span>
+
+</footer><!-- /.post-info -->                <p>The aim if this tutorial is to show how to create a production ready
+solution for a <strong>REST API</strong>, using <strong>Python</strong> and <a href="http://www.django-rest-framework.org">Django Rest
+Framework</a>. I will show you how to
+first create a very basic API, how to handle the authentication and
+permissions and I will cover deployment and …</p>
+                <a class="readmore" href="/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/05/10/using-python-ipdb-from-jupyter/" rel="bookmark"
+                           title="Permalink to Using Python ipdb from Jupyter">Using Python ipdb from Jupyter</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 10 May 2016</span>
+<span>| tags: <a href="/tag/debugging.html">debugging</a><a href="/tag/ipdb.html">ipdb</a><a href="/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>If we try to use the usual ipdb commands from a Jupyter (IPython
+notebook)</p>
+<p>``` {.lang:python .decode:true}
+import ipdb; ipdb.set_trace()</p>
+<div class="highlight"><pre><span></span><span class="n">we</span> <span class="n">will</span> <span class="n">get</span> <span class="n">a</span> <span class="n">similar</span> <span class="n">error</span><span class="p">:</span>
+
+<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">highlight</span><span class="p">:</span><span class="mi">0</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="o">--------------------------------------------------------------------------</span>
+<span class="n">MultipleInstanceError</span>                     <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f2b356251c56</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+      <span class="mi">1</span> <span class="n">a</span><span class="o">=</span><span class="mi">4</span>
+<span class="o">----&gt;</span> <span class="mi">2 …</span></pre></div>
+                <a class="readmore" href="/2016/05/10/using-python-ipdb-from-jupyter/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/04/10/how-to-publish-a-python-package-to-pypi/" rel="bookmark"
+                           title="Permalink to How to publish a Python package to PyPI">How to publish a Python package to PyPI</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 10 April 2016</span>
+<span>| tags: <a href="/tag/pip.html">pip</a><a href="/tag/pypi.html">pypi</a><a href="/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p><strong>PyPI</strong> is the <strong>Python Package Index</strong>, that archive that let you
+install a package using pip, for example: <strong>pip install Flask</strong></p>
+<p>In the past days I started writing a <strong>Python API client</strong> for
+<strong><a href="https://www.toshl.com">Toshl</a></strong> expense manager and I decided to
+publish the library on PyPI. You can have a look …</p>
+                <a class="readmore" href="/2016/04/10/how-to-publish-a-python-package-to-pypi/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/" rel="bookmark"
+                           title="Permalink to Using a light sensor with BBC micro:bit and MicroPython">Using a light sensor with BBC micro:bit and MicroPython</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 08 February 2016</span>
+<span>| tags: <a href="/tag/bbc.html">bbc</a><a href="/tag/breadboard.html">breadboard</a><a href="/tag/embedded.html">embedded</a><a href="/tag/microbit.html">microbit</a><a href="/tag/micropython.html">micropython</a></span>
+</footer><!-- /.post-info -->                <p>A <strong><a href="https://en.wikipedia.org/wiki/Photoresistor">light sensor</a></strong> is a
+small component with a particular characteristic: it is basically a
+resistor and its resistance decreases if the light is more intense. To
+use it with micro:bit we need to use one of the <strong>analogic ports</strong>. To
+build this circuit you will need a <strong>breadboard …</strong></p>
+                <a class="readmore" href="/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/" rel="bookmark"
+                           title="Permalink to Prototyping BBC micro:bit projects with Kitronik breadboard kit">Prototyping BBC micro:bit projects with Kitronik breadboard kit</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 07 February 2016</span>
+<span>| tags: <a href="/tag/bbc.html">bbc</a><a href="/tag/embedded.html">embedded</a><a href="/tag/microbit.html">microbit</a><a href="/tag/micropython.html">micropython</a></span>
+</footer><!-- /.post-info -->                <p><strong>BBC micro:bit</strong> has a few <a href="http://microbit-micropython.readthedocs.org/en/latest/pin.html">IO
+pins</a>
+that can be used to interact with external devices. The problem with the
+board is that it's not easy to connect the classic jumper wires (those
+that we normally connect to a breadboard) to the <strong>micro:bit</strong>, unless
+using a <a href="https://en.wikipedia.org/wiki/Crocodile_clip">crocodile clip …</a></p>
+                <a class="readmore" href="/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2016/01/26/using-bbc-microbit-accelerometer-with-python/" rel="bookmark"
+                           title="Permalink to Using BBC MicroBit accelerometer with Python">Using BBC MicroBit accelerometer with Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 26 January 2016</span>
+<span>| tags: <a href="/tag/bbc.html">bbc</a><a href="/tag/microbit.html">microbit</a><a href="/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>In these days I'm having a bit of fun with <strong><a href="https://www.microbit.co.uk/">BBC
+MicroBit</a></strong> board and I'm learning how to
+use the different sensors available. The latest one I wanted to try was
+the accelerometer. The board can "sense" if you are moving it in any of
+the 3 dimensional axes: X …</p>
+                <a class="readmore" href="/2016/01/26/using-bbc-microbit-accelerometer-with-python/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2015/12/18/using-python-pypy-in-a-virtual-environment/" rel="bookmark"
+                           title="Permalink to Using Python PyPy in a virtual environment">Using Python PyPy in a virtual environment</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 18 December 2015</span>
+<span>| tags: <a href="/tag/pypy.html">pypy</a><a href="/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>Sometimes we need to test if our code also works with
+<strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
+have already installed it in your system, first find out where it is
+installed:</p>
+<p>``` {.lang:zsh .decode:true}
+➜  ~  which pypy
+/usr/local/bin/pypy</p>
+<div class="highlight"><pre><span></span>then you need **mkvirtualenv** to create a virtual environment …</pre></div>
+                <a class="readmore" href="/2015/12/18/using-python-pypy-in-a-virtual-environment/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2015/12/10/getting-started-with-bbc-microbit-and-python/" rel="bookmark"
+                           title="Permalink to Getting started with BBC MicroBit and Python">Getting started with BBC MicroBit and Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 10 December 2015</span>
+<span>| tags: <a href="/tag/microbit.html">microbit</a><a href="/tag/psf.html">psf</a></span>
+</footer><!-- /.post-info -->                <p>A few days ago I had the great opportunity to attend an event organised
+in collaboration with <strong><a href="https://www.python.org/">Python Software
+Foundation</a></strong>, a few <strong>primary school
+teachers</strong> and hosted by <strong><a href="http://www.computingatschool.org.uk/">Computing at
+School</a></strong>, in <strong>London</strong>. The
+meeting was organised by <strong>Yvonne Walker</strong> (from CAS) and <strong>Nicholas
+Tollervey</strong> (PSF). The aim of the …</p>
+                <a class="readmore" href="/2015/12/10/getting-started-with-bbc-microbit-and-python/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 19
+        <a href="/index2.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

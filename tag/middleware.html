@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - middleware</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h1>
+<footer class="post-info">
+        <span>Sun 23 August 2015</span>
+<span>| tags: <a href="/tag/django.html">Django</a><a href="/tag/howto.html">HowTo</a><a href="/tag/middleware.html">middleware</a><a href="/tag/python.html">Python</a><a href="/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info --><p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png">{.aligncenter
+.size-full .wp-image-1012 width="601"
+height="511"}</a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<p>``` {.lang:python .decode:true}
+from datetime import datetime</p>
+<p>class BenchmarkMiddleware(object):
+    def process_request(self, request):
+        request._request_time = datetime.now()</p>
+<div class="highlight"><pre><span></span>def process_template_response(self, request, response):
+    response_time = request._request_time - datetime.now()
+    response.context_data[&#39;response_time&#39;] = abs(response_time)
+    return response
+</pre></div>
+
+
+<p>```</p>
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

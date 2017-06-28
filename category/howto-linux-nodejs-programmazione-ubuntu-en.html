@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - HowTo, Linux, Node.js, Programmazione, Ubuntu (EN)</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/">Using Twitter Bootstrap with Node.js, Express and Jade</a></h1>
+<footer class="post-info">
+        <span>Sun 24 February 2013</span>
+<span>| tags: <a href="/tag/bootstrap.html">Bootstrap</a><a href="/tag/css.html">css</a><a href="/tag/express.html">Express</a><a href="/tag/jade.html">Jade</a><a href="/tag/javascript.html">Javascript</a><a href="/tag/nodejs.html">NodeJs</a><a href="/tag/npm.html">npm</a><a href="/tag/twitter.html">twitter</a><a href="/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info --><p>I've decided to write this post as a note to myself. I'm still learning
+Node.js and digging into Express/Jade, but I've read many people using
+the nice <a href="http://twitter.github.com/bootstrap/"><strong>Twitter Bootstrap</strong></a>
+and I was wondering if there was a way to integrate all these
+technologies. The short answer is: yes, we can!</p>
+<p><strong>Note:</strong> once again, I'm not a Node.js expert and surely there are
+other ways to achieve this task (for example there is a Node.js module
+called
+<a href="https://npmjs.org/package/twitter-bootstrap"><strong>twitter-bootstrap</strong></a>,
+but I haven't tried it). This tutorial is based on another tutorial I
+found, but it was not very updated and it had a more complicated way to
+install Bootstrap, so I decided to write a new one basing it on the
+original <a href="http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0">http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0</a></p>
+<h2>Preparing the environment</h2>
+<p>I will assume that you're running any Linux distribution (in my case I'm
+using Ubuntu 12.10, but feel free to use your own distribution). Be sure
+to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
+(I'm using Node.js 0.8.20 and npm 1.2.11).</p>
+<h3>Create a project folder and install the required dependencies</h3>
+<div class="highlight"><pre><span></span>mkdir node-bootstrap
+cd node-bootstrap
+npm install express
+npm install jade
+</pre></div>
+
+
+<h2>Create the basic project structure with Express</h2>
+<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+
+create : nodebootstrap
+create : nodebootstrap/package.json
+create : nodebootstrap/app.js
+create : nodebootstrap/public
+create : nodebootstrap/public/javascripts
+create : nodebootstrap/public/images
+create : nodebootstrap/public/stylesheets
+create : nodebootstrap/public/stylesheets/style.css
+create : nodebootstrap/routes
+create : nodebootstrap/routes/index.js
+create : nodebootstrap/routes/user.js
+create : nodebootstrap/views
+create : nodebootstrap/views/layout.jade
+create : nodebootstrap/views/index.jade
+
+install dependencies:
+$ cd nodebootstrap &amp;&amp; npm install
+
+run the app:
+$ node app
+</pre></div>
+
+
+<p>You should already have installed all the needed dependencies, even
+without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
+<h2>Download and install Bootstrap</h2>
+<p>Download Twitter Boostrap from the official
+website <a href="http://twitter.github.com/bootstrap/assets/bootstrap.zip">http://twitter.github.com/bootstrap/assets/bootstrap.zip</a> and
+unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
+<h2>Bootstrap integration with Jade template system</h2>
+<p>At this point you need to edit the <strong>views/layout.jade</strong> file and
+include the references to Bootsrap</p>
+<div class="highlight"><pre><span></span>!!!
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/bootstrap/css/bootstrap.min.css&#39;)
+    link(rel=&#39;stylesheet&#39;, href=&#39;/bootstrap/css/bootstrap-responsive.min.css&#39;)
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&#39;https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js&#39;)
+    script(src=&#39;/bootstrap/js/bootstrap.min.js&#39;)
+  body
+    block content
+</pre></div>
+
+
+<p>Test the Bootstrap integration</p>
+<p>At this point we will modify <strong>views/index.jade</strong> that is the default
+template used to render the index</p>
+<p>extends layout</p>
+<div class="highlight"><pre><span></span>block content
+  div.top
+    form.form-horizontal(method=&quot;post&quot;, id=&quot;loginForm&quot;)
+      label Username
+      input.span3(id=&quot;username&quot;, type=&quot;text&quot;, name=&quot;User&quot;, placeholder=&quot;Enter your username&quot;)
+      label Password
+      input.span3(id=&quot;password&quot;, type=&quot;password&quot;, name=&quot;Password&quot;)
+      input.btn(type=&quot;submit&quot;, value=&quot;Log In&quot;)
+  div.container
+    div.content
+      table.table.table-striped
+        thead
+          tr
+            th Table
+            th Heading
+        tbody
+          tr
+            td Blah
+            td Test
+          tr
+            td Hello
+            td World
+
+  div.footer
+</pre></div>
+
+
+<p>Now go back to the terminal and execute the app:</p>
+<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+Express server listening on port 3000
+</pre></div>
+
+
+<p>Open your favourite browse and visit <a href="http://localhost:3000">http://localhost:3000</a> to see your
+first Bootstrap + Node.js application app and running.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

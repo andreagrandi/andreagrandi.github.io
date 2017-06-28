@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - binding</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/">Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</a></h1>
+<footer class="post-info">
+        <span>Thu 13 August 2009</span>
+<span>| tags: <a href="/tag/binding.html">binding</a><a href="/tag/distutils.html">distutils</a><a href="/tag/library.html">library</a><a href="/tag/maemo.html">maemo</a><a href="/tag/python.html">Python</a><a href="/tag/setup.html">setup</a></span>
+</footer><!-- /.post-info --><p>In the last post of this series, we saw how to write a simple binding
+and we finished to build and install it manually. This is of course not
+a good way to manage the building/installation procedure.</p>
+<p>In Python we can use a library called <strong>distutils</strong> that let us to
+automatize the building and installing process. I'll use the <strong>foo</strong>
+source code to create the package, so it will be easier to understand.</p>
+<h2>Using distutils</h2>
+<p>All we have to do is to write a <strong>setup.py</strong> file similar to this one:</p>
+<p>[sourcecode lang="python"]<br>
+from distutils.core import setup, Extension</p>
+<p>foomodule = Extension('foo', sources = ['foo.c'])</p>
+<p>setup (name = 'Foo',<br>
+version = '1.0',<br>
+description = 'This is a package for Foo',<br>
+ext_modules = [foomodule])<br>
+[/sourcecode]</p>
+<p>As you can see, we have to first import needed modules with: <strong>from
+distutils.core import setup, Extension</strong><br>
+then we create an entry for each module we have (in this case just one,
+"foomodule"). We then call the <strong>setup()</strong> method passing it all the
+parameters and our <strong>setup.py</strong> is complete.</p>
+<h2>Building and installing</h2>
+<p>To test it we can try to build the package in this way:</p>
+<p><code>python2.5 setup.py build</code></p>
+<p>if we want to install the module in our system:</p>
+<p><code>python2.5 setup.py install</code></p>
+<h2>References</h2>
+<ul>
+<li>Official Python documentation:
+    <a href="http://docs.python.org/extending/building.html">http://docs.python.org/extending/building.html</a></li>
+</ul>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/" rel="bookmark"
+                           title="Permalink to Writing Python bindings of existing C libraries – (2) – A simple example of binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 06 August 2009</span>
+<span>| tags: <a href="/tag/binding.html">binding</a><a href="/tag/igalia.html">Igalia</a><a href="/tag/maemo.html">maemo</a><a href="/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <h2>Introduction</h2>
+<p>As I promised in the preceding post, I'll provide a very easy example of
+a python binding. Let's suppose we don't want to use the methods
+included in Python to sum two integer values and we want to do it in C
+and then call the add method from …</p>
+                <a class="readmore" href="/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - getattr</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">Django Notes: read values from settings in a safe way</a></h1>
+<footer class="post-info">
+        <span>Sat 29 August 2015</span>
+<span>| tags: <a href="/tag/django.html">Django</a><a href="/tag/getattr.html">getattr</a><a href="/tag/python.html">Python</a><a href="/tag/settings.html">settings</a></span>
+</footer><!-- /.post-info --><p>Working on <strong>Django</strong> projects I find very often that many developers
+access the values that are defined in <strong>settings</strong> in this way</p>
+<p>``` {.lang:python .decode:true}
+from django.conf import settings</p>
+<p>my_value = settings.MY_SETTING</p>
+<div class="highlight"><pre><span></span><span class="n">What</span> <span class="n">happens</span> <span class="k">if</span> <span class="o">**</span><span class="n">MY</span>\<span class="n">_SETTING</span><span class="o">**</span><span class="err"> </span><span class="n">has</span> <span class="ow">not</span> <span class="n">been</span> <span class="n">defined</span> <span class="ow">in</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">py</span><span class="o">**</span><span class="err">?</span>
+<span class="n">The</span> <span class="n">code</span> <span class="n">will</span> <span class="k">raise</span> <span class="n">an</span> <span class="n">error</span> <span class="ow">and</span> <span class="n">crash</span><span class="p">,</span> <span class="n">of</span> <span class="n">course</span><span class="o">.</span> <span class="n">How</span> <span class="n">can</span> <span class="n">we</span> <span class="n">make</span> <span class="n">the</span>
+<span class="n">code</span> <span class="n">more</span> <span class="n">reliable</span><span class="err">?</span> <span class="n">We</span> <span class="n">could</span> <span class="o">*</span><span class="k">try</span><span class="o">/</span><span class="k">except</span><span class="o">*</span> <span class="n">the</span> <span class="n">code</span> <span class="n">block</span> <span class="n">that</span> <span class="n">tries</span> <span class="n">to</span>
+<span class="n">read</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">maybe</span> <span class="nb">set</span> <span class="n">a</span> <span class="n">value</span> <span class="k">if</span> <span class="n">we</span> <span class="n">get</span> <span class="n">an</span> <span class="n">exception</span><span class="p">,</span> <span class="n">but</span> <span class="n">this</span>
+<span class="n">would</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">a</span> <span class="n">clean</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span> <span class="n">job</span><span class="o">.</span>
+
+<span class="n">A</span> <span class="n">cleaner</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">use</span> <span class="o">**</span><span class="nb">getattr</span><span class="o">**</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">way</span><span class="p">:</span>
+
+<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>getattr</strong> will try to read <strong>MY_SETTING</strong> value from <strong>settings.py</strong>,
+if the value doesn't exist <strong>my_value</strong> will be assigned with
+<strong>my-default-value</strong>.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - asus</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/about/">About</a></li>
+    
+                        <li><a href="/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="/pgp-key/">PGP Key</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/2009/04/26/ubuntu-904-jaunty-su-asus-eeepc-901/">Ubuntu 9.04 (Jaunty) su Asus EeePC 901</a></h1>
+<footer class="post-info">
+        <span>Sun 26 April 2009</span>
+<span>| tags: <a href="/tag/904.html">9.04</a><a href="/tag/901.html">901</a><a href="/tag/asus.html">asus</a><a href="/tag/eeepc.html">EeePC</a><a href="/tag/jaunty.html">jaunty</a><a href="/tag/ubuntu-en.html">Ubuntu (EN)</a></span>
+</footer><!-- /.post-info --><p><img alt="eee-pc-901" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/eee-pc-901.jpg" title="eee-pc-901">{.alignright
+.size-full .wp-image-126 width="202" height="154"}Con l'uscita della
+versione <strong>9.04</strong> di <a href="http://www.ubuntu.com">Ubuntu Linux</a>, questa
+distribuzione ha veramente fatto passi da gigante per quanto riguarda il
+supporto ai <strong>netbook</strong>. Oltre a rilasciare una versione
+specificatamente pensata per i piccoli device (che integra di default
+l'interfaccia <a href="http://www.canonical.com/projects/ubuntu/unr"><strong>Notebook
+Remix</strong></a>), sono stati
+inclusi nel kernel tutti i moduli necessari a far funzionare le
+periferiche di questi device.</p>
+<p>Per installare Ubuntu sull'EeePC dobbiamo per prima cosa procurarci la
+ISO dell'ultima versione e poi utilizzare una delle seguenti utility per
+preparare una chiavetta USB (da almeno 1 Gb) che ci permetterà di
+effettuare l'installazione: <strong>USB Startup Disk Creator</strong>, disponibile a
+partire dalle ultime versioni di Ubuntu (si trova in
+System--&gt;Administration) oppure <strong>Unetbootin</strong>, che potete trovare a
+questo indirizzo: <a href="http://unetbootin.sourceforge.net/">http://unetbootin.sourceforge.net/</a></p>
+<p>Nel caso vogliate installare la versione NBR (Notebook Remix) di Ubuntu,
+che viene distribuita in formato .img dovete invece attenervi alle
+istruzioni che trovate su questa pagina:
+<a href="https://help.ubuntu.com/community/Installation/FromImgFiles">https://help.ubuntu.com/community/Installation/FromImgFiles</a></p>
+<p>Una volta preparata la chiavetta USB (o in alternativa va bene anche una
+memoria di tipo SD) dovrete utilizzarla per fare il boot (vi ricordo che
+per fare il boot da USB dovete <strong>premere ESC</strong> nei primi secondi di
+accensione dell'EeePC) e procedere all'installazione come se fosse un
+normale PC. Se posso darvi un consiglio su come partizionare, vi
+suggerisco di utilizzare il disco da <strong>4 Gb</strong> per la root <strong>/</strong> e quello
+da <strong>16 Gb</strong> (o 12 Gb a seconda dei modelli) per la <strong>/home</strong>.</p>
+<p>Completata l'installazione, al riavvio dell'EeePC avrete una piacevole
+sorpresa: tutte le periferiche saranno perfettamente riconosciute!
+Questo dimostra l'ottimo lavoro che è stato fatto per supportare questa
+fascia di dispositivi. E' necessaria tuttavia qualche altra piccola
+ottimizzazione per poter sfruttare al 100% il nostro netbook.</p>
+<p>Per prima cosa vi consiglio di installare <a href="http://www.informatik.uni-bremen.de/~elmurato/EeePC/Jaunty_Eeeasy-Scripts.tar.gz">gli
+script</a>
+di <strong>elmurato</strong> che vi permetteranno di utilizzare correttamente tutti i
+tasti funzione (Fn+Fx). Perchè possano funzionare dovrete anche
+installare sia un pacchetto presente nella Ubuntu, sia uno incluso nel
+tar.gz, seguendo le seguenti istruzioni:</p>
+<p><code>sudo apt-get install dkms sudo apt-get remove --purge nvidia-common tar xzvf Jaunty_Eeeasy-Scripts.tar.gz cd Jaunty_Eeeasy-Scripts sudo dpkg --install asus-eee-dkms_3.0_all.deb sudo ./eeeasy-scripts.sh</code></p>
+<p>A questo punto non vi resta che riavviare il vostro EeePC e
+l'installazione sarà completata. Se vogliamo essere precisi, ci sono
+ancora un paio di piccole cose da migliorare. Noterete infatti che il
+tasto per abilitare/disabilitare il <strong>bluetooth</strong> non funziona
+correttamente. Si tratta di un bug del kernel <strong>2.6.28</strong> che viene
+fortunatamente risolto con la versione <strong>2.6.29</strong> di cui <strong>elmurato</strong>
+fornisce i pacchetti .deb già compilati:
+<a href="http://www.informatik.uni-bremen.de/~elmurato/EeePC/">http://www.informatik.uni-bremen.de/~elmurato/EeePC/</a> (dovrete
+installare <strong>linux-headers-*</strong> e <strong>linux-image-*</strong> ).</p>
+<p>La versione 2.6.29 del kernel include anche una versione aggiornata del
+modulo che fa funzionare la scheda <strong>wireless</strong>, permettendoci di avere
+un <strong>segnale piu' stabile</strong>.</p>
+<p>Consiglio infine di aggiungere la seguente stringa in fondo al file
+<strong>/etc/modprobe.d/options</strong> (createlo se non esistesse): <strong>options
+psmouse proto=imps<br>
+</strong>questa opzione fa in modo che il touchpad funzioni meglio rispetto a
+come viene configurato di default.<strong><br>
+</strong></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2009/02/02/ubuntu-linux-810-su-asus-eeepc-901/" rel="bookmark"
+                           title="Permalink to Ubuntu Linux 8.10 su Asus EeePC 901">Ubuntu Linux 8.10 su Asus EeePC 901</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 02 February 2009</span>
+<span>| tags: <a href="/tag/901.html">901</a><a href="/tag/asus.html">asus</a><a href="/tag/eeepc.html">EeePC</a><a href="/tag/linux.html">Linux</a><a href="/tag/ubuntu-en.html">Ubuntu (EN)</a></span>
+</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/eee-pc-901.jpg" title="eee-pc-901">{.alignright
+.size-full .wp-image-126 width="275" height="209"}Dal momento in cui ho
+acquistato l'<strong>Asus EeePC 901</strong>, ho rimosso la versione personalizzata
+di <strong>Xandros Linux</strong> che viene installata su questi modelli, ed ho
+installato una versione personalizzata di Ubuntu: <a href="http://www.ubuntu-eee.com"><strong>Ubuntu-eee
+8.04.1</strong></a>.</p>
+<p>Questa versione, pensata appositamente per i netbook …</p>
+                <a class="readmore" href="/2009/02/02/ubuntu-linux-810-su-asus-eeepc-901/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/10/05/installazione-e-configurazione-di-ubuntu-eee-8041-su-asus-eeepc-901/" rel="bookmark"
+                           title="Permalink to Installazione e configurazione di Ubuntu Eee 8.04.1 su Asus EeePC 901">Installazione e configurazione di Ubuntu Eee 8.04.1 su Asus EeePC 901</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 05 October 2008</span>
+<span>| tags: <a href="/tag/asus.html">asus</a><a href="/tag/eeepc.html">EeePC</a><a href="/tag/ubuntu-eee.html">ubuntu-eee</a></span>
+</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/asus_ubuntueee.jpg" title="asus_ubuntueee">{.alignright
+.size-full .wp-image-128 width="240" height="197"}La versione di Linux
+che viene installata sugli EeePC (<strong>Xandros</strong> Linux) da Asus, sebbene
+sia l'ideale per chi non ha mai utilizzato Linux e desidera un netbook
+semplice da usare, tuttavia <strong>non permette di sfruttare pienamente le
+potenzialità</strong> che l'EeePC ha.</p>
+<p>Poco tempo …</p>
+                <a class="readmore" href="/2008/10/05/installazione-e-configurazione-di-ubuntu-eee-8041-su-asus-eeepc-901/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/10/04/come-aggiornare-il-bios-dellasus-eeepc/" rel="bookmark"
+                           title="Permalink to Come aggiornare il BIOS dell'Asus EeePC">Come aggiornare il BIOS dell'Asus EeePC</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 04 October 2008</span>
+<span>| tags: <a href="/tag/asus.html">asus</a><a href="/tag/bios.html">bios</a><a href="/tag/eeepc.html">EeePC</a></span>
+</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/eee-pc-901.jpg" title="eee-pc-901">{.alignright
+.size-full .wp-image-126 width="220" height="167"}L'aggiornamento del
+<strong>BIOS</strong> su un <strong>Asus EeePC</strong> puo' essere fatto in una maniera che è
+completamente indipendente dal tipo di sistema operativo utilizzato.</p>
+<p>Per prima cosa occorre scaricare dal sito della Asus, nell'apposita
+<a href="http://support.asus.com/download/download.aspx?SLanguage=en-us">pagina di
+supporto</a>,
+l'ultima versione del BIOS, facendo ben attenzione …</p>
+                <a class="readmore" href="/2008/10/04/come-aggiornare-il-bios-dellasus-eeepc/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/2008/10/01/controleee-control-panel-for-eeepc/" rel="bookmark"
+                           title="Permalink to ControlEee - Control panel for EeePC">ControlEee - Control panel for EeePC</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 01 October 2008</span>
+<span>| tags: <a href="/tag/asus.html">asus</a><a href="/tag/eeepc.html">EeePC</a><a href="/tag/energetico.html">energetico</a><a href="/tag/risparmio.html">risparmio</a></span>
+</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/controleee.jpg" title="controleee">{.alignright
+.size-full .wp-image-123 width="337" height="170"}<strong>ControlEee</strong> è una
+piccola applicazione che ho scritto utilizzando <strong>Python/Qt4</strong> e che
+permette di <strong>abilitare/disabilitare</strong> i dispositivi del <strong>bluetooth</strong>,
+della <strong>webcam</strong> e della <strong>wlan</strong> su un <strong>Asus EeePC</strong>.</p>
+<p>Installando una versione personalizzata di Linux sugli EeePC (come ad
+esempio la Ubuntu-eee …</p>
+                <a class="readmore" href="/2008/10/01/controleee-control-panel-for-eeepc/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
