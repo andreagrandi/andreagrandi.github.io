@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andrea Grandi - Development</title><link href="https://www.andreagrandi.co.uk/" rel="alternate"></link><link href="https://www.andreagrandi.co.uk/feeds/development.atom.xml" rel="self"></link><id>https://www.andreagrandi.co.uk/</id><updated>2016-10-01T11:12:00+01:00</updated><entry><title>Creating a production ready API with Python and Django Rest Framework – part 2</title><link href="https://www.andreagrandi.co.uk/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/" rel="alternate"></link><published>2016-10-01T11:12:00+01:00</published><updated>2016-10-01T11:12:00+01:00</updated><author><name>Andrea Grandi</name></author><id>tag:www.andreagrandi.co.uk,2016-10-01:/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/</id><summary type="html">&lt;p&gt;In the &lt;a href="https://www.andreagrandi.co.uk/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/"&gt;first
+part&lt;/a&gt;
+of this tutorial we have seen how to create a basic API using &lt;strong&gt;Django
+Rest Framework&lt;/strong&gt;. This second part will explain how to implement
+&lt;strong&gt;POST&lt;/strong&gt; methods and add different levels of &lt;strong&gt;permissions&lt;/strong&gt; and
+&lt;strong&gt;authentication&lt;/strong&gt;. If you are starting from part 2, you may want to
+checkout …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the &lt;a href="https://www.andreagrandi.co.uk/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/"&gt;first
+part&lt;/a&gt;
+of this tutorial we have seen how to create a basic API using &lt;strong&gt;Django
+Rest Framework&lt;/strong&gt;. This second part will explain how to implement
+&lt;strong&gt;POST&lt;/strong&gt; methods and add different levels of &lt;strong&gt;permissions&lt;/strong&gt; and
+&lt;strong&gt;authentication&lt;/strong&gt;. If you are starting from part 2, you may want to
+checkout the source code at this exact point:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.4
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;A step back&lt;/h3&gt;
+&lt;p&gt;Before showing how easy it is to implement a &lt;strong&gt;POST&lt;/strong&gt; method for our
+existing API, I want to do a step back and show you the "manual way",
+using just the
+&lt;a href="http://www.django-rest-framework.org/api-guide/views/"&gt;&lt;strong&gt;APIView&lt;/strong&gt;&lt;/a&gt;
+class. Edit the file &lt;strong&gt;catalog/views.py&lt;/strong&gt; and change the code in this
+way:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.http&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HttpResponse&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework.response&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Response&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework.views&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;APIView&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Product&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.serializers&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ProductSerializer&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ProductList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;APIView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;products&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Product&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;serializer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ProductSerializer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;products&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;many&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If we try to use the API again (from the browser of from the http
+client), it will still work in the same way. The difference here is that
+we are using the very basic &lt;strong&gt;APIView&lt;/strong&gt; class and we have explicitly
+defined the &lt;strong&gt;GET&lt;/strong&gt; method for it.&lt;/p&gt;
+&lt;h3&gt;Implementing a POST method with APIView&lt;/h3&gt;
+&lt;p&gt;An API is not being used at its full potential if it's read only. We are
+going to implement a POST method for the existing view and testing it
+with &lt;a href="https://httpie.org/"&gt;&lt;strong&gt;httpie&lt;/strong&gt;&lt;/a&gt; client again. First of all we
+need to add an import to &lt;strong&gt;catalog/views.py&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then we add this method to our &lt;strong&gt;ProductList&lt;/strong&gt; class:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;serializer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ProductSerializer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;is_valid&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+        &lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTP_201_CREATED&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;errors&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTP_400_BAD_REQUEST&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's test our &lt;strong&gt;POST&lt;/strong&gt; method we just implemented:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ http --json POST http://127.0.0.1:8000/products/ &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Salamino&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Salamino Piccante&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;price&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;10.50&amp;quot;&lt;/span&gt;
+HTTP/1.0 &lt;span class="m"&gt;201&lt;/span&gt; Created
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Date: Thu, &lt;span class="m"&gt;29&lt;/span&gt; Sep &lt;span class="m"&gt;2016&lt;/span&gt; &lt;span class="m"&gt;11&lt;/span&gt;:48:48 GMT
+Server: WSGIServer/0.1 Python/2.7.10
+Vary: Accept, Cookie
+X-Frame-Options: SAMEORIGIN
+
+&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;Salamino Piccante&amp;quot;&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;Salamino&amp;quot;&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;price&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;10.50&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It works! In case something doesn't work, try to fetch the source code
+at this point:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.7
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Implementing a POST method with ListCreateAPIView&lt;/h3&gt;
+&lt;p&gt;Do you remember when I mentioned at the beginning that there is an easy
+way to do the same thing? I wasn't cheating. Let's change again our old
+code in &lt;strong&gt;catalog/views.py&lt;/strong&gt; but this time we will use a different base
+class:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.http&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HttpResponse&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;generics&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework.response&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Response&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Product&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.serializers&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ProductSerializer&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ProductList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;generics&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ListCreateAPIView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;queryset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Product&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;serializer_class&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ProductSerializer&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;let's test this again with &lt;strong&gt;httpie&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ http --json POST http://127.0.0.1:8000/products/ &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Pecorino&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Pecorino Sardo&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;price&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;7.00&amp;quot;&lt;/span&gt;
+HTTP/1.0 &lt;span class="m"&gt;201&lt;/span&gt; Created
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Date: Thu, &lt;span class="m"&gt;29&lt;/span&gt; Sep &lt;span class="m"&gt;2016&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:21:20 GMT
+Server: WSGIServer/0.1 Python/2.7.10
+Vary: Accept, Cookie
+X-Frame-Options: SAMEORIGIN
+
+&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;Pecorino Sardo&amp;quot;&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;Pecorino&amp;quot;&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;price&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;7.00&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We just POSTed some data on the API! How can it work? Well, we have
+changed the base class from &lt;strong&gt;ListAPIView&lt;/strong&gt; to
+&lt;a href="http://www.django-rest-framework.org/api-guide/generic-views/#listcreateapiview"&gt;&lt;strong&gt;ListCreateAPIView&lt;/strong&gt;&lt;/a&gt;.
+This particular class implements &lt;strong&gt;a generic POST method&lt;/strong&gt; that will
+accept and validate all the fields through the specified serializer.&lt;/p&gt;
+&lt;h3&gt;Authentication&lt;/h3&gt;
+&lt;p&gt;Now our API let us add products to the catalog, amazing! But... is it
+exactly what we want? In a real scenario we don't want any random user
+to be able to add products in our database, so we are going to protect
+the POST method allowing only Admin users.&lt;/p&gt;
+&lt;p&gt;Before digging into Django Rest Framework permissions, we need to setup
+an authentication system. For simplicity we will implement
+&lt;a href="http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication"&gt;&lt;strong&gt;TokenAuthentication&lt;/strong&gt;&lt;/a&gt;.
+As first step we need to edit &lt;strong&gt;settings.py&lt;/strong&gt; and
+insert &lt;strong&gt;rest_framework.authtoken&lt;/strong&gt; in the &lt;strong&gt;INSTALLED_APPS&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;rest_framework&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;rest_framework.authtoken&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;catalog&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;after this, we need to add &lt;strong&gt;TokenAuthentication&lt;/strong&gt; as default
+authentication class (append this in &lt;strong&gt;settings.py&lt;/strong&gt; at the end):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;REST_FRAMEWORK&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;DEFAULT_AUTHENTICATION_CLASSES&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;rest_framework.authentication.TokenAuthentication&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally we need to add a particular URL to the project so that clients
+will be able to call an endpoint passing &lt;strong&gt;username&lt;/strong&gt; and &lt;strong&gt;password&lt;/strong&gt;
+to get a &lt;strong&gt;token&lt;/strong&gt; back. Edit &lt;strong&gt;drftutorial/urls.py&lt;/strong&gt; and make it's like
+this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf.urls&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework.authtoken.views&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;obtain_auth_token&lt;/span&gt;
+
+&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^admin/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;catalog.urls&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^api-token-auth/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;obtain_auth_token&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Don't forget to re-run the &lt;strong&gt;migrations&lt;/strong&gt;, because TokenAuthorization
+needs to change a couple of tables:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./manage.py migrate
+Operations to perform:
+    Apply all migrations: admin, auth, authtoken, catalog, contenttypes, sessions
+Running migrations:
+    Applying authtoken.0001_initial... OK
+    Applying authtoken.0002_auto_20160226_1747... OK
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In case you had any problem changing the code up to this point, you can
+always fetch the related git tag:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.9
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Testing the Authentication&lt;/h4&gt;
+&lt;p&gt;Before testing the authentication, make sure you created at least the
+Django &lt;strong&gt;superuser&lt;/strong&gt; with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./manage.py createsuperuser
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;now let's try to &lt;strong&gt;obtain the token&lt;/strong&gt; we will need later for our API
+calls:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ http --json POST http://127.0.0.1:8000/api-token-auth/ &lt;span class="nv"&gt;username&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;yourusername&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;password&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;yourpassword&amp;quot;&lt;/span&gt;
+HTTP/1.0 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Allow: POST, OPTIONS
+Content-Type: application/json
+Date: Fri, &lt;span class="m"&gt;30&lt;/span&gt; Sep &lt;span class="m"&gt;2016&lt;/span&gt; &lt;span class="m"&gt;08&lt;/span&gt;:55:07 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+X-Frame-Options: SAMEORIGIN
+
+&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;token&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;bc9514f0892368cfd0ea792a977aff55d53e3634&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We will need to pass this token in every API call we want to be
+authenticated. The token is being passed through the "Authentication"
+header parameter.&lt;/p&gt;
+&lt;h3&gt;API Permissions&lt;/h3&gt;
+&lt;p&gt;Authentication is something that identify the user with a particular
+system. Permissions instead are the level of things that are allowed or
+not allowed for a particular user. In our case we said we want to let
+Admin users to be able to POST new products and we want to let even
+anonymous users to GET the product list.&lt;/p&gt;
+&lt;p&gt;Django Rest Framework has some built-in classes that we can apply to our
+views to define the level of permissions. We could have used the
+&lt;a href="http://www.django-rest-framework.org/api-guide/permissions/#isadminuser"&gt;&lt;strong&gt;IsAdminUser&lt;/strong&gt;&lt;/a&gt;
+class, but it would not allow anonymous users to perform the GET
+request. Or we could have used
+&lt;a href="http://www.django-rest-framework.org/api-guide/permissions/#isauthenticatedorreadonly"&gt;&lt;strong&gt;IsAuthenticatedOrReadOnly&lt;/strong&gt;&lt;/a&gt;
+class, but this would allow any registered user to add products (and we
+want to let only admins).&lt;/p&gt;
+&lt;p&gt;Or...we can define our own permission class and have exactly what we
+want. Create a new file &lt;strong&gt;catalog/permissions.py&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework.permissions&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BasePermission&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SAFE_METHODS&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;IsAdminOrReadOnly&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BasePermission&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;has_permission&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;SAFE_METHODS&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;is_staff&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Just as a side note, &lt;strong&gt;SAFE_METHODS&lt;/strong&gt; are &lt;strong&gt;GET&lt;/strong&gt;, &lt;strong&gt;HEAD&lt;/strong&gt; and
+&lt;strong&gt;OPTIONS&lt;/strong&gt;. These method are considered "safe" because they don't
+change any existing data. Open &lt;strong&gt;catalog/views.py&lt;/strong&gt; again, import this
+at the beginning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.permissions&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;IsAdminOrReadOnly&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and set this as &lt;strong&gt;permission_classes&lt;/strong&gt; to &lt;strong&gt;ProductList&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="n"&gt;serializer_class&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ProductSerializer&lt;/span&gt;
+&lt;span class="n"&gt;permission_classes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IsAdminOrReadOnly&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's now try to add a new product using the &lt;strong&gt;token&lt;/strong&gt; we got before
+(you will have to use your own token of course, mine only works on my
+local db):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ http --json POST http://127.0.0.1:8000/products/ &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Lardo&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Lardo di Colonnata&amp;quot;&lt;/span&gt; &lt;span class="nv"&gt;price&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;8.50&amp;quot;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&amp;#39;&lt;/span&gt;
+HTTP/1.0 &lt;span class="m"&gt;201&lt;/span&gt; Created
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Date: Fri, &lt;span class="m"&gt;30&lt;/span&gt; Sep &lt;span class="m"&gt;2016&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;:04:13 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+Vary: Accept
+X-Frame-Options: SAMEORIGIN
+
+&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;Lardo di Colonnata&amp;quot;&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;Lardo&amp;quot;&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;price&amp;quot;&lt;/span&gt;: &lt;span class="s2"&gt;&amp;quot;8.50&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It worked! We have now protected our API so that not admin people can't
+create any product. If you have any problem with the code, you can check
+it out with this tag:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.10
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Wrapping Up&lt;/h3&gt;
+&lt;p&gt;We have now implemented the POST method to add new products to our
+catalog. In the &lt;a href="https://www.andreagrandi.co.uk/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/"&gt;next
+episode&lt;/a&gt;
+we will see how to implement endpoints to get a single product, to
+update or delete products and finally we will allow registered users to
+send a review for a specific product.&lt;/p&gt;
+&lt;h3&gt;Feedback Please&lt;/h3&gt;
+&lt;p&gt;I know, this blog doesn't have any "comment" feature (I was tired of
+dealing with spam), but if you want to provide some feedback you can
+still do it by email. Just visit my
+&lt;a href="https://www.andreagrandi.co.uk/about/"&gt;&lt;strong&gt;About&lt;/strong&gt;&lt;/a&gt; page, you will find my
+email there.&lt;/p&gt;</content><category term="API"></category><category term="Django"></category><category term="framework"></category><category term="Python"></category><category term="rest"></category><category term="tutorial"></category></entry></feed>
