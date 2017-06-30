@@ -33,131 +33,40 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.co.uk/2016/04/10/how-to-publish-a-python-package-to-pypi/">How to publish a Python package to PyPI</a></h1>
-<footer class="post-info">
-        <span>Sun 10 April 2016</span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/pip.html">pip</a><a href="https://www.andreagrandi.co.uk/tag/pypi.html">pypi</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
-</footer><!-- /.post-info --><p><strong>PyPI</strong> is the <strong>Python Package Index</strong>, that archive that let you
-install a package using pip, for example: <strong>pip install Flask</strong></p>
-<p>In the past days I started writing a <strong>Python API client</strong> for
-<strong><a href="https://www.toshl.com">Toshl</a></strong> expense manager and I decided to
-publish the library on PyPI. You can have a look at my library
-here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> (please note: it's
-still in development and <a href="https://developer.toshl.com/">Toshl API</a> is
-not even public yet) in case you are not sure how to structure it.</p>
-<p>I found a <a href="http://peterdowns.com/posts/first-time-with-pypi.html">nice
-guide</a> but it
-wasn't complete (for example it didn't say how to sign packages) so I
-decided to rewrite it adding more information.</p>
-<h2>Create PyPI accounts</h2>
-<p>To publish packages on PyPI you need to create two accounts: one for the
-<a href="http://pypi.python.org/pypi?%3Aaction=register_form">production server</a>
-and another one for the <a href="http://testpypi.python.org/pypi?%3Aaction=register_form">test
-server</a>. When
-you register, please specify (if you have one, but I really hope you do)
-the <strong>PGP</strong> id of your public key. Once the accounts are created, you
-need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
-the following configuration:</p>
-<p>``` {.lang:sh .decode:true}
-[distutils]
-index-servers =
-  pypi
-  pypitest</p>
-<p>[pypi]
-repository=https://pypi.python.org/pypi
-username=your_username
-password=your_password</p>
-<p>[pypitest]
-repository=https://testpypi.python.org/pypi
-username=your_username
-password=your_password</p>
-<div class="highlight"><pre><span></span><span class="n">Please</span> <span class="n">substitute</span> <span class="o">**</span><span class="n">your</span>\<span class="n">_username</span><span class="o">**</span> <span class="ow">and</span> <span class="o">**</span><span class="n">your</span>\<span class="n">_password</span><span class="o">**</span> <span class="k">with</span> <span class="n">the</span>
-<span class="n">details</span> <span class="n">you</span> <span class="n">sent</span> <span class="n">during</span> <span class="n">the</span> <span class="n">registration</span><span class="o">.</span>
-
-<span class="n">Preparing</span> <span class="n">the</span> <span class="n">package</span>
-<span class="o">---------------------</span>
-
-<span class="n">I</span> <span class="n">assume</span> <span class="n">you</span> <span class="n">have</span> <span class="n">structured</span> <span class="n">your</span> <span class="n">library</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">proper</span> <span class="n">way</span> <span class="ow">and</span> <span class="n">have</span>
-<span class="n">included</span> <span class="n">a</span> <span class="o">**</span><span class="n">setup</span><span class="o">.</span><span class="n">py</span><span class="o">**</span> <span class="k">with</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">configuration</span> <span class="p">(</span><span class="n">it</span><span class="s1">&#39;s not something</span>
-<span class="n">specific</span> <span class="n">to</span> <span class="n">PyPI</span> <span class="n">so</span> <span class="n">you</span> <span class="n">should</span> <span class="n">have</span> <span class="n">done</span> <span class="n">it</span> <span class="n">already</span><span class="p">)</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">haven</span><span class="s1">&#39;t I</span>
-<span class="n">remember</span> <span class="n">you</span> <span class="n">can</span> <span class="n">give</span> <span class="n">a</span> <span class="n">look</span> <span class="n">at</span> <span class="n">my</span> <span class="n">library</span>
-<span class="n">here</span><span class="err"> </span><span class="o">&lt;</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">andreagrandi</span><span class="o">/</span><span class="n">toshl</span><span class="o">-</span><span class="n">python</span><span class="o">&gt;</span><span class="err"> </span><span class="ow">in</span> <span class="n">particular</span> <span class="n">to</span> <span class="n">the</span>
-<span class="o">**</span><span class="n">setup</span><span class="o">.</span><span class="n">py</span><span class="o">**</span><span class="p">:</span>
-
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
-
-<span class="n">setup</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.3&#39;</span><span class="p">,</span>
-    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python&#39;</span><span class="p">,</span>
-    <span class="n">download_url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python/tarball/0.0.3&#39;</span><span class="p">,</span>
-    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Andrea Grandi&#39;</span><span class="p">,</span>
-    <span class="n">author_email</span><span class="o">=</span><span class="s1">&#39;a.grandi@gmail.com&#39;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Python client library for Toshl API.&#39;</span><span class="p">,</span>
-    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tests&#39;</span><span class="p">]),</span>
-    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-    <span class="n">platforms</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
-    <span class="n">license</span><span class="o">=</span><span class="s1">&#39;MIT&#39;</span><span class="p">,</span>
-    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
-        <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
-    <span class="p">],</span>
-<span class="p">)</span>
-</pre></div>
-
-
-<h2>Upload the package to PyPI Test server</h2>
-<p>The first time you upload the package you will need to register it:</p>
-<p>``` {.lang:sh .decode:true}
-python setup.py register -r pypitest</p>
-<div class="highlight"><pre><span></span>and then you will need to build the package and upload it (please note
-I&#39;m using the **--sign** to sign the package with PGP):
-
-``` {.lang:sh .decode:true}
-python setup.py sdist upload --sign -r pypitest
-</pre></div>
-
-
-<h2>Upload the package to PyPI production server</h2>
-<p>Once you have verified that you are able to build and upload the package
-to the test server (without getting any errors), you should upload it to
-the production server:</p>
-<p><code>{.lang:sh .decode:true}
-python setup.py register -r pypi
-python setup.py sdist upload --sign -r pypi</code></p>
-<p>This is everything you need to do if you want to publish a Python
-package on PyPI. Happy coding!</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2015/12/18/using-python-pypy-in-a-virtual-environment/" rel="bookmark"
-                           title="Permalink to Using Python PyPy in a virtual environment">Using Python PyPy in a virtual environment</a></h1>
-                </header>
-
-                <div class="entry-content">
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.co.uk/2015/12/18/using-python-pypy-in-a-virtual-environment/">Using Python PyPy in a virtual environment</a></h1>
 <footer class="post-info">
         <span>Fri 18 December 2015</span>
 <span>| tags: <a href="https://www.andreagrandi.co.uk/tag/pypy.html">pypy</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <p>Sometimes we need to test if our code also works with
+</footer><!-- /.post-info --><p>Sometimes we need to test if our code also works with
 <strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
 have already installed it in your system, first find out where it is
 installed:</p>
 <p>``` {.lang:zsh .decode:true}
 ➜  ~  which pypy
 /usr/local/bin/pypy</p>
-<div class="highlight"><pre><span></span>then you need **mkvirtualenv** to create a virtual environment …</pre></div>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/12/18/using-python-pypy-in-a-virtual-environment/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
+<div class="highlight"><pre><span></span>then you need **mkvirtualenv** to create a virtual environment that will
+use this runtime:
+
+``` {.lang:zsh .decode:true}
+➜  ~  mkvirtualenv -p /usr/local/bin/pypy pypy-test
+Running virtualenv with interpreter /usr/local/bin/pypy
+New pypy executable in pypy-test/bin/pypy
+Installing setuptools, pip, wheel...done.
+(pypy-test)➜  ~  python
+Python 2.7.10 (f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559, Sep 01 2015, 06:26:30)
+[PyPy 2.6.1 with GCC 4.2.1 Compatible Apple LLVM 6.1.0 (clang-602.0.53)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;&gt;
+</pre></div>
+
+
+<p>That's it! You can now use this virtual environment to run your Python
+application using PyPy environment.</p>                </article>
 <p class="paginator">
     Page 1 / 1
 </p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
             </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="social">
