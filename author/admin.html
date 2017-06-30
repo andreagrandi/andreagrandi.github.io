@@ -33,431 +33,11 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.co.uk/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/">Creating a production ready API with Python and Django Rest Framework - part 1</a></h1>
-<footer class="post-info">
-        <span>Wed 28 September 2016</span>
-
-</footer><!-- /.post-info --><p>The aim if this tutorial is to show how to create a production ready
-solution for a <strong>REST API</strong>, using <strong>Python</strong> and <a href="http://www.django-rest-framework.org">Django Rest
-Framework</a>. I will show you how to
-first create a very basic API, how to handle the authentication and
-permissions and I will cover deployment and hosting of images. The full
-source code of the tutorial is available
-at: <a href="https://github.com/andreagrandi/drf-tutorial">https://github.com/andreagrandi/drf-tutorial</a></p>
-<h3>Summary of the complete tutorial</h3>
-<ol>
-<li>Create the basic structure for the API</li>
-<li><a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">Add Authentication and POST
-    methods</a></li>
-<li><a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">Handling details and changes to existing
-    data</a></li>
-<li>Testing the API</li>
-<li>Switching from Sqlite to PostgreSQL</li>
-<li>Hosting the API on Heroku</li>
-<li>Add an Image field and save images to S3</li>
-</ol>
-<h2>Create the basic structure for the API</h2>
-<p>For this tutorial I will assume you have correctly installed at least
-<strong>Python</strong> (I will use Python 2.7.x),
-<a href="https://pypi.python.org/pypi/virtualenv"><strong>virtualenv</strong></a> and
-<a href="https://virtualenvwrapper.readthedocs.io/en/latest/"><strong>virtualenvwrapper</strong></a>
-on your system and I will explain how to create everything else step by
-step.</p>
-<p><strong>Note:</strong> at the time of writing, the tutorial has been based on
-<strong>Django 1.10.1</strong> and <strong>Django Rest Framework 3.4.7</strong></p>
-<h3>Creating the main project structure</h3>
-<p>``` {.lang:sh .highlight:0 .decode:true}
-mkdir drf-tutorial
-mkvirtualenv drf-tutorial
-cd drf-tutorial
-pip install django djangorestframework
-django-admin.py startproject drftutorial .
-cd drftutorial
-django-admin.py startapp catalog</p>
-<div class="highlight"><pre><span></span><span class="c1">### Data Model</span>
-
-<span class="n">We</span> <span class="n">will</span> <span class="n">create</span> <span class="n">the</span> <span class="n">API</span> <span class="k">for</span> <span class="n">a</span> <span class="n">generic</span> <span class="n">products</span> <span class="n">catalog</span><span class="p">,</span> <span class="n">using</span> <span class="n">a</span> <span class="n">very</span>
-<span class="n">simple</span> <span class="n">structure</span> <span class="p">(</span><span class="n">to</span> <span class="n">keep</span> <span class="n">things</span> <span class="n">simple</span><span class="p">)</span><span class="o">.</span> <span class="n">Edit</span> <span class="n">the</span> <span class="nb">file</span>
-<span class="o">**</span><span class="n">catalog</span><span class="o">/</span><span class="n">models</span><span class="o">.</span><span class="n">py</span><span class="o">**</span> <span class="n">adding</span> <span class="n">these</span> <span class="n">lines</span><span class="p">:</span>
-
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
-
-
-<span class="k">class</span> <span class="nc">Product</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
-    <span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_digits</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-</pre></div>
-
-
-<p>after creating the model, we need to add 'catalog' application to
-<strong>INSTALLED_APPS</strong>. Edit <strong>settings.py</strong> and add the app at the end of
-the list:</p>
-<p>``` {.lang:default .decode:true}
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'catalog',
-]</p>
-<div class="highlight"><pre><span></span>at this point the Django application will be recognised by the project
-and we can create and apply the schema migration:
-
-``` {.lang:default .decode:true}
-(drf-tutorial) ➜  drftutorial git:(235dfcc) ✗ ./manage.py makemigrations
-Migrations for &#39;catalog&#39;:
-  catalog/migrations/0001_initial.py:
-    - Create model Product
-
-(drf-tutorial) ➜  drftutorial git:(235dfcc) ✗ ./manage.py migrate
-Operations to perform:
-  Apply all migrations: admin, auth, catalog, contenttypes, sessions
-Running migrations:
-  Applying contenttypes.0001_initial... OK
-  Applying auth.0001_initial... OK
-  Applying admin.0001_initial... OK
-  Applying admin.0002_logentry_remove_auto_add... OK
-  Applying contenttypes.0002_remove_content_type_name... OK
-  Applying auth.0002_alter_permission_name_max_length... OK
-  Applying auth.0003_alter_user_email_max_length... OK
-  Applying auth.0004_alter_user_username_opts... OK
-  Applying auth.0005_alter_user_last_login_null... OK
-  Applying auth.0006_require_contenttypes_0002... OK
-  Applying auth.0007_alter_validators_add_error_messages... OK
-  Applying auth.0008_alter_user_username_max_length... OK
-  Applying catalog.0001_initial... OK
-  Applying sessions.0001_initial... OK
-</pre></div>
-
-
-<h3>API Serializer</h3>
-<p><a href="http://www.django-rest-framework.org/api-guide/serializers/"><strong>Serializers</strong></a>
-are those components used to convert the received data from JSON format
-to the relative Django model and viceversa. Create the new file
-<strong>catalog/serializers.py</strong> and place this code inside:</p>
-<p>``` {.lang:python .decode:true}
-from .models import Product
-from rest_framework import serializers</p>
-<p>class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ('name', 'description', 'price')</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="n">this</span> <span class="n">case</span> <span class="n">we</span> <span class="n">are</span> <span class="n">using</span> <span class="n">a</span>
-<span class="p">[</span><span class="o">**</span><span class="n">ModelSerializer</span><span class="o">**</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">django</span><span class="o">-</span><span class="n">rest</span><span class="o">-</span><span class="n">framework</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">-</span><span class="n">guide</span><span class="o">/</span><span class="n">serializers</span><span class="o">/</span><span class="c1">#modelserializer).</span>
-<span class="n">We</span> <span class="n">need</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span> <span class="n">new</span> <span class="k">class</span> <span class="nc">from</span> <span class="n">it</span><span class="p">,</span> <span class="ow">and</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">model</span> <span class="n">attribute</span><span class="p">,</span>
-<span class="n">that</span><span class="s1">&#39;s it. In this case we also specify the fields we want to return.</span>
-
-<span class="c1">### API View</span>
-
-<span class="n">The</span> <span class="n">serializer</span> <span class="n">alone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">able</span> <span class="n">to</span> <span class="n">respond</span> <span class="n">to</span> <span class="n">an</span> <span class="n">API</span> <span class="n">request</span><span class="p">,</span> <span class="n">that</span><span class="s1">&#39;s</span>
-<span class="n">why</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">implement</span> <span class="n">a</span> <span class="n">view</span><span class="o">.</span> <span class="n">In</span> <span class="n">this</span> <span class="n">first</span> <span class="n">version</span> <span class="n">of</span> <span class="n">the</span> <span class="n">view</span> <span class="p">(</span><span class="n">that</span>
-<span class="n">we</span> <span class="n">will</span> <span class="n">improve</span> <span class="n">soon</span><span class="p">)</span> <span class="n">we</span> <span class="n">will</span> <span class="s2">&quot;manually&quot;</span> <span class="n">transform</span> <span class="n">the</span> <span class="n">data</span> <span class="n">available</span> <span class="ow">in</span>
-<span class="n">the</span> <span class="n">serializer</span> <span class="n">dictionary</span> <span class="n">to</span> <span class="n">a</span> <span class="n">JSON</span> <span class="n">response</span><span class="o">.</span> <span class="n">In</span> <span class="o">**</span><span class="n">catalog</span><span class="o">/</span><span class="n">views</span><span class="o">.</span><span class="n">py</span><span class="o">**</span>
-<span class="n">add</span> <span class="n">this</span> <span class="n">code</span><span class="p">:</span>
-
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
-<span class="kn">from</span> <span class="nn">rest_framework.renderers</span> <span class="kn">import</span> <span class="n">JSONRenderer</span>
-<span class="kn">from</span> <span class="nn">rest_framework.parsers</span> <span class="kn">import</span> <span class="n">JSONParser</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
-<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
-
-
-<span class="k">class</span> <span class="nc">JSONResponse</span><span class="p">(</span><span class="n">HttpResponse</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    An HttpResponse that renders its content into JSON.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">JSONRenderer</span><span class="p">()</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;content_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">product_list</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
-        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-
-
-<p>At this point we need to tell our Django app to use this API view when a
-certain URL is requested. We first need to add this code in
-<strong>catalog/urls.py</strong></p>
-<p>``` {.lang:python .decode:true}
-from django.conf.urls import url
-from . import views</p>
-<p>urlpatterns = [
-    url(r'^products/$', views.product_list),
-]</p>
-<div class="highlight"><pre><span></span><span class="ow">and</span> <span class="k">finally</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">add</span> <span class="n">this</span> <span class="n">to</span> <span class="o">**</span><span class="n">drftutorial</span><span class="o">/</span><span class="n">urls</span><span class="o">.</span><span class="n">py</span><span class="o">**</span>
-
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
-<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
-
-<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<h4>Testing our work</h4>
-<p>At this point we should be able to start our Django app:</p>
-<p>``` {.lang:sh .decode:true}
-./manage.py runserver</p>
-<div class="highlight"><pre><span></span>Let&#39;s install a tool that will help us to test the API:
-
-``` {.lang:sh .decode:true}
-pip install httpie
-</pre></div>
-
-
-<p>now we can use it to call our URL:</p>
-<p>``` {.lang:sh .decode:true}
-$ http http://127.0.0.1:8000/products/
-HTTP/1.0 200 OK
-Content-Type: application/json
-Date: Wed, 28 Sep 2016 09:54:50 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-X-Frame-Options: SAMEORIGIN</p>
-<p>[]</p>
-<div class="highlight"><pre><span></span>It works! It&#39;s an empty response of course, because we still don&#39;t have
-any data to show, but we will see later how to load some example data in
-our database. If you have been able to follow the tutorial up to this
-point, that&#39;s good. If not, don&#39;t worry. You can checkout the code at
-exactly this point of the tutorial doing:
-
-``` {.lang:sh .decode:true}
-git checkout tutorial-1.0
-</pre></div>
-
-
-<h3>Improving the API View</h3>
-<p>There is a quicker and more efficient way of implementing the same API
-view we have seen before. We can use a class based view, in particular
-the APIView class and also have the JSON response implemented
-automatically. Change the code inside <strong>catalog/views.py</strong> with this
-one:</p>
-<p>``` {.lang:python .decode:true}
-from django.http import HttpResponse
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Product
-from .serializers import ProductSerializer</p>
-<p>class ProductList(APIView):
-    def get(self, request, format=None):
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)</p>
-<div class="highlight"><pre><span></span>You will also have to change **catalog/urls.py** in this way:
-
-``` {.lang:python .decode:true}
-urlpatterns = [
-    url(r&#39;^products/$&#39;, views.ProductList.as_view()),
-]
-</pre></div>
-
-
-<p>You can check the source code for this step of the tutorial with:</p>
-<p>``` {.lang:sh .decode:true}
-git checkout tutorial-1.1</p>
-<div class="highlight"><pre><span></span><span class="n">There</span> <span class="ow">is</span> <span class="n">also</span> <span class="n">another</span> <span class="n">way</span> <span class="n">of</span> <span class="n">writing</span> <span class="n">the</span> <span class="n">same</span> <span class="n">view</span><span class="o">.</span> <span class="n">Let</span><span class="s1">&#39;s try it with</span>
-<span class="p">[</span><span class="o">**</span><span class="n">ListAPIView</span><span class="o">**</span><span class="p">](</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">django</span><span class="o">-</span><span class="n">rest</span><span class="o">-</span><span class="n">framework</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span><span class="o">-</span><span class="n">guide</span><span class="o">/</span><span class="n">generic</span><span class="o">-</span><span class="n">views</span><span class="o">/</span><span class="c1">#listapiview).</span>
-<span class="n">Edit</span> <span class="o">**</span><span class="n">catalog</span><span class="o">/</span><span class="n">views</span><span class="o">.</span><span class="n">py</span><span class="o">**</span> <span class="n">again</span> <span class="ow">and</span> <span class="n">substitute</span> <span class="n">the</span> <span class="n">code</span> <span class="k">with</span> <span class="n">this</span> <span class="n">one</span><span class="p">:</span>
-
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
-<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
-<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
-<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
-
-
-<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListAPIView</span><span class="p">):</span>
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-</pre></div>
-
-
-<p>With a <strong>ListAPIView</strong> we are basically creating a read-only API that is
-supposed to return a list of items. We need to specify a <strong>queryset</strong>
-and the <strong>serializer_class</strong> parameters. Once again, you can get up to
-this point, checking out the related git tag:</p>
-<p>``` {.lang:sh .decode:true}
-git checkout tutorial-1.2</p>
-<div class="highlight"><pre><span></span>### Creating Initial Data
-
-An API that doesn&#39;t return any data is not very useful, right? Also, at
-the moment we haven&#39;t implemented yet any feature that let us insert any
-data. That&#39;s why I&#39;ve created a data migration for you that will insert
-some data for you. You may notice that the example data contains some
-Italian products... out of the scope of this tutorial, I strongly advise
-you to google this products and if you ever happen to visit Italy, try
-them. You won&#39;t regret!
-
-Going back to our data migration, you first have to create an empty one
-with:
-
-``` {.lang:sh .decode:true}
-./manage.py makemigrations --empty catalog
-</pre></div>
-
-
-<p>and then open the file that has been created under
-<strong>catalog/migrations/</strong> named <strong>0002_.....</strong> (your name will be
-different from mine, so just edit the one starting with 0002 and you
-will be fine) and fill it with this code:</p>
-<p>``` {.lang:python .decode:true}
-from <strong>future</strong> import unicode_literals
-from django.db import migrations</p>
-<p>def create_initial_products(apps, schema_editor):
-    Product = apps.get_model('catalog', 'Product')</p>
-<div class="highlight"><pre><span></span>Product(name=&#39;Salame&#39;, description=&#39;Salame Toscano&#39;, price=12).save()
-Product(name=&#39;Olio Balsamico&#39;, description=&#39;Olio balsamico di Modena&#39;, price=10).save()
-Product(name=&#39;Parmigiano&#39;, description=&#39;Parmigiano Reggiano&#39;, price=8.50).save()
-Product(name=&#39;Olio&#39;, description=&#39;Olio Oliva Toscano&#39;, price=13).save()
-Product(name=&#39;Porchetta&#39;, description=&#39;Porchetta toscana cotta a legna&#39;, price=7.50).save()
-Product(name=&#39;Cantucci&#39;, description=&#39;Cantucci di Prato&#39;, price=4).save()
-Product(name=&#39;Vino Rosso&#39;, description=&#39;Vino Rosso del Chianti&#39;, price=9.50).save()
-Product(name=&#39;Brigidini&#39;, description=&#39;Brigidini di Lamporecchio&#39;, price=3.50).save()
-</pre></div>
-
-
-<p>class Migration(migrations.Migration):</p>
-<div class="highlight"><pre><span></span>dependencies = [
-    (&#39;catalog&#39;, &#39;0001_initial&#39;),
-]
-
-operations = [
-    migrations.RunPython(create_initial_products),
-]
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>to apply the migration we just created, just do:
-
-``` {.lang:sh .decode:true}
-./manage.py migrate
-</pre></div>
-
-
-<p>If you try to test the API again from the command line, you will get
-these products back:</p>
-<p>``` {.lang:sh .decode:true}
-$ http http://127.0.0.1:8000/products/
-HTTP/1.0 200 OK
-Allow: GET, HEAD, OPTIONS
-Content-Type: application/json
-Date: Wed, 28 Sep 2016 12:29:36 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-Vary: Accept, Cookie
-X-Frame-Options: SAMEORIGIN</p>
-<p>[
-    {
-        "description": "Salame Toscano",
-        "name": "Salame",
-        "price": "12.00"
-    },
-    {
-        "description": "Olio balsamico di Modena",
-        "name": "Olio Balsamico",
-        "price": "10.00"
-    },
-    {
-        "description": "Parmigiano Reggiano",
-        "name": "Parmigiano",
-        "price": "8.50"
-    },
-    {
-        "description": "Olio Oliva Toscano",
-        "name": "Olio",
-        "price": "13.00"
-    },
-    {
-        "description": "Porchetta toscana cotta a legna",
-        "name": "Porchetta",
-        "price": "7.50"
-    },
-    {
-        "description": "Cantucci di Prato",
-        "name": "Cantucci",
-        "price": "4.00"
-    },
-    {
-        "description": "Vino Rosso del Chianti",
-        "name": "Vino Rosso",
-        "price": "9.50"
-    },
-    {
-        "description": "Brigidini di Lamporecchio",
-        "name": "Brigidini",
-        "price": "3.50"
-    }
-]</p>
-<div class="highlight"><pre><span></span>Again, you can get up to this point with:
-
-``` {.lang:sh .decode:true}
-git checkout tutorial-1.3
-</pre></div>
-
-
-<h3>One more thing...</h3>
-<p>No, we are not going to present a new amazing device, I'm sorry, but I
-want to show you a nice Django Rest Framework feature you can have
-without much additional work. Edit <strong>settings.py</strong> and add
-<strong>rest_framework</strong> to the list of <strong>INSTALLED_APPS</strong>:</p>
-<p><code>{.lang:python .decode:true}
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'catalog',
-]</code></p>
-<p>Now, if you are still running the Django app, try to visit this url from
-your browser: <a href="http://127.0.0.1:8000/products/">http://127.0.0.1:8000/products/</a><br>
-That's very nice, isn't it? You can have browsable APIs at no cost.</p>
-<h3>Wrapping Up</h3>
-<p>I've mentioned at the beginning that this is just the first part of my
-API tutorial. In the <a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">next
-part</a>
-I will show you how to let the consumer of your API add some products
-and leave reviews (we will introduce a new model for this). Also, we
-will see how to set proper permissions to these new API methods so that
-only admin users will be able to add products while normal users will be
-able to add reviews. So, if you feel ready, you can begin to follow the
-second part of this
-tutorial: <a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/</a></p>
-<h3>References</h3>
-<p>Some parts of this tutorial and a few examples have been taken directly
-from the original <a href="http://www.django-rest-framework.org/tutorial/quickstart/">Django Rest Framework
-tutorial</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2016/05/10/using-python-ipdb-from-jupyter/" rel="bookmark"
-                           title="Permalink to Using Python ipdb from Jupyter">Using Python ipdb from Jupyter</a></h1>
-                </header>
-
-                <div class="entry-content">
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.co.uk/2016/05/10/using-python-ipdb-from-jupyter/">Using Python ipdb from Jupyter</a></h1>
 <footer class="post-info">
         <span>Tue 10 May 2016</span>
 <span>| tags: <a href="https://www.andreagrandi.co.uk/tag/debugging.html">debugging</a><a href="https://www.andreagrandi.co.uk/tag/ipdb.html">ipdb</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <p>If we try to use the usual ipdb commands from a Jupyter (IPython
+</footer><!-- /.post-info --><p>If we try to use the usual ipdb commands from a Jupyter (IPython
 notebook)</p>
 <p>``` {.lang:python .decode:true}
 import ipdb; ipdb.set_trace()</p>
@@ -468,10 +48,45 @@ import ipdb; ipdb.set_trace()</p>
 <span class="n">MultipleInstanceError</span>                     <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f2b356251c56</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
       <span class="mi">1</span> <span class="n">a</span><span class="o">=</span><span class="mi">4</span>
-<span class="o">----&gt;</span> <span class="mi">2 …</span></pre></div>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/05/10/using-python-ipdb-from-jupyter/">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
+<span class="o">----&gt;</span> <span class="mi">2</span> <span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+      <span class="mi">3</span> <span class="n">b</span><span class="o">=</span><span class="mi">5</span>
+      <span class="mi">4</span> <span class="k">print</span> <span class="n">a</span>
+      <span class="mi">5</span> <span class="k">print</span> <span class="n">b</span>
+
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nnn</span><span class="o">/</span><span class="n">anaconda</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ipdb</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+     <span class="mi">14</span> <span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.</span>
+     <span class="mi">15</span> 
+<span class="o">---&gt;</span> <span class="mi">16</span> <span class="kn">from</span> <span class="nn">ipdb.__main__</span> <span class="kn">import</span> <span class="n">set_trace</span><span class="p">,</span> <span class="n">post_mortem</span><span class="p">,</span> <span class="n">pm</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">runcall</span><span class="p">,</span> <span class="n">runeval</span><span class="p">,</span> <span class="n">launch_ipdb_on_exception</span>
+     <span class="mi">17</span> 
+     <span class="mi">18</span> <span class="n">pm</span>                       <span class="c1"># please pyflakes</span>
+
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nnn</span><span class="o">/</span><span class="n">anaconda</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ipdb</span><span class="o">/</span><span class="n">__main__</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+     <span class="mi">71</span>         <span class="c1"># the instance method will create a new one without loading the config.</span>
+     <span class="mi">72</span>         <span class="c1"># i.e: if we are in an embed instance we do not want to load the config.</span>
+<span class="o">---&gt;</span> <span class="mi">73</span>         <span class="n">ipapp</span> <span class="o">=</span> <span class="n">TerminalIPythonApp</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+     <span class="mi">74</span>         <span class="n">shell</span> <span class="o">=</span> <span class="n">get_ipython</span><span class="p">()</span>
+     <span class="mi">75</span>         <span class="n">def_colors</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">colors</span>
+
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">nnn</span><span class="o">/</span><span class="n">anaconda</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">traitlets</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">configurable</span><span class="o">.</span><span class="n">pyc</span> <span class="ow">in</span> <span class="n">instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">413</span>             <span class="k">raise</span> <span class="n">MultipleInstanceError</span><span class="p">(</span>
+    <span class="mi">414</span>                 <span class="s1">&#39;Multiple incompatible subclass instances of &#39;</span>
+<span class="o">--&gt;</span> <span class="mi">415</span>                 <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> are being created.&#39;</span> <span class="o">%</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="mi">416</span>             <span class="p">)</span>
+    <span class="mi">417</span> 
+
+<span class="n">MultipleInstanceError</span><span class="p">:</span> <span class="n">Multiple</span> <span class="n">incompatible</span> <span class="n">subclass</span> <span class="n">instances</span> <span class="n">of</span> <span class="n">TerminalIPythonApp</span> <span class="n">are</span> <span class="n">being</span> <span class="n">created</span><span class="o">.</span>
+</pre></div>
+
+
+<p>The solution is to use Tracer instead:</p>
+<p><code>{.lang:python .decode:true}
+from IPython.core.debugger import Tracer
+Tracer()()</code></p>
+<p><strong>Source:</strong> <a href="http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython">http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
 
             <li><article class="hentry">
                 <header>
@@ -631,6 +246,25 @@ grateful to them for this important resource they are …</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
+                           title="Permalink to Reversing a List in Python">Reversing a List in Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 11 October 2015</span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/lists.html">lists</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/reversed.html">reversed</a></span>
+</footer><!-- /.post-info -->                <p>Sometimes we need to reverse the order of the elements in a Python list.
+While there can be many different ways of implementing this task, I
+found three in particular that I appreciate for different reasons. Let's
+define first a list of integers that we will reverse later.</p>
+<p>``` {.lang:python …</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/10/11/reversing-a-list-in-python/">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 19
@@ -638,15 +272,6 @@ grateful to them for this important resource they are …</p>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
                 <div class="social">
                         <h2>social</h2>
                         <ul>
