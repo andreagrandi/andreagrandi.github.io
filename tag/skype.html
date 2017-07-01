@@ -89,7 +89,36 @@ client di <strong>Skype</strong> per Linux <strong>non supporta</strong> al mome
 degli SMS</strong>. Questa puo' essere per molti una grossa limitazione, visto
 che è molto conveniente come metodo per inviare gli sms (costano 10
 centesimi) rispetto a molte tariffe in circolazione al momento, con i
-principali gestori italiani.La …</p>
+principali gestori italiani.La mancanza di questa funzionalità è però
+soltanto apparente! Infatti è stata già implementata a livello di
+librerie di Skype ed è già disponibile tramite le API.</p>
+<p>Grazie alla libreria
+<a href="https://developer.skype.com/wiki/Skype4Py"><strong>Skype4Py</strong></a>, ufficialmente
+supportata da <strong>Skype</strong> e sviluppata da <strong>Arkadiusz Wahlig</strong> (che ha
+tenuto un talk proprio su questo argomento nella giornata di ieri del
+<a href="http://www.pycon.it">PyCon</a> Due), è possibile scrivere applicazioni
+multipiattaforma (Windows, Linux, Mac) che interagiscano con Skype.</p>
+<p>Una volta installata la libreria nel proprio sistema, dobbiamo soltanto
+avviare il client Skype.</p>
+<p>Le applicazioni che possiamo scrivere, per automatizzare alcune funzioni
+di Skype, sono moltissime. In questo caso particolare farò vedere un
+piccolo script Python che invia un SMS utilizzando il client (ed il
+credito) dell'istanza di Skype che sta girando sulla vostra macchina:</p>
+<p>[sourcecode language='python']<br>
+import Skype4Py</p>
+<p>number = '+393*********'<br>
+text= 'Messaggio di prova da PySms4Skype!'</p>
+<p>skype = Skype4Py.Skype()<br>
+skype.FriendlyName = 'PySms4Skype'</p>
+<p>skype.Attach()</p>
+<p>sms = skype.CreateSms(Skype4Py.smsMessageTypeOutgoing, number)<br>
+sms.Body = text<br>
+sms.Send()<br>
+[/sourcecode]</p>
+<p>Quando eseguite questo script, Skype vi chiedera' la <strong>conferma</strong> per
+autorizzare la vostra applicazione ad utilizzare le API, basterà quindi
+dare conferma per continuare. Nello script ovviamente dovrete sostituire
+il numero di telefono con uno valido.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -112,7 +141,14 @@ run on N770 with [Os2007 HE]{style="font-weight: bold;"}.</p>
 <p>1. Install skype-ui through Application Manager</p>
 <p>2. Download <a href="http://catalogue.tableteer.nokia.com/certified/pool/chinook/user/s/skype/skype_1.7.62.48.5_armel.deb">this
 package</a>
-in your …</p>
+in your PC and extract the file named
+[skyhost]{style="font-weight: bold;"}</p>
+<p>3. Find a way to copy the file <strong>skyhost</strong> to your maemo device in
+<strong>/usr/bin</strong></p>
+<p>4. execute this from root on your device:</p>
+<p><code>chown user:users /usr/bin/skyhost</code></p>
+<p>That's all! You can find more information on the <a href="http://www.internettablettalk.com/forums/showthread.php?t=12740">original
+post</a>.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2007/12/10/skype-on-n770-using-os2007-he/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2007/12/10/skype-on-n770-using-os2007-he/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>

@@ -32,231 +32,275 @@
         </header><!-- /#banner -->
 
                 <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="9">
+                    <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/09/05/meego-conference-2010-early-bird-events/" rel="bookmark"
-                           title="Permalink to MeeGo Conference 2010 / Early Bird Events">MeeGo Conference 2010 / Early Bird Events</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/" rel="bookmark"
+                           title="Permalink to Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sun 05 September 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione.html">Linux, Maemo (EN), MeeGo, Programmazione</a></span>
+        <span>Sun 31 August 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/dns.html">dns</a><a href="https://www.andreagrandi.co.uk/tag/postfix.html">postfix</a><a href="https://www.andreagrandi.co.uk/tag/vps.html">vps</a></span>
+</footer><!-- /.post-info -->                <p>I have recently migrated my website from a shared hosting to a dedicated
+VPS on Digital Ocean. Having a VPS surely gives you unlimited
+possibilities, compared to a shared hosting, but of course you have to
+manage some services by yourself.</p>
+<p>In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
++ PHP) to serve my WordPress blog and Postfix to use email forwarding
+from my aliases to my personal email.</p>
+<h2>Configuring DNS on Digital Ocean</h2>
+<p>Understanding how to properly configure the DNS entries in the panel
+could be a bit tricky if it's not your daily bread. In particular there
+is a Digital Ocean configuration that assumes certain things about your
+droplet, so it's better to configure it properly.</p>
+<p>For example the droplet name should not be casual, but it should match
+your domain name: I initially called my host "andreagrandi" and I had to
+rename it to "andreagrandi.it" to have the proper PTR values.</p>
+<p>You will need to create at least a "mail" record, pointing to your IP
+and an "MX" record pointing to mail.yourdomain.com. (please note the dot
+at the end of the domain name). Here is the configuration of my own
+droplet (you will notice also a CNAME record. You need it if you want
+www.yourdomain.com to correctly point to your ip.</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"><img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg">{.aligncenter
+.wp-image-847 width="705"
+height="378"}</a></p>
+<h2>Configuring Postfix</h2>
+<p>In my case I only needed some aliases that I use to forward emails to my
+GMail account, so the configuration is quite easy. First you need to
+install Postfix:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install postfix
+</pre></div>
 
-</footer><!-- /.post-info -->                <h3><a href="http://www.andreagrandi.it/wp-content/uploads/2010/09/aviva_stadium.jpg"><img alt="" class="alignright size-full wp-image-418" height="122" src="http://www.andreagrandi.it/wp-content/uploads/2010/09/aviva_stadium.jpg" title="aviva_stadium" width="155"></a>Introduction</h3>
-<p>It would be nice to organize a weekend like the <a href="http://wiki.maemo.org/Maemo-Barcelona_Long_Weekend" title="http://wiki.maemo.org/Maemo-Barcelona_Long_Weekend">Barcelona Long
-Weekend</a>
-we (the Maemo Community) organized on October 2009. These two days
-should be completly organized by the community and for the community. No
-formal conferences or talks, but interactive activities and hacking
-sessions where you, the …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/09/05/meego-conference-2010-early-bird-events/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/09/05/meego-conference-2010-early-bird-events/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+
+<p>Then you need to edit<strong> /etc/postfix/main.cf</strong> customizing myhostname
+with your domain name and add <strong>virtual_alias_maps</strong> and
+<strong>virtual_alias_domains</strong> parameters. Please also check that
+<strong>mynetworks</strong> is configured exactly as I did, or you will make your
+mail server vulnerable to spam bots. You can see my complete
+configuration here:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"></script>
+</p>
+
+<p>Add your email aliases</p>
+<p>Edit <strong>/etc/postfix/virtual</strong> file and add your aliases, one per line,
+like in this example:</p>
+<div class="highlight"><pre><span></span>info@yourdomain.com youremail@gmail.com
+sales@yourdomain.com youremail@gmail.com
+</pre></div>
+
+
+<p>At this point update the alias map and reload Postfix configuration:</p>
+<div class="highlight"><pre><span></span>sudo postmap /etc/postfix/virtual
+sudo /etc/init.d/postfix reload
+</pre></div>
+
+
+<h2>Conclusion</h2>
+<p>As you can see, configuring Postfix is quite easy, you just need to be
+careful when you configure the DNS records in the control panel. Are you
+curious to try how Digital Ocean VPS works? Fancy <strong>10\$ credit</strong>
+(enough for 2 months if you choose the basic droplet) for <strong>free</strong>? Use
+this link and enjoy it
+<a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/08/27/announcing-my-standing-for-the-maemo-council-q3-2010/" rel="bookmark"
-                           title="Permalink to Announcing my standing for the Maemo Council Q3-2010">Announcing my standing for the Maemo Council Q3-2010</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="bookmark"
+                           title="Permalink to Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Fri 27 August 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-meego.html">Maemo (EN), MeeGo</a></span>
+        <span>Sun 02 March 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
 
-</footer><!-- /.post-info -->                <p>I've decided to candidate myself again (yes, I wasn't elected last time)
-for the <a href="http://lists.maemo.org/pipermail/maemo-community/2010-August/004399.html">Maemo Council
-elections</a>.
-During these months I've tried to help more the Maemo Community and I've
-started working to two Qt/C++ projects. Here you can find something more
-about me.</p>
-<p>Name: <strong>Andrea Grandi</strong><br>
-maemo.org …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/08/27/announcing-my-standing-for-the-maemo-council-q3-2010/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/08/27/announcing-my-standing-for-the-maemo-council-q3-2010/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p>Developing a large web application or before deploying some code is very
+important to verify the quality of the code itself, check if we have
+introduced any regression or bug and have something that tell us if we
+are increasing or decreasing the quality of the code.</p>
+<p>Suppose we are in an organization or a company where the basic rule is:
+<strong>master</strong> branch is always ready/stable to be deployed. In a team
+usually people work on personal branches, then when the code is stable
+it's merged with master.</p>
+<p>How do we check if the code is stable and ready to be merged? First of
+all we need to cover all our code with <strong>proper tests</strong> (I won't go in
+details about unit testing here, I assume that the reader knows what I'm
+talking about), then we need to actually run them, possibly in an
+isolated environment that is similar to the production one, and check if
+they all pass. If they do, we are quite safe to merge our code with
+master branch.</p>
+<p>How can we ensure that all the developers remember to run tests when
+they push some new code? To make things a bit more real, let's take the
+example of a Python/Django product (or even a library) that currently
+supports <strong>Python 2.6, 2.7, 3.3</strong> and <strong>Django 1.4.x, 1.5.x, 1.6.x</strong>.
+The whole matrix consists of <strong>9 possible combinations</strong>. Do we have to
+manually run tests on 9 configurations? No, we don't.</p>
+<h2>Travis-ci.org</h2>
+<p><strong>Travis</strong> is a continuous integration tool that, once configured, takes
+care of these tasks and let us save lot of time (that we can use to
+actually write code). <a href="https://travis-ci.org">Travis-ci.org</a> is an
+online service that works with <a href="https://github.com"><strong>GitHub</strong></a> (it
+requires we use GitHub as repository for our code), and once we have
+connected the two accounts and configured a very simple file in our
+projects, it's automatically triggered when we push on our GitHub
+repository.</p>
+<p>The configuration consists of adding a file named <strong>.travis.yml</strong> in the
+root of our project. A working example is available here
+<a href="https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml">https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml</a>
+(all the env variables I set are not required normally, but that's where
+I save the values of my configuration, so they need to be initialized
+before I can run tests).</p>
+<p>The service supports most of the languages that are commonly used and
+even a good number of PAAS, making it very easy to automatically
+<strong>deploy</strong> our code. If it should not be enough for your needs, they
+also expose a public <strong>API</strong>. I suggest you to give a look at the
+official documentation that will explain everything in details
+<a href="http://docs.travis-ci.com">http://docs.travis-ci.com</a></p>
+<p>Once everything is configured, we will have something like this on our
+console
+<a href="https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128">https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128</a></p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console.png"><img alt="travis-ci-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console-1024x544.png">{.aligncenter
+.wp-image-832 width="614"
+height="326"}</a></p>
+<p>If something goes wrong (if tests don't pass for example) we receive a
+notification with all the informations about the failing build, and if
+we had configured an automatic deployment of course the code would not
+be deployed in case of a failing build.</p>
+<p>Travis-ci.org is <strong>completly free</strong> for opensource projects and has also
+a paid version for private repositories.</p>
+<h2 id="coveralls.io" style="text-align: left;">Coveralls.io</h2>
+<p>There is a nice tool available for Python called
+<a href="http://nedbatchelder.com/code/coverage"><strong>coverage</strong></a>. Basically it
+runs tests and checks the percentage of the source code that is covered
+by tests, producing a nice report that shows us the percentage for every
+single file/module and even the lines of code that have been tested.</p>
+<p>Thanks to Coveralls.io and the use of Travis, even these tasks are
+completly automatized and the results are available online like in this
+example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds/560853</a></p>
+<p>The configuration is quite easy. We need to connect our Coveralls.io
+profile with GitHub, like we did for Travis-ci.org and then enable the
+repository. To trigger Coveralls after a successful Travis build, we
+need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
+<div class="highlight"><pre><span></span>after_success:
+  - coveralls
+</pre></div>
+
+
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console.png"><img alt="coveralls-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console-1024x767.png">{.aligncenter
+.wp-image-836 width="614"
+height="460"}</a><br>
+Even Coveralls.io is <strong>completly free</strong> for opensource projects and
+offers a paid version for private repositories.</p>
+<h2>Heroku</h2>
+<p>I use <a href="https://www.heroku.com"><strong>Heroku</strong></a> to host and run my web
+application. Normally to deploy on Heroku you so something like this:
+<strong>git push heroku master</strong></p>
+<p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
+deploy the application on Heroku, if the build was successful:</p>
+<div class="highlight"><pre><span></span><span class="n">deploy</span><span class="o">:</span>
+  <span class="n">provider</span><span class="o">:</span> <span class="n">heroku</span>
+  <span class="n">api_key</span><span class="o">:</span>
+    <span class="n">secure</span><span class="o">:</span> <span class="n">R4LFkVu1</span><span class="sr">/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/</span><span class="n">FeUk0Yl</span><span class="o">+</span><span class="n">I</span><span class="o">=</span>
+  <span class="n">app</span><span class="o">:</span> <span class="n">workshopvenues</span>
+  <span class="n">on</span><span class="o">:</span>
+    <span class="n">repo</span><span class="o">:</span> <span class="n">andreagrandi</span><span class="o">/</span><span class="n">workshopvenues</span>
+  <span class="n">run</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py syncdb&quot;</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py migrate&quot;</span>
+</pre></div>
+
+
+<p>Not only the code is deployed, after deployment the <strong>South migrations</strong>
+are executed.</p>
+<h2>Conclusion</h2>
+<p>These two tools are saving me lot of time and are ensuring that the code
+I release for a project I'm working on
+(<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
+is always tested when I push it on my repository.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/07/26/maemo-coding-competition-voting-open/" rel="bookmark"
-                           title="Permalink to Maemo Coding Competition: voting open!">Maemo Coding Competition: voting open!</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/" rel="bookmark"
+                           title="Permalink to Factoryboy: Creating data for unit tests in an easy way">Factoryboy: Creating data for unit tests in an easy way</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Mon 26 July 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/contest.html">contest</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p><strong>What is Maemo Coding Competition?</strong></p>
-<p>This competition has been organized by Maemo Community for the Maemo
-Community. Developer can work to an application and submit it for one of
-the six categories available: Desktop, System &amp; Utilities, Games,
-Graphics &amp; Multimedia, Location &amp; Navigation, Other. Another category is
-available too, and it's for …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/07/26/maemo-coding-competition-voting-open/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/07/26/maemo-coding-competition-voting-open/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Thu 30 January 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/programmazione-python.html">Programmazione, Python</a></span>
+
+</footer><!-- /.post-info -->                <p>I recently prepared a presentation about
+<a href="http://factoryboy.readthedocs.org"><strong>Factoryboy</strong></a>, a Python library
+that automates lot of the work when a developer needs to create some
+data for unit testing.</p>
+<p>I've been using this library since a couple of months, both in the
+company where I work and on a personal open source project I'm working
+on. I will give a presentation about this library in an internal
+workshop in my company and I'm available to give it in any Python/Django
+related event around <strong>London</strong>, if anyone is interested.</p>
+<p>The slides are already available:</p>
+<p>
+<script async class="speakerdeck-embed" data-id="55509260698a013170b8769b07168819" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/" rel="bookmark"
-                           title="Permalink to Announcing LastGo: Maemo/MeeGo client for Last.fm">Announcing LastGo: Maemo/MeeGo client for Last.fm</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/" rel="bookmark"
+                           title="Permalink to How to fix encfs installation on OSX 10.9 (Mavericks) and brew">How to fix encfs installation on OSX 10.9 (Mavericks) and brew</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Fri 16 July 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/client.html">client</a><a href="https://www.andreagrandi.co.uk/tag/lastfm.html">last.fm</a><a href="https://www.andreagrandi.co.uk/tag/music.html">music</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p>While I'm still working to
-<a href="http://www.andreagrandi.it/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/">mSoma</a>
-with Lorenzo Bettini, I decided to start writing another application. I
-needed to write something from scratch to learn better how to use
-<strong>C++</strong> and <strong>Qt</strong> libraries, so I decided to write a client for
-<a href="http://www.lastfm.com">Last.fm</a> service. The application is still in
-full …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+        <span>Fri 08 November 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.co.uk/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.co.uk/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.co.uk/tag/fuse4x.html">fuse4x</a><a href="https://www.andreagrandi.co.uk/tag/osx.html">OSX</a><a href="https://www.andreagrandi.co.uk/tag/security.html">security</a></span>
+</footer><!-- /.post-info -->                <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
+broken. First of all you have to fix a problem with a library header:</p>
+<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+</pre></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/" rel="bookmark"
-                           title="Permalink to Announcing mSoma: Maemo/MeeGo client for SomaFM">Announcing mSoma: Maemo/MeeGo client for SomaFM</a></h1>
-                </header>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 03 July 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-qt-recensione.html">Linux, Maemo (EN), MeeGo, Qt, Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meego.html">MeeGo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/somafm.html">SomaFM</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://somafm.com">SomaFM</a> is a streaming radio with near 16 different
-channels, available for free. Even if it's possible to copy-paste their
-streaming URLs to N900 Media Player, we
-(<a href="http://maemo.org/profile/view/andy80">me</a> and <a href="http://maemo.org/profile/view/lorebett"><strong>Lorenzo
-Bettini</strong></a>) decided to create a
-custom application, to make channels switching easier for the end user
-and to be able …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p>then you can install encfs using this remote brew recipe:</p>
+<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+</pre></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/" rel="bookmark"
-                           title="Permalink to Twitter client for Maemo in Qt + Python: call for developers and UI designers">Twitter client for Maemo in Qt + Python: call for developers and UI designers</a></h1>
-                </header>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 22 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-python-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meego.html">MeeGo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/twitter.html">twitter</a></span>
-</footer><!-- /.post-info -->                <h2>Introduction</h2>
-<p>My name's <strong>Andrea Grandi</strong>, I'm italian and I'm a Maemo
-user/lover/contributor since the <strong>Nokia 770</strong>. I love <strong>Python</strong> as
-development language and few months ago I also gave some contributions
-to the <a href="http://pymaemo.garage.maemo.org/"><strong>PyMaemo</strong></a> project.</p>
-<p>In these days I had the idea to start writing a <strong>Twitter</strong> client …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p>It's also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):</p>
+<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+</pre></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/20/nokia-n900-reboot-loop-after-pr-1-1-1-upgrade-is-not-a-firmware-bug/" rel="bookmark"
-                           title="Permalink to Nokia N900: reboot loop after PR 1.1.1 upgrade is not a firmware bug">Nokia N900: reboot loop after PR 1.1.1 upgrade is not a firmware bug</a></h1>
-                </header>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 20 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego.html">Linux, Maemo (EN), MeeGo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/firmware.html">firmware</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meego.html">MeeGo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p>Few days ago I published <a href="http://www.andreagrandi.it/2010/02/17/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/">some
-notes</a>
-about my personal experience with <strong>PR 1.1.1</strong> firmware upgrade in Nokia
-<strong>N900</strong>. In particular my device got an infinite reboot loop after
-upgrading the firmware and I had to flash the firmware image from
-scratch to fix the problem. Today I …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/20/nokia-n900-reboot-loop-after-pr-1-1-1-upgrade-is-not-a-firmware-bug/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/20/nokia-n900-reboot-loop-after-pr-1-1-1-upgrade-is-not-a-firmware-bug/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/17/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/" rel="bookmark"
-                           title="Permalink to Nokia N900: some problems with latest PR 1.1.1 firmware">Nokia N900: some problems with latest PR 1.1.1 firmware</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 17 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-recensione.html">Linux, Maemo (EN), Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bug.html">bug</a><a href="https://www.andreagrandi.co.uk/tag/firmware.html">firmware</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p>I don't know if it's just a case or if I'm the only one who had these
-problems, but I'll report them anyway, maybe somebody had my same
-problem and we could try to prepare a proper bug report to make the
-Maemo team fix them.</p>
-<h2>Infinite boot loop after …</h2>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/17/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/17/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/16/maemo-6-harmattan-ui-screenshots/" rel="bookmark"
-                           title="Permalink to Maemo 6 (Harmattan) UI Screenshots">Maemo 6 (Harmattan) UI Screenshots</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 16 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-qt-recensione.html">Linux, Maemo (EN), Qt, Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/harmattan.html">harmattan</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/preview.html">preview</a><a href="https://www.andreagrandi.co.uk/tag/screenshot.html">screenshot</a><a href="https://www.andreagrandi.co.uk/tag/ui.html">UI</a></span>
-</footer><!-- /.post-info -->                <p>Nokia has published a demo application for <strong>N900</strong>, available in
-<strong>extras-devel</strong> repository, that shows a preview of <strong>Maemo 6</strong>
-(Harmattan) user interface. Here there are some screenshots of the
-demo:  </p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021420.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021420-300x180.png" title="Screenshot-20100216-021420">{.size-medium
-.wp-image-346 .aligncenter width="300"
-height="180"}</a></p>
-<p>Demo application main window</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021507.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021507-300x180.png" title="Screenshot-20100216-021507">{.aligncenter
-.size-medium .wp-image-347 width="300"
-height="180"}</a></p>
-<p>Question dialog …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/16/maemo-6-harmattan-ui-screenshots/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/16/maemo-6-harmattan-ui-screenshots/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/13/fon-how-long-are-you-going-to-play-tricks-on-users/" rel="bookmark"
-                           title="Permalink to Fon: how long are you going to play tricks on users?">Fon: how long are you going to play tricks on users?</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 13 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-recensione.html">Linux, Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/fon.html">fon</a><a href="https://www.andreagrandi.co.uk/tag/fonera.html">fonera</a><a href="https://www.andreagrandi.co.uk/tag/foneros.html">foneros</a><a href="https://www.andreagrandi.co.uk/tag/linux.html">Linux</a><a href="https://www.andreagrandi.co.uk/tag/router.html">router</a><a href="https://www.andreagrandi.co.uk/tag/wifi.html">wifi</a></span>
-</footer><!-- /.post-info -->                <h2>Introduction</h2>
-<p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/02/fon-300x294.jpg" title="fon">{.alignright
-.size-medium .wp-image-336 width="168" height="164"}As many of you
-already know, <strong>Fon</strong> is a spanish company that some years ago had the
-interesting idea of creating a <strong>wifi community</strong> to share the Internet
-connection. The idea is quite simple: each "fonero" buy a Fonera (the
-router sold …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/13/fon-how-long-are-you-going-to-play-tricks-on-users/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/13/fon-how-long-are-you-going-to-play-tricks-on-users/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+<p>That's it! Please note that this is just a workaround (thanks to
+<strong>Giovanni Bajo</strong> for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here <a href="https://gist.github.com/defunctzombie/7324625">https://gist.github.com/defunctzombie/7324625</a> but I haven't
+tested it yet.</p>
+<p><strong>Update:</strong> to fully integrate encfs with OSX, I also suggest to follow
+this nice guide <a href="http://www.maketecheasier.com/install-encfs-mac/">http://www.maketecheasier.com/install-encfs-mac/</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.co.uk/index7.html">&laquo;</a>
-    Page 8 / 19
+    Page 8 / 48
         <a href="https://www.andreagrandi.co.uk/index9.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

@@ -86,7 +86,34 @@ page <https://projects.developer.nokia.com/socialconnect/wiki/GettingStarted>
 </footer><!-- /.post-info -->                <p>In the last post of this series, we saw how to write a simple binding
 and we finished to build and install it manually. This is of course not
 a good way to manage the building/installation procedure.</p>
-<p>In Python we can use a library called <strong>distutils</strong> that let us …</p>
+<p>In Python we can use a library called <strong>distutils</strong> that let us to
+automatize the building and installing process. I'll use the <strong>foo</strong>
+source code to create the package, so it will be easier to understand.</p>
+<h2>Using distutils</h2>
+<p>All we have to do is to write a <strong>setup.py</strong> file similar to this one:</p>
+<p>[sourcecode lang="python"]<br>
+from distutils.core import setup, Extension</p>
+<p>foomodule = Extension('foo', sources = ['foo.c'])</p>
+<p>setup (name = 'Foo',<br>
+version = '1.0',<br>
+description = 'This is a package for Foo',<br>
+ext_modules = [foomodule])<br>
+[/sourcecode]</p>
+<p>As you can see, we have to first import needed modules with: <strong>from
+distutils.core import setup, Extension</strong><br>
+then we create an entry for each module we have (in this case just one,
+"foomodule"). We then call the <strong>setup()</strong> method passing it all the
+parameters and our <strong>setup.py</strong> is complete.</p>
+<h2>Building and installing</h2>
+<p>To test it we can try to build the package in this way:</p>
+<p><code>python2.5 setup.py build</code></p>
+<p>if we want to install the module in our system:</p>
+<p><code>python2.5 setup.py install</code></p>
+<h2>References</h2>
+<ul>
+<li>Official Python documentation:
+    <a href="http://docs.python.org/extending/building.html">http://docs.python.org/extending/building.html</a></li>
+</ul>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -107,7 +134,45 @@ a good way to manage the building/installation procedure.</p>
 for a couple of months and they assigned me to an interesting project:
 developing <strong>Python bindings</strong> for <strong>MAFW</strong> library (a <strong>Maemo</strong>
 multimedia library that will be used in <strong>Fremantle</strong> release).</p>
-<p>Having the opportunity to work …</p>
+<p>Having the opportunity to work both with <strong>C</strong> (yes, Python bindings are
+almost C code) and <strong>Python</strong> (it's a good practice to write unittest of
+all implemented methods) it's a good way to improve my knowledges in
+both languages and since I wasn't able to find much documentation about
+these kind of things, I'm going to share my own experiences.</p>
+<p><strong>What is a Binding?</strong></p>
+<p>A binding is a Python module, written in C language, that allows Python
+developers to call functions from existing C libraries from their python
+applications. It's just like a "<em>bridge</em>" from C world to Python one.</p>
+<p><strong>Why writing bindings?</strong></p>
+<p>There are a couple of reasons to write python bindings instead of
+writing a library in python language from scratch.</p>
+<p>First of all I don't think is good duplicating code, so if a library
+already exists and it's written in C, why writing it again in another
+language? There's no reason. A lot of code already exist in C world and
+all we have to do is to create a bridge with python world.</p>
+<p>Another good reason, in particular when a C library doesn't exist yet,
+is the fact that python code is slower than C code for some tasks (for
+example multimedia codecs). In these cases is good to implement the core
+library in C language and then create a python binding for it.</p>
+<p><strong>Coming next</strong></p>
+<p>As the title of this post says, this is only an introduction to the
+subjects I'm going to write about. If you have any particular request
+about any argument you would like to read, please feel free to leave me
+a comment. Next posts will talk about these things:</p>
+<ul>
+<li><strong>A simple example of binding:</strong> I'll write a simple library in C
+    language and I'll show how to create the relative python binding,
+    providing complete source code and an example for python developers.</li>
+<li><strong>Building and installing python bindings with distutils:</strong> I'll
+    explain how to use <strong>distutils</strong> to build and install the binding
+    (using the well know method "python setup.py install").</li>
+<li><strong>Defining new types:</strong> this post will be about how to write new
+    types in C language and being able to use them from python code.</li>
+<li><strong>Using codegen to write bindings:</strong> I'll explain how to use
+    <strong>codegen</strong> utils to automate lot of tasks, to generate the most
+    part of binding code and how to customize the generated code using
+    overrides.</li>
+</ul>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>

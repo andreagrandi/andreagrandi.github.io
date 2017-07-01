@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - Django</title>
+        <link rel="stylesheet" href="https://www.andreagrandi.co.uk/theme/css/main.css" />
+        <link rel="stylesheet" href="https://www.andreagrandi.co.uk/theme/tipuesearch/css/tipuesearch.css">
+        <link href="https://www.andreagrandi.co.uk/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Andrea Grandi Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://www.andreagrandi.co.uk/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="https://www.andreagrandi.co.uk/about/">About</a></li>
+    
+                        <li><a href="https://www.andreagrandi.co.uk/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="https://www.andreagrandi.co.uk/pgp-key/">PGP Key</a></li>
+                </ul>
+<form id="search" action="https://www.andreagrandi.co.uk/search.html" onsubmit="return validateForm(this.elements['q'].value);">
+                        <input type="text" class="search-query" placeholder="" name="q" id="tipue_search_input">
+                    </form>
+                </nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="3">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
+                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 23 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.co.uk/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png">{.aligncenter
+.size-full .wp-image-1012 width="601"
+height="511"}</a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<p>``` {.lang:python .decode:true}
+from datetime import datetime</p>
+<p>class BenchmarkMiddleware(object):
+    def process_request(self, request):
+        request._request_time = datetime.now()</p>
+<div class="highlight"><pre><span></span>def process_template_response(self, request, response):
+    response_time = request._request_time - datetime.now()
+    response.context_data[&#39;response_time&#39;] = abs(response_time)
+    return response
+</pre></div>
+
+
+<p>```</p>
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/" rel="bookmark"
+                           title="Permalink to Using virtualenv to manage multiple Python/Django environments in the same machine">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 25 April 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/virtualenv.html">virtualenv</a></span>
+</footer><!-- /.post-info -->                <p>Developing Python applications sometimes it's useful to be able to test
+the code with different environments, for example a particular version
+of Python or a specific Django version etc... Setting up many different
+virtual machines would be really too much work and even using a chroot
+environment is not what you need in some cases. Thanks to
+<a href="https://github.com/pypa/virtualenv"><strong>virtualenv</strong></a> is it possible to
+create a self contained Python environment with all the specific
+libraries you may need. Using virtualenv is very easy:</p>
+<ul>
+<li>Creating the virtual environment: <strong>virtualenv
+    myenv --no-site-packages</strong></li>
+<li>Entering the virtual environment: <strong>source myenv/bin/activate</strong></li>
+<li>Deactivating the virtual environment: <strong>deactivate</strong></li>
+</ul>
+<p>That's it! Once you're inside the virtual environment you will be using
+the Python libraries inside it. I suggest you to install all the Python
+libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip</strong></a>.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://www.andreagrandi.co.uk/tag/django.html">&laquo;</a>
+    Page 2 / 2
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://www.andreagrandi.co.uk/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>
+                    Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+                        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+                    </a>
+                </p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'andreagrandi';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

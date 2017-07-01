@@ -32,228 +32,150 @@
         </header><!-- /#banner -->
 
                 <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="9">
+                    <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-0/" rel="bookmark"
-                           title="Permalink to UDS day-0">UDS day-0</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/" rel="bookmark"
+                           title="Permalink to How to fix encfs installation on OSX 10.9 (Mavericks) and brew">How to fix encfs installation on OSX 10.9 (Mavericks) and brew</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en-uds.html">Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/conference.html">conference</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0254.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0254-300x200.jpg" title="IMG_0254">{.alignright
-.size-medium .wp-image-523 width="210"
-height="140"}</a>I
-left from <strong>Firenze</strong> with my friend <strong>Marco Trevisan</strong>, to go to
-<strong><a href="http://uds.ubuntu.com">Ubuntu Developer Summit</a></strong> in <strong>Budapest</strong>. We
-changed flight in <strong>Rome</strong> where we met also <strong>Andrea Azzarone</strong>.
-Unluckly <strong>Alitalia losts Marco's baggage</strong>, so he's still waiting for
-it.</p>
-<p>We arrived at the …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-0/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-0/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Fri 08 November 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.co.uk/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.co.uk/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.co.uk/tag/fuse4x.html">fuse4x</a><a href="https://www.andreagrandi.co.uk/tag/osx.html">OSX</a><a href="https://www.andreagrandi.co.uk/tag/security.html">security</a></span>
+</footer><!-- /.post-info -->                <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
+broken. First of all you have to fix a problem with a library header:</p>
+<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+</pre></div>
+
+
+<p>then you can install encfs using this remote brew recipe:</p>
+<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+</pre></div>
+
+
+<p>It's also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):</p>
+<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+</pre></div>
+
+
+<p>That's it! Please note that this is just a workaround (thanks to
+<strong>Giovanni Bajo</strong> for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here <a href="https://gist.github.com/defunctzombie/7324625">https://gist.github.com/defunctzombie/7324625</a> but I haven't
+tested it yet.</p>
+<p><strong>Update:</strong> to fully integrate encfs with OSX, I also suggest to follow
+this nice guide <a href="http://www.maketecheasier.com/install-encfs-mac/">http://www.maketecheasier.com/install-encfs-mac/</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/04/09/some-ideas-to-improve-community-collaboration-for-ubuntu-developer-summit/" rel="bookmark"
-                           title="Permalink to Some ideas to improve Community collaboration for Ubuntu Developer Summit">Some ideas to improve Community collaboration for Ubuntu Developer Summit</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/" rel="bookmark"
+                           title="Permalink to How to make subwoofer work in Ubuntu">How to make subwoofer work in Ubuntu</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sat 09 April 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en.html">Ubuntu (EN)</a></span>
+        <span>Sat 22 June 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-ubuntu-en.html">HowTo, Linux, Ubuntu (EN)</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/sound.html">sound</a><a href="https://www.andreagrandi.co.uk/tag/subwoofer.html">subwoofer</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info -->                <p>Using the same computer with Windows 8 and Ubuntu I noticed that the
+sound was worse in Ubuntu and I discovered why soon: <strong>subwoofer</strong>
+doesn't work out of the box!</p>
+<h2>How to fix it</h2>
+<p>The fix is quite easy to apply (but it was not easy to find the right
+one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
+the end:</p>
+<div class="highlight"><pre><span></span>load-module module-combine channels=6 channel_map=front-left,front-right,rear-left,rear-right,front-center,lfe
+</pre></div>
 
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/04/Ubuntu-Developer-Summit.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/04/Ubuntu-Developer-Summit-300x229.png" title="Ubuntu Developer Summit">{.alignright
-.size-medium .wp-image-481
-width="200"}</a>Few
-days ago I received an email from <strong>Jorge O. Castro</strong> of the Ubuntu
-Community, announcing me that my request of sponsorization for <strong><a href="http://uds.ubuntu.com/">Ubuntu
-Developer Summit</a></strong> has been accepted. I have
-never attended an UDS before, so I must admit I feel a bit disoriented …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/04/09/some-ideas-to-improve-community-collaboration-for-ubuntu-developer-summit/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/04/09/some-ideas-to-improve-community-collaboration-for-ubuntu-developer-summit/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+
+<p>then edit <strong>/etc/pulse/daemon.conf</strong>, modify the line
+"enable-lfe-remixing: no" to "<strong>enable-lfe-remixing: yes</strong>", then
+uncomment it (remove the semicolon in front of it). Reboot your PC and
+enjoy the subwoofer!</p>
+<h2>References</h2>
+<ul>
+<li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
+<li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/04/06/meego-events-meeting-april-4th-2011-notes/" rel="bookmark"
-                           title="Permalink to MeeGo Events Meeting - April 4th 2011 - Notes">MeeGo Events Meeting - April 4th 2011 - Notes</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/06/22/how-to-fix-a-wordpress-websitet-hacked-by-zend_framework-malware/" rel="bookmark"
+                           title="Permalink to How to fix a WordPress website hacked by "zend_framework" malware">How to fix a WordPress website hacked by "zend_framework" malware</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Wed 06 April 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/meego.html">MeeGo</a></span>
+        <span>Sat 22 June 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-sicurezza-ubuntu-en-wordpress.html">HowTo, Linux, Sicurezza, Ubuntu (EN), WordPress</a></span>
 
-</footer><!-- /.post-info -->                <h2>MeeGo Conference Updates</h2>
-<p>﻿We have <strong>315</strong> registrants as of today for the conference, so numbers
-are looking good without having any agenda published yet! A good portion
-of sessions should be approved by April 8th, this Friday and you will
-receive an email when/if your session has been approved …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/04/06/meego-events-meeting-april-4th-2011-notes/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/04/06/meego-events-meeting-april-4th-2011-notes/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p>I admit. <strong>This website</strong>, like thousands of others, <strong>has been
+hacked</strong>! I still have to identify the precise source of the attack, but
+I've found out that is very common. I was able to discover about the
+attack just because the dashboard of WordPress stopped working. I
+decided to investigate and I found this strind on top of every .php file
+<a href="http://pastebin.com/k0iQymRy">http://pastebin.com/k0iQymRy</a></p>
+<p>Just googling I discovered that I was not alone
+<a href="http://stackoverflow.com/questions/16963818/server-hacked-on-wordpress-files">http://stackoverflow.com/questions/16963818/server-hacked-on-wordpress-files</a></p>
+<h2>How to fix this?</h2>
+<p>The best solution would be to restore the files with a valid backup, but
+sometimes this is not possible. Here comes an handy bash solution (note:
+you need to be able to access your hosting with a SSH shell to execute
+this command): <a href="http://pastebin.com/V3nFwwtZ">http://pastebin.com/V3nFwwtZ</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/06/22/how-to-fix-a-wordpress-websitet-hacked-by-zend_framework-malware/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/06/22/how-to-fix-a-wordpress-websitet-hacked-by-zend_framework-malware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/" rel="bookmark"
-                           title="Permalink to Utilizzare la Carta Sanitaria Europea su Ubuntu Linux">Utilizzare la Carta Sanitaria Europea su Ubuntu Linux</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/05/02/how-to-fix-pip-under-debian-6-0-squeeze-importerror-cannot-import-name-parser/" rel="bookmark"
+                           title="Permalink to How to fix pip under Debian 6.0 (squeeze): ImportError: cannot import name parser">How to fix pip under Debian 6.0 (squeeze): ImportError: cannot import name parser</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Thu 11 November 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-ubuntu-it.html">HowTo, Linux, Ubuntu (IT)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/cse.html">CSE</a><a href="https://www.andreagrandi.co.uk/tag/firefox.html">Firefox</a><a href="https://www.andreagrandi.co.uk/tag/regione-toscana.html">Regione Toscana</a><a href="https://www.andreagrandi.co.uk/tag/smartcard.html">SmartCard</a></span>
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/11/jpg_2056020.jpg" title="CSE_Toscana">{.alignright
-.size-full .wp-image-426 width="149" height="118"}In questo periodo le
-regioni stanno inviando a casa di ogni cittadino la nuova versione della
-<strong>Carta Sanitaria Europea</strong>, simile a quella che potete vedere nella
-foto. Questa nuova carta, oltre a conservare gli stessi utilizzi di
-quella vecchia, comprende anche un micro …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+        <span>Thu 02 May 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a></span>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/09/05/meego-conference-2010-early-bird-events/" rel="bookmark"
-                           title="Permalink to MeeGo Conference 2010 / Early Bird Events">MeeGo Conference 2010 / Early Bird Events</a></h1>
-                </header>
+</footer><!-- /.post-info -->                <p>The <strong>pip</strong> utility distributed with Debian 6.0 has a bug once you
+upgrade it with <strong>pip install -U pip</strong>. You will easily get this error
+when you try to install a new package with it:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@worker2</span><span class="p">:</span><span class="o">~</span><span class="c1"># pip install setproctitle</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="n">File</span> <span class="s2">&quot;/usr/bin/pip&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">8</span><span class="p">,</span> <span class="ow">in</span> 
+<span class="kn">from</span> <span class="nn">pip.baseparser</span> <span class="kn">import</span> <span class="n">parser</span>
+<span class="ne">ImportError</span><span class="p">:</span> <span class="n">cannot</span> <span class="kn">import</span> <span class="nn">name</span> <span class="nn">parser</span>
+</pre></div>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 05 September 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione.html">Linux, Maemo (EN), MeeGo, Programmazione</a></span>
 
-</footer><!-- /.post-info -->                <h3><a href="http://www.andreagrandi.it/wp-content/uploads/2010/09/aviva_stadium.jpg"><img alt="" class="alignright size-full wp-image-418" height="122" src="http://www.andreagrandi.it/wp-content/uploads/2010/09/aviva_stadium.jpg" title="aviva_stadium" width="155"></a>Introduction</h3>
-<p>It would be nice to organize a weekend like the <a href="http://wiki.maemo.org/Maemo-Barcelona_Long_Weekend" title="http://wiki.maemo.org/Maemo-Barcelona_Long_Weekend">Barcelona Long
-Weekend</a>
-we (the Maemo Community) organized on October 2009. These two days
-should be completly organized by the community and for the community. No
-formal conferences or talks, but interactive activities and hacking
-sessions where you, the …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/09/05/meego-conference-2010-early-bird-events/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/09/05/meego-conference-2010-early-bird-events/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+<p>Luckly there is a very easy workaround:</p>
+<div class="highlight"><pre><span></span>easy_install pip
+rm /usr/bin/pip
+ln -sv /usr/local/bin/pip-2.6 /usr/bin/pip
+pip install pip --upgrade
+</pre></div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/08/27/announcing-my-standing-for-the-maemo-council-q3-2010/" rel="bookmark"
-                           title="Permalink to Announcing my standing for the Maemo Council Q3-2010">Announcing my standing for the Maemo Council Q3-2010</a></h1>
-                </header>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 27 August 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-meego.html">Maemo (EN), MeeGo</a></span>
-
-</footer><!-- /.post-info -->                <p>I've decided to candidate myself again (yes, I wasn't elected last time)
-for the <a href="http://lists.maemo.org/pipermail/maemo-community/2010-August/004399.html">Maemo Council
-elections</a>.
-During these months I've tried to help more the Maemo Community and I've
-started working to two Qt/C++ projects. Here you can find something more
-about me.</p>
-<p>Name: <strong>Andrea Grandi</strong><br>
-maemo.org …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/08/27/announcing-my-standing-for-the-maemo-council-q3-2010/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/08/27/announcing-my-standing-for-the-maemo-council-q3-2010/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/07/26/maemo-coding-competition-voting-open/" rel="bookmark"
-                           title="Permalink to Maemo Coding Competition: voting open!">Maemo Coding Competition: voting open!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 26 July 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/contest.html">contest</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p><strong>What is Maemo Coding Competition?</strong></p>
-<p>This competition has been organized by Maemo Community for the Maemo
-Community. Developer can work to an application and submit it for one of
-the six categories available: Desktop, System &amp; Utilities, Games,
-Graphics &amp; Multimedia, Location &amp; Navigation, Other. Another category is
-available too, and it's for …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/07/26/maemo-coding-competition-voting-open/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/07/26/maemo-coding-competition-voting-open/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/" rel="bookmark"
-                           title="Permalink to Announcing LastGo: Maemo/MeeGo client for Last.fm">Announcing LastGo: Maemo/MeeGo client for Last.fm</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 16 July 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/client.html">client</a><a href="https://www.andreagrandi.co.uk/tag/lastfm.html">last.fm</a><a href="https://www.andreagrandi.co.uk/tag/music.html">music</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p>While I'm still working to
-<a href="http://www.andreagrandi.it/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/">mSoma</a>
-with Lorenzo Bettini, I decided to start writing another application. I
-needed to write something from scratch to learn better how to use
-<strong>C++</strong> and <strong>Qt</strong> libraries, so I decided to write a client for
-<a href="http://www.lastfm.com">Last.fm</a> service. The application is still in
-full …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/" rel="bookmark"
-                           title="Permalink to Announcing mSoma: Maemo/MeeGo client for SomaFM">Announcing mSoma: Maemo/MeeGo client for SomaFM</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 03 July 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-qt-recensione.html">Linux, Maemo (EN), MeeGo, Qt, Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meego.html">MeeGo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/somafm.html">SomaFM</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://somafm.com">SomaFM</a> is a streaming radio with near 16 different
-channels, available for free. Even if it's possible to copy-paste their
-streaming URLs to N900 Media Player, we
-(<a href="http://maemo.org/profile/view/andy80">me</a> and <a href="http://maemo.org/profile/view/lorebett"><strong>Lorenzo
-Bettini</strong></a>) decided to create a
-custom application, to make channels switching easier for the end user
-and to be able …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/" rel="bookmark"
-                           title="Permalink to Twitter client for Maemo in Qt + Python: call for developers and UI designers">Twitter client for Maemo in Qt + Python: call for developers and UI designers</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 22 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-python-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meego.html">MeeGo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/twitter.html">twitter</a></span>
-</footer><!-- /.post-info -->                <h2>Introduction</h2>
-<p>My name's <strong>Andrea Grandi</strong>, I'm italian and I'm a Maemo
-user/lover/contributor since the <strong>Nokia 770</strong>. I love <strong>Python</strong> as
-development language and few months ago I also gave some contributions
-to the <a href="http://pymaemo.garage.maemo.org/"><strong>PyMaemo</strong></a> project.</p>
-<p>In these days I had the idea to start writing a <strong>Twitter</strong> client …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+<p>Reference: <a href="http://blog.102web.ru/tag/virtualenvs/">http://blog.102web.ru/tag/virtualenvs/</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/05/02/how-to-fix-pip-under-debian-6-0-squeeze-importerror-cannot-import-name-parser/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/05/02/how-to-fix-pip-under-debian-6-0-squeeze-importerror-cannot-import-name-parser/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.co.uk/author/admin6.html">&laquo;</a>
-    Page 7 / 19
+    Page 7 / 46
         <a href="https://www.andreagrandi.co.uk/author/admin8.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

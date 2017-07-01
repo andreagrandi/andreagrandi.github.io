@@ -81,7 +81,35 @@ Gitorious.</p><p><a href="https://www.andreagrandi.co.uk/2010/07/03/announcing-m
 user/lover/contributor since the <strong>Nokia 770</strong>. I love <strong>Python</strong> as
 development language and few months ago I also gave some contributions
 to the <a href="http://pymaemo.garage.maemo.org/"><strong>PyMaemo</strong></a> project.</p>
-<p>In these days I had the idea to start writing a <strong>Twitter</strong> client …</p>
+<p>In these days I had the idea to start writing a <strong>Twitter</strong> client for
+<strong>Maemo</strong> with a precise direction in my mind. I'll try to explain all
+my reasons here. First of all I've to thank the author of
+<a href="http://mauku.henrikhedberg.com/"><strong>Mauku</strong></a> client. I use it since its
+first version and I'm quite happy with it. Then, why do I want to write
+another one?</p>
+<ol>
+<li><strong>Maemo</strong> (MeeGo) is moving to <strong>Qt</strong> and for this reason I'm going
+    to use Qt, while Mauku uses Gtk.</li>
+<li>I'm learning Qt and what is better than writing a complete (but not
+    too complex) application to learn better?</li>
+<li>Mauku is not free as lot of people could think. Reading the source
+    codeyou find this "You are NOT allowed to modify or redistribute the
+    source code.", while I want to write a client and release it under
+    <strong>GPL2</strong> or <strong>GPL3</strong> license.</li>
+<li>Mauku is not updated since some months and we have no news about it.</li>
+<li>I love Python and I like to write free software in this language.</li>
+<li>I want to give to Maemo a stronger contribute.</li>
+</ol>
+<h2>My request for help</h2>
+<p>Before lot of people start writing their own client resulting in 4-5
+twitter clients for Maemo, why don't we join our strength and work to a
+common project? I'm not a Python expert nor a Qt one, but I've some
+experience as project/team leader and since this is not a complex
+project, I would be glad to lead it. So, I'm looking for Python
+developers, Qt developers, UI designers and whoever want to contribute
+to this project. I still have to find a good name and logo for this
+application.</p>
+<p>Who want to help me?</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -102,7 +130,20 @@ notes</a>
 about my personal experience with <strong>PR 1.1.1</strong> firmware upgrade in Nokia
 <strong>N900</strong>. In particular my device got an infinite reboot loop after
 upgrading the firmware and I had to flash the firmware image from
-scratch to fix the problem. Today I …</p>
+scratch to fix the problem. Today I was kindly contacted by <strong>Max
+Waterman</strong> (I suppose he works for Nokia) and he explained me what was
+the problem. It was caused by a little bug in Harmattan UI demo and they
+fixed it (the fix is already available in extras-devel).</p>
+<p>No surprise for me: extras-devel contains unstable packages and if user
+enables it, he does at his own risk. The most important thing is the
+fact that the official firmware without any unstable application doesn't
+suffer of this problem at all. The thing that really impressed me so
+much (in a positive sense) it's that I was contacted privately by a
+Nokia developer apologizing for the bug (no problem man, it's part of
+the game if someone want to test extras-devel software) and explaining
+that they already fixed it.</p>
+<p>This is what I like of Maemo (or should I already call it MeeGo?), I
+really feel to be a part of it!</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/20/nokia-n900-reboot-loop-after-pr-1-1-1-upgrade-is-not-a-firmware-bug/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2010/02/20/nokia-n900-reboot-loop-after-pr-1-1-1-upgrade-is-not-a-firmware-bug/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -122,145 +163,40 @@ scratch to fix the problem. Today I …</p>
 problems, but I'll report them anyway, maybe somebody had my same
 problem and we could try to prepare a proper bug report to make the
 Maemo team fix them.</p>
-<h2>Infinite boot loop after …</h2>
+<h2>Infinite boot loop after upgrade</h2>
+<p>First of all I have to say that before upgrading to PR 1.1.1 I checked
+if I had enough space on the rootfs. I only had 27 Mb and so I decided
+to remove some unused applications, deleted some *.deb in
+/var/cache/apt/archives and disabled extras repositories. Of course I
+also did a backup of all my configuration. After the cleaning operation
+I had near 60 Mb free on rootfs, enough to install the upgrade.</p>
+<p>I closed all running applications, started the application manager and
+began the upgrade. After the upgrade was completed, the device did a
+reboot... then another one, then again, again.... until I had to remove
+the battery to stop it.</p>
+<p>Conclusion: I had to re-flash the device with the latest image to make
+it work again.</p>
+<h2>mafw-dbus-wrapper taking all the CPU</h2>
+<p>I was watching a video (using subtitles) and after some minutes the
+whole UI became unresponsive. Strange because I already did this before
+without having any problem. I tried to check the problem using "top"
+utility from terminal and I saw that there was a mafw process
+(mafw-dbus-wrapper) that was taking 80-90% of CPU. My fault is that
+normally there are at least 3-4 , mafw-dbus-wrapper processes and I
+didn't check which one was causing the problem. Anyway I made a
+screenshot, just in case it can help.</p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100217-034958.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100217-034958-300x180.png" title="Screenshot-20100217-034958">{.size-medium
+.wp-image-362 .aligncenter width="300"
+height="180"}</a></p>
+<p>I hope this short report can be useful to help Maemo team to fix or at
+least investigate what happened. Just leave a comment or contact me if
+you need more informations.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/17/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2010/02/17/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/16/maemo-6-harmattan-ui-screenshots/" rel="bookmark"
-                           title="Permalink to Maemo 6 (Harmattan) UI Screenshots">Maemo 6 (Harmattan) UI Screenshots</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 16 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-qt-recensione.html">Linux, Maemo (EN), Qt, Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/harmattan.html">harmattan</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/preview.html">preview</a><a href="https://www.andreagrandi.co.uk/tag/screenshot.html">screenshot</a><a href="https://www.andreagrandi.co.uk/tag/ui.html">UI</a></span>
-</footer><!-- /.post-info -->                <p>Nokia has published a demo application for <strong>N900</strong>, available in
-<strong>extras-devel</strong> repository, that shows a preview of <strong>Maemo 6</strong>
-(Harmattan) user interface. Here there are some screenshots of the
-demo:  </p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021420.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021420-300x180.png" title="Screenshot-20100216-021420">{.size-medium
-.wp-image-346 .aligncenter width="300"
-height="180"}</a></p>
-<p>Demo application main window</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021507.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/02/Screenshot-20100216-021507-300x180.png" title="Screenshot-20100216-021507">{.aligncenter
-.size-medium .wp-image-347 width="300"
-height="180"}</a></p>
-<p>Question dialog …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/16/maemo-6-harmattan-ui-screenshots/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/16/maemo-6-harmattan-ui-screenshots/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/11/12/questionsanswers-about-nokia-n900-and-discounted-device-program/" rel="bookmark"
-                           title="Permalink to Questions/Answers about Nokia N900 and Discounted Device Program">Questions/Answers about Nokia N900 and Discounted Device Program</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 12 November 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en.html">Maemo (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/ddp.html">DDP</a><a href="https://www.andreagrandi.co.uk/tag/discount.html">discount</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p>Being one of the developers who received the discount to buy a N900,
-during these days I contacted the DDP customer care to have more
-informations and details. I'll publish here both my original question
-and the official reply.</p>
-<p><strong>1) The price of N900 is 250€ and I've read of …</strong></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/11/12/questionsanswers-about-nokia-n900-and-discounted-device-program/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/11/12/questionsanswers-about-nokia-n900-and-discounted-device-program/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/11/03/ux-meets-code-hackfest-in-december-barcelona-confirmed/" rel="bookmark"
-                           title="Permalink to UX meets Code hackfest in December @ Barcelona: confirmed!">UX meets Code hackfest in December @ Barcelona: confirmed!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 03 November 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-programmazione.html">Linux, Maemo (EN), Programmazione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/barcelona.html">Barcelona</a><a href="https://www.andreagrandi.co.uk/tag/hackfest.html">hackfest</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meeting.html">meeting</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/ux.html">UX</a></span>
-</footer><!-- /.post-info -->                <p><strong>Quim Gil</strong> just confirmed the <strong>UX hackfest</strong> in <strong>Barcelona</strong> for
-<strong>4, 5, 6 december</strong>: <a href="http://talk.maemo.org/showthread.php?t=33719">http://talk.maemo.org/showthread.php?t=33719</a></p>
-<p><strong>What is UX hackfest?</strong><br>
-It's a three days meeting for Maemo developers, UX experts and people
-who want to learn about designing good user interfaces.</p>
-<p><strong>When?</strong><br>
-On 4 …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/11/03/ux-meets-code-hackfest-in-december-barcelona-confirmed/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/11/03/ux-meets-code-hackfest-in-december-barcelona-confirmed/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/09/03/giving-lightning-talks/" rel="bookmark"
-                           title="Permalink to Giving Lightning Talks">Giving Lightning Talks</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 03 September 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/igalia-maemo-en.html">Igalia, Maemo (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/amsterdam.html">amsterdam</a><a href="https://www.andreagrandi.co.uk/tag/conference.html">conference</a><a href="https://www.andreagrandi.co.uk/tag/lightning.html">lightning</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/talk.html">talk</a></span>
-</footer><!-- /.post-info -->                <p><img alt="lightning" src="http://www.andreagrandi.it/wp-content/uploads/2009/09/lightning.jpg" title="lightning">{.alignright
-.size-full .wp-image-320 width="131" height="183"}During next <a href="http://wiki.maemo.org/Maemo_Summit_2009"><strong>Maemo
-Summit</strong></a> we will have at least
-2 hours (one on saturday and another one on sunday) of lightning talks,
-about 20 talks where people will try to explain or present something in
-just <strong>5 minutes</strong>.</p>
-<p>Last year, during Maemo Summit …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/09/03/giving-lightning-talks/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/09/03/giving-lightning-talks/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/" rel="bookmark"
-                           title="Permalink to Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils">Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 13 August 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/binding.html">binding</a><a href="https://www.andreagrandi.co.uk/tag/distutils.html">distutils</a><a href="https://www.andreagrandi.co.uk/tag/library.html">library</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/setup.html">setup</a></span>
-</footer><!-- /.post-info -->                <p>In the last post of this series, we saw how to write a simple binding
-and we finished to build and install it manually. This is of course not
-a good way to manage the building/installation procedure.</p>
-<p>In Python we can use a library called <strong>distutils</strong> that let us …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/" rel="bookmark"
-                           title="Permalink to PyMaemo (Python for Maemo) second beta release for Fremantle">PyMaemo (Python for Maemo) second beta release for Fremantle</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 10 August 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/igalia-linux-maemo-en-programmazione-python.html">Igalia, Linux, Maemo (EN), Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bindings.html">bindings</a><a href="https://www.andreagrandi.co.uk/tag/fremantle.html">fremantle</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/pymaemo.html">pymaemo</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tablet.html">tablet</a></span>
-</footer><!-- /.post-info -->                <p>The <strong>PyMaemo</strong> team is pleased to announce the second beta release of
-PyMaemo for <strong>Fremantle</strong>!</p>
-<p>This new release is available through the <strong>extras-devel</strong> repository,
-see installation instructions in<br>
-<a href="http://pymaemo.garage.maemo.org/sdk_installation.html#fremantle">http://pymaemo.garage.maemo.org/sdk_installation.html#fremantle</a></p>
-<h2>What is it?</h2>
-<p>Python for Maemo (PyMaemo for short) main objective is to make …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 4
+    Page 1 / 10
         <a href="https://www.andreagrandi.co.uk/tag/maemo2.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

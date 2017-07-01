@@ -32,230 +32,403 @@
         </header><!-- /#banner -->
 
                 <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="9">
+                    <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/10/12/ubuntu-oneiric-11-10-problems-and-regressions/" rel="bookmark"
-                           title="Permalink to Ubuntu Oneiric 11.10 problems and regressions">Ubuntu Oneiric 11.10 problems and regressions</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/" rel="bookmark"
+                           title="Permalink to Automatically pull updated Docker images and restart containers with docker-puller">Automatically pull updated Docker images and restart containers with docker-puller</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Wed 12 October 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-ubuntu-en.html">Linux, Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/ubuntu-oneiric-ocelot.html">ubuntu oneiric ocelot</a></span>
-</footer><!-- /.post-info -->                <div>
+        <span>Sat 25 October 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/containers.html">containers</a><a href="https://www.andreagrandi.co.uk/tag/docker.html">docker</a><a href="https://www.andreagrandi.co.uk/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.co.uk/tag/flask.html">Flask</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>If you use <a href="http://docker.io">docker.io</a> (or any similar service) to
+build your <strong>Docker</strong> containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h2 id="how-to-use-docker-puller" style="color: #333333;">How to use docker-puller</h2>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span>{
+    &quot;host&quot;: &quot;localhost&quot;,
+    &quot;port&quot;: 8000,
+    &quot;token&quot;: &quot;abc123&quot;,
+    &quot;hooks&quot;: {
+        &quot;hello&quot;: &quot;scripts/hello.sh&quot;
+    }
+}
+</pre></div>
 
-![](http://www.andreagrandi.it/wp-content/uploads/2011/10/software-bug-300x199.jpg "software-bug-300x199"){.alignright
-.size-full .wp-image-566 width="168" height="111"}
 
-</div>
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+docker stop test
+docker rm test
+docker run --name test -d -p 8000:80 andreagrandi/test:latest
+</pre></div>
 
-<p>Tomorrow <strong>Ubuntu 11.10</strong> (Oneiric Ocelot) will be released officially
-and I decided to test the RC (release candidate) version on my desktop
-PC. Being involved in Unity-2D development I used only …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/10/12/ubuntu-oneiric-11-10-problems-and-regressions/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/10/12/ubuntu-oneiric-11-10-problems-and-regressions/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/09/30/cutesoma-soma-fm-client-for-nokia-n9n950-now-available-on-ovi-store/" rel="bookmark"
-                           title="Permalink to CuteSoma: Soma.Fm client for Nokia N9/N950 now available on OVI Store">CuteSoma: Soma.Fm client for Nokia N9/N950 now available on OVI Store</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/" rel="bookmark"
+                           title="Permalink to Create an EncFS volume compatible with BoxCryptor Classic">Create an EncFS volume compatible with BoxCryptor Classic</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Fri 30 September 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-meego.html">Maemo (EN), MeeGo</a></span>
+        <span>Fri 12 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-sicurezza.html">HowTo, Linux, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/boxcryptor.html">boxcryptor</a><a href="https://www.andreagrandi.co.uk/tag/dropbox.html">dropbox</a><a href="https://www.andreagrandi.co.uk/tag/encfs.html">encfs</a></span>
+</footer><!-- /.post-info -->                <p>If you are planning to share an encrypted volume between Linux/OSX and
+Windows (I will assume you are sharing it on Dropbox, but you could use
+any similar service) and you are using
+<a href="http://www.arg0.net/encfs"><strong>EncFS</strong></a> under Linux/OSX and
+<a href="https://www.boxcryptor.com"><strong>BoxCryptor</strong></a> under Windows, there are
+some specifig settings to use when you create the EncFS volume. Infact
+even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
+<p>Suppose you want to create an encrypted volume located at
+<strong>\$HOME/.TestTmpEncrypted</strong> and mounted at <strong>\$HOME/TestTmp</strong> you need
+the following command:</p>
+<div class="highlight"><pre><span></span>andrea-Inspiron-660:~ andrea $ encfs ~/.TestTmpEncrypted ~/TestTmp
+</pre></div>
 
-</footer><!-- /.post-info -->                <p><strong>CuteSoma</strong> is a client of <strong><a href="http://somafm.com/">Soma.Fm</a></strong> streaming
-radio that I wrote using Qt/QML for <strong>Nokia N9</strong> and <strong>Nokia N950</strong>.
-Previously it was available as a .deb only, now you can install it
-directly from the <strong><a href="http://store.ovi.com/content/205737">OVI Store</a></strong>.
-It's only a 0.1 version and even if it's quite …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/09/30/cutesoma-soma-fm-client-for-nokia-n9n950-now-available-on-ovi-store/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/09/30/cutesoma-soma-fm-client-for-nokia-n9n950-now-available-on-ovi-store/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+
+<p>answer "Y" when you are asked if you want to create the folders:</p>
+<div class="highlight"><pre><span></span>The directory &quot;/home/andrea/.TestTmpEncrypted/&quot; does not exist. Should it be created? (y,n) y
+The directory &quot;/home/andrea/TestTmp&quot; does not exist. Should it be created? (y,n) y
+</pre></div>
+
+
+<p>At this point you will need to select between default paranoia mode or
+advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
+<div class="highlight"><pre><span></span>Creating new encrypted volume.
+Please choose from one of the following options:
+ enter &quot;x&quot; for expert configuration mode,
+ enter &quot;p&quot; for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?&gt; x
+</pre></div>
+
+
+<p>Manual configuration mode selected.</p>
+<div class="highlight"><pre><span></span>Select AES as cypher algorithm:
+
+The following cypher algorithms are available:
+1. AES : 16 byte block cipher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+2. Blowfish : 8 byte block cypher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+
+Enter the number corresponding to your choice: 1
+
+Selected algorithm &quot;AES&quot;
+</pre></div>
+
+
+<p>Select <strong>256</strong> as key size:</p>
+<div class="highlight"><pre><span></span>Please select a key size in bits. The cypher you have chosen
+supports sizes from 128 to 256 bits in increments of 64 bits.
+For example:
+128, 192, 256
+Selected key size: 256
+
+Using key size of 256 bits
+</pre></div>
+
+
+<p>Choose <strong>1024</strong> as block size:</p>
+<div class="highlight"><pre><span></span>Select a block size in bytes. The cypher you have chosen
+supports sizes from 64 to 4096 bytes in increments of 16.
+Alternatively, just press enter for the default (1024 bytes)
+
+filesystem block size:
+
+Using filesystem block size of 1024 bytes
+</pre></div>
+
+
+<p>Select <strong>Stream</strong> as filename encoding:</p>
+<div class="highlight"><pre><span></span>The following filename encoding algorithms are available:
+1. Block : Block encoding, hides file name size somewhat
+2. Null : No encryption of filenames
+3. Stream : Stream encoding, keeps filenames as short as possible
+
+Enter the number corresponding to your choice: 3
+
+Selected algorithm &quot;Stream&quot;&quot;
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
+<div class="highlight"><pre><span></span>Enable filename initialization vector chaining?
+This makes filename encoding dependent on the complete path,
+rather then encoding each path element individually.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
+<div class="highlight"><pre><span></span>Enable per-file initialization vectors?
+This adds about 8 bytes per file to the storage requirements.
+It should not affect performance except possibly with applications
+which rely on block-aligned file io for performance.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
+<div class="highlight"><pre><span></span>External chained IV disabled, as both &#39;IV chaining&#39;
+and &#39;unique IV&#39; features are required for this option.
+Enable block authentication code headers
+on every block in a file? This adds about 12 bytes per block
+to the storage requirements for a file, and significantly affects
+performance but it also means [almost] any modifications or errors
+within a block will be caught and will cause a read error.
+The default here is No.
+Any response that does not begin with &#39;y&#39; will mean No: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
+<div class="highlight"><pre><span></span>Add random bytes to each block header?
+This adds a performance penalty, but ensures that blocks
+have different authentication codes. Note that you can
+have the same benefits by enabling per-file initialisation
+vectors, which does not come with as great a performance
+penalty.
+Select a number of bytes, from 0 (no random bytes) to 8: 0
+</pre></div>
+
+
+<p>Enable <strong>file-hole pass-through</strong>:</p>
+<div class="highlight"><pre><span></span>Enable file-hole pass-through?
+This avoids writing encrypted blocks when file holes are created.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: yes
+</pre></div>
+
+
+<p>Finally you will see:</p>
+<div class="highlight"><pre><span></span>Configuration finished. The filesystem to be created has
+the following properties:
+Filesystem cypher: &quot;ssl/aes&quot;, version 3:0:2
+Filename encoding: &quot;nameio/stream&quot;, version 2:1:2
+Key Size: 256 bits
+Block Size: 1024 bytes
+File holes passed through to ciphertext.
+</pre></div>
+
+
+<p>At this point set a passphrase for your new volume:</p>
+<div class="highlight"><pre><span></span>Now you will need to enter a password for your filesystem.
+You will need to remember this password, as there is absolutely
+no recovery mechanism. However, the password can be changed
+later using encfsctl.
+
+New Encfs Password:
+Verify Encfs Password:
+</pre></div>
+
+
+<p>You should be able to mount this volume using BoxCryptor.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/" rel="bookmark"
-                           title="Permalink to HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD">HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="bookmark"
+                           title="Permalink to How to configure Edimax EW-7811UN Wifi dongle on Raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sat 13 August 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/android-google-linux.html">Android, Google, Linux</a></span>
+        <span>Tue 02 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-raspberrypi.html">HowTo, Linux, RaspberryPi</a></span>
 
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/08/htc-desire-300x260.jpg" title="htc-desire">{.alignright
-.size-medium .wp-image-547 width="192" height="166"}</p>
-<h2>Introduction</h2>
-<p>Even if it's not a new model, the <strong>HTC Desire</strong> is still a very good
-Android device, thanks to its <strong>1Ghz</strong> CPU and <strong>512 Mb RAM</strong>, but one
-of the biggest problems of this phone is that it comes with <strong>only
-148Mb …</strong></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p>If you want to connect your <strong>RaspberryPi</strong> to your home network and you
+want to avoid cables, I suggest you to use the <strong>Edimax wifi adapter</strong>.
+This device is quite cheap (around £8 on
+<a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/">Amazon</a>)
+and it's very easy to configure on Raspbian (I assume you are using a
+recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png">{.aligncenter
+.wp-image-895 width="708"
+height="398"}</a></p>
+<h2>Configure the wifi adapter</h2>
+<p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
+<div class="highlight"><pre><span></span>auto lo
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+auto wlan0
+
+iface wlan0 inet dhcp
+wpa-ssid YOURESSID
+wpa-psk YOURWPAPASSWORD
+</pre></div>
+
+
+<h2>Power management issue</h2>
+<p>There is a known "issue" with this adapter default configuration that
+makes it to turn off if the wlan interface is not in use for some
+minutes. To avoid this you have to customize the parameters used to load
+the kernel module. First check that your adapter is using <strong>8192cu</strong>
+module:</p>
+<div class="highlight"><pre><span></span>sudo lsmod | grep 8192
+8192cu 551136 0
+</pre></div>
+
+
+<p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
+lines inside:</p>
+<div class="highlight"><pre><span></span># prevent power down of wireless when idle
+options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+</pre></div>
+
+
+<p>I also suggest to create a little entry in crontab to make the
+RaspberryPi ping your router every minute. This will ensure that your
+wifi connection will stay alive. To edit crontab just type (from pi
+user, you don't need to be root):</p>
+<div class="highlight"><pre><span></span>crontab -e
+</pre></div>
+
+
+<p>and insert this line at the end:</p>
+<div class="highlight"><pre><span></span>*/1 * * * * ping -c 1 192.168.0.1
+</pre></div>
+
+
+<p>where 192.168.0.1 is the IP of your router (of course substitute this
+value with the ip of your router).</p>
+<h3>Keep Alive Script</h3>
+<p>I created a further script to keep my WIFI alive. This script will ping
+the router (change the IP using the one of your router) every 5 minutes
+and if the ping fails it brings down the wlan0 interface, the kernel
+module for the wifi and bring them up again.</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
+</p>
+
+<p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
+<strong>root</strong> user:</p>
+<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+crontab -e
+</pre></div>
+
+
+<p>Insert this line inside the crontab editor:</p>
+<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
+</pre></div>
+
+
+<h2>Conclusion</h2>
+<p>The configuration is done. Just reboot your RaspberryPi and enjoy your
+wifi connection.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-3/" rel="bookmark"
-                           title="Permalink to UDS day-3">UDS day-3</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/" rel="bookmark"
+                           title="Permalink to Configuring ddclient to update your dynamic DNS at noip.com">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-ubuntu-en-uds.html">Linux, Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/developer.html">Developer</a><a href="https://www.andreagrandi.co.uk/tag/linux.html">Linux</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a><a href="https://www.andreagrandi.co.uk/tag/uds-o.html">UDS-O</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0260.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0260-300x200.jpg" title="IMG_0260">{.alignright
-.size-medium .wp-image-537 width="240"
-height="160"}</a>Even
-this morning I didn't wake up early because I still felt sick (I already
-know this sore throath won't abandon me untile I go back home).</p>
-<p>I had a <strong>light breakfast at 10:30</strong> and then I finishes uploading some
-pictures and …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-3/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-3/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+        <span>Tue 02 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-2/" rel="bookmark"
-                           title="Permalink to UDS day-2">UDS day-2</a></h1>
-                </header>
+</footer><!-- /.post-info -->                <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
+services that are reliable to use. If you have, like in my situation, a
+RaspberryPi connected to your home DSL and you want it to be always
+reachable without knowing the current IP address (the IP could change if
+you have a normal DSL service at home), you need a dynamic DNS service.</p>
+<p>To update the noip.com one you just need <strong>ddclient,</strong> a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install ddclient
+</pre></div>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en-uds.html">Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a><a href="https://www.andreagrandi.co.uk/tag/uds-o.html">UDS-O</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0323.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0323-300x200.jpg" title="IMG_0323">{.alignright
-.size-medium .wp-image-531 width="240"
-height="160"}</a>This
-day at UDS started a bit late for me, since i woke up pretty sick (damn
-air conditioned!!!). I did not follow any conferences in the morning. I
-relly wanted to follow the <strong>Wayland</strong> one, but when I arrived the room
-was …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-2/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-2/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-1/" rel="bookmark"
-                           title="Permalink to UDS day-1">UDS day-1</a></h1>
-                </header>
+<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
+<div class="highlight"><pre><span></span>protocol=dyndns2
+use=web, web=checkip.dyndns.com/, web-skip=&#39;IP Address&#39;
+server=dynupdate.no-ip.com
+login=yourusername
+password=yourpassword
+yourhostname.no-ip.org
+</pre></div>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en-uds.html">Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/canonical.html">Canonical</a><a href="https://www.andreagrandi.co.uk/tag/conference.html">conference</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0286.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0286-300x200.jpg" title="IMG_0286">{.alignright
-.size-medium .wp-image-528 width="240"
-height="160"}</a>My
-day started at 7:30 with a <strong>very nice breakfast!</strong> I was alone with
-just another guy this morning, in a very big breakbast room.</p>
-<p>After it I grabbed my badge to avoid queue later and went back to my
-room to …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-1/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-1/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-0/" rel="bookmark"
-                           title="Permalink to UDS day-0">UDS day-0</a></h1>
-                </header>
+<p>and restart the client:</p>
+<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
+</pre></div>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en-uds.html">Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/conference.html">conference</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0254.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0254-300x200.jpg" title="IMG_0254">{.alignright
-.size-medium .wp-image-523 width="210"
-height="140"}</a>I
-left from <strong>Firenze</strong> with my friend <strong>Marco Trevisan</strong>, to go to
-<strong><a href="http://uds.ubuntu.com">Ubuntu Developer Summit</a></strong> in <strong>Budapest</strong>. We
-changed flight in <strong>Rome</strong> where we met also <strong>Andrea Azzarone</strong>.
-Unluckly <strong>Alitalia losts Marco's baggage</strong>, so he's still waiting for
-it.</p>
-<p>We arrived at the …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-0/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-0/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/04/09/some-ideas-to-improve-community-collaboration-for-ubuntu-developer-summit/" rel="bookmark"
-                           title="Permalink to Some ideas to improve Community collaboration for Ubuntu Developer Summit">Some ideas to improve Community collaboration for Ubuntu Developer Summit</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 09 April 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en.html">Ubuntu (EN)</a></span>
-
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/04/Ubuntu-Developer-Summit.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/04/Ubuntu-Developer-Summit-300x229.png" title="Ubuntu Developer Summit">{.alignright
-.size-medium .wp-image-481
-width="200"}</a>Few
-days ago I received an email from <strong>Jorge O. Castro</strong> of the Ubuntu
-Community, announcing me that my request of sponsorization for <strong><a href="http://uds.ubuntu.com/">Ubuntu
-Developer Summit</a></strong> has been accepted. I have
-never attended an UDS before, so I must admit I feel a bit disoriented …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/04/09/some-ideas-to-improve-community-collaboration-for-ubuntu-developer-summit/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/04/09/some-ideas-to-improve-community-collaboration-for-ubuntu-developer-summit/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/04/06/meego-events-meeting-april-4th-2011-notes/" rel="bookmark"
-                           title="Permalink to MeeGo Events Meeting - April 4th 2011 - Notes">MeeGo Events Meeting - April 4th 2011 - Notes</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 06 April 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/meego.html">MeeGo</a></span>
-
-</footer><!-- /.post-info -->                <h2>MeeGo Conference Updates</h2>
-<p>﻿We have <strong>315</strong> registrants as of today for the conference, so numbers
-are looking good without having any agenda published yet! A good portion
-of sessions should be approved by April 8th, this Friday and you will
-receive an email when/if your session has been approved …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/04/06/meego-events-meeting-april-4th-2011-notes/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/04/06/meego-events-meeting-april-4th-2011-notes/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/" rel="bookmark"
-                           title="Permalink to Utilizzare la Carta Sanitaria Europea su Ubuntu Linux">Utilizzare la Carta Sanitaria Europea su Ubuntu Linux</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 11 November 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-ubuntu-it.html">HowTo, Linux, Ubuntu (IT)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/cse.html">CSE</a><a href="https://www.andreagrandi.co.uk/tag/firefox.html">Firefox</a><a href="https://www.andreagrandi.co.uk/tag/regione-toscana.html">Regione Toscana</a><a href="https://www.andreagrandi.co.uk/tag/smartcard.html">SmartCard</a></span>
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/11/jpg_2056020.jpg" title="CSE_Toscana">{.alignright
-.size-full .wp-image-426 width="149" height="118"}In questo periodo le
-regioni stanno inviando a casa di ogni cittadino la nuova versione della
-<strong>Carta Sanitaria Europea</strong>, simile a quella che potete vedere nella
-foto. Questa nuova carta, oltre a conservare gli stessi utilizzi di
-quella vecchia, comprende anche un micro …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
+<strong>limitation</strong>: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.co.uk/index6.html">&laquo;</a>
-    Page 7 / 19
+    Page 7 / 48
         <a href="https://www.andreagrandi.co.uk/index8.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

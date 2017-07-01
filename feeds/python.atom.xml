@@ -3,7 +3,42 @@
 While there can be many different ways of implementing this task, I
 found three in particular that I appreciate for different reasons. Let's
 define first a list of integers that we will reverse later.&lt;/p&gt;
-&lt;p&gt;``` {.lang:python …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes we need to reverse the order of the elements in a Python list.
+&lt;p&gt;``` {.lang:python .decode:true}
+l = [1, 2, 3, 4, 5, 6]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;List&lt;/span&gt; &lt;span class="s s-Atom"&gt;slicing&lt;/span&gt;
+&lt;span class="s s-Atom"&gt;------------&lt;/span&gt;
+
+&lt;span class="nv"&gt;This&lt;/span&gt; &lt;span class="s s-Atom"&gt;method&lt;/span&gt; &lt;span class="s s-Atom"&gt;can&lt;/span&gt; &lt;span class="s s-Atom"&gt;be&lt;/span&gt; &lt;span class="s s-Atom"&gt;a&lt;/span&gt; &lt;span class="s s-Atom"&gt;bit&lt;/span&gt; &lt;span class="s s-Atom"&gt;obscure&lt;/span&gt; &lt;span class="s s-Atom"&gt;at&lt;/span&gt; &lt;span class="s s-Atom"&gt;first&lt;/span&gt; &lt;span class="s s-Atom"&gt;read&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s s-Atom"&gt;but&lt;/span&gt; &lt;span class="s s-Atom"&gt;basically&lt;/span&gt; &lt;span class="s s-Atom"&gt;it&lt;/span&gt; &lt;span class="s s-Atom"&gt;slices&lt;/span&gt;
+&lt;span class="s s-Atom"&gt;the&lt;/span&gt; &lt;span class="s s-Atom"&gt;whole&lt;/span&gt; &lt;span class="s s-Atom"&gt;list&lt;/span&gt; &lt;span class="s s-Atom"&gt;proceding&lt;/span&gt; &lt;span class="s s-Atom"&gt;in&lt;/span&gt; &lt;span class="s s-Atom"&gt;the&lt;/span&gt; &lt;span class="s s-Atom"&gt;reverse&lt;/span&gt; &lt;span class="nn"&gt;order&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+&lt;span class="err"&gt;```&lt;/span&gt; &lt;span class="p"&gt;{.&lt;/span&gt;&lt;span class="nn"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s s-Atom"&gt;python&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nn"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s s-Atom"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;input&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;print&lt;/span&gt; &lt;span class="s s-Atom"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;::-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;output&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Reversed method&lt;/h2&gt;
+&lt;p&gt;We use the
+&lt;strong&gt;&lt;a href="https://docs.python.org/2/library/functions.html#reversed"&gt;reversed&lt;/a&gt;&lt;/strong&gt; method
+that returns an iterable object and a list comprehension to generate the
+new list&lt;/p&gt;
+&lt;p&gt;``` {.lang:python .decode:true}
+[input]: print [x for x in reversed(l)]
+[output]: [6, 5, 4, 3, 2, 1]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;Swapping values in place&lt;/span&gt;
+&lt;span class="gh"&gt;------------------------&lt;/span&gt;
+
+This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...
+
+&lt;span class="s"&gt;``` {.lang:python .decode:true}&lt;/span&gt;
+&lt;span class="s"&gt;[input]:&lt;/span&gt;
+&lt;span class="s"&gt;for i in range(0, len(l) / 2):&lt;/span&gt;
+&lt;span class="s"&gt;    l[i], l[len(l) -1 -i] = l[len(l) -1 -i], l[i]&lt;/span&gt;
+&lt;span class="s"&gt;print l&lt;/span&gt;
+
+&lt;span class="s"&gt;[output]: [6, 5, 4, 3, 2, 1]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Sometimes we need to reverse the order of the elements in a Python list.
 While there can be many different ways of implementing this task, I
 found three in particular that I appreciate for different reasons. Let's
 define first a list of integers that we will reverse later.&lt;/p&gt;
@@ -47,7 +82,39 @@ radio based in San Francisco) and during the years I've been writing
 clients for this radio for different mobile platforms (Maemo, MeeGo,
 Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
 their "&lt;a href="http://somafm.com/indiepop/"&gt;&lt;strong&gt;Indie Pop Rock&lt;/strong&gt;&lt;/a&gt;" channel that
-during …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I'm a big fan of &lt;a href="http://somafm.com"&gt;Soma.fm&lt;/a&gt; (a 25+ channels streaming
+during these years made me discover some very good artists.&lt;/p&gt;
+&lt;p&gt;When &lt;strong&gt;Spotify&lt;/strong&gt; finally was available in Italy (I'm still using it
+right now that I live in the UK), something that I always missed was a
+radio with the same good music. Why not just listening to Soma.fm?
+Because I like to listen to the music while I commute and in the London
+Underground it's nearly impossible to have signal.&lt;/p&gt;
+&lt;p&gt;So I was thinking: it would be nice to have &lt;strong&gt;a Spotify playlist with
+Soma.fm tracks&lt;/strong&gt;. Wait a moment.... &lt;strong&gt;I can do it!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"&gt;&lt;img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"&gt;{.aligncenter
+.size-full .wp-image-981 width="542"
+height="422"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Soma.fm publishes the tracks history with all the tracks streamed during
+the last hour &lt;a href="http://somafm.com/indiepop/songhistory.html"&gt;http://somafm.com/indiepop/songhistory.html&lt;/a&gt; so I just
+needed something to parse this list for me and return me a well
+formatted version.&lt;/p&gt;
+&lt;p&gt;Thanks to &lt;a href="https://import.io"&gt;&lt;strong&gt;import.io&lt;/strong&gt;&lt;/a&gt; (it's a service that takes
+a web page as input, parse the data and generates a RESTful API to
+access this data) I was able to easily get the data I needed. At this
+point I only needed to be able to loop through the list, search each
+track on Spotify and add it to my playlist.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;source code is fully available&lt;/strong&gt; here
+&lt;a href="https://github.com/andreagrandi/spotisoma"&gt;https://github.com/andreagrandi/spotisoma&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; you can't just get the code and run it. You will need to get
+your own &lt;strong&gt;import.io api key&lt;/strong&gt;, generate your import.io api url, get a
+&lt;a href="https://developer.spotify.com/technologies/libspotify/keys/"&gt;&lt;strong&gt;Spotify application
+key&lt;/strong&gt;&lt;/a&gt; (the
+old/deprecated one, since it was nearly impossible for me to use oauth
+in a simple Python script due to the fact I didn't have an endpoint to
+receive the token back. You can get more informations here:
+&lt;a href="https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys"&gt;https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys&lt;/a&gt;)
+and set your env variables with your Spotify username and password. Last
+but not least: the &lt;strong&gt;old Spotify library&lt;/strong&gt; only works with &lt;strong&gt;Premium&lt;/strong&gt;
+accounts.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I'm a big fan of &lt;a href="http://somafm.com"&gt;Soma.fm&lt;/a&gt; (a 25+ channels streaming
 radio based in San Francisco) and during the years I've been writing
 clients for this radio for different mobile platforms (Maemo, MeeGo,
 Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
@@ -91,7 +158,9 @@ height="97"}&lt;/a&gt;I've just released
 &lt;a href="http://ping.fm"&gt;Ping.fm&lt;/a&gt; API. Ping.fm is a simple service that allow
 you to update multiple social networks (Facebook, Twitter, Jaiku ecc...)
 with a single post. You can find complete source code and documentation
-on the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://code.google.com/p/pyngfm/"&gt;&lt;img alt="ping.fm" src="http://www.andreagrandi.it/wp-content/uploads/2009/02/icn_p.png" title="ping.fm"&gt;{.alignright
+on the official website: &lt;a href="http://code.google.com/p/pyngfm/"&gt;http://code.google.com/p/pyngfm/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Please contact me if you have any suggestion or if you find any bug in
+the code, so I'll be able to fix it.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://code.google.com/p/pyngfm/"&gt;&lt;img alt="ping.fm" src="http://www.andreagrandi.it/wp-content/uploads/2009/02/icn_p.png" title="ping.fm"&gt;{.alignright
 .size-full .wp-image-257 width="99"
 height="97"}&lt;/a&gt;I've just released
 &lt;a href="http://code.google.com/p/pyngfm/"&gt;PyngFM&lt;/a&gt;, a Python implementation of
@@ -109,7 +178,11 @@ for i in primi:&lt;br&gt;
 if(pow(i, 2) &amp;gt; x):&lt;br&gt;
 break&lt;br&gt;
 for j in primi:&lt;br&gt;
-if(i != j …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Questo codice Python di esempio, genera una lista di numeri primi che
+if(i != j) and (j % i == 0):&lt;br&gt;
+primi.remove(j)&lt;br&gt;
+primi.insert(0, 2)&lt;br&gt;
+return primi&lt;br&gt;
+[/sourcecode]&lt;/p&gt;</summary><content type="html">&lt;p&gt;Questo codice Python di esempio, genera una lista di numeri primi che
 vanno da 2 fino al numero passato come parametro.&lt;/p&gt;
 &lt;p&gt;[sourcecode language='python']&lt;br&gt;
 def eratostene(x):&lt;br&gt;

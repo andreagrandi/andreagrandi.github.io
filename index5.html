@@ -32,216 +32,216 @@
         </header><!-- /#banner -->
 
                 <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="9">
+                    <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2013/02/03/the-windows-phone-emulator-wasnt-able-to-connect-to-the-windows-phone-operating-system-how-to-fix-it/" rel="bookmark"
-                           title="Permalink to The Windows Phone Emulator wasn’t able to connect to the Windows Phone operating system: how to fix it">The Windows Phone Emulator wasn’t able to connect to the Windows Phone operating system: how to fix it</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
+                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sun 03 February 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-programmazione-windows-windows-phone.html">HowTo, Programmazione, Windows, Windows Phone</a></span>
+        <span>Sun 23 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.co.uk/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png">{.aligncenter
+.size-full .wp-image-1012 width="601"
+height="511"}</a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<p>``` {.lang:python .decode:true}
+from datetime import datetime</p>
+<p>class BenchmarkMiddleware(object):
+    def process_request(self, request):
+        request._request_time = datetime.now()</p>
+<div class="highlight"><pre><span></span>def process_template_response(self, request, response):
+    response_time = request._request_time - datetime.now()
+    response.context_data[&#39;response_time&#39;] = abs(response_time)
+    return response
+</pre></div>
 
-</footer><!-- /.post-info -->                <p>This morning when I started my Windows Phone 8 emulator to test an
-application, the emulator refused to work, giving me this error "<strong>The
-Windows Phone Emulator wasn’t able to connect to the Windows Phone
-operating system</strong>". Luckly it's very easy to fix. It's caused by the
-virtual network …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/02/03/the-windows-phone-emulator-wasnt-able-to-connect-to-the-windows-phone-operating-system-how-to-fix-it/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2013/02/03/the-windows-phone-emulator-wasnt-able-to-connect-to-the-windows-phone-operating-system-how-to-fix-it/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+
+<p>```</p>
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/" rel="bookmark"
-                           title="Permalink to Using QtCreator to deploy and run a Qt application to a remote Linux device">Using QtCreator to deploy and run a Qt application to a remote Linux device</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/" rel="bookmark"
+                           title="Permalink to Why I completely switched this website to HTTPS (and why you should do the same)">Why I completely switched this website to HTTPS (and why you should do the same)</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Thu 17 January 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-programmazione-qt-ubuntu-en.html">HowTo, Linux, Programmazione, Qt, Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/deploy.html">deploy</a><a href="https://www.andreagrandi.co.uk/tag/linux.html">Linux</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/qtcreator.html">QtCreator</a><a href="https://www.andreagrandi.co.uk/tag/sdk.html">SDK</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a></span>
-</footer><!-- /.post-info -->                <p>QtCreator is a very flexible IDE and can really be adapted for a lot of
-things. I usually use it to develop mobile applications for Nokia N9 and
-BlackBerry 10, but it can be used for more generic tasks. In my case I
-wanted to be able to develop a …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Sat 22 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/sicurezza.html">Sicurezza</a></span>
+
+</footer><!-- /.post-info -->                <p>I must admit it, there was a time when I was not using <strong>HTTPS</strong>, not
+even to protect the admin section of the website. This means that anyone
+could have intercepted the password and published (or deleted) things in
+my name. Since a couple of years ago I started protecting my admin
+sectio using an SSL certificate.  I haven't done it before for a couple
+of reason: my hosting was on a provider that required a lot of money
+(something like 100\$/year) to enable SSL support, plus an SSL
+certificated costed at least 100-120\$/year.</p>
+<p>When I migrated my website on my own <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">VPS on
+DigitalOcean</a> I
+finally discovered that <strong><a href="https://www.startssl.com">StartSSL</a></strong> was
+giving <strong>free class 1 certificates</strong> and I immediately got one. I made
+the mistake to just serve the admin pages using HTTPS, not all the
+website. I regretted about this decision after readin a
+<a href="http://dannyman.toldme.com/2010/12/23/swa-yahoo-being-evil/">couple</a> of
+<a href="http://opensource.com/business/15/8/interview-daniel-roesler-utilityapi">articles</a>
+that were explaining how some internet providers where changing served
+HTTP pages injecting their own ads or banner. That was unacceptable to
+me and I swicthed the whole website to HTTPS.</p>
+<p>Basically, if you don't serve even your personal website using HTTPS,
+someone could change the page while it's being transfered to the
+requester. Imagine if you have (like me) a page on your blog that let
+people download your public PGP key. Users could be served with a
+different key, so someone else would be able to decrypt a message
+intended for you only. Scary, isn't it?</p>
+<p>If you need more informations about how to request a StartSSL
+certificate and how to install it on Nginx/Apache, I can suggest this
+nice tutorial: <a href="https://konklone.com/post/switch-to-https-now-for-free">https://konklone.com/post/switch-to-https-now-for-free</a></p>
+<p>If you need to serve a WordPress website, that configuration is not
+enough. In that case you may want to have a look at my own Nginx
+configuration, available at this
+address: <a href="https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c">https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c</a></p>
+<p>p.s: if you are you curious to try how Digital Ocean VPS works and fancy
+<strong>10\$ credit</strong> (enough for 2 months if you choose the basic droplet)
+for <strong>free, u</strong>se this link and enjoy
+it <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2013/01/06/spotify-0-8-8-for-linux-crashes-if-it-cannot-connect-to-internet-how-to-fix-it/" rel="bookmark"
-                           title="Permalink to Spotify 0.8.8 for Linux crashes if it cannot connect to Internet: how to fix it">Spotify 0.8.8 for Linux crashes if it cannot connect to Internet: how to fix it</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/07/23/django-notes-tests-setup-method-and-db-data/" rel="bookmark"
+                           title="Permalink to Django Notes: tests, setUp method and db data">Django Notes: tests, setUp method and db data</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sun 06 January 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-ubuntu-en.html">HowTo, Linux, Ubuntu (EN)</a></span>
+        <span>Thu 23 July 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/django-python.html">Django, Python</a></span>
 
-</footer><!-- /.post-info -->                <p>If you upgrade Spotify for Linux to 0.8.8.x version and you have some
-network connection problems (for example you're behind a company
-firewall and need to set a proxy...) the application will crash/hang
-without letting you doing anything (neither setting Proxy informations)</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/Screenshot-from-2013-01-06-185615.png"><img alt="Screenshot from 2013-01-06
-18:56:15" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/Screenshot-from-2013-01-06-185615-300x187.png">{.size-medium
-.wp-image-742 .aligncenter width …</a></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/01/06/spotify-0-8-8-for-linux-crashes-if-it-cannot-connect-to-internet-how-to-fix-it/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2013/01/06/spotify-0-8-8-for-linux-crashes-if-it-cannot-connect-to-internet-how-to-fix-it/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p>This won't be a full post, but just a quick note (probably the first one
+of a serie) about development with Django.</p>
+<p>When we write a <strong>TestCase</strong> test, if we have defined a <strong>setUp</strong>
+method, it will be called before the execution of each test. One could
+think that the database is completely reset after each test, but this is
+not true (not like I was thinking). After each test, whatever we wrote
+on the database is rolled back. If we create a "Client" row (assuming we
+have a model called Clients) in our setUp, when we call it the second
+time the ID won't be 1 as someone (me included) could expect. It will be
+2 instead, because the database has not completely deleted and created
+from scratch.</p>
+<p>This means that we can't assume that our Client ID will always be 1 for
+each test and we should rather reference to it in a dinamic way like:
+<strong>self.client.id</strong></p>
+<p>This could be a trivial thing for many people but I was not 100% sure
+about this so I asked for a confirmation on <strong>#django</strong> IRC room and
+people (expecially <strong>apollo13</strong>) was kind enough to explain me how it
+works.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/07/23/django-notes-tests-setup-method-and-db-data/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/07/23/django-notes-tests-setup-method-and-db-data/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2013/01/05/using-cloud9-ide-to-develop-django-applications/" rel="bookmark"
-                           title="Permalink to Using Cloud9 IDE to develop Django applications">Using Cloud9 IDE to develop Django applications</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/" rel="bookmark"
+                           title="Permalink to Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sat 05 January 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-programmazione-python-ubuntu-en.html">HowTo, Programmazione, Python, Ubuntu (EN)</a></span>
-
-</footer><!-- /.post-info -->                <p><a href="https://www.djangoproject.com/">Django</a> is becoming very popular for
-dynamic websites development (actually it already is) so I decided to
-start learning it, with the help of a <a href="http://www.apress.com/9781430219361">good
-book</a>. To develop Django web
-applications you need a good IDE and an environment that support at
-least Python and a database (SQL Lite …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/01/05/using-cloud9-ide-to-develop-django-applications/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2013/01/05/using-cloud9-ide-to-develop-django-applications/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2013/01/03/cutesoma-soma-fm-client-ported-to-blackberry10/" rel="bookmark"
-                           title="Permalink to CuteSoma (Soma.fm client) ported to BlackBerry10">CuteSoma (Soma.fm client) ported to BlackBerry10</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 03 January 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/blackberry-programmazione-qt.html">BlackBerry, Programmazione, Qt</a></span>
-
-</footer><!-- /.post-info -->                <p>During these Christmas holidays I've ported the N9 version of
-<strong>CuteSoma</strong> to <strong>BlackBerry10</strong> platform, thanks to the BB10 Alpha
-device that RIM gave to me and thanks in particular to my friend
-<a href="https://twitter.com/corneliushald"><strong>Cornelius Hald</strong></a> that helped me
-with porting.</p>
-<p>The porting itself was quite easy after all: if you have …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/01/03/cutesoma-soma-fm-client-ported-to-blackberry10/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2013/01/03/cutesoma-soma-fm-client-ported-to-blackberry10/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/12/14/cutesoma-soma-fm-client-for-windows-phone-available/" rel="bookmark"
-                           title="Permalink to CuteSoma (Soma.fm client) for Windows Phone available">CuteSoma (Soma.fm client) for Windows Phone available</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 14 December 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/windows-phone.html">Windows Phone</a></span>
-
-</footer><!-- /.post-info -->                <p>It's a pleasure for me to announce the first public release of
-<a href="http://www.windowsphone.com/s?appid=387185ca-1328-4d1c-a4c2-45568cf06470"><strong>CuteSoma</strong></a>
-for <strong>Windows Phone</strong> (WP7 and WP8). CuteSoma is a mobile client for the
-amazing <a href="http://somafm.com"><strong>Soma.fm</strong></a> radio a listener-supported,
-commercial-free, underground, alternative radio broadcasting over 20
-unique channels from San Francisco. This is my first application for …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/12/14/cutesoma-soma-fm-client-for-windows-phone-available/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/12/14/cutesoma-soma-fm-client-for-windows-phone-available/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/09/13/leaving-finland-and-nokia-coming-back-to-italy/" rel="bookmark"
-                           title="Permalink to Leaving Finland (and Nokia), coming back to Italy!">Leaving Finland (and Nokia), coming back to Italy!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 13 September 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-ubuntu-en.html">Maemo (EN), Ubuntu (EN)</a></span>
-
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/09/Tampere2.jpg" title="Tampere2">{.alignleft
-.wp-image-707 width="269" height="202"}</p>
-<p>After a very pleasant experience in <strong>Finland (Tampere)</strong>, I've finally
-come back to Italy. I had the opportunity to work for three months in
-<strong>Nokia</strong> as "<em>Qt Expert</em>" in "<em>Nokia Developer Forum</em>" and it's been an
-amazing job!</p>
-<p>To be more precise I left …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/09/13/leaving-finland-and-nokia-coming-back-to-italy/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/09/13/leaving-finland-and-nokia-coming-back-to-italy/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/08/17/ubuntu-release-sprint-calling-for-feedback/" rel="bookmark"
-                           title="Permalink to Ubuntu Release Sprint: calling for feedback!">Ubuntu Release Sprint: calling for feedback!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 17 August 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en.html">Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/development.html">development</a><a href="https://www.andreagrandi.co.uk/tag/meeting.html">meeting</a><a href="https://www.andreagrandi.co.uk/tag/sprint.html">sprint</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a></span>
-</footer><!-- /.post-info -->                <p>During the last UDS party, I had an idea to improve Ubuntu development,
-but I didn't know if it could be a good idea or a stupid one, so I
-talked to <strong>Daniel Holbach</strong> and <strong>David Planella</strong> about it and they
-were happy to hear about it and Daniel told …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/08/17/ubuntu-release-sprint-calling-for-feedback/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/08/17/ubuntu-release-sprint-calling-for-feedback/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/" rel="bookmark"
-                           title="Permalink to Social Connect QML plugin: access Facebook, Twitter from your Qt/QML applications">Social Connect QML plugin: access Facebook, Twitter from your Qt/QML applications</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 13 August 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-meego-programmazione-qt-ubuntu-en.html">Maemo (EN), MeeGo, Programmazione, Qt, Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/library.html">library</a><a href="https://www.andreagrandi.co.uk/tag/mobile.html">Mobile</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/qml.html">QML</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/social.html">Social</a></span>
-</footer><!-- /.post-info -->                <p><a href="https://projects.developer.nokia.com/socialconnect"><strong>Social Connect</strong></a>
-is a library written in <strong>Qt</strong> that allows applications to easily
-connect to services like <strong>Facebook</strong> and <strong>Twitter</strong>. Recently I had
-the opportunity to work on this library improving it and adding support
-for <strong>Instagram</strong> (work is still in progress but it's almost finished).</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2012/08/SocialConnect.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/08/SocialConnect.png" title="SocialConnect">{.aligncenter
-.wp-image-695 width="599 …</a></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/05/12/ubuntu-release-sprint-a-proposal-to-improve-ubuntu-development/" rel="bookmark"
-                           title="Permalink to Ubuntu Release Sprint: a proposal to improve Ubuntu development">Ubuntu Release Sprint: a proposal to improve Ubuntu development</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 12 May 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en.html">Ubuntu (EN)</a></span>
-
-</footer><!-- /.post-info -->                <p>Yesterday, during the final UDS party, I had an idea to improve Ubuntu
-development, but I didn't know if it could be a good idea or a stupid
-one, so I talked to <strong>Daniel Holbach</strong> and <strong>David Planella</strong> about it
-and they were happy to hear about it and Daniel …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/05/12/ubuntu-release-sprint-a-proposal-to-improve-ubuntu-development/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/05/12/ubuntu-release-sprint-a-proposal-to-improve-ubuntu-development/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Sun 12 July 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/importio.html">import.io</a><a href="https://www.andreagrandi.co.uk/tag/music.html">music</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/somafm.html">soma.fm</a><a href="https://www.andreagrandi.co.uk/tag/spotify.html">spotify</a></span>
+</footer><!-- /.post-info -->                <p>I'm a big fan of <a href="http://somafm.com">Soma.fm</a> (a 25+ channels streaming
+radio based in San Francisco) and during the years I've been writing
+clients for this radio for different mobile platforms (Maemo, MeeGo,
+Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
+their "<a href="http://somafm.com/indiepop/"><strong>Indie Pop Rock</strong></a>" channel that
+during these years made me discover some very good artists.</p>
+<p>When <strong>Spotify</strong> finally was available in Italy (I'm still using it
+right now that I live in the UK), something that I always missed was a
+radio with the same good music. Why not just listening to Soma.fm?
+Because I like to listen to the music while I commute and in the London
+Underground it's nearly impossible to have signal.</p>
+<p>So I was thinking: it would be nice to have <strong>a Spotify playlist with
+Soma.fm tracks</strong>. Wait a moment.... <strong>I can do it!</strong></p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg">{.aligncenter
+.size-full .wp-image-981 width="542"
+height="422"}</a></p>
+<p>Soma.fm publishes the tracks history with all the tracks streamed during
+the last hour <a href="http://somafm.com/indiepop/songhistory.html">http://somafm.com/indiepop/songhistory.html</a> so I just
+needed something to parse this list for me and return me a well
+formatted version.</p>
+<p>Thanks to <a href="https://import.io"><strong>import.io</strong></a> (it's a service that takes
+a web page as input, parse the data and generates a RESTful API to
+access this data) I was able to easily get the data I needed. At this
+point I only needed to be able to loop through the list, search each
+track on Spotify and add it to my playlist.</p>
+<p>The <strong>source code is fully available</strong> here
+<a href="https://github.com/andreagrandi/spotisoma">https://github.com/andreagrandi/spotisoma</a></p>
+<p><strong>Note:</strong> you can't just get the code and run it. You will need to get
+your own <strong>import.io api key</strong>, generate your import.io api url, get a
+<a href="https://developer.spotify.com/technologies/libspotify/keys/"><strong>Spotify application
+key</strong></a> (the
+old/deprecated one, since it was nearly impossible for me to use oauth
+in a simple Python script due to the fact I didn't have an endpoint to
+receive the token back. You can get more informations here:
+<a href="https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys">https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys</a>)
+and set your env variables with your Spotify username and password. Last
+but not least: the <strong>old Spotify library</strong> only works with <strong>Premium</strong>
+accounts.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.co.uk/index4.html">&laquo;</a>
-    Page 5 / 19
+    Page 5 / 48
         <a href="https://www.andreagrandi.co.uk/index6.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

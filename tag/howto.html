@@ -69,6 +69,47 @@ the light is less intense.</p>
 
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2016/01/26/using-bbc-microbit-accelerometer-with-python/" rel="bookmark"
+                           title="Permalink to Using BBC MicroBit accelerometer with Python">Using BBC MicroBit accelerometer with Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 26 January 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.co.uk/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">howto</a></span>
+</footer><!-- /.post-info -->                <p>In these days I'm having a bit of fun with <strong><a href="https://www.microbit.co.uk/">BBC
+MicroBit</a></strong> board and I'm learning how to
+use the different sensors available. The latest one I wanted to try was
+the accelerometer. The board can "sense" if you are moving it in any of
+the 3 dimensional axes: X, Y, Z. According to the
+<a href="https://microbit-micropython.readthedocs.org/en/latest/accelerometer.html">documentation</a>
+there are four methods available that can be used to get these
+values: <strong>microbit.accelerometer.get_values()</strong> will return you a tuple with all the 3 values, while 
+<strong>microbit.accelerometer.get_x()</strong>, <strong>microbit.accelerometer.get_y()</strong>, <strong>microbit.accelerometer.get_z()</strong>
+will give you the single values.</p>
+<p>The documentation on the official website doesn't explain much and for
+example I didn't even know what was the range of the values I can get
+back from these methods (by the way it's <strong>between -1024</strong> and
+<strong>1024</strong>), so I decided to play with the code directly and write a very
+simple example. The small example I wrote, shows a smile on the board
+display if you keep it straight and shows a sad face if you bend it.</p>
+<p>This is the result:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/LX8fYBsOxA0" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+<p>and this is all the needed code of the application:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/f4a7c8ee8597dde3070d.js"></script>
+</p>
+
+<p>In the next days I will try to play with more sensors and to publish
+other examples.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/01/26/using-bbc-microbit-accelerometer-with-python/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2016/01/26/using-bbc-microbit-accelerometer-with-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
                            title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
                 </header>
@@ -85,7 +126,53 @@ composed by a <strong>request</strong> and a <strong>response</strong>. A middle
 that stays in the middle. Let's give a look to the next diagram, taken
 from official Django documentation:</p>
 <p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png">{.aligncenter
-.size-full .wp-image-1012 …</a></p>
+.size-full .wp-image-1012 width="601"
+height="511"}</a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<p>``` {.lang:python .decode:true}
+from datetime import datetime</p>
+<p>class BenchmarkMiddleware(object):
+    def process_request(self, request):
+        request._request_time = datetime.now()</p>
+<div class="highlight"><pre><span></span>def process_template_response(self, request, response):
+    response_time = request._request_time - datetime.now()
+    response.context_data[&#39;response_time&#39;] = abs(response_time)
+    return response
+</pre></div>
+
+
+<p>```</p>
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -108,52 +195,15 @@ non trovate?</p>
 <p>Grazie alla nostra pinguina Laura, il <a href="http://www.ptlug.org"><strong>PtLUG</strong></a>
 è lieto di presentarvi il "<strong>Crepes HowTo</strong>", una video-guida che spiega
 come preparare le <strong>crepes alla Nutella</strong>!</p>
-<p>Gustatevi il video …</p>
+<p>Gustatevi il video... e le crepes!</p>
+<p><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="425" height="344" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="allowFullScreen" value="true"></param><param name="src" value="http://www.youtube.com/v/4aGWrHaD__o&amp;hl=it&amp;fs=1&amp;rel=0"></param><embed type="application/x-shockwave-flash" width="425" height="344" src="http://www.youtube.com/v/4aGWrHaD__o&amp;hl=it&amp;fs=1&amp;rel=0" allowfullscreen="true"></embed></object></p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2008/08/09/crepes-howto-come-preparare-le-crepes-alla-nutella/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2008/08/09/crepes-howto-come-preparare-le-crepes-alla-nutella/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2008/04/17/installing-maemo-sdk-4-howto-updated/" rel="bookmark"
-                           title="Permalink to Installing Maemo SDK 4 HowTo Updated">Installing Maemo SDK 4 HowTo Updated</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 17 April 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en.html">Maemo (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/chinook.html">chinook</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/sdk.html">SDK</a></span>
-</footer><!-- /.post-info -->                <p>I've updated my previous howto that explain how to install [Maemo SDK 4
-(Chinook)]{style="font-weight: bold;"}. The other howto was written when
-Maemo SDK 4 Beta was out, now it's updated to
-[4.0.1]{style="font-weight: bold;"} version of the SDK.</p>
-<p>You can find it, as usual, on …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2008/04/17/installing-maemo-sdk-4-howto-updated/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2008/04/17/installing-maemo-sdk-4-howto-updated/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" rel="bookmark"
-                           title="Permalink to Using GtkIconView in Python: a small tutorial">Using GtkIconView in Python: a small tutorial</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 15 April 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/gtk.html">gtk</a><a href="https://www.andreagrandi.co.uk/tag/gtkiconview.html">gtkiconview</a><a href="https://www.andreagrandi.co.uk/tag/gtkliststore.html">gtkliststore</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.co.uk/tag/programming.html">programming</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tutorial.html">tutorial</a></span>
-</footer><!-- /.post-info -->                <p>In these days I was looking for a simple tutorial to understand how to
-use <strong>GtkIconView</strong>, but the only thing I was able to find was an
-example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
-thinking it would be useful for other people trying to use …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 1
+    Page 1 / 2
+        <a href="https://www.andreagrandi.co.uk/tag/howto2.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">

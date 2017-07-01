@@ -165,7 +165,27 @@ broken. First of all you have to fix a problem with a library header:</p>
 </pre></div>
 
 
-<p>then you can install encfs using this remote brew …</p>
+<p>then you can install encfs using this remote brew recipe:</p>
+<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+</pre></div>
+
+
+<p>It's also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):</p>
+<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+</pre></div>
+
+
+<p>That's it! Please note that this is just a workaround (thanks to
+<strong>Giovanni Bajo</strong> for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here <a href="https://gist.github.com/defunctzombie/7324625">https://gist.github.com/defunctzombie/7324625</a> but I haven't
+tested it yet.</p>
+<p><strong>Update:</strong> to fully integrate encfs with OSX, I also suggest to follow
+this nice guide <a href="http://www.maketecheasier.com/install-encfs-mac/">http://www.maketecheasier.com/install-encfs-mac/</a></p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>

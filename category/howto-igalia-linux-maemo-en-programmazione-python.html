@@ -89,7 +89,95 @@ parameters and our <strong>setup.py</strong> is complete.</p>
 <p>As I promised in the preceding post, I'll provide a very easy example of
 a python binding. Let's suppose we don't want to use the methods
 included in Python to sum two integer values and we want to do it in C
-and then call the add method from …</p>
+and then call the add method from a python script. I'll write the
+complete source code first and then I'll explain all the parts of it.</p>
+<h2>Source Code</h2>
+<p>[sourcecode language="C"]<br>
+#include &lt;Python.h&gt;</p>
+<p>static PyObject *foo_add(PyObject *self, PyObject *args)<br>
+{<br>
+int a;<br>
+int b;</p>
+<p>if (!PyArg_ParseTuple(args, "ii", &amp;a, &amp;b))<br>
+{<br>
+return NULL;<br>
+}</p>
+<p>return Py_BuildValue("i", a + b);<br>
+}</p>
+<p>static PyMethodDef foo_methods[] = {<br>
+{ "add", (PyCFunction)foo_add, METH_VARARGS, NULL },<br>
+{ NULL, NULL, 0, NULL }<br>
+};</p>
+<p>PyMODINIT_FUNC initfoo()<br>
+{<br>
+Py_InitModule3("foo", foo_methods, "My first extension module.");<br>
+}<br>
+[/sourcecode]</p>
+<h2>How it works</h2>
+<p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
+us to write an extension for Python language. To be able to include this
+header, we must have the python development packages installed in our
+system. For example in Debian based distributions we can install them
+with this command:</p>
+<p><code>sudo apt-get install python2.5-dev</code></p>
+<p>Every module has at least three parts. In the first part we write
+methods we want to call from the final python module: in this case we
+have a method called <strong>foo_add</strong> where "<em>foo</em>" is the name of the
+module and "<em>add</em>" the name of the method. Every method is declared as
+<strong>static PyObject</strong>. The method does anything particular except calling
+PyArg_ParseTuple to validate the input (we'll discuss this later),
+adding the two passed numbers and returning the result.</p>
+<p>In the second part we have something like a dictionary, defined as
+static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
+name of the module). For each method we want to expose in our python
+module, we have to add something like this:</p>
+<p><code>{"add", (PyCFunction)foo_add, METH_VARARGS, NULL}</code></p>
+<p>where "<em>add</em>" is the name of the method we want to be visible in our
+module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
+implemented in the C module, METH_VARARGS means that we want to pass
+some parameters to the function and the last one would be the
+description of the method (we can leave it NULL if we want).</p>
+<p>Third part allows us to register the defined method/s and the module:</p>
+<p><code>Py_InitModule3("foo", foo_methods, "My first extension module.");</code></p>
+<h3>Parsing Parameters</h3>
+<p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
+<strong>PyObject</strong> passed as parameter to the current method and follows
+almost the sscanf syntax to parse parameters (in this case we had <em>"ii"</em>
+for two integers). You can fin the complete reference here:
+<a href="http://docs.python.org/c-api/arg.html">http://docs.python.org/c-api/arg.html</a></p>
+<h2>Building and installing</h2>
+<p>To build the module, we have to be in the source directory and execute
+this command:</p>
+<p><code>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so</code></p>
+<p>then we've to copy the generated module to the python's modules
+directory:</p>
+<p><code>cp foo.so /usr/lib/python2.5/site-packages/</code></p>
+<h2>Testing our module</h2>
+<p>Testing the module is really easy. We've to start a python shell or
+create a python script with the following source code:</p>
+<p>[sourcecode language="python"]<br>
+import foo<br>
+print foo.add(2, 3)<br>
+[/sourcecode]</p>
+<p>if all is working fine, the printed result should be <strong>5</strong></p>
+<h2>References</h2>
+<ul>
+<li><a href="http://docs.python.org/extending/extending.html">http://docs.python.org/extending/extending.html</a></li>
+<li><a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html">http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html</a></li>
+</ul>
+<div id="_mcePaste"
+style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;">
+
+python2.5-dev
+
+</div>
+
+<div id="_mcePaste"
+style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;">
+
+python2.5-dev
+
+</div>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -110,7 +198,45 @@ and then call the add method from …</p>
 for a couple of months and they assigned me to an interesting project:
 developing <strong>Python bindings</strong> for <strong>MAFW</strong> library (a <strong>Maemo</strong>
 multimedia library that will be used in <strong>Fremantle</strong> release).</p>
-<p>Having the opportunity to work …</p>
+<p>Having the opportunity to work both with <strong>C</strong> (yes, Python bindings are
+almost C code) and <strong>Python</strong> (it's a good practice to write unittest of
+all implemented methods) it's a good way to improve my knowledges in
+both languages and since I wasn't able to find much documentation about
+these kind of things, I'm going to share my own experiences.</p>
+<p><strong>What is a Binding?</strong></p>
+<p>A binding is a Python module, written in C language, that allows Python
+developers to call functions from existing C libraries from their python
+applications. It's just like a "<em>bridge</em>" from C world to Python one.</p>
+<p><strong>Why writing bindings?</strong></p>
+<p>There are a couple of reasons to write python bindings instead of
+writing a library in python language from scratch.</p>
+<p>First of all I don't think is good duplicating code, so if a library
+already exists and it's written in C, why writing it again in another
+language? There's no reason. A lot of code already exist in C world and
+all we have to do is to create a bridge with python world.</p>
+<p>Another good reason, in particular when a C library doesn't exist yet,
+is the fact that python code is slower than C code for some tasks (for
+example multimedia codecs). In these cases is good to implement the core
+library in C language and then create a python binding for it.</p>
+<p><strong>Coming next</strong></p>
+<p>As the title of this post says, this is only an introduction to the
+subjects I'm going to write about. If you have any particular request
+about any argument you would like to read, please feel free to leave me
+a comment. Next posts will talk about these things:</p>
+<ul>
+<li><strong>A simple example of binding:</strong> I'll write a simple library in C
+    language and I'll show how to create the relative python binding,
+    providing complete source code and an example for python developers.</li>
+<li><strong>Building and installing python bindings with distutils:</strong> I'll
+    explain how to use <strong>distutils</strong> to build and install the binding
+    (using the well know method "python setup.py install").</li>
+<li><strong>Defining new types:</strong> this post will be about how to write new
+    types in C language and being able to use them from python code.</li>
+<li><strong>Using codegen to write bindings:</strong> I'll explain how to use
+    <strong>codegen</strong> utils to automate lot of tasks, to generate the most
+    part of binding code and how to customize the generated code using
+    overrides.</li>
+</ul>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>

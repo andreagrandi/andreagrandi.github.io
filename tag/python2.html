@@ -32,226 +32,241 @@
         </header><!-- /#banner -->
 
                 <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="9">
+                    <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" rel="bookmark"
-                           title="Permalink to Understanding Python decorators optimizing a recursive Fibonacci implementation">Understanding Python decorators optimizing a recursive Fibonacci implementation</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2016/04/10/how-to-publish-a-python-package-to-pypi/" rel="bookmark"
+                           title="Permalink to How to publish a Python package to PyPI">How to publish a Python package to PyPI</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Mon 31 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/programmazione-python.html">Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/decorators.html">decorators</a><a href="https://www.andreagrandi.co.uk/tag/fibonacci.html">fibonacci</a><a href="https://www.andreagrandi.co.uk/tag/memoization.html">memoization</a><a href="https://www.andreagrandi.co.uk/tag/memoize.html">memoize</a><a href="https://www.andreagrandi.co.uk/tag/optimization.html">optimization</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
-an argument and returns a function as a <em>value</em>. Here is an example of
-decorator definition:</p>
-<p>``` {.lang:python .decode:true}
-def foo(function):
-    # make a new function
-    def new_function():
-        # some code</p>
-<div class="highlight"><pre><span></span>return new_function
+        <span>Sun 10 April 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/pip.html">pip</a><a href="https://www.andreagrandi.co.uk/tag/pypi.html">pypi</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p><strong>PyPI</strong> is the <strong>Python Package Index</strong>, that archive that let you
+install a package using pip, for example: <strong>pip install Flask</strong></p>
+<p>In the past days I started writing a <strong>Python API client</strong> for
+<strong><a href="https://www.toshl.com">Toshl</a></strong> expense manager and I decided to
+publish the library on PyPI. You can have a look at my library
+here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> (please note: it's
+still in development and <a href="https://developer.toshl.com/">Toshl API</a> is
+not even public yet) in case you are not sure how to structure it.</p>
+<p>I found a <a href="http://peterdowns.com/posts/first-time-with-pypi.html">nice
+guide</a> but it
+wasn't complete (for example it didn't say how to sign packages) so I
+decided to rewrite it adding more information.</p>
+<h3>Create PyPI accounts</h3>
+<p>To publish packages on PyPI you need to create two accounts: one for the
+<a href="http://pypi.python.org/pypi?%3Aaction=register_form">production server</a>
+and another one for the <a href="http://testpypi.python.org/pypi?%3Aaction=register_form">test
+server</a>. When
+you register, please specify (if you have one, but I really hope you do)
+the <strong>PGP</strong> id of your public key. Once the accounts are created, you
+need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
+the following configuration:</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>distutils<span class="o">]</span>
+index-servers <span class="o">=</span>
+pypi
+pypitest
+
+<span class="o">[</span>pypi<span class="o">]</span>
+<span class="nv">repository</span><span class="o">=</span>https://pypi.python.org/pypi
+<span class="nv">username</span><span class="o">=</span>your_username
+<span class="nv">password</span><span class="o">=</span>your_password
+
+<span class="o">[</span>pypitest<span class="o">]</span>
+<span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
+<span class="nv">username</span><span class="o">=</span>your_username
+<span class="nv">password</span><span class="o">=</span>your_password
 </pre></div>
 
 
-<div class="highlight"><pre><span></span>To apply a decorator to …</pre></div>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+<p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
+details you sent during the registration.</p>
+<h3>Preparing the package</h3>
+<p>I assume you have structured your library in the proper way and have
+included a <strong>setup.py</strong> with all the configuration (it's not something
+specific to PyPI so you should have done it already). If you haven't I
+remember you can give a look at my library
+here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
+<strong>setup.py</strong>:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.3&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python&#39;</span><span class="p">,</span>
+    <span class="n">download_url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python/tarball/0.0.3&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Andrea Grandi&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s1">&#39;a.grandi@gmail.com&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Python client library for Toshl API.&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tests&#39;</span><span class="p">]),</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">platforms</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
+    <span class="n">license</span><span class="o">=</span><span class="s1">&#39;MIT&#39;</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<h3>Upload the package to PyPI Test server</h3>
+<p>The first time you upload the package you will need to register it:</p>
+<div class="highlight"><pre><span></span>python setup.py register -r pypitest
+</pre></div>
+
+
+<p>and then you will need to build the package and upload it (please note
+I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
+<div class="highlight"><pre><span></span>python setup.py sdist upload --sign -r pypitest
+</pre></div>
+
+
+<h3>Upload the package to PyPI production server</h3>
+<p>Once you have verified that you are able to build and upload the package
+to the test server (without getting any errors), you should upload it to
+the production server:</p>
+<div class="highlight"><pre><span></span>python setup.py register -r pypi
+python setup.py sdist upload --sign -r pypi
+</pre></div>
+
+
+<p>This is everything you need to do if you want to publish a Python
+package on PyPI. Happy coding!</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/04/10/how-to-publish-a-python-package-to-pypi/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2016/04/10/how-to-publish-a-python-package-to-pypi/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/" rel="bookmark"
-                           title="Permalink to Django Notes: read values from settings in a safe way">Django Notes: read values from settings in a safe way</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/" rel="bookmark"
+                           title="Permalink to Using a light sensor with BBC micro:bit and MicroPython">Using a light sensor with BBC micro:bit and MicroPython</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sat 29 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/getattr.html">getattr</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/settings.html">settings</a></span>
-</footer><!-- /.post-info -->                <p>Working on <strong>Django</strong> projects I find very often that many developers
-access the values that are defined in <strong>settings</strong> in this way</p>
-<p>``` {.lang:python .decode:true}
-from django.conf import settings</p>
-<p>my_value = settings.MY_SETTING</p>
-<div class="highlight"><pre><span></span><span class="n">What</span> <span class="n">happens</span> <span class="k">if</span> <span class="o">**</span><span class="n">MY</span>\<span class="n">_SETTING</span><span class="o">**</span><span class="err"> </span><span class="n">has</span> <span class="ow">not</span> <span class="n">been</span> <span class="n">defined</span> <span class="ow">in</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">py</span><span class="o">**</span><span class="err">?</span>
-<span class="n">The</span> <span class="n">code</span> <span class="n">will</span> <span class="k">raise …</span></pre></div>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Mon 08 February 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.co.uk/tag/breadboard.html">breadboard</a><a href="https://www.andreagrandi.co.uk/tag/embedded.html">embedded</a><a href="https://www.andreagrandi.co.uk/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.co.uk/tag/micropython.html">micropython</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">howto</a><a href="https://www.andreagrandi.co.uk/tag/python.html">python</a></span>
+</footer><!-- /.post-info -->                <p>A <strong><a href="https://en.wikipedia.org/wiki/Photoresistor">light sensor</a></strong> is a
+small component with a particular characteristic: it is basically a
+resistor and its resistance decreases if the light is more intense. To
+use it with micro:bit we need to use one of the <strong>analogic ports</strong>. To
+build this circuit you will need a <strong>breadboard</strong>, <strong>3 jumper wires</strong>, a
+<strong>10k resistance</strong> and possibly a <strong><a href="https://www.kitronik.co.uk/5609-prototyping-system-for-the-bbc-microbit.html">Kitronik breadboard
+kit</a></strong>.</p>
+<h3>The project</h3>
+<p>I wanted to realise a simple project where, depending on the light
+intensity captured by the light sensor, the <strong>micro:bit</strong> shows an image
+of the <strong>Sun</strong> if the light is intense and an image of the <strong>Moon</strong> if
+the light is less intense.</p>
+<p>Here is the complete <strong>circuit scheme</strong>:</p>
+<p><a href="https://www.andreagrandi.co.uk/images/2016/02/microbit_breadboard_schema_light.png"><img alt="microbit_breadboard_schema_light" src="https://www.andreagrandi.co.uk/images/2016/02/microbit_breadboard_schema_light.png" width="40%"></a></p>
+<h6>"Image Copyright © Kitronik"</h6>
+<p>and here is a picture of the <strong>finished project</strong> I created:</p>
+<p><a href="https://www.andreagrandi.co.uk/images/2016/02/microbit_breadboard_example_2.jpg"><img alt="microbit_breadboard_example_2" src="https://www.andreagrandi.co.uk/images/2016/02/microbit_breadboard_example_2.jpg" width="40%"></a></p>
+<p>The <strong>source code</strong> I needed is available here:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/99a09be27c9626b1119d.js"></script>
+</p>
+
+<p>and as a demo I realised this small <strong>video</strong>:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/6vLE_AQc4Bc" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
-                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/" rel="bookmark"
+                           title="Permalink to Prototyping BBC micro:bit projects with Kitronik breadboard kit">Prototyping BBC micro:bit projects with Kitronik breadboard kit</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sun 23 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.co.uk/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tutorial.html">tutorial</a></span>
-</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png">{.aligncenter
-.size-full .wp-image-1012 …</a></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Sun 07 February 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.co.uk/tag/embedded.html">embedded</a><a href="https://www.andreagrandi.co.uk/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.co.uk/tag/micropython.html">micropython</a><a href="https://www.andreagrandi.co.uk/tag/python.html">python</a></span>
+</footer><!-- /.post-info -->                <p><strong>BBC micro:bit</strong> has a few <a href="http://microbit-micropython.readthedocs.org/en/latest/pin.html">IO
+pins</a>
+that can be used to interact with external devices. The problem with the
+board is that it's not easy to connect the classic jumper wires (those
+that we normally connect to a breadboard) to the <strong>micro:bit</strong>, unless
+using a <a href="https://en.wikipedia.org/wiki/Crocodile_clip">crocodile clip</a>
+and being limited to just 3 pins.</p>
+<p><a href="https://www.kitronik.co.uk/5609-prototyping-system-for-the-bbc-microbit.html"><strong>Kitronik breadboard
+kit</strong></a>
+solves this problem, offering an interface where the micro:bit can be
+plugged and all the pins are easily connectable to the breadboard using
+normal <a href="https://www.adafruit.com/products/826">male/female jumper wires</a>.</p>
+<p>I've built a very simple circuit following an example you can find on
+this manual <a href="https://www.kitronik.co.uk/pdf/5603_inventors_kit_for_the_bbc_microbit_tutorial_book.pdf">https://www.kitronik.co.uk/pdf/5603_inventors_kit_for_the_bbc_microbit_tutorial_book.pdf</a></p>
+<p><a href="https://www.andreagrandi.co.uk/images/2016/02/microbit_breadboard_example_1.jpg"><img alt="microbit_breadboard_example_1" src="https://www.andreagrandi.co.uk/images/2016/02/microbit_breadboard_example_1.jpg" width="40%"></a></p>
+<p>To build the circuit you also need <strong>4 male/female jumper wires</strong> and
+<strong>two buttons</strong>. All this circuit does is to connect the buttons to the
+<strong>micro:bit</strong> pins that relate to those buttons. Basically pressing
+those buttons is the same as pressing <strong>button A</strong> or <strong>button B</strong> on
+the <strong>micro:bit</strong> board. Here you can see the schema in detail:</p>
+<p><a href="https://www.andreagrandi.co.uk/images/2016/02/Screenshot-2016-02-07-14.30.36.png"><img alt="Screenshot 2016-02-0714.30.36" src="https://www.andreagrandi.co.uk/images/2016/02/Screenshot-2016-02-07-14.30.36.png" width="40%"></a></p>
+<h6 id="image-copyright-kitronik" style="text-align: center;">"Image Copyright © Kitronik"</h6>
+<p>I've also made a short <strong>video</strong> so that you can see it in action:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/0Zfa1sBP7yI" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+<p>And of course the <strong>source code</strong> is available too:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/9f66f6806d0ce577bada.js"></script>
+</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/" rel="bookmark"
-                           title="Permalink to Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2016/01/26/using-bbc-microbit-accelerometer-with-python/" rel="bookmark"
+                           title="Permalink to Using BBC MicroBit accelerometer with Python">Using BBC MicroBit accelerometer with Python</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Sun 12 July 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/python.html">Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/importio.html">import.io</a><a href="https://www.andreagrandi.co.uk/tag/music.html">music</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/somafm.html">soma.fm</a><a href="https://www.andreagrandi.co.uk/tag/spotify.html">spotify</a></span>
-</footer><!-- /.post-info -->                <p>I'm a big fan of <a href="http://somafm.com">Soma.fm</a> (a 25+ channels streaming
-radio based in San Francisco) and during the years I've been writing
-clients for this radio for different mobile platforms (Maemo, MeeGo,
-Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
-their "<a href="http://somafm.com/indiepop/"><strong>Indie Pop Rock</strong></a>" channel that
-during …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+        <span>Tue 26 January 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.co.uk/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">howto</a></span>
+</footer><!-- /.post-info -->                <p>In these days I'm having a bit of fun with <strong><a href="https://www.microbit.co.uk/">BBC
+MicroBit</a></strong> board and I'm learning how to
+use the different sensors available. The latest one I wanted to try was
+the accelerometer. The board can "sense" if you are moving it in any of
+the 3 dimensional axes: X, Y, Z. According to the
+<a href="https://microbit-micropython.readthedocs.org/en/latest/accelerometer.html">documentation</a>
+there are four methods available that can be used to get these
+values: <strong>microbit.accelerometer.get_values()</strong> will return you a tuple with all the 3 values, while 
+<strong>microbit.accelerometer.get_x()</strong>, <strong>microbit.accelerometer.get_y()</strong>, <strong>microbit.accelerometer.get_z()</strong>
+will give you the single values.</p>
+<p>The documentation on the official website doesn't explain much and for
+example I didn't even know what was the range of the values I can get
+back from these methods (by the way it's <strong>between -1024</strong> and
+<strong>1024</strong>), so I decided to play with the code directly and write a very
+simple example. The small example I wrote, shows a smile on the board
+display if you keep it straight and shows a sad face if you bend it.</p>
+<p>This is the result:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/LX8fYBsOxA0" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/" rel="bookmark"
-                           title="Permalink to Automatically pull updated Docker images and restart containers with docker-puller">Automatically pull updated Docker images and restart containers with docker-puller</a></h1>
-                </header>
+<p>and this is all the needed code of the application:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/f4a7c8ee8597dde3070d.js"></script>
+</p>
 
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 25 October 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/containers.html">containers</a><a href="https://www.andreagrandi.co.uk/tag/docker.html">docker</a><a href="https://www.andreagrandi.co.uk/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.co.uk/tag/flask.html">Flask</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <p>If you use <a href="http://docker.io">docker.io</a> (or any similar service) to
-build your <strong>Docker</strong> containers, it may be possible that, once the new
-image is generated, you want your Docker host to automatically pull it
-and restart the container.</p>
-<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/" rel="bookmark"
-                           title="Permalink to Using virtualenv to manage multiple Python/Django environments in the same machine">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 25 April 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/virtualenv.html">virtualenv</a></span>
-</footer><!-- /.post-info -->                <p>Developing Python applications sometimes it's useful to be able to test
-the code with different environments, for example a particular version
-of Python or a specific Django version etc... Setting up many different
-virtual machines would be really too much work and even using a chroot
-environment is not what …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/" rel="bookmark"
-                           title="Permalink to Twitter client for Maemo in Qt + Python: call for developers and UI designers">Twitter client for Maemo in Qt + Python: call for developers and UI designers</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 22 February 2010</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-maemo-en-meego-programmazione-python-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/meego.html">MeeGo</a><a href="https://www.andreagrandi.co.uk/tag/n900.html">N900</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/twitter.html">twitter</a></span>
-</footer><!-- /.post-info -->                <h2>Introduction</h2>
-<p>My name's <strong>Andrea Grandi</strong>, I'm italian and I'm a Maemo
-user/lover/contributor since the <strong>Nokia 770</strong>. I love <strong>Python</strong> as
-development language and few months ago I also gave some contributions
-to the <a href="http://pymaemo.garage.maemo.org/"><strong>PyMaemo</strong></a> project.</p>
-<p>In these days I had the idea to start writing a <strong>Twitter</strong> client …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/" rel="bookmark"
-                           title="Permalink to Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils">Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 13 August 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/binding.html">binding</a><a href="https://www.andreagrandi.co.uk/tag/distutils.html">distutils</a><a href="https://www.andreagrandi.co.uk/tag/library.html">library</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/setup.html">setup</a></span>
-</footer><!-- /.post-info -->                <p>In the last post of this series, we saw how to write a simple binding
-and we finished to build and install it manually. This is of course not
-a good way to manage the building/installation procedure.</p>
-<p>In Python we can use a library called <strong>distutils</strong> that let us …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/" rel="bookmark"
-                           title="Permalink to PyMaemo (Python for Maemo) second beta release for Fremantle">PyMaemo (Python for Maemo) second beta release for Fremantle</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 10 August 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/igalia-linux-maemo-en-programmazione-python.html">Igalia, Linux, Maemo (EN), Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bindings.html">bindings</a><a href="https://www.andreagrandi.co.uk/tag/fremantle.html">fremantle</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/pymaemo.html">pymaemo</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tablet.html">tablet</a></span>
-</footer><!-- /.post-info -->                <p>The <strong>PyMaemo</strong> team is pleased to announce the second beta release of
-PyMaemo for <strong>Fremantle</strong>!</p>
-<p>This new release is available through the <strong>extras-devel</strong> repository,
-see installation instructions in<br>
-<a href="http://pymaemo.garage.maemo.org/sdk_installation.html#fremantle">http://pymaemo.garage.maemo.org/sdk_installation.html#fremantle</a></p>
-<h2>What is it?</h2>
-<p>Python for Maemo (PyMaemo for short) main objective is to make …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/" rel="bookmark"
-                           title="Permalink to Writing Python bindings of existing C libraries – (2) – A simple example of binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 06 August 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/binding.html">binding</a><a href="https://www.andreagrandi.co.uk/tag/igalia.html">Igalia</a><a href="https://www.andreagrandi.co.uk/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <h2>Introduction</h2>
-<p>As I promised in the preceding post, I'll provide a very easy example of
-a python binding. Let's suppose we don't want to use the methods
-included in Python to sum two integer values and we want to do it in C
-and then call the add method from …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+<p>In the next days I will try to play with more sensors and to publish
+other examples.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/01/26/using-bbc-microbit-accelerometer-with-python/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2016/01/26/using-bbc-microbit-accelerometer-with-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.co.uk/tag/python.html">&laquo;</a>
-    Page 2 / 3
+    Page 2 / 8
         <a href="https://www.andreagrandi.co.uk/tag/python3.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

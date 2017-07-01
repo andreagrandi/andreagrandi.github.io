@@ -32,228 +32,279 @@
         </header><!-- /#banner -->
 
                 <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="9">
+                    <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/02/03/cutesoma-worldwide-downloads-statistic-for-nokia-n9/" rel="bookmark"
-                           title="Permalink to CuteSoma - worldwide downloads statistic for Nokia N9">CuteSoma - worldwide downloads statistic for Nokia N9</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/" rel="bookmark"
+                           title="Permalink to Configuring ddclient to update your dynamic DNS at noip.com">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Fri 03 February 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-meego-qt.html">Maemo (EN), MeeGo, Qt</a></span>
+        <span>Tue 02 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
 
-</footer><!-- /.post-info -->                <p><a href="http://store.ovi.com/content/205737">CuteSoma</a> (Soma.fm client for
-Nokia N9) has been available for 4 months now and it's the right time to
-publish some interesting statistics about downloads. First of all I
-didn't expect so much interest and I wasn't sure to have so many
-downloads, due to the fact that Nokia …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/02/03/cutesoma-worldwide-downloads-statistic-for-nokia-n9/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/02/03/cutesoma-worldwide-downloads-statistic-for-nokia-n9/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
+services that are reliable to use. If you have, like in my situation, a
+RaspberryPi connected to your home DSL and you want it to be always
+reachable without knowing the current IP address (the IP could change if
+you have a normal DSL service at home), you need a dynamic DNS service.</p>
+<p>To update the noip.com one you just need <strong>ddclient,</strong> a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install ddclient
+</pre></div>
+
+
+<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
+<div class="highlight"><pre><span></span>protocol=dyndns2
+use=web, web=checkip.dyndns.com/, web-skip=&#39;IP Address&#39;
+server=dynupdate.no-ip.com
+login=yourusername
+password=yourpassword
+yourhostname.no-ip.org
+</pre></div>
+
+
+<p>and restart the client:</p>
+<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
+</pre></div>
+
+
+<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
+<strong>limitation</strong>: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/" rel="bookmark"
-                           title="Permalink to Nokia QtSDK installer crash on Ubuntu: how to fix it">Nokia QtSDK installer crash on Ubuntu: how to fix it</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/" rel="bookmark"
+                           title="Permalink to Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Thu 12 January 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-programmazione-qt-ubuntu-en.html">HowTo, Linux, Programmazione, Qt, Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/1104.html">11.04</a><a href="https://www.andreagrandi.co.uk/tag/1110.html">11.10</a><a href="https://www.andreagrandi.co.uk/tag/installer.html">installer</a><a href="https://www.andreagrandi.co.uk/tag/natty.html">Natty</a><a href="https://www.andreagrandi.co.uk/tag/nokia.html">nokia</a><a href="https://www.andreagrandi.co.uk/tag/oneiric.html">Oneiric</a><a href="https://www.andreagrandi.co.uk/tag/qt.html">Qt</a><a href="https://www.andreagrandi.co.uk/tag/sdk.html">SDK</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a></span>
-</footer><!-- /.post-info -->                <p>If you try to install <strong>Nokia QtSDK</strong> on Ubuntu using the Nokia
-installer (that provides a newer version than the one distributed in
-Ubuntu Software Center) you could get an error like this:</p>
-<p>[sourcecode lang="text"]<br>
-(Qt_SDK_Lin32_offline_v1_1_3_en.run:3126): Gtk-CRITICAL **:
-IA__gtk_widget_style_get: assertion `GTK_IS_WIDGET (widget)'
-failed<br>
-[/sourcecode]</p>
-<p>to fix it, you …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+        <span>Sun 31 August 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/dns.html">dns</a><a href="https://www.andreagrandi.co.uk/tag/postfix.html">postfix</a><a href="https://www.andreagrandi.co.uk/tag/vps.html">vps</a></span>
+</footer><!-- /.post-info -->                <p>I have recently migrated my website from a shared hosting to a dedicated
+VPS on Digital Ocean. Having a VPS surely gives you unlimited
+possibilities, compared to a shared hosting, but of course you have to
+manage some services by yourself.</p>
+<p>In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
++ PHP) to serve my WordPress blog and Postfix to use email forwarding
+from my aliases to my personal email.</p>
+<h2>Configuring DNS on Digital Ocean</h2>
+<p>Understanding how to properly configure the DNS entries in the panel
+could be a bit tricky if it's not your daily bread. In particular there
+is a Digital Ocean configuration that assumes certain things about your
+droplet, so it's better to configure it properly.</p>
+<p>For example the droplet name should not be casual, but it should match
+your domain name: I initially called my host "andreagrandi" and I had to
+rename it to "andreagrandi.it" to have the proper PTR values.</p>
+<p>You will need to create at least a "mail" record, pointing to your IP
+and an "MX" record pointing to mail.yourdomain.com. (please note the dot
+at the end of the domain name). Here is the configuration of my own
+droplet (you will notice also a CNAME record. You need it if you want
+www.yourdomain.com to correctly point to your ip.</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"><img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg">{.aligncenter
+.wp-image-847 width="705"
+height="378"}</a></p>
+<h2>Configuring Postfix</h2>
+<p>In my case I only needed some aliases that I use to forward emails to my
+GMail account, so the configuration is quite easy. First you need to
+install Postfix:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install postfix
+</pre></div>
+
+
+<p>Then you need to edit<strong> /etc/postfix/main.cf</strong> customizing myhostname
+with your domain name and add <strong>virtual_alias_maps</strong> and
+<strong>virtual_alias_domains</strong> parameters. Please also check that
+<strong>mynetworks</strong> is configured exactly as I did, or you will make your
+mail server vulnerable to spam bots. You can see my complete
+configuration here:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"></script>
+</p>
+
+<p>Add your email aliases</p>
+<p>Edit <strong>/etc/postfix/virtual</strong> file and add your aliases, one per line,
+like in this example:</p>
+<div class="highlight"><pre><span></span>info@yourdomain.com youremail@gmail.com
+sales@yourdomain.com youremail@gmail.com
+</pre></div>
+
+
+<p>At this point update the alias map and reload Postfix configuration:</p>
+<div class="highlight"><pre><span></span>sudo postmap /etc/postfix/virtual
+sudo /etc/init.d/postfix reload
+</pre></div>
+
+
+<h2>Conclusion</h2>
+<p>As you can see, configuring Postfix is quite easy, you just need to be
+careful when you configure the DNS records in the control panel. Are you
+curious to try how Digital Ocean VPS works? Fancy <strong>10\$ credit</strong>
+(enough for 2 months if you choose the basic droplet) for <strong>free</strong>? Use
+this link and enjoy it
+<a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2012/01/05/backing-up-all-your-flickr-photos-using-linux/" rel="bookmark"
-                           title="Permalink to Backing up all your Flickr photos using Linux">Backing up all your Flickr photos using Linux</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="bookmark"
+                           title="Permalink to Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Thu 05 January 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-python-ubuntu-en.html">HowTo, Linux, Python, Ubuntu (EN)</a></span>
+        <span>Sun 02 March 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
 
-</footer><!-- /.post-info -->                <p>I've been a Flickr pro user for 4 years, but the pro account costs
-<strong>24,95\$/year</strong> and I was looking for something cheaper. Anyway I was
-thinking that after all, even if I don't renew my account, I can always
-access to all my pictures.... wrong! <strong>If you don't …</strong></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2012/01/05/backing-up-all-your-flickr-photos-using-linux/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2012/01/05/backing-up-all-your-flickr-photos-using-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p>Developing a large web application or before deploying some code is very
+important to verify the quality of the code itself, check if we have
+introduced any regression or bug and have something that tell us if we
+are increasing or decreasing the quality of the code.</p>
+<p>Suppose we are in an organization or a company where the basic rule is:
+<strong>master</strong> branch is always ready/stable to be deployed. In a team
+usually people work on personal branches, then when the code is stable
+it's merged with master.</p>
+<p>How do we check if the code is stable and ready to be merged? First of
+all we need to cover all our code with <strong>proper tests</strong> (I won't go in
+details about unit testing here, I assume that the reader knows what I'm
+talking about), then we need to actually run them, possibly in an
+isolated environment that is similar to the production one, and check if
+they all pass. If they do, we are quite safe to merge our code with
+master branch.</p>
+<p>How can we ensure that all the developers remember to run tests when
+they push some new code? To make things a bit more real, let's take the
+example of a Python/Django product (or even a library) that currently
+supports <strong>Python 2.6, 2.7, 3.3</strong> and <strong>Django 1.4.x, 1.5.x, 1.6.x</strong>.
+The whole matrix consists of <strong>9 possible combinations</strong>. Do we have to
+manually run tests on 9 configurations? No, we don't.</p>
+<h2>Travis-ci.org</h2>
+<p><strong>Travis</strong> is a continuous integration tool that, once configured, takes
+care of these tasks and let us save lot of time (that we can use to
+actually write code). <a href="https://travis-ci.org">Travis-ci.org</a> is an
+online service that works with <a href="https://github.com"><strong>GitHub</strong></a> (it
+requires we use GitHub as repository for our code), and once we have
+connected the two accounts and configured a very simple file in our
+projects, it's automatically triggered when we push on our GitHub
+repository.</p>
+<p>The configuration consists of adding a file named <strong>.travis.yml</strong> in the
+root of our project. A working example is available here
+<a href="https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml">https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml</a>
+(all the env variables I set are not required normally, but that's where
+I save the values of my configuration, so they need to be initialized
+before I can run tests).</p>
+<p>The service supports most of the languages that are commonly used and
+even a good number of PAAS, making it very easy to automatically
+<strong>deploy</strong> our code. If it should not be enough for your needs, they
+also expose a public <strong>API</strong>. I suggest you to give a look at the
+official documentation that will explain everything in details
+<a href="http://docs.travis-ci.com">http://docs.travis-ci.com</a></p>
+<p>Once everything is configured, we will have something like this on our
+console
+<a href="https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128">https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128</a></p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console.png"><img alt="travis-ci-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console-1024x544.png">{.aligncenter
+.wp-image-832 width="614"
+height="326"}</a></p>
+<p>If something goes wrong (if tests don't pass for example) we receive a
+notification with all the informations about the failing build, and if
+we had configured an automatic deployment of course the code would not
+be deployed in case of a failing build.</p>
+<p>Travis-ci.org is <strong>completly free</strong> for opensource projects and has also
+a paid version for private repositories.</p>
+<h2 id="coveralls.io" style="text-align: left;">Coveralls.io</h2>
+<p>There is a nice tool available for Python called
+<a href="http://nedbatchelder.com/code/coverage"><strong>coverage</strong></a>. Basically it
+runs tests and checks the percentage of the source code that is covered
+by tests, producing a nice report that shows us the percentage for every
+single file/module and even the lines of code that have been tested.</p>
+<p>Thanks to Coveralls.io and the use of Travis, even these tasks are
+completly automatized and the results are available online like in this
+example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds/560853</a></p>
+<p>The configuration is quite easy. We need to connect our Coveralls.io
+profile with GitHub, like we did for Travis-ci.org and then enable the
+repository. To trigger Coveralls after a successful Travis build, we
+need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
+<div class="highlight"><pre><span></span>after_success:
+  - coveralls
+</pre></div>
+
+
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console.png"><img alt="coveralls-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console-1024x767.png">{.aligncenter
+.wp-image-836 width="614"
+height="460"}</a><br>
+Even Coveralls.io is <strong>completly free</strong> for opensource projects and
+offers a paid version for private repositories.</p>
+<h2>Heroku</h2>
+<p>I use <a href="https://www.heroku.com"><strong>Heroku</strong></a> to host and run my web
+application. Normally to deploy on Heroku you so something like this:
+<strong>git push heroku master</strong></p>
+<p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
+deploy the application on Heroku, if the build was successful:</p>
+<div class="highlight"><pre><span></span><span class="n">deploy</span><span class="o">:</span>
+  <span class="n">provider</span><span class="o">:</span> <span class="n">heroku</span>
+  <span class="n">api_key</span><span class="o">:</span>
+    <span class="n">secure</span><span class="o">:</span> <span class="n">R4LFkVu1</span><span class="sr">/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/</span><span class="n">FeUk0Yl</span><span class="o">+</span><span class="n">I</span><span class="o">=</span>
+  <span class="n">app</span><span class="o">:</span> <span class="n">workshopvenues</span>
+  <span class="n">on</span><span class="o">:</span>
+    <span class="n">repo</span><span class="o">:</span> <span class="n">andreagrandi</span><span class="o">/</span><span class="n">workshopvenues</span>
+  <span class="n">run</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py syncdb&quot;</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py migrate&quot;</span>
+</pre></div>
+
+
+<p>Not only the code is deployed, after deployment the <strong>South migrations</strong>
+are executed.</p>
+<h2>Conclusion</h2>
+<p>These two tools are saving me lot of time and are ensuring that the code
+I release for a project I'm working on
+(<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
+is always tested when I push it on my repository.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/12/30/ebook-valgono-la-pena-rispetto-ai-libri-cartacei-lesempio-amazon-kindle/" rel="bookmark"
-                           title="Permalink to ebook: valgono la pena rispetto ai libri cartacei? L'esempio Amazon Kindle">ebook: valgono la pena rispetto ai libri cartacei? L'esempio Amazon Kindle</a></h1>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/" rel="bookmark"
+                           title="Permalink to Factoryboy: Creating data for unit tests in an easy way">Factoryboy: Creating data for unit tests in an easy way</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <span>Fri 30 December 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/recensione.html">Recensione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/amazon.html">Amazon</a><a href="https://www.andreagrandi.co.uk/tag/ebook.html">ebook</a><a href="https://www.andreagrandi.co.uk/tag/ereader.html">ereader</a><a href="https://www.andreagrandi.co.uk/tag/kindle.html">Kindle</a><a href="https://www.andreagrandi.co.uk/tag/leggere.html">leggere</a><a href="https://www.andreagrandi.co.uk/tag/lettura.html">lettura</a><a href="https://www.andreagrandi.co.uk/tag/libri.html">libri</a></span>
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/12/kindle-300x211.jpg" title="kindle">{.wp-image-582
-.alignleft width="192" height="135"}</p>
-<p>In questo periodo diversi conoscenti mi stanno facendo domande su come
-siano gli ebook e se valga la pena farne uso rispetto ai normali libri
-cartacei. Recentemente ho avuto modo di acquistare il lettore
-<strong><a href="http://www.amazon.it/Kindle-dispositivo-wireless-inchiostro-elettronico/dp/B0051QVF7A/ref=amb_link_162561647_2?pf_rd_m=A11IL2PNWYJU7H&amp;pf_rd_s=center-1&amp;pf_rd_r=0DNDRW6Q67KH6PZGYECK&amp;pf_rd_t=101&amp;pf_rd_p=270371827&amp;pf_rd_i=426865031">Kindle</a></strong>
-di <strong>Amazon</strong> e devo ammettere di essere rimasto molto …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/12/30/ebook-valgono-la-pena-rispetto-ai-libri-cartacei-lesempio-amazon-kindle/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/12/30/ebook-valgono-la-pena-rispetto-ai-libri-cartacei-lesempio-amazon-kindle/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
+        <span>Thu 30 January 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/programmazione-python.html">Programmazione, Python</a></span>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/10/12/ubuntu-oneiric-11-10-problems-and-regressions/" rel="bookmark"
-                           title="Permalink to Ubuntu Oneiric 11.10 problems and regressions">Ubuntu Oneiric 11.10 problems and regressions</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 12 October 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-ubuntu-en.html">Linux, Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/ubuntu-oneiric-ocelot.html">ubuntu oneiric ocelot</a></span>
-</footer><!-- /.post-info -->                <div>
-
-![](http://www.andreagrandi.it/wp-content/uploads/2011/10/software-bug-300x199.jpg "software-bug-300x199"){.alignright
-.size-full .wp-image-566 width="168" height="111"}
-
-</div>
-
-<p>Tomorrow <strong>Ubuntu 11.10</strong> (Oneiric Ocelot) will be released officially
-and I decided to test the RC (release candidate) version on my desktop
-PC. Being involved in Unity-2D development I used only …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/10/12/ubuntu-oneiric-11-10-problems-and-regressions/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/10/12/ubuntu-oneiric-11-10-problems-and-regressions/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/09/30/cutesoma-soma-fm-client-for-nokia-n9n950-now-available-on-ovi-store/" rel="bookmark"
-                           title="Permalink to CuteSoma: Soma.Fm client for Nokia N9/N950 now available on OVI Store">CuteSoma: Soma.Fm client for Nokia N9/N950 now available on OVI Store</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 30 September 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/maemo-en-meego.html">Maemo (EN), MeeGo</a></span>
-
-</footer><!-- /.post-info -->                <p><strong>CuteSoma</strong> is a client of <strong><a href="http://somafm.com/">Soma.Fm</a></strong> streaming
-radio that I wrote using Qt/QML for <strong>Nokia N9</strong> and <strong>Nokia N950</strong>.
-Previously it was available as a .deb only, now you can install it
-directly from the <strong><a href="http://store.ovi.com/content/205737">OVI Store</a></strong>.
-It's only a 0.1 version and even if it's quite …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/09/30/cutesoma-soma-fm-client-for-nokia-n9n950-now-available-on-ovi-store/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/09/30/cutesoma-soma-fm-client-for-nokia-n9n950-now-available-on-ovi-store/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/" rel="bookmark"
-                           title="Permalink to HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD">HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 13 August 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/android-google-linux.html">Android, Google, Linux</a></span>
-
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/08/htc-desire-300x260.jpg" title="htc-desire">{.alignright
-.size-medium .wp-image-547 width="192" height="166"}</p>
-<h2>Introduction</h2>
-<p>Even if it's not a new model, the <strong>HTC Desire</strong> is still a very good
-Android device, thanks to its <strong>1Ghz</strong> CPU and <strong>512 Mb RAM</strong>, but one
-of the biggest problems of this phone is that it comes with <strong>only
-148Mb …</strong></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-3/" rel="bookmark"
-                           title="Permalink to UDS day-3">UDS day-3</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/linux-ubuntu-en-uds.html">Linux, Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/developer.html">Developer</a><a href="https://www.andreagrandi.co.uk/tag/linux.html">Linux</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a><a href="https://www.andreagrandi.co.uk/tag/uds-o.html">UDS-O</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0260.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0260-300x200.jpg" title="IMG_0260">{.alignright
-.size-medium .wp-image-537 width="240"
-height="160"}</a>Even
-this morning I didn't wake up early because I still felt sick (I already
-know this sore throath won't abandon me untile I go back home).</p>
-<p>I had a <strong>light breakfast at 10:30</strong> and then I finishes uploading some
-pictures and …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-3/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-3/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-2/" rel="bookmark"
-                           title="Permalink to UDS day-2">UDS day-2</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en-uds.html">Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/summit.html">summit</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a><a href="https://www.andreagrandi.co.uk/tag/uds-o.html">UDS-O</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0323.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0323-300x200.jpg" title="IMG_0323">{.alignright
-.size-medium .wp-image-531 width="240"
-height="160"}</a>This
-day at UDS started a bit late for me, since i woke up pretty sick (damn
-air conditioned!!!). I did not follow any conferences in the morning. I
-relly wanted to follow the <strong>Wayland</strong> one, but when I arrived the room
-was …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-2/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-2/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-1/" rel="bookmark"
-                           title="Permalink to UDS day-1">UDS day-1</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 11 May 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/ubuntu-en-uds.html">Ubuntu (EN), UDS</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/budapest.html">Budapest</a><a href="https://www.andreagrandi.co.uk/tag/canonical.html">Canonical</a><a href="https://www.andreagrandi.co.uk/tag/conference.html">conference</a><a href="https://www.andreagrandi.co.uk/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.co.uk/tag/uds.html">UDS</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0286.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2011/05/IMG_0286-300x200.jpg" title="IMG_0286">{.alignright
-.size-medium .wp-image-528 width="240"
-height="160"}</a>My
-day started at 7:30 with a <strong>very nice breakfast!</strong> I was alone with
-just another guy this morning, in a very big breakbast room.</p>
-<p>After it I grabbed my badge to avoid queue later and went back to my
-room to …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-1/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2011/05/11/uds-day-1/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+</footer><!-- /.post-info -->                <p>I recently prepared a presentation about
+<a href="http://factoryboy.readthedocs.org"><strong>Factoryboy</strong></a>, a Python library
+that automates lot of the work when a developer needs to create some
+data for unit testing.</p>
+<p>I've been using this library since a couple of months, both in the
+company where I work and on a personal open source project I'm working
+on. I will give a presentation about this library in an internal
+workshop in my company and I'm available to give it in any Python/Django
+related event around <strong>London</strong>, if anyone is interested.</p>
+<p>The slides are already available:</p>
+<p>
+<script async class="speakerdeck-embed" data-id="55509260698a013170b8769b07168819" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.co.uk/author/admin5.html">&laquo;</a>
-    Page 6 / 19
+    Page 6 / 46
         <a href="https://www.andreagrandi.co.uk/author/admin7.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

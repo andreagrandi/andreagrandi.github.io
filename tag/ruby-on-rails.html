@@ -91,7 +91,25 @@ applicazione "<em>Hello World</em>" utilizzando il framework <a href="http://www
 Rails</strong></a>, avrà notato che in fase di
 esecuzione si ottiene un errore di questo tipo:</p>
 <p><code>Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)</code></p>
-<p>Perchè un …</p>
+<p>Perchè un errore relativo a <strong>MySQL</strong> in un'applicazione che stampa
+semplicemente una stringa di testo? Nelle nuove versioni di <strong>RoR</strong>
+vengono caricati per default i moduli <strong>ActiveRecord</strong>,
+<strong>ActiveResource</strong> e <strong>ActionMailer</strong>. ActiveRecord in particolare si
+aspetta di trovare (per le impostazioni di default) un database MySQL
+funzionante.</p>
+<p>Per evitare questo errore è sufficiente decommentare una riga
+all'interno di environment.rb che si trova in
+<strong>\$PATH_APPLICAZIONE/config/environment.rb</strong>:</p>
+<p>[sourcecode language='ruby']<br>
+# Skip frameworks you're not going to use (only works if using
+vendor/rails).<br>
+# To use Rails without a database, you must remove the Active Record
+framework<br>
+config.frameworks -= [ :active_record, :active_resource,
+:action_mailer ]<br>
+[/sourcecode]</p>
+<p><em>Fonte:</em>
+<a href="http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html">http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html</a></p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2008/05/26/applicazioni-ruby-on-rails-che-non-utilizzano-database/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2008/05/26/applicazioni-ruby-on-rails-che-non-utilizzano-database/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>

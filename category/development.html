@@ -332,7 +332,291 @@ of this tutorial we have seen how to create a basic API using <strong>Django
 Rest Framework</strong>. This second part will explain how to implement
 <strong>POST</strong> methods and add different levels of <strong>permissions</strong> and
 <strong>authentication</strong>. If you are starting from part 2, you may want to
-checkout …</p>
+checkout the source code at this exact point:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.4
+</pre></div>
+
+
+<h3>A step back</h3>
+<p>Before showing how easy it is to implement a <strong>POST</strong> method for our
+existing API, I want to do a step back and show you the "manual way",
+using just the
+<a href="http://www.django-rest-framework.org/api-guide/views/"><strong>APIView</strong></a>
+class. Edit the file <strong>catalog/views.py</strong> and change the code in this
+way:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+
+
+<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+
+<p>If we try to use the API again (from the browser of from the http
+client), it will still work in the same way. The difference here is that
+we are using the very basic <strong>APIView</strong> class and we have explicitly
+defined the <strong>GET</strong> method for it.</p>
+<h3>Implementing a POST method with APIView</h3>
+<p>An API is not being used at its full potential if it's read only. We are
+going to implement a POST method for the existing view and testing it
+with <a href="https://httpie.org/"><strong>httpie</strong></a> client again. First of all we
+need to add an import to <strong>catalog/views.py</strong></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+</pre></div>
+
+
+<p>then we add this method to our <strong>ProductList</strong> class:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now let's test our <strong>POST</strong> method we just implemented:</p>
+<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Salamino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Salamino Piccante&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;10.50&quot;</span>
+HTTP/1.0 <span class="m">201</span> Created
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> <span class="m">11</span>:48:48 GMT
+Server: WSGIServer/0.1 Python/2.7.10
+Vary: Accept, Cookie
+X-Frame-Options: SAMEORIGIN
+
+<span class="o">{</span>
+    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Salamino Piccante&quot;</span>,
+    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Salamino&quot;</span>,
+    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;10.50&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>It works! In case something doesn't work, try to fetch the source code
+at this point:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.7
+</pre></div>
+
+
+<h3>Implementing a POST method with ListCreateAPIView</h3>
+<p>Do you remember when I mentioned at the beginning that there is an easy
+way to do the same thing? I wasn't cheating. Let's change again our old
+code in <strong>catalog/views.py</strong> but this time we will use a different base
+class:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+
+
+<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+</pre></div>
+
+
+<p>let's test this again with <strong>httpie</strong>:</p>
+<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Pecorino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Pecorino Sardo&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;7.00&quot;</span>
+HTTP/1.0 <span class="m">201</span> Created
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> <span class="m">15</span>:21:20 GMT
+Server: WSGIServer/0.1 Python/2.7.10
+Vary: Accept, Cookie
+X-Frame-Options: SAMEORIGIN
+
+<span class="o">{</span>
+    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Pecorino Sardo&quot;</span>,
+    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Pecorino&quot;</span>,
+    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;7.00&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>We just POSTed some data on the API! How can it work? Well, we have
+changed the base class from <strong>ListAPIView</strong> to
+<a href="http://www.django-rest-framework.org/api-guide/generic-views/#listcreateapiview"><strong>ListCreateAPIView</strong></a>.
+This particular class implements <strong>a generic POST method</strong> that will
+accept and validate all the fields through the specified serializer.</p>
+<h3>Authentication</h3>
+<p>Now our API let us add products to the catalog, amazing! But... is it
+exactly what we want? In a real scenario we don't want any random user
+to be able to add products in our database, so we are going to protect
+the POST method allowing only Admin users.</p>
+<p>Before digging into Django Rest Framework permissions, we need to setup
+an authentication system. For simplicity we will implement
+<a href="http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication"><strong>TokenAuthentication</strong></a>.
+As first step we need to edit <strong>settings.py</strong> and
+insert <strong>rest_framework.authtoken</strong> in the <strong>INSTALLED_APPS</strong>:</p>
+<div class="highlight"><pre><span></span>    <span class="o">...</span>
+    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rest_framework.authtoken&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>after this, we need to add <strong>TokenAuthentication</strong> as default
+authentication class (append this in <strong>settings.py</strong> at the end):</p>
+<div class="highlight"><pre><span></span><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s1">&#39;rest_framework.authentication.TokenAuthentication&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Finally we need to add a particular URL to the project so that clients
+will be able to call an endpoint passing <strong>username</strong> and <strong>password</strong>
+to get a <strong>token</strong> back. Edit <strong>drftutorial/urls.py</strong> and make it's like
+this:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">rest_framework.authtoken.views</span> <span class="kn">import</span> <span class="n">obtain_auth_token</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^api-token-auth/&#39;</span><span class="p">,</span> <span class="n">obtain_auth_token</span><span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>Don't forget to re-run the <strong>migrations</strong>, because TokenAuthorization
+needs to change a couple of tables:</p>
+<div class="highlight"><pre><span></span>$ ./manage.py migrate
+Operations to perform:
+    Apply all migrations: admin, auth, authtoken, catalog, contenttypes, sessions
+Running migrations:
+    Applying authtoken.0001_initial... OK
+    Applying authtoken.0002_auto_20160226_1747... OK
+</pre></div>
+
+
+<p>In case you had any problem changing the code up to this point, you can
+always fetch the related git tag:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.9
+</pre></div>
+
+
+<h4>Testing the Authentication</h4>
+<p>Before testing the authentication, make sure you created at least the
+Django <strong>superuser</strong> with:</p>
+<div class="highlight"><pre><span></span>$ ./manage.py createsuperuser
+</pre></div>
+
+
+<p>now let's try to <strong>obtain the token</strong> we will need later for our API
+calls:</p>
+<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/api-token-auth/ <span class="nv">username</span><span class="o">=</span><span class="s2">&quot;yourusername&quot;</span> <span class="nv">password</span><span class="o">=</span><span class="s2">&quot;yourpassword&quot;</span>
+HTTP/1.0 <span class="m">200</span> OK
+Allow: POST, OPTIONS
+Content-Type: application/json
+Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> <span class="m">08</span>:55:07 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+X-Frame-Options: SAMEORIGIN
+
+<span class="o">{</span>
+    <span class="s2">&quot;token&quot;</span>: <span class="s2">&quot;bc9514f0892368cfd0ea792a977aff55d53e3634&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>We will need to pass this token in every API call we want to be
+authenticated. The token is being passed through the "Authentication"
+header parameter.</p>
+<h3>API Permissions</h3>
+<p>Authentication is something that identify the user with a particular
+system. Permissions instead are the level of things that are allowed or
+not allowed for a particular user. In our case we said we want to let
+Admin users to be able to POST new products and we want to let even
+anonymous users to GET the product list.</p>
+<p>Django Rest Framework has some built-in classes that we can apply to our
+views to define the level of permissions. We could have used the
+<a href="http://www.django-rest-framework.org/api-guide/permissions/#isadminuser"><strong>IsAdminUser</strong></a>
+class, but it would not allow anonymous users to perform the GET
+request. Or we could have used
+<a href="http://www.django-rest-framework.org/api-guide/permissions/#isauthenticatedorreadonly"><strong>IsAuthenticatedOrReadOnly</strong></a>
+class, but this would allow any registered user to add products (and we
+want to let only admins).</p>
+<p>Or...we can define our own permission class and have exactly what we
+want. Create a new file <strong>catalog/permissions.py</strong></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">BasePermission</span><span class="p">,</span> <span class="n">SAFE_METHODS</span>
+
+
+<span class="k">class</span> <span class="nc">IsAdminOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">has_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span>
+</pre></div>
+
+
+<p>Just as a side note, <strong>SAFE_METHODS</strong> are <strong>GET</strong>, <strong>HEAD</strong> and
+<strong>OPTIONS</strong>. These method are considered "safe" because they don't
+change any existing data. Open <strong>catalog/views.py</strong> again, import this
+at the beginning:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.permissions</span> <span class="kn">import</span> <span class="n">IsAdminOrReadOnly</span>
+</pre></div>
+
+
+<p>and set this as <strong>permission_classes</strong> to <strong>ProductList</strong>:</p>
+<div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+<span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
+</pre></div>
+
+
+<p>Let's now try to add a new product using the <strong>token</strong> we got before
+(you will have to use your own token of course, mine only works on my
+local db):</p>
+<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Lardo&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Lardo di Colonnata&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;8.50&quot;</span> <span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
+HTTP/1.0 <span class="m">201</span> Created
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> <span class="m">13</span>:04:13 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+Vary: Accept
+X-Frame-Options: SAMEORIGIN
+
+<span class="o">{</span>
+    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Lardo di Colonnata&quot;</span>,
+    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Lardo&quot;</span>,
+    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;8.50&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>It worked! We have now protected our API so that not admin people can't
+create any product. If you have any problem with the code, you can check
+it out with this tag:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.10
+</pre></div>
+
+
+<h3>Wrapping Up</h3>
+<p>We have now implemented the POST method to add new products to our
+catalog. In the <a href="https://www.andreagrandi.co.uk/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">next
+episode</a>
+we will see how to implement endpoints to get a single product, to
+update or delete products and finally we will allow registered users to
+send a review for a specific product.</p>
+<h3>Feedback Please</h3>
+<p>I know, this blog doesn't have any "comment" feature (I was tired of
+dealing with spam), but if you want to provide some feedback you can
+still do it by email. Just visit my
+<a href="https://www.andreagrandi.co.uk/about/"><strong>About</strong></a> page, you will find my
+email there.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -352,7 +636,411 @@ checkout …</p>
 solution for a <strong>REST API</strong>, using <strong>Python</strong> and <a href="http://www.django-rest-framework.org">Django Rest
 Framework</a>. I will show you how to
 first create a very basic API, how to handle the authentication and
-permissions and I will cover deployment and …</p>
+permissions and I will cover deployment and hosting of images. The full
+source code of the tutorial is available
+at: <a href="https://github.com/andreagrandi/drf-tutorial">https://github.com/andreagrandi/drf-tutorial</a></p>
+<h3>Summary of the complete tutorial</h3>
+<ol>
+<li>Create the basic structure for the API</li>
+<li><a href="https://www.andreagrandi.co.uk/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">Add Authentication and POST
+    methods</a></li>
+<li><a href="https://www.andreagrandi.co.uk/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">Handling details and changes to existing
+    data</a></li>
+<li>Testing the API</li>
+<li>Switching from Sqlite to PostgreSQL</li>
+<li>Hosting the API on Heroku</li>
+<li>Add an Image field and save images to S3</li>
+</ol>
+<h2>Create the basic structure for the API</h2>
+<p>For this tutorial I will assume you have correctly installed at least
+<strong>Python</strong> (I will use Python 2.7.x),
+<a href="https://pypi.python.org/pypi/virtualenv"><strong>virtualenv</strong></a> and
+<a href="https://virtualenvwrapper.readthedocs.io/en/latest/"><strong>virtualenvwrapper</strong></a>
+on your system and I will explain how to create everything else step by
+step.</p>
+<p><strong>Note:</strong> at the time of writing, the tutorial has been based on
+<strong>Django 1.10.1</strong> and <strong>Django Rest Framework 3.4.7</strong></p>
+<h3>Creating the main project structure</h3>
+<div class="highlight"><pre><span></span>mkdir drf-tutorial
+mkvirtualenv drf-tutorial
+<span class="nb">cd</span> drf-tutorial
+pip install django djangorestframework
+django-admin.py startproject drftutorial .
+<span class="nb">cd</span> drftutorial
+django-admin.py startapp catalog
+</pre></div>
+
+
+<h3>Data Model</h3>
+<p>We will create the API for a generic products catalog, using a very
+simple structure (to keep things simple). Edit the file
+<strong>catalog/models.py</strong> adding these lines:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">Product</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+    <span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_digits</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+
+
+<p>after creating the model, we need to add 'catalog' application to
+<strong>INSTALLED_APPS</strong>. Edit <strong>settings.py</strong> and add the app at the end of
+the list:</p>
+<div class="highlight"><pre><span></span><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>at this point the Django application will be recognised by the project
+and we can create and apply the schema migration:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>235dfcc<span class="o">)</span> ✗ ./manage.py makemigrations
+Migrations <span class="k">for</span> <span class="s1">&#39;catalog&#39;</span>:
+    catalog/migrations/0001_initial.py:
+        - Create model Product
+
+<span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>235dfcc<span class="o">)</span> ✗ ./manage.py migrate
+Operations to perform:
+    Apply all migrations: admin, auth, catalog, contenttypes, sessions
+    Running migrations:
+        Applying contenttypes.0001_initial... OK
+        Applying auth.0001_initial... OK
+        Applying admin.0001_initial... OK
+        Applying admin.0002_logentry_remove_auto_add... OK
+        Applying contenttypes.0002_remove_content_type_name... OK
+        Applying auth.0002_alter_permission_name_max_length... OK
+        Applying auth.0003_alter_user_email_max_length... OK
+        Applying auth.0004_alter_user_username_opts... OK
+        Applying auth.0005_alter_user_last_login_null... OK
+        Applying auth.0006_require_contenttypes_0002... OK
+        Applying auth.0007_alter_validators_add_error_messages... OK
+        Applying auth.0008_alter_user_username_max_length... OK
+        Applying catalog.0001_initial... OK
+        Applying sessions.0001_initial... OK
+</pre></div>
+
+
+<h3>API Serializer</h3>
+<p><a href="http://www.django-rest-framework.org/api-guide/serializers/"><strong>Serializers</strong></a>
+are those components used to convert the received data from JSON format
+to the relative Django model and viceversa. Create the new file
+<strong>catalog/serializers.py</strong> and place this code inside:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+
+<span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>In this case we are using a
+<a href="http://www.django-rest-framework.org/api-guide/serializers/#modelserializer"><strong>ModelSerializer</strong></a>.
+We need to create a new class from it, and specify the model attribute,
+that's it. In this case we also specify the fields we want to return.</p>
+<h3>API View</h3>
+<p>The serializer alone is not able to respond to an API request, that's
+why we need to implement a view. In this first version of the view (that
+we will improve soon) we will "manually" transform the data available in
+the serializer dictionary to a JSON response. In <strong>catalog/views.py</strong>
+add this code:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">rest_framework.renderers</span> <span class="kn">import</span> <span class="n">JSONRenderer</span>
+<span class="kn">from</span> <span class="nn">rest_framework.parsers</span> <span class="kn">import</span> <span class="n">JSONParser</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+
+
+<span class="k">class</span> <span class="nc">JSONResponse</span><span class="p">(</span><span class="n">HttpResponse</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An HttpResponse that renders its content into JSON.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">JSONRenderer</span><span class="p">()</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;content_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">product_list</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+
+<p>At this point we need to tell our Django app to use this API view when a
+certain URL is requested. We first need to add this code in
+<strong>catalog/urls.py</strong></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">views</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">product_list</span><span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>and finally we need to add this to <strong>drftutorial/urls.py</strong></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<h4>Testing our work</h4>
+<p>At this point we should be able to start our Django app:</p>
+<div class="highlight"><pre><span></span>./manage.py runserver
+</pre></div>
+
+
+<p>Let's install a tool that will help us to test the API:</p>
+<div class="highlight"><pre><span></span>pip install httpie
+</pre></div>
+
+
+<p>now we can use it to call our URL:</p>
+<div class="highlight"><pre><span></span>$ http http://127.0.0.1:8000/products/
+HTTP/1.0 <span class="m">200</span> OK
+Content-Type: application/json
+Date: Wed, <span class="m">28</span> Sep <span class="m">2016</span> <span class="m">09</span>:54:50 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+X-Frame-Options: SAMEORIGIN
+
+<span class="o">[]</span>
+</pre></div>
+
+
+<p>It works! It's an empty response of course, because we still don't have
+any data to show, but we will see later how to load some example data in
+our database. If you have been able to follow the tutorial up to this
+point, that's good. If not, don't worry. You can checkout the code at
+exactly this point of the tutorial doing:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.0
+</pre></div>
+
+
+<h3>Improving the API View</h3>
+<p>There is a quicker and more efficient way of implementing the same API
+view we have seen before. We can use a class based view, in particular
+the APIView class and also have the JSON response implemented
+automatically. Change the code inside <strong>catalog/views.py</strong> with this
+one:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+
+
+<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+
+<p>You will also have to change <strong>catalog/urls.py</strong> in this way:</p>
+<div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>You can check the source code for this step of the tutorial with:</p>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">tutorial</span><span class="o">-</span><span class="mf">1.1</span>
+</pre></div>
+
+
+<p>There is also another way of writing the same view. Let's try it with
+<a href="http://www.django-rest-framework.org/api-guide/generic-views/#listapiview"><strong>ListAPIView</strong></a>.
+Edit <strong>catalog/views.py</strong> again and substitute the code with this one:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+
+
+<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListAPIView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+</pre></div>
+
+
+<p>With a <strong>ListAPIView</strong> we are basically creating a read-only API that is
+supposed to return a list of items. We need to specify a <strong>queryset</strong>
+and the <strong>serializer_class</strong> parameters. Once again, you can get up to
+this point, checking out the related git tag:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.2
+</pre></div>
+
+
+<h3>Creating Initial Data</h3>
+<p>An API that doesn't return any data is not very useful, right? Also, at
+the moment we haven't implemented yet any feature that let us insert any
+data. That's why I've created a data migration for you that will insert
+some data for you. You may notice that the example data contains some
+Italian products... out of the scope of this tutorial, I strongly advise
+you to google this products and if you ever happen to visit Italy, try
+them. You won't regret!</p>
+<p>Going back to our data migration, you first have to create an empty one
+with:</p>
+<div class="highlight"><pre><span></span>./manage.py makemigrations --empty catalog
+</pre></div>
+
+
+<p>and then open the file that has been created under
+<strong>catalog/migrations/</strong> named <strong>0002_.....</strong> (your name will be
+different from mine, so just edit the one starting with 0002 and you
+will be fine) and fill it with this code:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">migrations</span>
+
+
+<span class="k">def</span> <span class="nf">create_initial_products</span><span class="p">(</span><span class="n">apps</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">):</span>
+    <span class="n">Product</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s1">&#39;catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">)</span>
+
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Salame&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Salame Toscano&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Olio Balsamico&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Olio balsamico di Modena&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Parmigiano&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Parmigiano Reggiano&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">8.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Olio&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Olio Oliva Toscano&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Porchetta&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Porchetta toscana cotta a legna&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">7.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Cantucci&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Cantucci di Prato&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Vino Rosso&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Vino Rosso del Chianti&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">9.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Brigidini&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Brigidini di Lamporecchio&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">3.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Migration</span><span class="p">(</span><span class="n">migrations</span><span class="o">.</span><span class="n">Migration</span><span class="p">):</span>
+
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;0001_initial&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">operations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">migrations</span><span class="o">.</span><span class="n">RunPython</span><span class="p">(</span><span class="n">create_initial_products</span><span class="p">),</span>
+    <span class="p">]</span>
+</pre></div>
+
+
+<p>to apply the migration we just created, just do:</p>
+<div class="highlight"><pre><span></span>./manage.py migrate
+</pre></div>
+
+
+<p>If you try to test the API again from the command line, you will get
+these products back:</p>
+<div class="highlight"><pre><span></span>$ http http://127.0.0.1:8000/products/
+HTTP/1.0 <span class="m">200</span> OK
+Allow: GET, HEAD, OPTIONS
+Content-Type: application/json
+Date: Wed, <span class="m">28</span> Sep <span class="m">2016</span> <span class="m">12</span>:29:36 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+Vary: Accept, Cookie
+X-Frame-Options: SAMEORIGIN
+
+<span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Salame Toscano&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Salame&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;12.00&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Olio balsamico di Modena&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Olio Balsamico&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;10.00&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Parmigiano Reggiano&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Parmigiano&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;8.50&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Olio Oliva Toscano&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Olio&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;13.00&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Porchetta toscana cotta a legna&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Porchetta&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;7.50&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Cantucci di Prato&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Cantucci&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;4.00&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Vino Rosso del Chianti&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Vino Rosso&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;9.50&quot;</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Brigidini di Lamporecchio&quot;</span>,
+        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Brigidini&quot;</span>,
+        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;3.50&quot;</span>
+    <span class="o">}</span>
+<span class="o">]</span>
+</pre></div>
+
+
+<p>Again, you can get up to this point with:</p>
+<div class="highlight"><pre><span></span>git checkout tutorial-1.3
+</pre></div>
+
+
+<h3>One more thing...</h3>
+<p>No, we are not going to present a new amazing device, I'm sorry, but I
+want to show you a nice Django Rest Framework feature you can have
+without much additional work. Edit <strong>settings.py</strong> and add
+<strong>rest_framework</strong> to the list of <strong>INSTALLED_APPS</strong>:</p>
+<div class="highlight"><pre><span></span><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>Now, if you are still running the Django app, try to visit this url from
+your browser: <a href="http://127.0.0.1:8000/products/">http://127.0.0.1:8000/products/</a><br>
+That's very nice, isn't it? You can have browsable APIs at no cost.</p>
+<h3>Wrapping Up</h3>
+<p>I've mentioned at the beginning that this is just the first part of my
+API tutorial. In the <a href="https://www.andreagrandi.co.uk/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">next
+part</a>
+I will show you how to let the consumer of your API add some products
+and leave reviews (we will introduce a new model for this). Also, we
+will see how to set proper permissions to these new API methods so that
+only admin users will be able to add products while normal users will be
+able to add reviews. So, if you feel ready, you can begin to follow the
+second part of this
+tutorial: <a href="https://www.andreagrandi.co.uk/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">{filename}creating-a-production-ready-api-with-python-and-django-rest-framework-part-2.md</a></p>
+<h3>References</h3>
+<p>Some parts of this tutorial and a few examples have been taken directly
+from the original <a href="http://www.django-rest-framework.org/tutorial/quickstart/">Django Rest Framework
+tutorial</a>.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -372,54 +1060,101 @@ permissions and I will cover deployment and …</p>
 install a package using pip, for example: <strong>pip install Flask</strong></p>
 <p>In the past days I started writing a <strong>Python API client</strong> for
 <strong><a href="https://www.toshl.com">Toshl</a></strong> expense manager and I decided to
-publish the library on PyPI. You can have a look …</p>
+publish the library on PyPI. You can have a look at my library
+here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> (please note: it's
+still in development and <a href="https://developer.toshl.com/">Toshl API</a> is
+not even public yet) in case you are not sure how to structure it.</p>
+<p>I found a <a href="http://peterdowns.com/posts/first-time-with-pypi.html">nice
+guide</a> but it
+wasn't complete (for example it didn't say how to sign packages) so I
+decided to rewrite it adding more information.</p>
+<h3>Create PyPI accounts</h3>
+<p>To publish packages on PyPI you need to create two accounts: one for the
+<a href="http://pypi.python.org/pypi?%3Aaction=register_form">production server</a>
+and another one for the <a href="http://testpypi.python.org/pypi?%3Aaction=register_form">test
+server</a>. When
+you register, please specify (if you have one, but I really hope you do)
+the <strong>PGP</strong> id of your public key. Once the accounts are created, you
+need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
+the following configuration:</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>distutils<span class="o">]</span>
+index-servers <span class="o">=</span>
+pypi
+pypitest
+
+<span class="o">[</span>pypi<span class="o">]</span>
+<span class="nv">repository</span><span class="o">=</span>https://pypi.python.org/pypi
+<span class="nv">username</span><span class="o">=</span>your_username
+<span class="nv">password</span><span class="o">=</span>your_password
+
+<span class="o">[</span>pypitest<span class="o">]</span>
+<span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
+<span class="nv">username</span><span class="o">=</span>your_username
+<span class="nv">password</span><span class="o">=</span>your_password
+</pre></div>
+
+
+<p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
+details you sent during the registration.</p>
+<h3>Preparing the package</h3>
+<p>I assume you have structured your library in the proper way and have
+included a <strong>setup.py</strong> with all the configuration (it's not something
+specific to PyPI so you should have done it already). If you haven't I
+remember you can give a look at my library
+here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
+<strong>setup.py</strong>:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.3&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python&#39;</span><span class="p">,</span>
+    <span class="n">download_url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python/tarball/0.0.3&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Andrea Grandi&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s1">&#39;a.grandi@gmail.com&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Python client library for Toshl API.&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tests&#39;</span><span class="p">]),</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">platforms</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
+    <span class="n">license</span><span class="o">=</span><span class="s1">&#39;MIT&#39;</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<h3>Upload the package to PyPI Test server</h3>
+<p>The first time you upload the package you will need to register it:</p>
+<div class="highlight"><pre><span></span>python setup.py register -r pypitest
+</pre></div>
+
+
+<p>and then you will need to build the package and upload it (please note
+I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
+<div class="highlight"><pre><span></span>python setup.py sdist upload --sign -r pypitest
+</pre></div>
+
+
+<h3>Upload the package to PyPI production server</h3>
+<p>Once you have verified that you are able to build and upload the package
+to the test server (without getting any errors), you should upload it to
+the production server:</p>
+<div class="highlight"><pre><span></span>python setup.py register -r pypi
+python setup.py sdist upload --sign -r pypi
+</pre></div>
+
+
+<p>This is everything you need to do if you want to publish a Python
+package on PyPI. Happy coding!</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2016/04/10/how-to-publish-a-python-package-to-pypi/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2016/04/10/how-to-publish-a-python-package-to-pypi/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/" rel="bookmark"
-                           title="Permalink to Using a light sensor with BBC micro:bit and MicroPython">Using a light sensor with BBC micro:bit and MicroPython</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 08 February 2016</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.co.uk/tag/breadboard.html">breadboard</a><a href="https://www.andreagrandi.co.uk/tag/embedded.html">embedded</a><a href="https://www.andreagrandi.co.uk/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.co.uk/tag/micropython.html">micropython</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">howto</a><a href="https://www.andreagrandi.co.uk/tag/python.html">python</a></span>
-</footer><!-- /.post-info -->                <p>A <strong><a href="https://en.wikipedia.org/wiki/Photoresistor">light sensor</a></strong> is a
-small component with a particular characteristic: it is basically a
-resistor and its resistance decreases if the light is more intense. To
-use it with micro:bit we need to use one of the <strong>analogic ports</strong>. To
-build this circuit you will need a <strong>breadboard …</strong></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/" rel="bookmark"
-                           title="Permalink to Prototyping BBC micro:bit projects with Kitronik breadboard kit">Prototyping BBC micro:bit projects with Kitronik breadboard kit</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 07 February 2016</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.co.uk/tag/embedded.html">embedded</a><a href="https://www.andreagrandi.co.uk/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.co.uk/tag/micropython.html">micropython</a><a href="https://www.andreagrandi.co.uk/tag/python.html">python</a></span>
-</footer><!-- /.post-info -->                <p><strong>BBC micro:bit</strong> has a few <a href="http://microbit-micropython.readthedocs.org/en/latest/pin.html">IO
-pins</a>
-that can be used to interact with external devices. The problem with the
-board is that it's not easy to connect the classic jumper wires (those
-that we normally connect to a breadboard) to the <strong>micro:bit</strong>, unless
-using a <a href="https://en.wikipedia.org/wiki/Crocodile_clip">crocodile clip …</a></p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 1
+    Page 1 / 2
+        <a href="https://www.andreagrandi.co.uk/category/development2.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">

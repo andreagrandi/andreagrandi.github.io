@@ -4,7 +4,18 @@ that my &lt;strong&gt;encfs&lt;/strong&gt; volume didn't mount after reboot. I t
 script manually and all I got was this error:&lt;/p&gt;
 &lt;p&gt;``` {.lang:default .decode:true}
 dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
-  Referenced from: /usr/local/Cellar/encfs …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After having upgraded &lt;strong&gt;OSX&lt;/strong&gt; to &lt;strong&gt;10.11.2&lt;/strong&gt; on my MacBook, I noticed
+  Referenced from: /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
+  Expected in: /usr/local/lib/libboost_serialization-mt.dylib
+ in /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;I quickly found that was a common problem caused by a new version of
+**Boost** being
+installed: &amp;lt;https://github.com/Homebrew/homebrew/issues/46254&amp;gt;
+
+To fix it, you just need to **reinstall encfs** using this command
+
+``` {.lang:default .decode:true}
+brew reinstall -s encfs
+&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After having upgraded &lt;strong&gt;OSX&lt;/strong&gt; to &lt;strong&gt;10.11.2&lt;/strong&gt; on my MacBook, I noticed
 that my &lt;strong&gt;encfs&lt;/strong&gt; volume didn't mount after reboot. I tried to run the
 script manually and all I got was this error:&lt;/p&gt;
 &lt;p&gt;``` {.lang:default .decode:true}

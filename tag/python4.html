@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - Python</title>
+        <link rel="stylesheet" href="https://www.andreagrandi.co.uk/theme/css/main.css" />
+        <link rel="stylesheet" href="https://www.andreagrandi.co.uk/theme/tipuesearch/css/tipuesearch.css">
+        <link href="https://www.andreagrandi.co.uk/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Andrea Grandi Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://www.andreagrandi.co.uk/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="https://www.andreagrandi.co.uk/about/">About</a></li>
+    
+                        <li><a href="https://www.andreagrandi.co.uk/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="https://www.andreagrandi.co.uk/pgp-key/">PGP Key</a></li>
+                </ul>
+<form id="search" action="https://www.andreagrandi.co.uk/search.html" onsubmit="return validateForm(this.elements['q'].value);">
+                        <input type="text" class="search-query" placeholder="" name="q" id="tipue_search_input">
+                    </form>
+                </nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="3">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
+                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 23 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.co.uk/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/wp-content/uploads/2015/08/middleware.png">{.aligncenter
+.size-full .wp-image-1012 width="601"
+height="511"}</a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<p>``` {.lang:python .decode:true}
+from datetime import datetime</p>
+<p>class BenchmarkMiddleware(object):
+    def process_request(self, request):
+        request._request_time = datetime.now()</p>
+<div class="highlight"><pre><span></span>def process_template_response(self, request, response):
+    response_time = request._request_time - datetime.now()
+    response.context_data[&#39;response_time&#39;] = abs(response_time)
+    return response
+</pre></div>
+
+
+<p>```</p>
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/" rel="bookmark"
+                           title="Permalink to Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 12 July 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/importio.html">import.io</a><a href="https://www.andreagrandi.co.uk/tag/music.html">music</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/somafm.html">soma.fm</a><a href="https://www.andreagrandi.co.uk/tag/spotify.html">spotify</a></span>
+</footer><!-- /.post-info -->                <p>I'm a big fan of <a href="http://somafm.com">Soma.fm</a> (a 25+ channels streaming
+radio based in San Francisco) and during the years I've been writing
+clients for this radio for different mobile platforms (Maemo, MeeGo,
+Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
+their "<a href="http://somafm.com/indiepop/"><strong>Indie Pop Rock</strong></a>" channel that
+during these years made me discover some very good artists.</p>
+<p>When <strong>Spotify</strong> finally was available in Italy (I'm still using it
+right now that I live in the UK), something that I always missed was a
+radio with the same good music. Why not just listening to Soma.fm?
+Because I like to listen to the music while I commute and in the London
+Underground it's nearly impossible to have signal.</p>
+<p>So I was thinking: it would be nice to have <strong>a Spotify playlist with
+Soma.fm tracks</strong>. Wait a moment.... <strong>I can do it!</strong></p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg">{.aligncenter
+.size-full .wp-image-981 width="542"
+height="422"}</a></p>
+<p>Soma.fm publishes the tracks history with all the tracks streamed during
+the last hour <a href="http://somafm.com/indiepop/songhistory.html">http://somafm.com/indiepop/songhistory.html</a> so I just
+needed something to parse this list for me and return me a well
+formatted version.</p>
+<p>Thanks to <a href="https://import.io"><strong>import.io</strong></a> (it's a service that takes
+a web page as input, parse the data and generates a RESTful API to
+access this data) I was able to easily get the data I needed. At this
+point I only needed to be able to loop through the list, search each
+track on Spotify and add it to my playlist.</p>
+<p>The <strong>source code is fully available</strong> here
+<a href="https://github.com/andreagrandi/spotisoma">https://github.com/andreagrandi/spotisoma</a></p>
+<p><strong>Note:</strong> you can't just get the code and run it. You will need to get
+your own <strong>import.io api key</strong>, generate your import.io api url, get a
+<a href="https://developer.spotify.com/technologies/libspotify/keys/"><strong>Spotify application
+key</strong></a> (the
+old/deprecated one, since it was nearly impossible for me to use oauth
+in a simple Python script due to the fact I didn't have an endpoint to
+receive the token back. You can get more informations here:
+<a href="https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys">https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys</a>)
+and set your env variables with your Spotify username and password. Last
+but not least: the <strong>old Spotify library</strong> only works with <strong>Premium</strong>
+accounts.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2015/07/12/soma-fm-spotify-import-io-python-mashup/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/" rel="bookmark"
+                           title="Permalink to Automatically pull updated Docker images and restart containers with docker-puller">Automatically pull updated Docker images and restart containers with docker-puller</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 25 October 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/containers.html">containers</a><a href="https://www.andreagrandi.co.uk/tag/docker.html">docker</a><a href="https://www.andreagrandi.co.uk/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.co.uk/tag/flask.html">Flask</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>If you use <a href="http://docker.io">docker.io</a> (or any similar service) to
+build your <strong>Docker</strong> containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h2 id="how-to-use-docker-puller" style="color: #333333;">How to use docker-puller</h2>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span>{
+    &quot;host&quot;: &quot;localhost&quot;,
+    &quot;port&quot;: 8000,
+    &quot;token&quot;: &quot;abc123&quot;,
+    &quot;hooks&quot;: {
+        &quot;hello&quot;: &quot;scripts/hello.sh&quot;
+    }
+}
+</pre></div>
+
+
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+docker stop test
+docker rm test
+docker run --name test -d -p 8000:80 andreagrandi/test:latest
+</pre></div>
+
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/" rel="bookmark"
+                           title="Permalink to Using virtualenv to manage multiple Python/Django environments in the same machine">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 25 April 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/django.html">Django</a><a href="https://www.andreagrandi.co.uk/tag/python.html">Python</a><a href="https://www.andreagrandi.co.uk/tag/virtualenv.html">virtualenv</a></span>
+</footer><!-- /.post-info -->                <p>Developing Python applications sometimes it's useful to be able to test
+the code with different environments, for example a particular version
+of Python or a specific Django version etc... Setting up many different
+virtual machines would be really too much work and even using a chroot
+environment is not what you need in some cases. Thanks to
+<a href="https://github.com/pypa/virtualenv"><strong>virtualenv</strong></a> is it possible to
+create a self contained Python environment with all the specific
+libraries you may need. Using virtualenv is very easy:</p>
+<ul>
+<li>Creating the virtual environment: <strong>virtualenv
+    myenv --no-site-packages</strong></li>
+<li>Entering the virtual environment: <strong>source myenv/bin/activate</strong></li>
+<li>Deactivating the virtual environment: <strong>deactivate</strong></li>
+</ul>
+<p>That's it! Once you're inside the virtual environment you will be using
+the Python libraries inside it. I suggest you to install all the Python
+libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip</strong></a>.</p>
+                <a class="readmore" href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">read more</a>
+<p><a href="https://www.andreagrandi.co.uk/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="https://www.andreagrandi.co.uk/tag/python3.html">&laquo;</a>
+    Page 4 / 8
+        <a href="https://www.andreagrandi.co.uk/tag/python5.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://www.andreagrandi.co.uk/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>
+                    Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+                        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+                    </a>
+                </p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'andreagrandi';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

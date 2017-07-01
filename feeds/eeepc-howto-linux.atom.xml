@@ -5,7 +5,86 @@ che viene installata sugli EeePC (&lt;strong&gt;Xandros&lt;/strong&gt; Linux) da
 sia l'ideale per chi non ha mai utilizzato Linux e desidera un netbook
 semplice da usare, tuttavia &lt;strong&gt;non permette di sfruttare pienamente le
 potenzialità&lt;/strong&gt; che l'EeePC ha.&lt;/p&gt;
-&lt;p&gt;Poco tempo …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/asus_ubuntueee.jpg" title="asus_ubuntueee"&gt;{.alignright
+&lt;p&gt;Poco tempo dopo l'uscita dei primi modelli degli EeePC sono iniziate
+quindi ad essere rilasciate distribuzioni alternative alla Xandros,
+ottimizzate per il netbook di Asus. E' ovviamente possibile installare
+una qualsiasi distribuzione Linux, ma ovviamente il lavoro da compiere
+per far funzionare tutte le periferiche sarà maggiore rispetto a quello
+necessario con una distribuzione realizzata ad hoc.&lt;/p&gt;
+&lt;p&gt;La distribuzione che ho deciso di installare sul mio &lt;strong&gt;EeePC 901&lt;/strong&gt; è la
+&lt;a href="http://www.ubuntu-eee.com"&gt;Ubuntu Eee 8.04.1&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Per installare la &lt;strong&gt;Ubuntu Eee&lt;/strong&gt; è necessario scaricarla dal &lt;a href="http://www.ubuntu-eee.com/wiki/index.php5?title=Get_Ubuntu_Eee"&gt;sito web
+dedicato&lt;/a&gt;
+e poi trasferirla su una chiavetta USB o su un disco USB esterno (visto
+che l'EeePC non è dotato di lettore CD/DVD) utilizzando una utility
+chiamata &lt;strong&gt;Unetbootin&lt;/strong&gt; e seguendo le &lt;a href="http://www.ubuntu-eee.com/wiki/index.php5?title=How_to:_Using_Unetbootin"&gt;istruzioni presenti sul
+wiki&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Dopo aver trasferito l'installazione sulla chiavetta USB dobbiamo
+inserirla nell'EeePC ed avviare premendo piu' volte il tasto &lt;strong&gt;Esc&lt;/strong&gt;.
+Quando compare il menu di avvio, dobbiamo selezionare il disco USB dalla
+lista e premere &lt;strong&gt;Invio&lt;/strong&gt; per continuare.&lt;/p&gt;
+&lt;p&gt;Nel caso la Ubuntu Eee non si dovesse avviare, i motivi possono essere
+diversi. Per prima cosa dobbiamo controllare nella sezione Boot del
+&lt;strong&gt;BIOS&lt;/strong&gt; se il disco USB è al primo posto nell'ordine dei dischi da cui
+fare il boot. Se non dovesse avviarsi nemmeno in questo caso, è
+possibile che la &lt;strong&gt;chiavetta&lt;/strong&gt; USB &lt;strong&gt;non sia compatibile&lt;/strong&gt;: a me è
+successo di non essere in grado di utilizzare una chiavetta USB da 1 Gb
+che avevo e sono dovuto ricorrere ad un disco esterno USB.&lt;/p&gt;
+&lt;p&gt;Se riusciamo ad avviare la Ubuntu Eee, saremo in grado di utilizzare
+l'installer grafico senza alcun problema. Il mio consiglio è quello di
+scegliere il &lt;strong&gt;partizionamento manuale&lt;/strong&gt; e di utilizzare il primo
+&lt;strong&gt;disco SSD&lt;/strong&gt; da &lt;strong&gt;4 Gb per la root /&lt;/strong&gt; ed il &lt;strong&gt;disco SSD&lt;/strong&gt; da &lt;strong&gt;16 Gb
+per la /home&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Le &lt;strong&gt;caratteristiche&lt;/strong&gt; della &lt;strong&gt;Ubuntu Eee&lt;/strong&gt; la rendono praticamente la
+distribuzione perfetta per gli EeePC:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;supporto per gli Asus EeePC 701, 900, 900A, 901, 1000 e 1000H&lt;/li&gt;
+&lt;li&gt;occupa 1.8 Gb di spazio&lt;/li&gt;
+&lt;li&gt;Kernel ottimizzato di &lt;a href="http://www.array.org/ubuntu/"&gt;Adam&lt;/a&gt; con
+    supporto per tutte le periferiche degli EeePC&lt;/li&gt;
+&lt;li&gt;interfaccia Notebook Remix predefinita (è possibile cambiarla
+    tramite un'apposita utility)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Sebbene il setup e la configurazione predefiniti di Ubuntu Eee siano
+quasi perfetti, tuttavia sono necessari ancora alcuni ritocchi per fare
+in modo che tutto funzioni regolarmente.&lt;/p&gt;
+&lt;p&gt;Per prima cosa occorre &lt;strong&gt;commentare&lt;/strong&gt; l'ultima riga di &lt;strong&gt;/etc/fstab&lt;/strong&gt;,
+quella relativa al cdrom, altrimenti si otterrà un errore durante la
+fase di mount quando si inserisce una chiavetta USB.&lt;/p&gt;
+&lt;p&gt;Per ottenere il meglio dal &lt;strong&gt;risparmio energetico&lt;/strong&gt;, consiglio di
+installare gli &lt;strong&gt;script ACPI&lt;/strong&gt; di &lt;strong&gt;Murat&lt;/strong&gt; che potete trovare a questo
+indirizzo:
+&lt;a href="http://www.informatik.uni-bremen.de/~elmurato/EeePC/Hardy_ACPI_scripts-EeePC_900A_901_1000.tar.gz"&gt;http://www.informatik.uni-bremen.de/~elmurato/EeePC/Hardy_ACPI_scripts-EeePC_900A_901_1000.tar.gz&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Gli script permettono di attivare/disattivare alcune periferiche come il
+bluetooth, la webcam, la wifi ecc... consentendo alla batteria di durare
+piu' a lungo. Per l'installazione sono sufficienti i seguenti passaggi:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tar xfvz Ubuntu_ACPI_scripts-EeePC_900A_901_1000.tar.gz cd Ubuntu_ACPI_scripts-EeePC_900A_901_1000/ chmod +x install.sh sudo ./install.sh&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;In particolare le funzionalità che vengono aggiunte sono le seguenti
+(gli hotkey sono quei tasti hardware posizionati sopra ad i tasti F1,
+F2, ecc...):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fn+F1 Standby&lt;/li&gt;
+&lt;li&gt;Fn+F2 WLAN-toggle&lt;/li&gt;
+&lt;li&gt;Fn+F3/F4 Brightness&lt;/li&gt;
+&lt;li&gt;Fn+F5 VGA-toggle&lt;/li&gt;
+&lt;li&gt;Fn+F6 Taskmanager&lt;/li&gt;
+&lt;li&gt;Fn+F7/F8/F9 Volume&lt;/li&gt;
+&lt;li&gt;1. new hotkey Display-toggle (internal)&lt;/li&gt;
+&lt;li&gt;2. new hotkey Bluetooth-toggle&lt;/li&gt;
+&lt;li&gt;3. new hotkey CPU frequency control or user-defined&lt;/li&gt;
+&lt;li&gt;4. new hotkey Webcam-toggle or user-defined&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Gli script di Murat purtroppo introducono un &lt;strong&gt;piccolo bug&lt;/strong&gt;: viene
+disattivata la funzionalità &lt;strong&gt;"Dim when idle"&lt;/strong&gt; del display (in pratica
+non viene abbuiato lo schermo quando non si usa l'EeePC). Per
+ripristinare questa funzionalità è sufficiente eseguire questo comando:&lt;br&gt;
+&lt;code&gt;sudo cp /etc/acpi/backup/hal-system-lcd-set-brightness-linux /usr/lib/hal/scripts/linux/&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;A questo punto la configurazione dovrebbe essere al completo. Si
+consiglia di &lt;strong&gt;riavviare l'EeePC&lt;/strong&gt; per rendere effettive tutte le
+modifiche. Per ulteriori trucchetti su come ottimizzare la
+configurazione, vi consiglio di visitare direttamente il &lt;a href="http://www.ubuntu-eee.com/wiki/index.php5?title=User_Guides"&gt;wiki di Ubuntu
+Eee&lt;/a&gt; dove
+potrete trovare articoli piu' approfonditi.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/asus_ubuntueee.jpg" title="asus_ubuntueee"&gt;{.alignright
 .size-full .wp-image-128 width="240" height="197"}La versione di Linux
 che viene installata sugli EeePC (&lt;strong&gt;Xandros&lt;/strong&gt; Linux) da Asus, sebbene
 sia l'ideale per chi non ha mai utilizzato Linux e desidera un netbook
@@ -97,7 +176,28 @@ completamente indipendente dal tipo di sistema operativo utilizzato.&lt;/p&gt;
 &lt;p&gt;Per prima cosa occorre scaricare dal sito della Asus, nell'apposita
 &lt;a href="http://support.asus.com/download/download.aspx?SLanguage=en-us"&gt;pagina di
 supporto&lt;/a&gt;,
-l'ultima versione del BIOS, facendo ben attenzione …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/eee-pc-901.jpg" title="eee-pc-901"&gt;{.alignright
+l'ultima versione del BIOS, facendo ben attenzione a selezionare il
+modello di EeePC che possediamo.&lt;/p&gt;
+&lt;p&gt;Una volta scaricato il file, dobbiamo decomprimerlo e copiarlo su una
+chiavetta USB o su un disco esterno USB, avendo cura di rinominarlo con
+il numero del modello del nostro EeePC. Se ad esempio possediamo
+l'&lt;strong&gt;Asus EeePC 901&lt;/strong&gt;, dovremo rinominare il file in &lt;strong&gt;901.ROM&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A questo punto dobbiamo inserire la chiavetta USB nel nostro EeePC e
+riavviare il computer, premendo ALT+F2 durante la fase iniziale di
+avvio.&lt;/p&gt;
+&lt;p&gt;L'EeePC avvia l'utility di aggiornamento del &lt;strong&gt;BIOS&lt;/strong&gt; che provvede a
+cercare sulla chiaveta USB il file "&lt;strong&gt;901.ROM&lt;/strong&gt;". Si consiglia di
+eseguire questa operazione alimentando l'EeePC tramite l'adattatore di
+corrente e di non affidarsi alla batteria perchè se si dovesse
+improvvisamente scaricare durante l'aggiornamento, il BIOS rimarrebbe in
+uno stato inutilizzabile.&lt;/p&gt;
+&lt;p&gt;Dopo pochi minuti l'aggiornamento sara' completato ed il portatile verrà
+riavviato. Al primo avvio sara' necessario riconfigurare nuovamente i
+parametri del BIOS, perchè essi vengono cancellati quando si esegue
+l'aggiornamento.&lt;/p&gt;
+&lt;p&gt;Il mio consiglio infine è quello di far effettuare l'aggiornamento ad
+una persona esperta, perchè in caso di errori l'EeePC diventerebbe
+inutilizzabile.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/eee-pc-901.jpg" title="eee-pc-901"&gt;{.alignright
 .size-full .wp-image-126 width="220" height="167"}L'aggiornamento del
 &lt;strong&gt;BIOS&lt;/strong&gt; su un &lt;strong&gt;Asus EeePC&lt;/strong&gt; puo' essere fatto in una maniera che è
 completamente indipendente dal tipo di sistema operativo utilizzato.&lt;/p&gt;

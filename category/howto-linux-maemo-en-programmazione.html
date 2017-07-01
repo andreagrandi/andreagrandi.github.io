@@ -82,7 +82,40 @@ often when we try to execute some application we can get into this kind
 of errors (for example):</p>
 <p><code>sem_post: Function not implemented</code></p>
 <p>This happens because not all the functions have been implemented in the
-emulated environment.[ Lauro Venâncio …</p>
+emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
+created a <a href="http://sourceforge.net/projects/qemu-arm-eabi/">patched</a>
+version of qemu-arm called [qemu-arm-eabi]{style="font-weight: bold;"}.</p>
+<p>Thanks to [Marcelo Lira]{style="font-weight: bold;"}, we have a simple
+howto to install the patch into the Scratchbox environment.
+[Note:]{style="font-weight: bold;"} you have to execute these commands
+from outside the Scratchbox environment and you should not be logged
+into the environment at the same time.</p>
+<p>[1.]{style="font-weight: bold;"} You need gcc 3.4, SDL dev library and
+Zlib dev:[<br>
+]{style="font-size: 78%;"}</p>
+<p><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev</code></p>
+<p>[2.]{style="font-weight: bold;"} Get the patched qemu-arm. Notice that
+the patches are already applied, everything is here, and you don't need
+to get the qemu sources.</p>
+<p><code>svn co  https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make</code></p>
+<p>[3.]{style="font-weight: bold;"} Copy qemu to the cputransp dir on
+scratchbox[<br>
+]{style="font-size: 78%;"}</p>
+<p><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2</code></p>
+<p>[4.]{style="font-weight: bold;"} Add it to the list of cputransp
+methods. Open the file[<br>
+]{style="font-size: 78%;"}</p>
+<p><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods</code></p>
+<p>and add this line:</p>
+<p><code>qemu-arm-eabi-sb2</code></p>
+<p>[5.]{style="font-weight: bold;"} Configure the target to use the patched
+qemu as transparency method. Edit the file:[<br>
+]{style="font-size: 78%; font-family: courier new;"}</p>
+<p><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config</code></p>
+<p>and change this line:</p>
+<p><code>SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2</code></p>
+<p>That's all! You're now ready to log again into your Scratchbox
+environment.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -103,7 +136,17 @@ emulated environment.[ Lauro Venâncio …</p>
 Like most other people I couldn't wait for the final release and I
 installed the beta version. The big question, when I did read about the
 final version was "how can I upgrade to the final version without
-installing it from …</p>
+installing it from scratch?!". Luckly one kind person helped me on
+maemo-developer mailing list, and suggested me to do a dist-upgrade from
+inside the Scratchbox environment. So, login into tour Scratchbox
+environment and execute this:</p>
+<p><code>[sbox-SDK_BETA_X86: ~] &gt; fakeroot apt-get update [sbox-SDK_BETA_X86: ~] &gt; fakeroot apt-get dist-upgrade</code></p>
+<p>[[[That's all! I don't know if this is the official method to do the
+upgrade, but it worked for me. I checked, after the upgrade, if I had
+the right packages installed, using this page:
+<a href="http://tablets-dev.nokia.com/4.0/4.0b_vs_4.0_content_comparison.html">http://tablets-dev.nokia.com/4.0/4.0b_vs_4.0_content_comparison.html</a><br>
+and they were
+right.]{style="font-family: georgia;"}]{style="font-family: arial;"}]{style="font-family: verdana;"}</span></p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -130,7 +173,121 @@ devices. Actually is the base for the operating system installed on
 <a href="http://www.nokia.com/N810" title="http://www.nokia.com/N810">N810</a>{.external
 .text} but it could be adopted, with few changes, even by other similar
 devices.</p>
-<p>In particular, this …</p>
+<p>In particular, this version of Maemo SDK is the only one that allow
+developers to develop new applications for <strong>N810</strong> and to start porting
+old application to this new platform.</p>
+<p>The SDK is not only a set of libraries and compiler, it gives you a real
+environment that emulates the Nokia device, so the developer can write
+applications, debug them and test them. Both command line and gui
+application are supported in emulator.</p>
+<p>Graphical environment is based on a real <strong>X server</strong>, a <strong>window
+manager</strong> and on <strong>GTK</strong> libraries, with a particular extension called
+<strong>Hildon</strong>.</p>
+<p>With Maemo SDK you can:</p>
+<ul>
+<li>Test Maemo applications using a normal PC with Linux.</li>
+<li>Write and debug applications written by you.</li>
+<li>Port existing applications written for Linux/GTK and verify if they
+    work correctly.</li>
+<li>Compile and build ARMEL package so you can install them in the
+    device.</li>
+</ul>
+<p>[]{#Requirements}</p>
+<h2>Requirements</h2>
+<p>These are the minimum requirements to work with Maemo SDK:</p>
+<ul>
+<li>Intel compatible processor (x86), at least 500 Mhz</li>
+<li>256 Mb RAM</li>
+<li>2 Gb space on hard disk</li>
+<li>A Linux distribution (I suggest Debian or Ubuntu)</li>
+</ul>
+<p>You need the following software packages:</p>
+<ul>
+<li>Scratchbox: a cross-compiling toolkit that allows you to compile
+    applications for different platform</li>
+<li>Maemo SDK: you can find it at this address:
+    <a href="http://www.maemo.org/downloads/download-sdk.html">http://www.maemo.org/downloads/download-sdk.html</a></li>
+<li>Xephyr Xserver:</li>
+</ul>
+<p>Starting from <strong>4.x</strong> version, Maemo has a simple installer script, so
+all you need are these two files:</p>
+<ul>
+<li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-scratchbox-install_4.0beta.sh" title="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-scratchbox-install_4.0beta.sh">maemo-scratchbox-install_4.0beta.sh</a>{.external
+    .text}</li>
+<li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-sdk-install_4.0beta.sh" title="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-sdk-install_4.0beta.sh">maemo-sdk-install_4.0beta.sh</a>{.external
+    .text}</li>
+</ul>
+<p>[]{#Installing_Scratchbox}</p>
+<h2>Installing Scratchbox</h2>
+<p>The first tool you have to install is <strong>Scratchbox</strong>. I suggest you to
+use the script provided but you could choose also to install it manually
+(in this case please refer to [<a href="http://scratchbox.org/documentation/user/scratchbox-1.0/html/installdoc.html" title="http://scratchbox.org/documentation/user/scratchbox-1.0/html/installdoc.html">this
+site</a>{.external
+.text}] for detailed instructions).</p>
+<p>Before beginning the installation of Scratchbox, you have to become
+<strong>root</strong>.</p>
+<p>First of all set the permission of the script file:</p>
+<p><code>chmod +x maemo-scratchbox-install_4.0beta.sh</code></p>
+<p>Then run it with these parameters:</p>
+<p><code>./maemo-scratchbox-install_4.0beta.sh -d -u andy80</code></p>
+<p>Please note that <strong>-d</strong> tells the installer to install from Debian dpkg
+packages while <strong>-u</strong> specifies your username (in my case is andy80, you
+have to change it using your local username).</p>
+<p>Scratchbox environment will be installed in /scratchbox/</p>
+<p>Please note that you'll have to logout and login again to be able to log
+into you new Scratchbox environment. To test it you simply have to start
+Scratchbox from your local user:<br>
+<code>andy80@noteboontu:~/download/maemo_4.0_beta$ /scratchbox/login</code></p>
+<p>Welcome to Scratchbox, the cross-compilation toolkit!</p>
+<p>Use 'sb-menu' to change your compilation target.<br>
+See /scratchbox/doc/ for documentation.</p>
+<p>[sbox-SDK_BETA_ARMEL: \~]<br>
+</code></p>
+<p>[]{#Installing_Maemo_SDK}</p>
+<h2>Installing Maemo SDK</h2>
+<p>When Scratchbox is correctly installed on your system, you can install
+the <strong>Maemo SDK</strong>. Please note that you have to do it from <strong>normal
+user</strong> (the user you specified in the installation of Scratchbox).</p>
+<p>Simply run this command and follow instructions:</p>
+<p><code>bash maemo-sdk-install_4.0beta.sh</code></p>
+<p>At the end you should get this message:</p>
+<p><code>Installation was successful! ----------------------------</code></p>
+<p>IMPORTANT! Please read this.</p>
+<p>You now have the maemo 4.0beta 'chinook' installed on your computer.<br>
+You can now start your maemo SDK session with /scratchbox/login and<br>
+then select your target with 'sb-conf select SDK_BETA_ARMEL' for the<br>
+armel target or 'sb-conf select SDK_BETA_X86' for the i386 target.</p>
+<p>If you have any problems with targets' package databases, you can try<br>
+running 'fakeroot apt-get -f install' on your scratchbox target.<br>
+This command will try to fix any problems with the package database.</p>
+<p>Happy hacking!<br>
+</code></p>
+<p>[]{#Installing_Xephyr}</p>
+<h2>Installing Xephyr</h2>
+<p>Xephyr is an X11 server that provides a device screen for the developer
+so that you can see all the maemo application windows and visuals on
+your computer.</p>
+<p>To install it in a Debian based distribution, simply execute this (from
+root):</p>
+<p><code>apt-get install xserver-xephyr</code></p>
+<p>[]{#Running_Xephyr}</p>
+<h2>Running Xephyr</h2>
+<p>To see if all works fine, you should start Xephyr and Maemo environment.
+Execute this from outside the Scratchbox environment:</p>
+<p><code>Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac -extension Composite</code></p>
+<p>Now, from another shell, log into Scratchbox and execute this:<br>
+<code>[sbox-SDK_BETA_X86:~] &gt; export DISPLAY=:2 [sbox-SDK_BETA_X86:~] &gt; af-sb-init.sh start</code></p>
+<p>This should start the Hildon Application Framework inside the Xephyr
+window. That's all!</p>
+<p>[]{#References}</p>
+<h2>References</h2>
+<p>Here you can find a list of website where I took information from to
+write this guide:</p>
+<ul>
+<li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt">http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt</a></li>
+<li><a href="http://www.maemo.org/" title="http://www.maemo.org">http://www.maemo.org</a>{.external
+    .free}</li>
+</ul>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2007/10/25/installing-maemo-sdk-4-beta/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2007/10/25/installing-maemo-sdk-4-beta/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>

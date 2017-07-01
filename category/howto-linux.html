@@ -125,7 +125,67 @@ inside their ecosystem.</p><p><a href="https://www.andreagrandi.co.uk/2015/02/20
 build your <strong>Docker</strong> containers, it may be possible that, once the new
 image is generated, you want your Docker host to automatically pull it
 and restart the container.</p>
-<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after …</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h2 id="how-to-use-docker-puller" style="color: #333333;">How to use docker-puller</h2>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span>{
+    &quot;host&quot;: &quot;localhost&quot;,
+    &quot;port&quot;: 8000,
+    &quot;token&quot;: &quot;abc123&quot;,
+    &quot;hooks&quot;: {
+        &quot;hello&quot;: &quot;scripts/hello.sh&quot;
+    }
+}
+</pre></div>
+
+
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+docker stop test
+docker rm test
+docker run --name test -d -p 8000:80 andreagrandi/test:latest
+</pre></div>
+
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -145,7 +205,33 @@ and restart the container.</p>
 services that are reliable to use. If you have, like in my situation, a
 RaspberryPi connected to your home DSL and you want it to be always
 reachable without knowing the current IP address (the IP could change if
-you …</p>
+you have a normal DSL service at home), you need a dynamic DNS service.</p>
+<p>To update the noip.com one you just need <strong>ddclient,</strong> a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install ddclient
+</pre></div>
+
+
+<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
+<div class="highlight"><pre><span></span>protocol=dyndns2
+use=web, web=checkip.dyndns.com/, web-skip=&#39;IP Address&#39;
+server=dynupdate.no-ip.com
+login=yourusername
+password=yourpassword
+yourhostname.no-ip.org
+</pre></div>
+
+
+<p>and restart the client:</p>
+<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
+</pre></div>
+
+
+<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
+<strong>limitation</strong>: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -166,59 +252,28 @@ immagini, come ad esempio ridimensionarle o salvarle in formati diversi
 da quello originale. Queste operazioni possono richiedere moltissimo
 tempo, soprattutto se abbiamo a che fare con una grande quantità di
 immagini.</p>
-<p>Per chi usa <strong>Linux</strong> è disponibile però l'utility …</p>
+<p>Per chi usa <strong>Linux</strong> è disponibile però l'utility <strong>ImageMagick</strong>, che
+unita ad un pizzico di script in <strong>bash</strong> ci permette di risolvere
+agevolmente il problema.</p>
+<p>Per prima cosa è necessario installare il tool sulla propria
+distribuzione. Su <strong>Ubuntu</strong> (o in qualsiasi altra distribuzione basata
+su Debian) procedere nella seguente maniera:</p>
+<p><code>sudo apt-get install imagemagick</code></p>
+<p>A questo punto basta posizionarsi nella cartella dove si trovano le
+immagini (vi consiglio di crearvi una copia a parte delle immagini da
+modificare, visto che lo script andra' a lavorare direttamente su quelle
+originali) ed eseguire un comando come questo:</p>
+<p><code>find ./ -iname '*.JPG' -exec convert '{}' -resize '1024' '{}' \;</code></p>
+<p>Questo comando convertirà tutte le immagini .JPG che trova in un formato
+di 1024 pixel di larghezza, mantenendo ovviamente le proporzioni
+dell'immagine originale.</p>
                 <a class="readmore" href="https://www.andreagrandi.co.uk/2009/07/05/ridimensionare-immagini-automaticamente-con-un-batch-e-imagemagick/">read more</a>
 <p><a href="https://www.andreagrandi.co.uk/2009/07/05/ridimensionare-immagini-automaticamente-con-un-batch-e-imagemagick/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2008/12/17/scanner-mustek-scanexpress-1248-usb-su-ubuntu-linux/" rel="bookmark"
-                           title="Permalink to Scanner Mustek ScanExpress 1248 USB su Ubuntu Linux">Scanner Mustek ScanExpress 1248 USB su Ubuntu Linux</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 17 December 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/mustek.html">mustek</a><a href="https://www.andreagrandi.co.uk/tag/scanner.html">scanner</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.mustek.de/eng_/html/produkte/se1248ub.htm"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/12/se1248ub.jpg" title="se1248ub">{.alignright
-.size-full .wp-image-187 width="180"
-height="134"}</a>Lo
-scanner <a href="http://www.mustek.de/eng_/html/produkte/se1248ub.htm"><strong>Mustek ScanExpress 1248
-USB</strong></a> è
-pienamente compatibile con Linux, però purtroppo non basta connetterlo
-per farlo funzionare. <strong>Ubuntu Linux 8.10</strong> non distribuisce il firmware
-necessario al suo funzionamento, però è possibile reperirlo ed
-installarlo con molta facilità.</p>
-<p>Per prima cosa …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2008/12/17/scanner-mustek-scanexpress-1248-usb-su-ubuntu-linux/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2008/12/17/scanner-mustek-scanexpress-1248-usb-su-ubuntu-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.co.uk/2008/11/25/utilizzare-webcam-v4l2-con-flash-su-linux/" rel="bookmark"
-                           title="Permalink to Utilizzare webcam V4L2 con Flash su Linux">Utilizzare webcam V4L2 con Flash su Linux</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 25 November 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto-linux.html">HowTo, Linux</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/flash.html">flash</a><a href="https://www.andreagrandi.co.uk/tag/v4l1.html">V4L1</a><a href="https://www.andreagrandi.co.uk/tag/v4l2.html">V4L2</a><a href="https://www.andreagrandi.co.uk/tag/webcam.html">webcam</a></span>
-</footer><!-- /.post-info -->                <h2><img alt="" class="alignright size-full wp-image-174" height="130" src="http://www.andreagrandi.it/wp-content/uploads/2008/11/flash.png" title="flash" width="134">Introduzione</h2>
-<p>Il supporto per le webcam su Linux non è mai stata una cosa molto
-semplice. I motivi principali per cui le webcam non sono ben supportate
-sono principalmente due: la <strong>scarsa collaborazione dei produttori di
-hardware</strong>, che dovrebbero fornire almeno le specifiche a chi sviluppa i
-driver per Linux …</p>
-                <a class="readmore" href="https://www.andreagrandi.co.uk/2008/11/25/utilizzare-webcam-v4l2-con-flash-su-linux/">read more</a>
-<p><a href="https://www.andreagrandi.co.uk/2008/11/25/utilizzare-webcam-v4l2-con-flash-su-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 1
+    Page 1 / 2
+        <a href="https://www.andreagrandi.co.uk/category/howto-linux2.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">
