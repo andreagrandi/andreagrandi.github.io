@@ -42,7 +42,7 @@
 <footer class="post-info">
         <span>Sun 31 August 2014</span>
 	        <span>| in <a href="https://www.andreagrandi.co.uk/category/howto.html">HowTo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/dns.html">dns</a><a href="https://www.andreagrandi.co.uk/tag/postfix.html">postfix</a><a href="https://www.andreagrandi.co.uk/tag/vps.html">vps</a></span>
+<span>| tags: <a href="https://www.andreagrandi.co.uk/tag/dns.html">dns</a><a href="https://www.andreagrandi.co.uk/tag/postfix.html">postfix</a><a href="https://www.andreagrandi.co.uk/tag/vps.html">vps</a><a href="https://www.andreagrandi.co.uk/tag/howto.html">howto</a><a href="https://www.andreagrandi.co.uk/tag/digitalocean.html">digitalocean</a><a href="https://www.andreagrandi.co.uk/tag/email.html">email</a></span>
 </footer><!-- /.post-info -->      <p>I have recently migrated my website from a shared hosting to a dedicated
 VPS on Digital Ocean. Having a VPS surely gives you unlimited
 possibilities, compared to a shared hosting, but of course you have to
@@ -50,7 +50,7 @@ manage some services by yourself.</p>
 <p>In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
 + PHP) to serve my WordPress blog and Postfix to use email forwarding
 from my aliases to my personal email.</p>
-<h2>Configuring DNS on Digital Ocean</h2>
+<h3>Configuring DNS on Digital Ocean</h3>
 <p>Understanding how to properly configure the DNS entries in the panel
 could be a bit tricky if it's not your daily bread. In particular there
 is a Digital Ocean configuration that assumes certain things about your
@@ -63,10 +63,8 @@ and an "MX" record pointing to mail.yourdomain.com. (please note the dot
 at the end of the domain name). Here is the configuration of my own
 droplet (you will notice also a CNAME record. You need it if you want
 www.yourdomain.com to correctly point to your ip.</p>
-<p><a href="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"><img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg">{.aligncenter
-.wp-image-847 width="705"
-height="378"}</a></p>
-<h2>Configuring Postfix</h2>
+<p><a href="{filename}/2014/08/dns_config_digitalocean.jpg"><img alt="dns_config_digitalocean" src="{filename}/2014/08/dns_config_digitalocean.jpg" width="40%"></a></p>
+<h3>Configuring Postfix</h3>
 <p>In my case I only needed some aliases that I use to forward emails to my
 GMail account, so the configuration is quite easy. First you need to
 install Postfix:</p>
@@ -84,7 +82,7 @@ configuration here:</p>
 <script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"></script>
 </p>
 
-<p>Add your email aliases</p>
+<h3>Add your email aliases</h3>
 <p>Edit <strong>/etc/postfix/virtual</strong> file and add your aliases, one per line,
 like in this example:</p>
 <div class="highlight"><pre><span></span>info@yourdomain.com youremail@gmail.com
@@ -98,7 +96,7 @@ sudo /etc/init.d/postfix reload
 </pre></div>
 
 
-<h2>Conclusion</h2>
+<h3>Conclusion</h3>
 <p>As you can see, configuring Postfix is quite easy, you just need to be
 careful when you configure the DNS records in the control panel. Are you
 curious to try how Digital Ocean VPS works? Fancy <strong>10\$ credit</strong>

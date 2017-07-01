@@ -5005,14 +5005,14 @@ yourhostname.no-ip.org
 &lt;p&gt;That's all! Please remember that noip.com &lt;strong&gt;free accounts&lt;/strong&gt; have a
 &lt;strong&gt;limitation&lt;/strong&gt;: they need to be confirmed every 30 days (you will
 receive an email and you need to click on the link contained to update
-your DNS).&lt;/p&gt;</content></entry><entry><title>Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</title><link href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/" rel="alternate"></link><published>2014-08-31T17:02:00+01:00</published><updated>2014-08-31T17:02:00+01:00</updated><author><name>admin</name></author><id>tag:www.andreagrandi.co.uk,2014-08-31:/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/</id><summary type="html">&lt;p&gt;I have recently migrated my website from a shared hosting to a dedicated
+your DNS).&lt;/p&gt;</content></entry><entry><title>Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</title><link href="https://www.andreagrandi.co.uk/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/" rel="alternate"></link><published>2014-08-31T17:02:00+01:00</published><updated>2014-08-31T17:02:00+01:00</updated><author><name>Andrea Grandi</name></author><id>tag:www.andreagrandi.co.uk,2014-08-31:/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/</id><summary type="html">&lt;p&gt;I have recently migrated my website from a shared hosting to a dedicated
 VPS on Digital Ocean. Having a VPS surely gives you unlimited
 possibilities, compared to a shared hosting, but of course you have to
 manage some services by yourself.&lt;/p&gt;
 &lt;p&gt;In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
 + PHP) to serve my WordPress blog and Postfix to use email forwarding
 from my aliases to my personal email.&lt;/p&gt;
-&lt;h2&gt;Configuring DNS on Digital Ocean&lt;/h2&gt;
+&lt;h3&gt;Configuring DNS on Digital Ocean&lt;/h3&gt;
 &lt;p&gt;Understanding how to properly configure the DNS entries in the panel
 could be a bit tricky if it's not your daily bread. In particular there
 is a Digital Ocean configuration that assumes certain things about your
@@ -5025,10 +5025,8 @@ and an "MX" record pointing to mail.yourdomain.com. (please note the dot
 at the end of the domain name). Here is the configuration of my own
 droplet (you will notice also a CNAME record. You need it if you want
 www.yourdomain.com to correctly point to your ip.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"&gt;&lt;img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"&gt;{.aligncenter
-.wp-image-847 width="705"
-height="378"}&lt;/a&gt;&lt;/p&gt;
-&lt;h2&gt;Configuring Postfix&lt;/h2&gt;
+&lt;p&gt;&lt;a href="{filename}/2014/08/dns_config_digitalocean.jpg"&gt;&lt;img alt="dns_config_digitalocean" src="{filename}/2014/08/dns_config_digitalocean.jpg" width="40%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Configuring Postfix&lt;/h3&gt;
 &lt;p&gt;In my case I only needed some aliases that I use to forward emails to my
 GMail account, so the configuration is quite easy. First you need to
 install Postfix:&lt;/p&gt;
@@ -5046,7 +5044,7 @@ configuration here:&lt;/p&gt;
 &lt;script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"&gt;&lt;/script&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Add your email aliases&lt;/p&gt;
+&lt;h3&gt;Add your email aliases&lt;/h3&gt;
 &lt;p&gt;Edit &lt;strong&gt;/etc/postfix/virtual&lt;/strong&gt; file and add your aliases, one per line,
 like in this example:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;info@yourdomain.com youremail@gmail.com
@@ -5060,7 +5058,7 @@ sudo /etc/init.d/postfix reload
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
 &lt;p&gt;As you can see, configuring Postfix is quite easy, you just need to be
 careful when you configure the DNS records in the control panel. Are you
 curious to try how Digital Ocean VPS works? Fancy &lt;strong&gt;10\$ credit&lt;/strong&gt;
@@ -5073,7 +5071,7 @@ manage some services by yourself.&lt;/p&gt;
 &lt;p&gt;In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
 + PHP) to serve my WordPress blog and Postfix to use email forwarding
 from my aliases to my personal email.&lt;/p&gt;
-&lt;h2&gt;Configuring DNS on Digital Ocean&lt;/h2&gt;
+&lt;h3&gt;Configuring DNS on Digital Ocean&lt;/h3&gt;
 &lt;p&gt;Understanding how to properly configure the DNS entries in the panel
 could be a bit tricky if it's not your daily bread. In particular there
 is a Digital Ocean configuration that assumes certain things about your
@@ -5086,10 +5084,8 @@ and an "MX" record pointing to mail.yourdomain.com. (please note the dot
 at the end of the domain name). Here is the configuration of my own
 droplet (you will notice also a CNAME record. You need it if you want
 www.yourdomain.com to correctly point to your ip.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"&gt;&lt;img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/wp-content/uploads/2014/08/dns_config_digitalocean.jpg"&gt;{.aligncenter
-.wp-image-847 width="705"
-height="378"}&lt;/a&gt;&lt;/p&gt;
-&lt;h2&gt;Configuring Postfix&lt;/h2&gt;
+&lt;p&gt;&lt;a href="{filename}/2014/08/dns_config_digitalocean.jpg"&gt;&lt;img alt="dns_config_digitalocean" src="{filename}/2014/08/dns_config_digitalocean.jpg" width="40%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Configuring Postfix&lt;/h3&gt;
 &lt;p&gt;In my case I only needed some aliases that I use to forward emails to my
 GMail account, so the configuration is quite easy. First you need to
 install Postfix:&lt;/p&gt;
@@ -5107,7 +5103,7 @@ configuration here:&lt;/p&gt;
 &lt;script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"&gt;&lt;/script&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Add your email aliases&lt;/p&gt;
+&lt;h3&gt;Add your email aliases&lt;/h3&gt;
 &lt;p&gt;Edit &lt;strong&gt;/etc/postfix/virtual&lt;/strong&gt; file and add your aliases, one per line,
 like in this example:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;info@yourdomain.com youremail@gmail.com
@@ -5121,13 +5117,13 @@ sudo /etc/init.d/postfix reload
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
 &lt;p&gt;As you can see, configuring Postfix is quite easy, you just need to be
 careful when you configure the DNS records in the control panel. Are you
 curious to try how Digital Ocean VPS works? Fancy &lt;strong&gt;10\$ credit&lt;/strong&gt;
 (enough for 2 months if you choose the basic droplet) for &lt;strong&gt;free&lt;/strong&gt;? Use
 this link and enjoy it
-&lt;a href="https://www.digitalocean.com/?refcode=cc8349e328a5"&gt;https://www.digitalocean.com/?refcode=cc8349e328a5&lt;/a&gt;&lt;/p&gt;</content><category term="dns"></category><category term="postfix"></category><category term="vps"></category></entry><entry><title>Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</title><link href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="alternate"></link><published>2014-03-02T13:44:00+00:00</published><updated>2014-03-02T13:44:00+00:00</updated><author><name>admin</name></author><id>tag:www.andreagrandi.co.uk,2014-03-02:/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/</id><summary type="html">&lt;p&gt;Developing a large web application or before deploying some code is very
+&lt;a href="https://www.digitalocean.com/?refcode=cc8349e328a5"&gt;https://www.digitalocean.com/?refcode=cc8349e328a5&lt;/a&gt;&lt;/p&gt;</content><category term="dns"></category><category term="postfix"></category><category term="vps"></category><category term="howto"></category><category term="digitalocean"></category><category term="email"></category></entry><entry><title>Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</title><link href="https://www.andreagrandi.co.uk/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="alternate"></link><published>2014-03-02T13:44:00+00:00</published><updated>2014-03-02T13:44:00+00:00</updated><author><name>admin</name></author><id>tag:www.andreagrandi.co.uk,2014-03-02:/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/</id><summary type="html">&lt;p&gt;Developing a large web application or before deploying some code is very
 important to verify the quality of the code itself, check if we have
 introduced any regression or bug and have something that tell us if we
 are increasing or decreasing the quality of the code.&lt;/p&gt;
