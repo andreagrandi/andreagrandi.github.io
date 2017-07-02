@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - setup</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 13 Aug 2009 10:39:00 +0100</lastBuildDate><item><title>Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</title><link>https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</link><description>&lt;p&gt;In the last post of this series, we saw how to write a simple binding
+and we finished to build and install it manually. This is of course not
+a good way to manage the building/installation procedure.&lt;/p&gt;
+&lt;p&gt;In Python we can use a library called &lt;strong&gt;distutils&lt;/strong&gt; that let us to
+automatize the building and installing process. I'll use the &lt;strong&gt;foo&lt;/strong&gt;
+source code to create the package, so it will be easier to understand.&lt;/p&gt;
+&lt;h2&gt;Using distutils&lt;/h2&gt;
+&lt;p&gt;All we have to do is to write a &lt;strong&gt;setup.py&lt;/strong&gt; file similar to this one:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="python"]&lt;br&gt;
+from distutils.core import setup, Extension&lt;/p&gt;
+&lt;p&gt;foomodule = Extension('foo', sources = ['foo.c'])&lt;/p&gt;
+&lt;p&gt;setup (name = 'Foo',&lt;br&gt;
+version = '1.0',&lt;br&gt;
+description = 'This is a package for Foo',&lt;br&gt;
+ext_modules = [foomodule])&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;As you can see, we have to first import needed modules with: &lt;strong&gt;from
+distutils.core import setup, Extension&lt;/strong&gt;&lt;br&gt;
+then we create an entry for each module we have (in this case just one,
+"foomodule"). We then call the &lt;strong&gt;setup()&lt;/strong&gt; method passing it all the
+parameters and our &lt;strong&gt;setup.py&lt;/strong&gt; is complete.&lt;/p&gt;
+&lt;h2&gt;Building and installing&lt;/h2&gt;
+&lt;p&gt;To test it we can try to build the package in this way:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;python2.5 setup.py build&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;if we want to install the module in our system:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;python2.5 setup.py install&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Official Python documentation:
+    &lt;a href="http://docs.python.org/extending/building.html"&gt;http://docs.python.org/extending/building.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 13 Aug 2009 10:39:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-13:/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</guid><category>binding</category><category>distutils</category><category>library</category><category>maemo</category><category>Python</category><category>setup</category></item></channel></rss>

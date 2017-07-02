@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - nvidia</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Fri, 27 Apr 2012 20:18:00 +0100</lastBuildDate><item><title>Ubuntu 12.04, Nvidia 8800 GS and Nouveau drivers</title><link>https://www.andreagrandi.it/2012/04/27/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/</link><description>&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2012/04/logo_nvidia_linux.jpg"&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/04/logo_nvidia_linux.jpg" title="logo_nvidia_linux"&gt;{.alignleft
+.wp-image-678 width="216"
+height="174"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;After upgrading my desktop PC to &lt;strong&gt;Ubuntu 12.04&lt;/strong&gt; (actually my main
+machine) I started experimenting many &lt;strong&gt;Xorg crashes&lt;/strong&gt; and instability
+issues. I &lt;a href="https://bugs.launchpad.net/ubuntu/+source/nvidia-graphics-drivers/+bug/986445"&gt;reported the
+bug&lt;/a&gt;,
+but I had to find a solution or I should have rolled back to Ubuntu
+11.10. The problem (from my point of view) is of the new &lt;strong&gt;Nvidia
+295.40&lt;/strong&gt; binary drivers. I also tried an older version (295.33)
+experiencing the same problems. I then decided to give the
+&lt;strong&gt;&lt;a href="http://nouveau.freedesktop.org"&gt;Nouveau&lt;/a&gt;&lt;/strong&gt; opensource drivers a try.&lt;/p&gt;
+&lt;p&gt;I must say that in over 24 hours I didn't have a single Xorg crash. My
+desktop is very stable and Nouveau drivers are pretty fast: I can watch
+a 1080p video on Youtube in full screen without having any problem. The
+only problem with my machine is that I'm using a VGA Switcher to share
+my monitor wit Xbox (see &lt;a href="http://www.andreagrandi.it/2012/02/26/sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher/"&gt;this old
+post&lt;/a&gt;),
+so my monitor capabilities cannot be detected automatically and I had to
+do some manually tuning of the Xorg configuration.&lt;/p&gt;
+&lt;p&gt;First of all I had to resolve a very annoying problem: the screen was
+blinking every 10 seconds and this really hurted my eyes. To fix this I
+had to add a kernel parameter: &lt;strong&gt;drm_kms_helper.poll=0&lt;br&gt;
+&lt;/strong&gt;you need to add this string in &lt;strong&gt;/etc/default/grub&lt;/strong&gt; to
+the &lt;strong&gt;GRUB_CMDLINE_LINUX_DEFAULT&lt;/strong&gt; parameter. After this your line
+should look like this one: &lt;strong&gt;GRUB_CMDLINE_LINUX_DEFAULT="quiet splash
+drm_kms_helper.poll=0"&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Don't forget to execute: &lt;strong&gt;sudo update-grub&lt;/strong&gt; from the command line.&lt;/p&gt;
+&lt;p&gt;Then I had to create a proper &lt;strong&gt;xorg.conf&lt;/strong&gt; setting my resolution
+(1680x1050) manually:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="text"]&lt;br&gt;
+Section "Monitor"&lt;br&gt;
+Identifier "DVI-I-1"&lt;br&gt;
+VendorName "Asus"&lt;br&gt;
+ModelName "Ancor Communications Inc VW222"&lt;br&gt;
+Modeline "1680x1050R" 119.00 1680 1728 1760 1840 1050 1053 1059 1080
++hsync -vsync&lt;br&gt;
+Option "PreferredMode" "1680x1050R"&lt;br&gt;
+EndSection&lt;/p&gt;
+&lt;p&gt;Section "Screen"&lt;br&gt;
+Identifier "Screen0"&lt;br&gt;
+Monitor "DVI-I-1"&lt;br&gt;
+EndSection&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;How do you generate the &lt;strong&gt;Modeline&lt;/strong&gt; line? It's very simple. Just
+execute: "&lt;strong&gt;cvt -r 1680 1050&lt;/strong&gt;" in the command line and you'll get a
+line similar to the one I added (of course substitute those numbers with
+the resolution you want).&lt;/p&gt;
+&lt;p&gt;You have to save this file in &lt;strong&gt;/etc/X11/xorg.conf&lt;/strong&gt; and reboot your
+system to use all the new settings. Now my system runs nicely and very
+fast! I'm really enjoying the new &lt;strong&gt;Ubuntu 12.04 Precise Pangolin&lt;/strong&gt;. I
+just hope that Nvidia guys will fix the sta&lt;br&gt;
+bility issues of their driver as soon as possible, so I'll be able to
+choose again between the opensource driver and the closed source one
+(faster with 3D stuff, but more unstable as you can see).&lt;/p&gt;
+&lt;p&gt;A big &lt;strong&gt;thanks&lt;/strong&gt; to everyone in &lt;strong&gt;#nouveau&lt;/strong&gt; &lt;strong&gt;IRC&lt;/strong&gt; channel on
+&lt;strong&gt;Freenode&lt;/strong&gt;. They were very kind to help me configuring their
+opensource driver.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 27 Apr 2012 20:18:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-04-27:/2012/04/27/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/</guid><category>drivers</category><category>graphic</category><category>Nouveau</category><category>nvidia</category><category>Pangolin</category><category>Ubuntu</category></item><item><title>Risolvere il crash all'avvio di Songbird su Ubuntu</title><link>https://www.andreagrandi.it/2009/06/24/risolvere-il-crash-allavvio-di-songbird-su-ubuntu/</link><description>&lt;p&gt;&lt;strong&gt;&lt;em&gt;*&lt;img alt="songbird_screenshot_0" src="http://www.andreagrandi.it/wp-content/uploads/2009/06/songbird_screenshot_0.jpg" title="songbird_screenshot_0"&gt;{.alignright
+.size-full .wp-image-283 width="197" height="136"}&lt;/em&gt;&lt;/strong&gt;*Se si prova a far
+girare la versione di &lt;strong&gt;Songbird&lt;/strong&gt; scaricabile &lt;a href="http://getsongbird.com"&gt;dal sito
+ufficiale&lt;/a&gt; su &lt;strong&gt;Ubuntu&lt;/strong&gt; (ma il problema sembra
+riguardare anche altre distribuzioni visto che si tratta di un bug del
+driver Nvidia) si otterrà quasi sicuramente un crash dell'applicazione
+stessa.&lt;/p&gt;
+&lt;p&gt;Per risolvere il problema è sufficiente disinstallare un plugin
+(&lt;strong&gt;libvisual-0.4-plugins&lt;/strong&gt;) utilizzando il seguente comando: &lt;strong&gt;sudo
+apt-get remove &lt;/strong&gt;libvisual-0.4-plugins****&lt;/p&gt;
+&lt;p&gt;Una nota negativa: questo bug è presente fin dalla versione 8.10 di
+Ubuntu... che aspettano a correggerlo invece di far ricorrere gli utenti
+a questi trucchetti?&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Wed, 24 Jun 2009 16:00:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-06-24:/2009/06/24/risolvere-il-crash-allavvio-di-songbird-su-ubuntu/</guid><category>crash</category><category>libvisual</category><category>nvidia</category><category>songbird</category><category>Ubuntu (EN)</category></item><item><title>I problemi della nuova Ubuntu Hardy 8.04</title><link>https://www.andreagrandi.it/2008/04/29/i-problemi-della-nuova-ubuntu-hardy-804/</link><description>&lt;p&gt;&lt;a href="javascript:void(0)" title="ubuntu_logo"&gt;&lt;img alt="ubuntu_logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/ubuntu-logo.thumbnail.png" title="ubuntu_logo"&gt;&lt;/a&gt;{#file-link-14
+.file-link .image}Il 24 aprile è uscita la tanto attesa &lt;strong&gt;Ubuntu Hardy
+8.04&lt;/strong&gt;, sicuramente una tra le distribuzioni piu' utilizzate al momento
+dagli utenti Linux.&lt;/p&gt;
+&lt;p&gt;Trattandosi di una release LTS (long time support, ovvero supportata per
+ben 3 anni dal rilascio) ci si aspettava che potesse trattarsi di una
+distribuzione assai stabile. Dopo circa una decina di giorni di utilizzo
+(avevo iniziato a fare l'upgrade pochi giorni prima dell'uscita
+ufficiale), devo purtroppo confermare le lamentele che molti stanno
+sollevando riguardo a questa versione.&lt;/p&gt;
+&lt;p&gt;Molti fattori, tra cui l'instabilità di alcuni applicativi che sono
+stati distribuiti con questa versione, non ancora pronti al momento del
+rilascio, hanno fatto si che questa versione risulti una delle piu'
+instabili tra tutte quelle che sono state rilasciate fino ad ora.&lt;/p&gt;
+&lt;p&gt;Qui di seguito farò una panoramica dei problemi che ho personalmente
+riscontrato, premettendo che si tratta ovviamente di una lista di
+problemi non completa e relativa in particolare ai miei due PC sul quale
+ho avuto modo di testarla:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Firefox 3:&lt;/strong&gt; la versione di Firefox distribuita al momento del
+rilascio della Ubuntu 8.04 è la versione &lt;strong&gt;3.0 beta 5&lt;/strong&gt;. Pur trattandosi
+di una versione "abbastanza stabile", non è del tutto esente da alcuni
+fastidiosi bug, in particolare si riscontrano &lt;a href="https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/192888"&gt;frequenti crash del
+browser&lt;/a&gt;
+quando si cerca di visualizzare video tramite il &lt;strong&gt;plugin Flash&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PulseAudio:&lt;/strong&gt; il nuovo sistema di gestione audio adottato da Ubuntu,
+sebbene abbia sulla carta ottime funzionalità, non è ancora compatibile
+con la maggior parte dei programmi in circolazione. Questo fa si che, ad
+esempio, anche programmi opensource come il client ufficiale di
+&lt;strong&gt;Last.Fm&lt;/strong&gt; abbiano problemi nel gestire la periferica audio, dando
+spesso il seguente errore "The Alsa soundsystem is either busy or not
+present".&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bluetooth:&lt;/strong&gt; fino alla versione 7.10 di Ubuntu riuscivo ad inviare
+correttamente le foto dal mio Nokia N73 al PC. Con la 8.04 non ci riesco
+piu'. Il
+&lt;a href="https://bugs.launchpad.net/ubuntu/+source/bluez-utils/+bug/211252"&gt;bug&lt;/a&gt;
+è già stato segnalato e riguarda anche altre persone oltre a me.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Clock Applet:&lt;/strong&gt; cliccando sull'orologio per visualizzare il
+calendario, va in crash gnome-panel. Anche &lt;a href="https://bugs.launchpad.net/ubuntu/+source/gnome-panel/+bug/203527"&gt;questo
+bug&lt;/a&gt;
+è stato già segnalato ed era stato "fixato" prima del rilascio della
+versione definitiva, ma ancora il problema non è risolto.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Evolution e Google Calendar:&lt;/strong&gt; una delle funzioni tanto attese sarebbe
+dovuta essere la possibilità di integrare Calendar di Google nel
+calendario di Evolution. Purtroppo si tratta di un altro
+&lt;a href="https://bugs.launchpad.net/ubuntu/+source/evolution/+bug/220596"&gt;bug&lt;/a&gt;
+ancora non risolto.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nvidia ed il driver proprietario:&lt;/strong&gt; sia a me che ad altre persone, non
+viene installato correttamente il
+drive&lt;a href="javascript:void(0)" title="ubuntu_logo"&gt; &lt;/a&gt;{#file-link-14 .file-link
+.image}r proprietario aggiornato, dopo aver aggiornato ad Ubuntu 8.04.
+Io ho risolto disattivando il modulo e reinstallandolo da capo. Il
+problema però non è ancora stato risolto.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tracker:&lt;/strong&gt; il tool di indicizzazione integrato nella Ubuntu, non
+indicizza correttamente il contenuto di alcuni file. Cercando ad esempio
+"Benedetta" vengono fuori anche i documenti che contengono "Benedetto".
+Anche questo
+&lt;a href="https://bugs.launchpad.net/ubuntu/+source/tracker/+bug/222046"&gt;bug&lt;/a&gt; è
+stato segnalato.&lt;/p&gt;
+&lt;p&gt;In conclusione, non mi sento proprio di consigliare, almeno per il
+momento, l'aggiornamento alla Ubuntu 8.04 a meno che non si voglia
+contribuire attivamente alla segnalazione dei bug, in modo che il team
+di sviluppo di Ubuntu possa correggerli al piu' presto. Non ci resta che
+attendere la versione &lt;strong&gt;8.04.1&lt;/strong&gt; che uscirà prossimamente e conterrà i
+principali fix dei bug che sono stati segnalati in questi giorni.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Tue, 29 Apr 2008 19:05:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-29:/2008/04/29/i-problemi-della-nuova-ubuntu-hardy-804/</guid><category>8.04</category><category>bluetooth</category><category>bugs</category><category>calendar</category><category>evolution</category><category>firefox 3</category><category>hardy</category><category>instabile</category><category>Linux</category><category>nvidia</category><category>problemi</category><category>tracker</category><category>Ubuntu (EN)</category></item></channel></rss>

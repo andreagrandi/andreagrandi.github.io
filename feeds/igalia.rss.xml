@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - Igalia</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 06 Aug 2009 15:44:00 +0100</lastBuildDate><item><title>Writing Python bindings of existing C libraries – (2) – A simple example of binding</title><link>https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/</link><description>&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;As I promised in the preceding post, I'll provide a very easy example of
+a python binding. Let's suppose we don't want to use the methods
+included in Python to sum two integer values and we want to do it in C
+and then call the add method from a python script. I'll write the
+complete source code first and then I'll explain all the parts of it.&lt;/p&gt;
+&lt;h2&gt;Source Code&lt;/h2&gt;
+&lt;p&gt;[sourcecode language="C"]&lt;br&gt;
+#include &amp;lt;Python.h&amp;gt;&lt;/p&gt;
+&lt;p&gt;static PyObject *foo_add(PyObject *self, PyObject *args)&lt;br&gt;
+{&lt;br&gt;
+int a;&lt;br&gt;
+int b;&lt;/p&gt;
+&lt;p&gt;if (!PyArg_ParseTuple(args, "ii", &amp;amp;a, &amp;amp;b))&lt;br&gt;
+{&lt;br&gt;
+return NULL;&lt;br&gt;
+}&lt;/p&gt;
+&lt;p&gt;return Py_BuildValue("i", a + b);&lt;br&gt;
+}&lt;/p&gt;
+&lt;p&gt;static PyMethodDef foo_methods[] = {&lt;br&gt;
+{ "add", (PyCFunction)foo_add, METH_VARARGS, NULL },&lt;br&gt;
+{ NULL, NULL, 0, NULL }&lt;br&gt;
+};&lt;/p&gt;
+&lt;p&gt;PyMODINIT_FUNC initfoo()&lt;br&gt;
+{&lt;br&gt;
+Py_InitModule3("foo", foo_methods, "My first extension module.");&lt;br&gt;
+}&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;h2&gt;How it works&lt;/h2&gt;
+&lt;p&gt;First of all we have to include &lt;strong&gt;Python.h&lt;/strong&gt; in our C file. This allows
+us to write an extension for Python language. To be able to include this
+header, we must have the python development packages installed in our
+system. For example in Debian based distributions we can install them
+with this command:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install python2.5-dev&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Every module has at least three parts. In the first part we write
+methods we want to call from the final python module: in this case we
+have a method called &lt;strong&gt;foo_add&lt;/strong&gt; where "&lt;em&gt;foo&lt;/em&gt;" is the name of the
+module and "&lt;em&gt;add&lt;/em&gt;" the name of the method. Every method is declared as
+&lt;strong&gt;static PyObject&lt;/strong&gt;. The method does anything particular except calling
+PyArg_ParseTuple to validate the input (we'll discuss this later),
+adding the two passed numbers and returning the result.&lt;/p&gt;
+&lt;p&gt;In the second part we have something like a dictionary, defined as
+static &lt;strong&gt;PyMethodDef&lt;/strong&gt; and called foo_methods (where "foo" again is the
+name of the module). For each method we want to expose in our python
+module, we have to add something like this:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{"add", (PyCFunction)foo_add, METH_VARARGS, NULL}&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;where "&lt;em&gt;add&lt;/em&gt;" is the name of the method we want to be visible in our
+module, &lt;em&gt;(PyCFunction)foo_add&lt;/em&gt; is a pointer to our foo_add method,
+implemented in the C module, METH_VARARGS means that we want to pass
+some parameters to the function and the last one would be the
+description of the method (we can leave it NULL if we want).&lt;/p&gt;
+&lt;p&gt;Third part allows us to register the defined method/s and the module:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Py_InitModule3("foo", foo_methods, "My first extension module.");&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;Parsing Parameters&lt;/h3&gt;
+&lt;p&gt;The &lt;strong&gt;PyArg_ParseTuple&lt;/strong&gt; function extracts arguments from the
+&lt;strong&gt;PyObject&lt;/strong&gt; passed as parameter to the current method and follows
+almost the sscanf syntax to parse parameters (in this case we had &lt;em&gt;"ii"&lt;/em&gt;
+for two integers). You can fin the complete reference here:
+&lt;a href="http://docs.python.org/c-api/arg.html"&gt;http://docs.python.org/c-api/arg.html&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Building and installing&lt;/h2&gt;
+&lt;p&gt;To build the module, we have to be in the source directory and execute
+this command:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;gcc -shared -I/usr/include/python2.5 foo.c -o foo.so&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;then we've to copy the generated module to the python's modules
+directory:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cp foo.so /usr/lib/python2.5/site-packages/&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Testing our module&lt;/h2&gt;
+&lt;p&gt;Testing the module is really easy. We've to start a python shell or
+create a python script with the following source code:&lt;/p&gt;
+&lt;p&gt;[sourcecode language="python"]&lt;br&gt;
+import foo&lt;br&gt;
+print foo.add(2, 3)&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;if all is working fine, the printed result should be &lt;strong&gt;5&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://docs.python.org/extending/extending.html"&gt;http://docs.python.org/extending/extending.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html"&gt;http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id="_mcePaste"
+style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;"&gt;
+
+python2.5-dev
+
+&lt;/div&gt;
+
+&lt;div id="_mcePaste"
+style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;"&gt;
+
+python2.5-dev
+
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 06 Aug 2009 15:44:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-06:/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/</guid><category>binding</category><category>Igalia</category><category>maemo</category><category>Python</category></item><item><title>Writing Python bindings of existing C libraries - (1) - Introduction</title><link>https://www.andreagrandi.it/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/</link><description>&lt;p&gt;This summer I'm having the pleasure of working in
+&lt;a href="http://www.igalia.com"&gt;&lt;strong&gt;Igalia&lt;/strong&gt;&lt;/a&gt; (a spanish free software company)
+for a couple of months and they assigned me to an interesting project:
+developing &lt;strong&gt;Python bindings&lt;/strong&gt; for &lt;strong&gt;MAFW&lt;/strong&gt; library (a &lt;strong&gt;Maemo&lt;/strong&gt;
+multimedia library that will be used in &lt;strong&gt;Fremantle&lt;/strong&gt; release).&lt;/p&gt;
+&lt;p&gt;Having the opportunity to work both with &lt;strong&gt;C&lt;/strong&gt; (yes, Python bindings are
+almost C code) and &lt;strong&gt;Python&lt;/strong&gt; (it's a good practice to write unittest of
+all implemented methods) it's a good way to improve my knowledges in
+both languages and since I wasn't able to find much documentation about
+these kind of things, I'm going to share my own experiences.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What is a Binding?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A binding is a Python module, written in C language, that allows Python
+developers to call functions from existing C libraries from their python
+applications. It's just like a "&lt;em&gt;bridge&lt;/em&gt;" from C world to Python one.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Why writing bindings?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are a couple of reasons to write python bindings instead of
+writing a library in python language from scratch.&lt;/p&gt;
+&lt;p&gt;First of all I don't think is good duplicating code, so if a library
+already exists and it's written in C, why writing it again in another
+language? There's no reason. A lot of code already exist in C world and
+all we have to do is to create a bridge with python world.&lt;/p&gt;
+&lt;p&gt;Another good reason, in particular when a C library doesn't exist yet,
+is the fact that python code is slower than C code for some tasks (for
+example multimedia codecs). In these cases is good to implement the core
+library in C language and then create a python binding for it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Coming next&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As the title of this post says, this is only an introduction to the
+subjects I'm going to write about. If you have any particular request
+about any argument you would like to read, please feel free to leave me
+a comment. Next posts will talk about these things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;A simple example of binding:&lt;/strong&gt; I'll write a simple library in C
+    language and I'll show how to create the relative python binding,
+    providing complete source code and an example for python developers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Building and installing python bindings with distutils:&lt;/strong&gt; I'll
+    explain how to use &lt;strong&gt;distutils&lt;/strong&gt; to build and install the binding
+    (using the well know method "python setup.py install").&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Defining new types:&lt;/strong&gt; this post will be about how to write new
+    types in C language and being able to use them from python code.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Using codegen to write bindings:&lt;/strong&gt; I'll explain how to use
+    &lt;strong&gt;codegen&lt;/strong&gt; utils to automate lot of tasks, to generate the most
+    part of binding code and how to customize the generated code using
+    overrides.&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 03 Aug 2009 10:04:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-03:/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/</guid><category>bindings</category><category>C</category><category>Igalia</category><category>libraries</category><category>library</category><category>maemo</category><category>pymaemo</category><category>Python</category></item><item><title>I officially joined the PyMaemo team</title><link>https://www.andreagrandi.it/2009/07/25/i-officially-joined-the-pymaemo-team/</link><description>&lt;p&gt;This summer I'm working for 2 months at &lt;a href="http://www.igalia.com"&gt;Igalia&lt;/a&gt;,
+a spanish free software company, and they assigned me the project of
+writing a &lt;strong&gt;Python binding&lt;/strong&gt; for &lt;strong&gt;MAFW&lt;/strong&gt; (a new multimedia library that
+will be included in &lt;strong&gt;Freemantle&lt;/strong&gt;).&lt;/p&gt;
+&lt;p&gt;After few days I discovered that
+&lt;a href="http://garage.maemo.org/projects/pymaemo/"&gt;&lt;strong&gt;PyMaemo&lt;/strong&gt;&lt;/a&gt; team was
+already working to it, so I asked to join them and they accepted me!&lt;/p&gt;
+&lt;p&gt;I really love Python language and since I think other developers love it
+too, I think we should provide good bindings for every library available
+in Maemo, so lot of developers can start writing their applications in
+this language.&lt;/p&gt;
+&lt;p&gt;I'll work to this project full time until the first week of september,
+so I hope to be able to learn a lot and to contribute as much as I can
+to this project.&lt;/p&gt;
+&lt;p&gt;If anyone else want to join PyMaemo team and help us to develop Python
+bindings, I think he will be welcome!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sat, 25 Jul 2009 13:54:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-07-25:/2009/07/25/i-officially-joined-the-pymaemo-team/</guid><category>bindings</category><category>freemantle</category><category>Igalia</category><category>maemo</category><category>Python</category></item></channel></rss>

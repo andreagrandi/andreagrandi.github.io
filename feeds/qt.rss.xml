@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - Qt</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 17 Jan 2013 18:49:00 +0000</lastBuildDate><item><title>Using QtCreator to deploy and run a Qt application to a remote Linux device</title><link>https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</link><description>&lt;p&gt;QtCreator is a very flexible IDE and can really be adapted for a lot of
+things. I usually use it to develop mobile applications for Nokia N9 and
+BlackBerry 10, but it can be used for more generic tasks. In my case I
+wanted to be able to develop a Qt application using my desktop PC,
+deploy it and run on a remote (actually it's on the same desk) Linux
+machine running Xubuntu.&lt;/p&gt;
+&lt;p&gt;Doing this is quite easy and you don't need any specific plugin on
+QtCreator, but be sure to have at least version 2.6.x. Other than
+QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
+development machine and Xubuntu 12.10 for the remote netbook) and an SSH
+account on the remote PC.&lt;/p&gt;
+&lt;h2 id="add-the-remote-device-to-qtcreator" style="text-align: left;"&gt;Add the remote device to QtCreator&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="QtCreatorDevice" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorDevice.png"&gt;{.aligncenter
+.wp-image-748 width="488" height="282"}&lt;/p&gt;
+&lt;p&gt;To add the remote Linux device on QtCreator, use the
+&lt;strong&gt;Tools-&amp;gt;Options&lt;/strong&gt; menu and click on "&lt;strong&gt;Devices&lt;/strong&gt;" item. At this
+point click on "&lt;strong&gt;Add&lt;/strong&gt;" button and fill the fields using values similar
+to the screenshot. In particular specify a &lt;strong&gt;name&lt;/strong&gt; for the device, the
+&lt;strong&gt;IP&lt;/strong&gt; of the remote machine and a &lt;strong&gt;username&lt;/strong&gt; and &lt;strong&gt;password&lt;/strong&gt; that
+must already exist (I just created the user "andrea" on the Xubuntu
+machine and used the same password). I also had to set the &lt;strong&gt;timeout&lt;/strong&gt;
+to 20 seconds, because I had some connection problems and the connection
+kept dropping after 10 seconds trying. To verify if everything is
+working fine, just click on &lt;strong&gt;Test&lt;/strong&gt; button.&lt;/p&gt;
+&lt;h2&gt;Add a specific Qt version&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"&gt;&lt;img alt="QtCreatorQtVersion" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"&gt;{.aligncenter
+.size-full .wp-image-754 width="488"
+height="282"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To write your application you may need a specific Qt version that is
+different from the one distributed by your Linux distribution. There's
+no problem, QtCreator let you add different Qt versions without any
+conflict. In my case I installed the Qt5 version distributed by
+&lt;strong&gt;Canonical Qt5 Edgers
+Team&lt;/strong&gt;: &lt;a href="https://launchpad.net/~canonical-qt5-edgers"&gt;https://launchpad.net/~canonical-qt5-edgers&lt;/a&gt;&lt;br&gt;
+Once it's installed, just click on "&lt;strong&gt;Add&lt;/strong&gt;" button and select the qmake
+specific to the version you want to add (in my case it was in
+&lt;strong&gt;/opt/qt5/bin/qmake&lt;/strong&gt; ).&lt;/p&gt;
+&lt;h2&gt;Add a Qt Kit&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"&gt;&lt;img alt="QtCreatorQtKits" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"&gt;{.aligncenter
+.size-full .wp-image-757 width="488"
+height="282"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;QtCreator permits to add new &lt;strong&gt;Kit&lt;/strong&gt; (development configurations) and
+these kits are used during project creation to specify what you want to
+target. In my example I added a new kit choosing an appropriate &lt;strong&gt;name&lt;/strong&gt;
+"Qt5 Ubuntu", the &lt;strong&gt;device type&lt;/strong&gt;, the actual &lt;strong&gt;device&lt;/strong&gt; previously
+configured and finally the &lt;strong&gt;Qt version&lt;/strong&gt; that we added before. With a
+kit I have a complete "toolchain" that allow me to write applications
+for a particular device, with a specific Qt version.&lt;/p&gt;
+&lt;h2&gt;Putting the pieces together&lt;/h2&gt;
+&lt;p&gt;At this point you just have to create a new "&lt;strong&gt;Qt Quick 2&lt;/strong&gt;"
+application, and select the new kit you just created instead of the
+"Desktop" one. &lt;strong&gt;Please note&lt;/strong&gt; that there is a little problem that I
+haven't fixed yet (but I'm working on it): if you create, for example, a
+project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
+on the remote machine. By default your user doesn't have read+write
+permissions for that folder so I manualy created the folder and I gave a
+chmod 777 on it, just for testing. There are two possible ways to fix
+this: you could create a specific user that has read+write permissions
+on /opt/ or you could modify the deployment configuration to have the
+app deployed to the user /home (I will investigate on this possibility
+and I will write something in one of the next posts).&lt;/p&gt;
+&lt;h2&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;What all of this could be useful for? Well, do 2+2 and you'll easily
+guess ;) In the next weeks I will post more specific informations and I
+will update everyone with my progresses. Any comment is welcome! If you
+want to contribute to this you're welcome too of course.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 17 Jan 2013 18:49:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2013-01-17:/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</guid><category>deploy</category><category>Linux</category><category>Qt</category><category>QtCreator</category><category>SDK</category><category>Ubuntu</category></item><item><title>Social Connect QML plugin: access Facebook, Twitter from your Qt/QML applications</title><link>https://www.andreagrandi.it/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/</link><description>&lt;p&gt;&lt;a href="https://projects.developer.nokia.com/socialconnect"&gt;&lt;strong&gt;Social Connect&lt;/strong&gt;&lt;/a&gt;
+is a library written in &lt;strong&gt;Qt&lt;/strong&gt; that allows applications to easily
+connect to services like &lt;strong&gt;Facebook&lt;/strong&gt; and &lt;strong&gt;Twitter&lt;/strong&gt;. Recently I had
+the opportunity to work on this library improving it and adding support
+for &lt;strong&gt;Instagram&lt;/strong&gt; (work is still in progress but it's almost finished).&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2012/08/SocialConnect.png"&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/08/SocialConnect.png" title="SocialConnect"&gt;{.aligncenter
+.wp-image-695 width="599"
+height="421"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;main features&lt;/strong&gt; of this library are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Out-of-the-box support for Facebook and Twitter&lt;/li&gt;
+&lt;li&gt;Integrated authentication implementation&lt;/li&gt;
+&lt;li&gt;Simplified common interface for all supported services&lt;/li&gt;
+&lt;li&gt;Provides interfaces for native API calls&lt;/li&gt;
+&lt;li&gt;Design enabling easy addition of new services e.g. LinkedIn&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you are writing an application that needs to access these services,
+this could be the library for you. It can be extended to support even
+other services like LinkedIn, Flickr etc... and I would like to invite
+people to contribute to the code. The library has been tested with &lt;strong&gt;Qt
+4.8.1&lt;/strong&gt; on &lt;strong&gt;Ubuntu Linux 12.04&lt;/strong&gt; but it should be compatible with any
+other versions/platforms.&lt;/p&gt;
+&lt;div&gt;
+
+For more informations about getting started with the library, I suggest
+you to give a look at this
+page &lt;https://projects.developer.nokia.com/socialconnect/wiki/GettingStarted&gt;
+
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 13 Aug 2012 09:04:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-08-13:/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/</guid><category>library</category><category>Mobile</category><category>nokia</category><category>QML</category><category>Qt</category><category>Social</category></item><item><title>Nokia QtSDK installer crash on Ubuntu: how to fix it</title><link>https://www.andreagrandi.it/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</link><description>&lt;p&gt;If you try to install &lt;strong&gt;Nokia QtSDK&lt;/strong&gt; on Ubuntu using the Nokia
+installer (that provides a newer version than the one distributed in
+Ubuntu Software Center) you could get an error like this:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="text"]&lt;br&gt;
+(Qt_SDK_Lin32_offline_v1_1_3_en.run:3126): Gtk-CRITICAL **:
+IA__gtk_widget_style_get: assertion `GTK_IS_WIDGET (widget)'
+failed&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;to fix it, you need to run the installer with a specific parameter:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="text"]&lt;br&gt;
+andrea@centurion:\~/Downloads/Qt\$
+./Qt_SDK_Lin32_offline_v1_1_4_en.run -style cleanlooks&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;and everything should work!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 12 Jan 2012 19:36:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-01-12:/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</guid><category>11.04</category><category>11.10</category><category>installer</category><category>Natty</category><category>nokia</category><category>Oneiric</category><category>Qt</category><category>SDK</category><category>Ubuntu</category></item><item><title>Announcing mSoma: Maemo/MeeGo client for SomaFM</title><link>https://www.andreagrandi.it/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/</link><description>&lt;p&gt;&lt;a href="http://somafm.com"&gt;SomaFM&lt;/a&gt; is a streaming radio with near 16 different
+channels, available for free. Even if it's possible to copy-paste their
+streaming URLs to N900 Media Player, we
+(&lt;a href="http://maemo.org/profile/view/andy80"&gt;me&lt;/a&gt; and &lt;a href="http://maemo.org/profile/view/lorebett"&gt;&lt;strong&gt;Lorenzo
+Bettini&lt;/strong&gt;&lt;/a&gt;) decided to create a
+custom application, to make channels switching easier for the end user
+and to be able to add more features. We decided to take advantage of the
+new &lt;strong&gt;Nokia SDK&lt;/strong&gt; and write the application in Qt/C++. Source code is
+available on &lt;a href="http://gitorious.org/msoma"&gt;Gitorious&lt;/a&gt; and it's always
+updated with latest version we're working on. If someone want to test
+the application, it's available in &lt;strong&gt;extras-devel&lt;/strong&gt; repository  ("msoma"
+under Multimedia section) of N900.&lt;/p&gt;
+&lt;p&gt;[caption id="attachment_380" align="aligncenter" width="389"
+caption="mSoma"]&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2010/07/msoma_0.1.2.png"&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2010/07/msoma_0.1.2.png" title="msoma_0.1.2"&gt;{.size-full
+.wp-image-380 width="389"
+height="233"}&lt;/a&gt;[/caption]&lt;/p&gt;
+&lt;p&gt;The UI is still in development as you can see. The application is
+already usable, but of course we have to work hard on the user
+interface. Feel free to test/use it and send us any feedback. If you
+want to contribute to our project (coders are welcome) please send us a
+patch with your code or ask us to be added to mSoma development team in
+Gitorious.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sat, 03 Jul 2010 16:31:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2010-07-03:/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/</guid><category>maemo</category><category>MeeGo</category><category>N900</category><category>nokia</category><category>Qt</category><category>SomaFM</category></item><item><title>Twitter client for Maemo in Qt + Python: call for developers and UI designers</title><link>https://www.andreagrandi.it/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/</link><description>&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;My name's &lt;strong&gt;Andrea Grandi&lt;/strong&gt;, I'm italian and I'm a Maemo
+user/lover/contributor since the &lt;strong&gt;Nokia 770&lt;/strong&gt;. I love &lt;strong&gt;Python&lt;/strong&gt; as
+development language and few months ago I also gave some contributions
+to the &lt;a href="http://pymaemo.garage.maemo.org/"&gt;&lt;strong&gt;PyMaemo&lt;/strong&gt;&lt;/a&gt; project.&lt;/p&gt;
+&lt;p&gt;In these days I had the idea to start writing a &lt;strong&gt;Twitter&lt;/strong&gt; client for
+&lt;strong&gt;Maemo&lt;/strong&gt; with a precise direction in my mind. I'll try to explain all
+my reasons here. First of all I've to thank the author of
+&lt;a href="http://mauku.henrikhedberg.com/"&gt;&lt;strong&gt;Mauku&lt;/strong&gt;&lt;/a&gt; client. I use it since its
+first version and I'm quite happy with it. Then, why do I want to write
+another one?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Maemo&lt;/strong&gt; (MeeGo) is moving to &lt;strong&gt;Qt&lt;/strong&gt; and for this reason I'm going
+    to use Qt, while Mauku uses Gtk.&lt;/li&gt;
+&lt;li&gt;I'm learning Qt and what is better than writing a complete (but not
+    too complex) application to learn better?&lt;/li&gt;
+&lt;li&gt;Mauku is not free as lot of people could think. Reading the source
+    codeyou find this "You are NOT allowed to modify or redistribute the
+    source code.", while I want to write a client and release it under
+    &lt;strong&gt;GPL2&lt;/strong&gt; or &lt;strong&gt;GPL3&lt;/strong&gt; license.&lt;/li&gt;
+&lt;li&gt;Mauku is not updated since some months and we have no news about it.&lt;/li&gt;
+&lt;li&gt;I love Python and I like to write free software in this language.&lt;/li&gt;
+&lt;li&gt;I want to give to Maemo a stronger contribute.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;My request for help&lt;/h2&gt;
+&lt;p&gt;Before lot of people start writing their own client resulting in 4-5
+twitter clients for Maemo, why don't we join our strength and work to a
+common project? I'm not a Python expert nor a Qt one, but I've some
+experience as project/team leader and since this is not a complex
+project, I would be glad to lead it. So, I'm looking for Python
+developers, Qt developers, UI designers and whoever want to contribute
+to this project. I still have to find a good name and logo for this
+application.&lt;/p&gt;
+&lt;p&gt;Who want to help me?&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 22 Feb 2010 17:16:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2010-02-22:/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/</guid><category>maemo</category><category>MeeGo</category><category>N900</category><category>nokia</category><category>Python</category><category>Qt</category><category>twitter</category></item><item><title>Qt Creator: disponibile la preview release dell'IDE per Qt/C++ di Trolltech</title><link>https://www.andreagrandi.it/2008/10/31/qt-creator-disponibile-la-preview-release-dellide-per-qtc-di-trolltech/</link><description>&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2008/10/qtcreator.png"&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/10/qtcreator.png" title="qtcreator"&gt;{.alignright
+.size-full .wp-image-147 width="304"
+height="227"}&lt;/a&gt;&lt;strong&gt;Trolltech&lt;/strong&gt;
+ha appena rilasciato la preview release di &lt;strong&gt;&lt;a href="http://trolltech.com/developer/qt-creator/qt-creator"&gt;Qt
+Creator&lt;/a&gt;&lt;/strong&gt;. Si
+tratta di un'&lt;strong&gt;IDE&lt;/strong&gt; pensato appositamente per lo sviluppo di
+applicazioni multi piattaforma tramite &lt;strong&gt;Qt&lt;/strong&gt; e &lt;strong&gt;C++&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Tra le funzionalità piu' importanti ci sono sicuramente un'avanzato
+&lt;strong&gt;completamento del codice&lt;/strong&gt; digitato, l'integrazione con &lt;strong&gt;QtDesigner&lt;/strong&gt;
+ed il &lt;strong&gt;debugger integrato&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Mancano ancora alcune feature che siamo abituati a trovare su altri IDE,
+come ad esempio l'integrazione con SVN/CVS, templates per il codice
+sorgente, opzioni di personalizzazione della formattazione ecc...
+tuttavia l'ambiente promette veramente bene, per essere una preview
+release. &lt;strong&gt;L'architettura a plugin&lt;/strong&gt; che sta alla base dell'IDE, non
+esclude che funzionalità di questo tipo possano essere aggiunte in un
+secondo momento e rese disponibili anche da sviluppatori di terze parti.&lt;/p&gt;
+&lt;p&gt;Nonostante le librerie Qt stiano prendendo sempre piu' campo nei
+&lt;strong&gt;dispositivi portatili&lt;/strong&gt; (palmari, cellulari ecc...), non è al momento
+supportato lo sviluppo di applicazioni per questo tipo di device. E' una
+funzionalità &lt;strong&gt;prevista per le future release&lt;/strong&gt;, anche se al momento non
+sono noti i tempi esatti di rilascio.&lt;/p&gt;
+&lt;p&gt;Al momento è possibile scaricare l'IDE per tutte le principali
+piattaforme: &lt;strong&gt;Windows&lt;/strong&gt; (Xp e Vista), &lt;strong&gt;Linux&lt;/strong&gt; (32 e 64 bit), &lt;strong&gt;OSX&lt;/strong&gt;.
+La disponibilità in futuro è però limitata soltanto dalle piattaforme
+per le quali esiste un porting delle librerie Qt.&lt;/p&gt;
+&lt;p&gt;La &lt;strong&gt;versione definitiva&lt;/strong&gt; di Qt Creator dovrebbe essere rilasciata poco
+dopo il rilascio delle &lt;strong&gt;Qt 4.5&lt;/strong&gt;, ovvero &lt;strong&gt;entro la prima metà del
+2009&lt;/strong&gt;. Così come le librerie Qt, sara' rilasciato con una licenza &lt;strong&gt;GPL
+compatibile&lt;/strong&gt; che permettera' di sviluppare sia applicazioni
+&lt;strong&gt;commerciali&lt;/strong&gt; che &lt;strong&gt;opensource&lt;/strong&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 31 Oct 2008 19:37:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-10-31:/2008/10/31/qt-creator-disponibile-la-preview-release-dellide-per-qtc-di-trolltech/</guid><category>IDE</category><category>Qt</category><category>Trolltech</category></item><item><title>Installare le Qt 4.4.0 su Ubuntu Linux 8.04</title><link>https://www.andreagrandi.it/2008/05/08/installare-le-qt-440-su-ubuntu-linux-804/</link><description>&lt;p&gt;&lt;img alt="Qt
+Logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/qt_logo.thumbnail.png"&gt;Da
+pochi giorni la &lt;strong&gt;&lt;a href="http://trolltech.com/"&gt;Trolltech&lt;/a&gt;&lt;/strong&gt; ha rilasciato la
+&lt;a href="http://trolltech.com/products/qt/learnmore/whats-new"&gt;versione 4.4.0&lt;/a&gt;
+delle proprie librerie multipiattaforma Qt. La versione corrente di
+Ubuntu (la 8.04) contiene al momento le librerie Qt nella versione
+4.3.4.&lt;/p&gt;
+&lt;p&gt;Gli sviluppatori che utilizzano le Qt potrebbero voler installare
+l'ultima release delle librerie, per testare le nuove funzionalità o per
+verificare il funzionamento di una propria applicazione con questa
+particolare versione.&lt;/p&gt;
+&lt;p&gt;La buona notizia è che non c'è bisogno di scaricarsi i sorgenti delle
+&lt;strong&gt;Qt 4.4.0&lt;/strong&gt; e ricompilarli, perchè il team di Ubuntu ha già preparato i
+pacchetti per la Ubuntu Hardy.&lt;/p&gt;
+&lt;p&gt;Per installarli è necessario abilitare il repository chiamato
+'&lt;strong&gt;hardy-backports&lt;/strong&gt;' andando su
+'&lt;strong&gt;System-&amp;gt;Administration-&amp;gt;Software Sources&lt;/strong&gt;'. A questo punto la
+versione &lt;strong&gt;4.4.0&lt;/strong&gt; dovrebbe essere disponibile tra gli aggiornamenti di
+sistema. Basterà quindi un &lt;strong&gt;apt-get upgrade&lt;/strong&gt; per procedere
+all'aggiornamento.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 08 May 2008 11:46:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-05-08:/2008/05/08/installare-le-qt-440-su-ubuntu-linux-804/</guid><category>4.4.0</category><category>hardy</category><category>installazione</category><category>librerie</category><category>multipiattaforma</category><category>Programmazione</category><category>Qt</category><category>sviluppo</category><category>Ubuntu (EN)</category></item></channel></rss>

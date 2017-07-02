@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - encfs</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Wed, 09 Dec 2015 22:47:00 +0000</lastBuildDate><item><title>Fix encfs under OSX after upgrading to 10.11.2</title><link>https://www.andreagrandi.it/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/</link><description>&lt;p&gt;After having upgraded &lt;strong&gt;OSX&lt;/strong&gt; to &lt;strong&gt;10.11.2&lt;/strong&gt; on my MacBook, I noticed
+that my &lt;strong&gt;encfs&lt;/strong&gt; volume didn't mount after reboot. I tried to run the
+script manually and all I got was this error:&lt;/p&gt;
+&lt;p&gt;``` {.lang:default .decode:true}
+dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
+  Referenced from: /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
+  Expected in: /usr/local/lib/libboost_serialization-mt.dylib
+ in /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;I quickly found that was a common problem caused by a new version of
+**Boost** being
+installed: &amp;lt;https://github.com/Homebrew/homebrew/issues/46254&amp;gt;
+
+To fix it, you just need to **reinstall encfs** using this command
+
+``` {.lang:default .decode:true}
+brew reinstall -s encfs
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Wed, 09 Dec 2015 22:47:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-12-09:/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/</guid><category>bug</category><category>encfs</category><category>security</category></item><item><title>How to configure EncFS on OSX 10.10 (Yosemite)</title><link>https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/</link><description>&lt;p&gt;With &lt;strong&gt;EncFS&lt;/strong&gt; it's possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc...), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It's
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.&lt;/p&gt;
+&lt;h2&gt;Installing EncFS&lt;/h2&gt;
+&lt;p&gt;EncFS can be installed from &lt;strong&gt;brew&lt;/strong&gt;. If you don't have brew package
+manager installed on OSX you can install it using this command:&lt;/p&gt;
+&lt;p&gt;``` {.lang:sh .decode:true}
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;After brew, you need to install **OSXFuse** from this
+website &amp;lt;http://osxfuse.github.io&amp;gt;
+
+Finally you can install **encfs** using this command:
+
+``` {.lang:sh .decode:true}
+brew install homebrew/fuse/encfs
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Configuring the encrypted folder&lt;/h2&gt;
+&lt;p&gt;Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:&lt;/p&gt;
+&lt;p&gt;``` {.lang:sh .decode:true}
+encfs ~/Dropbox/Private ~/Private&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;mounting&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;existing&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;prompted&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;creating&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt;
+&lt;span class="n"&gt;asked&lt;/span&gt; &lt;span class="n"&gt;some&lt;/span&gt; &lt;span class="n"&gt;questions&lt;/span&gt; &lt;span class="n"&gt;about&lt;/span&gt; &lt;span class="n"&gt;EncFS&lt;/span&gt; &lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+
+&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nl"&gt;Note&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;important&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;keep&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;BoxCryptor&lt;/span&gt; &lt;span class="n"&gt;Classic&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.boxcryptor.com/en/classic)** (in case&lt;/span&gt;
+&lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;want&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;use&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;same&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;under&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;please&lt;/span&gt; &lt;span class="n"&gt;refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt;
+&lt;span class="n"&gt;other&lt;/span&gt; &lt;span class="n"&gt;article&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;
+&lt;span class="nl"&gt;wrote&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="err"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&amp;gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;Mount&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;startup&lt;/span&gt;
+&lt;span class="o"&gt;-------------------------------------&lt;/span&gt;
+
+&lt;span class="n"&gt;First&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;need&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;OSX&lt;/span&gt;
+&lt;span class="n"&gt;keychain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Open&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;Keychain&lt;/span&gt; &lt;span class="n"&gt;Access&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;entry&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt;
+&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;account&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt; &lt;span class="n"&gt;write&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;
+&lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;click&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;Add&lt;/span&gt;&lt;span class="o"&gt;**:&lt;/span&gt;
+
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_keychain&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_access&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png){.aligncenter&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;full&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wp&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1052&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;428&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;397&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png)&lt;/span&gt;
+
+&lt;span class="n"&gt;Once&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;saved&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="n"&gt;editor&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;paste&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;script&lt;/span&gt;
+&lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_mount&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="err"&gt;\$&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="nl"&gt;folder&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+&lt;span class="err"&gt;```&lt;/span&gt; &lt;span class="p"&gt;{.&lt;/span&gt;&lt;span class="nl"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="cp"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="cp"&gt;# Secure EncFS Dropbox mounter by Daniel Widerin &amp;lt;daniel@widerin.net&amp;gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;SOURCE&lt;/span&gt;&lt;span class="o"&gt;=~/&lt;/span&gt;&lt;span class="n"&gt;Dropbox&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
+&lt;span class="n"&gt;TARGET&lt;/span&gt;&lt;span class="o"&gt;=~/&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
+&lt;span class="n"&gt;VOLUME_TITLE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
+&lt;span class="n"&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;ENCFS&lt;/span&gt;&lt;span class="o"&gt;=/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;
+
+&lt;span class="n"&gt;mount&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;grep&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
+&lt;span class="p"&gt;[[&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;$?&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;eq&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sbin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;diskutil&lt;/span&gt; &lt;span class="n"&gt;unmount&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt;
+ &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Create new mountpoint $TARGET&amp;quot;&lt;/span&gt;
+ &lt;span class="n"&gt;mkdir&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
+ &lt;span class="n"&gt;chmod&lt;/span&gt; &lt;span class="mo"&gt;0700&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
+&lt;span class="n"&gt;fi&lt;/span&gt;
+
+&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;ENCFS&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;SOURCE&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;extpass&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;$KEYCHAIN_PASSWORD&amp;#39; |grep password|cut -d &lt;/span&gt;&lt;span class="se"&gt;\\\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt; -f 2&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ovolname&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;VOLUME_TITLE&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make it &lt;strong&gt;executable&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;``` {.lang:sh .decode:true}
+chmod +x ~/encfs_mount.sh&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Open **AppleScript** editor and paste this text inside and save as an
+app in the \$HOME folder:
+
+[![Screenshot 2015-10-11
+19.27.14](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter
+.size-full .wp-image-1055 width=&amp;quot;484&amp;quot;
+height=&amp;quot;392&amp;quot;}](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)
+
+``` {.lang:sh .decode:true}
+do shell script &amp;quot;$HOME/encfs_mount.sh&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally, open "&lt;strong&gt;System Preferences&lt;/strong&gt;" -&amp;gt; "&lt;strong&gt;Users &amp;amp; Groups&lt;/strong&gt;" and
+add the previously saved application.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;&lt;img alt="Screenshot 2015-10-11
+19.27.44" src="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;{.aligncenter
+.size-full .wp-image-1056 width="463"
+height="380"}&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Final notes&lt;/h2&gt;
+&lt;p&gt;At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: &lt;strong&gt;do not save anything
+directly on \~/Dropbox/Private&lt;/strong&gt;, only read and save your files from
+\~/Private&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.maketecheasier.com/install-encfs-mac/"&gt;https://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://ninjatips.com/encrypt-dropbox-using-encfs/"&gt;http://ninjatips.com/encrypt-dropbox-using-encfs/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sun, 11 Oct 2015 19:44:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-10-11:/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/</guid><category>cloud</category><category>encfs</category><category>encryption</category><category>OSX</category><category>security</category></item><item><title>Create an EncFS volume compatible with BoxCryptor Classic</title><link>https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</link><description>&lt;p&gt;If you are planning to share an encrypted volume between Linux/OSX and
+Windows (I will assume you are sharing it on Dropbox, but you could use
+any similar service) and you are using
+&lt;a href="http://www.arg0.net/encfs"&gt;&lt;strong&gt;EncFS&lt;/strong&gt;&lt;/a&gt; under Linux/OSX and
+&lt;a href="https://www.boxcryptor.com"&gt;&lt;strong&gt;BoxCryptor&lt;/strong&gt;&lt;/a&gt; under Windows, there are
+some specifig settings to use when you create the EncFS volume. Infact
+even if BoxCryptor claims to be "encfs compatible", it's not 100%.&lt;/p&gt;
+&lt;p&gt;Suppose you want to create an encrypted volume located at
+&lt;strong&gt;\$HOME/.TestTmpEncrypted&lt;/strong&gt; and mounted at &lt;strong&gt;\$HOME/TestTmp&lt;/strong&gt; you need
+the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andrea-Inspiron-660:~ andrea $ encfs ~/.TestTmpEncrypted ~/TestTmp
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;answer "Y" when you are asked if you want to create the folders:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The directory &amp;quot;/home/andrea/.TestTmpEncrypted/&amp;quot; does not exist. Should it be created? (y,n) y
+The directory &amp;quot;/home/andrea/TestTmp&amp;quot; does not exist. Should it be created? (y,n) y
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At this point you will need to select between default paranoia mode or
+advanced mode. Please choose the &lt;strong&gt;advanced&lt;/strong&gt; one (x):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Creating new encrypted volume.
+Please choose from one of the following options:
+ enter &amp;quot;x&amp;quot; for expert configuration mode,
+ enter &amp;quot;p&amp;quot; for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?&amp;gt; x
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Manual configuration mode selected.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Select AES as cypher algorithm:
+
+The following cypher algorithms are available:
+1. AES : 16 byte block cipher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+2. Blowfish : 8 byte block cypher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+
+Enter the number corresponding to your choice: 1
+
+Selected algorithm &amp;quot;AES&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Select &lt;strong&gt;256&lt;/strong&gt; as key size:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Please select a key size in bits. The cypher you have chosen
+supports sizes from 128 to 256 bits in increments of 64 bits.
+For example:
+128, 192, 256
+Selected key size: 256
+
+Using key size of 256 bits
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Choose &lt;strong&gt;1024&lt;/strong&gt; as block size:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Select a block size in bytes. The cypher you have chosen
+supports sizes from 64 to 4096 bytes in increments of 16.
+Alternatively, just press enter for the default (1024 bytes)
+
+filesystem block size:
+
+Using filesystem block size of 1024 bytes
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Select &lt;strong&gt;Stream&lt;/strong&gt; as filename encoding:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The following filename encoding algorithms are available:
+1. Block : Block encoding, hides file name size somewhat
+2. Null : No encryption of filenames
+3. Stream : Stream encoding, keeps filenames as short as possible
+
+Enter the number corresponding to your choice: 3
+
+Selected algorithm &amp;quot;Stream&amp;quot;&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;filename initialization vector chaining&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enable filename initialization vector chaining?
+This makes filename encoding dependent on the complete path,
+rather then encoding each path element individually.
+The default here is Yes.
+Any response that does not begin with &amp;#39;n&amp;#39; will mean Yes: no
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;per-file initialization vectors&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enable per-file initialization vectors?
+This adds about 8 bytes per file to the storage requirements.
+It should not affect performance except possibly with applications
+which rely on block-aligned file io for performance.
+The default here is Yes.
+Any response that does not begin with &amp;#39;n&amp;#39; will mean Yes: no
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;external chained IV&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;External chained IV disabled, as both &amp;#39;IV chaining&amp;#39;
+and &amp;#39;unique IV&amp;#39; features are required for this option.
+Enable block authentication code headers
+on every block in a file? This adds about 12 bytes per block
+to the storage requirements for a file, and significantly affects
+performance but it also means [almost] any modifications or errors
+within a block will be caught and will cause a read error.
+The default here is No.
+Any response that does not begin with &amp;#39;y&amp;#39; will mean No: no
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;random bytes to each block header&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Add random bytes to each block header?
+This adds a performance penalty, but ensures that blocks
+have different authentication codes. Note that you can
+have the same benefits by enabling per-file initialisation
+vectors, which does not come with as great a performance
+penalty.
+Select a number of bytes, from 0 (no random bytes) to 8: 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Enable &lt;strong&gt;file-hole pass-through&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enable file-hole pass-through?
+This avoids writing encrypted blocks when file holes are created.
+The default here is Yes.
+Any response that does not begin with &amp;#39;n&amp;#39; will mean Yes: yes
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally you will see:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Configuration finished. The filesystem to be created has
+the following properties:
+Filesystem cypher: &amp;quot;ssl/aes&amp;quot;, version 3:0:2
+Filename encoding: &amp;quot;nameio/stream&amp;quot;, version 2:1:2
+Key Size: 256 bits
+Block Size: 1024 bytes
+File holes passed through to ciphertext.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At this point set a passphrase for your new volume:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Now you will need to enter a password for your filesystem.
+You will need to remember this password, as there is absolutely
+no recovery mechanism. However, the password can be changed
+later using encfsctl.
+
+New Encfs Password:
+Verify Encfs Password:
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should be able to mount this volume using BoxCryptor.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 12 Sep 2014 15:27:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2014-09-12:/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</guid><category>boxcryptor</category><category>dropbox</category><category>encfs</category></item><item><title>How to fix encfs installation on OSX 10.9 (Mavericks) and brew</title><link>https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</link><description>&lt;p&gt;After upgrading from OSX 10.8.x to 10.9 (Mavericks), &lt;strong&gt;encfs&lt;/strong&gt; recipe is
+broken. First of all you have to fix a problem with a library header:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then you can install encfs using this remote brew recipe:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It's also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it! Please note that this is just a workaround (thanks to
+&lt;strong&gt;Giovanni Bajo&lt;/strong&gt; for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here &lt;a href="https://gist.github.com/defunctzombie/7324625"&gt;https://gist.github.com/defunctzombie/7324625&lt;/a&gt; but I haven't
+tested it yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; to fully integrate encfs with OSX, I also suggest to follow
+this nice guide &lt;a href="http://www.maketecheasier.com/install-encfs-mac/"&gt;http://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 08 Nov 2013 21:17:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2013-11-08:/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</guid><category>cloud</category><category>encfs</category><category>encryption</category><category>fuse4x</category><category>OSX</category><category>security</category></item></channel></rss>

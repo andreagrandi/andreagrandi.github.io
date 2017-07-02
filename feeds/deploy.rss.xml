@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - deploy</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 17 Jan 2013 18:49:00 +0000</lastBuildDate><item><title>Using QtCreator to deploy and run a Qt application to a remote Linux device</title><link>https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</link><description>&lt;p&gt;QtCreator is a very flexible IDE and can really be adapted for a lot of
+things. I usually use it to develop mobile applications for Nokia N9 and
+BlackBerry 10, but it can be used for more generic tasks. In my case I
+wanted to be able to develop a Qt application using my desktop PC,
+deploy it and run on a remote (actually it's on the same desk) Linux
+machine running Xubuntu.&lt;/p&gt;
+&lt;p&gt;Doing this is quite easy and you don't need any specific plugin on
+QtCreator, but be sure to have at least version 2.6.x. Other than
+QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
+development machine and Xubuntu 12.10 for the remote netbook) and an SSH
+account on the remote PC.&lt;/p&gt;
+&lt;h2 id="add-the-remote-device-to-qtcreator" style="text-align: left;"&gt;Add the remote device to QtCreator&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="QtCreatorDevice" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorDevice.png"&gt;{.aligncenter
+.wp-image-748 width="488" height="282"}&lt;/p&gt;
+&lt;p&gt;To add the remote Linux device on QtCreator, use the
+&lt;strong&gt;Tools-&amp;gt;Options&lt;/strong&gt; menu and click on "&lt;strong&gt;Devices&lt;/strong&gt;" item. At this
+point click on "&lt;strong&gt;Add&lt;/strong&gt;" button and fill the fields using values similar
+to the screenshot. In particular specify a &lt;strong&gt;name&lt;/strong&gt; for the device, the
+&lt;strong&gt;IP&lt;/strong&gt; of the remote machine and a &lt;strong&gt;username&lt;/strong&gt; and &lt;strong&gt;password&lt;/strong&gt; that
+must already exist (I just created the user "andrea" on the Xubuntu
+machine and used the same password). I also had to set the &lt;strong&gt;timeout&lt;/strong&gt;
+to 20 seconds, because I had some connection problems and the connection
+kept dropping after 10 seconds trying. To verify if everything is
+working fine, just click on &lt;strong&gt;Test&lt;/strong&gt; button.&lt;/p&gt;
+&lt;h2&gt;Add a specific Qt version&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"&gt;&lt;img alt="QtCreatorQtVersion" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"&gt;{.aligncenter
+.size-full .wp-image-754 width="488"
+height="282"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To write your application you may need a specific Qt version that is
+different from the one distributed by your Linux distribution. There's
+no problem, QtCreator let you add different Qt versions without any
+conflict. In my case I installed the Qt5 version distributed by
+&lt;strong&gt;Canonical Qt5 Edgers
+Team&lt;/strong&gt;: &lt;a href="https://launchpad.net/~canonical-qt5-edgers"&gt;https://launchpad.net/~canonical-qt5-edgers&lt;/a&gt;&lt;br&gt;
+Once it's installed, just click on "&lt;strong&gt;Add&lt;/strong&gt;" button and select the qmake
+specific to the version you want to add (in my case it was in
+&lt;strong&gt;/opt/qt5/bin/qmake&lt;/strong&gt; ).&lt;/p&gt;
+&lt;h2&gt;Add a Qt Kit&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"&gt;&lt;img alt="QtCreatorQtKits" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"&gt;{.aligncenter
+.size-full .wp-image-757 width="488"
+height="282"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;QtCreator permits to add new &lt;strong&gt;Kit&lt;/strong&gt; (development configurations) and
+these kits are used during project creation to specify what you want to
+target. In my example I added a new kit choosing an appropriate &lt;strong&gt;name&lt;/strong&gt;
+"Qt5 Ubuntu", the &lt;strong&gt;device type&lt;/strong&gt;, the actual &lt;strong&gt;device&lt;/strong&gt; previously
+configured and finally the &lt;strong&gt;Qt version&lt;/strong&gt; that we added before. With a
+kit I have a complete "toolchain" that allow me to write applications
+for a particular device, with a specific Qt version.&lt;/p&gt;
+&lt;h2&gt;Putting the pieces together&lt;/h2&gt;
+&lt;p&gt;At this point you just have to create a new "&lt;strong&gt;Qt Quick 2&lt;/strong&gt;"
+application, and select the new kit you just created instead of the
+"Desktop" one. &lt;strong&gt;Please note&lt;/strong&gt; that there is a little problem that I
+haven't fixed yet (but I'm working on it): if you create, for example, a
+project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
+on the remote machine. By default your user doesn't have read+write
+permissions for that folder so I manualy created the folder and I gave a
+chmod 777 on it, just for testing. There are two possible ways to fix
+this: you could create a specific user that has read+write permissions
+on /opt/ or you could modify the deployment configuration to have the
+app deployed to the user /home (I will investigate on this possibility
+and I will write something in one of the next posts).&lt;/p&gt;
+&lt;h2&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;What all of this could be useful for? Well, do 2+2 and you'll easily
+guess ;) In the next weeks I will post more specific informations and I
+will update everyone with my progresses. Any comment is welcome! If you
+want to contribute to this you're welcome too of course.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 17 Jan 2013 18:49:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2013-01-17:/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</guid><category>deploy</category><category>Linux</category><category>Qt</category><category>QtCreator</category><category>SDK</category><category>Ubuntu</category></item></channel></rss>

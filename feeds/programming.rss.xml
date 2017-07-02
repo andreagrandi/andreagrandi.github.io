@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - programming</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Mon, 16 Mar 2015 20:24:00 +0000</lastBuildDate><item><title>Go: defining methods on struct types</title><link>https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/</link><description>&lt;p&gt;In &lt;strong&gt;Go&lt;/strong&gt; it's possible to define &lt;strong&gt;methods&lt;/strong&gt; on &lt;strong&gt;struct types&lt;/strong&gt;. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.&lt;/p&gt;
+&lt;p&gt;In my case for example I needed something that could contain a Timer
+object, a string and a method that could start the timer and call a
+method at the end of the Timer execution. I implemented it in this way:&lt;/p&gt;
+&lt;p&gt;``` {.toolbar:2 .lang:go .decode:true}
+type DeviceTimer struct {
+    DeviceID    string
+    DeviceTimer *time.Timer
+}&lt;/p&gt;
+&lt;p&gt;func (timer DeviceTimer) startTimer() {
+    &amp;lt;-timer.DeviceTimer.C
+    notifyDeviceTimerExpired(timer.DeviceID)
+}&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The key point is **row 6** &amp;quot;*func (timer DeviceTimer) startTimer() { ...
+}*&amp;quot; where I defined a method called **startTimer** and I specify timer
+**DeviceTimer** inside the func definition. This basically &amp;quot;extends&amp;quot; the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:
+
+``` {.toolbar:2 .lang:go .decode:true}
+timer := time.NewTimer(time.Millisecond * 300)
+device_timer := DeviceTimer{&amp;quot;abc123&amp;quot;, timer}
+go device_timer.startTimer()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is all you need to do. If you want to read more about this subject,
+I can suggest to read these two articles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Go by Example: Methods&lt;/strong&gt; &lt;a href="https://gobyexample.com/methods"&gt;https://gobyexample.com/methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Inheritance and subclassing in Go - or its near likeness&lt;/strong&gt;
+    &lt;a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html"&gt;http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; I'm not a Go expert and these are just my personal notes I'm
+taking during my learning experience. I'm very keen to share my notes
+with everyone, but please don't take them as notes from an expert Go
+developer.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 16 Mar 2015 20:24:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-03-16:/2015/03/16/go-defining-methods-on-struct-types/</guid><category>go</category><category>golang</category><category>programming</category><category>struct</category></item><item><title>Using GtkIconView in Python: a small tutorial</title><link>https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/</link><description>&lt;p&gt;In these days I was looking for a simple tutorial to understand how to
+use &lt;strong&gt;GtkIconView&lt;/strong&gt;, but the only thing I was able to find was an
+example in PHP-Gtk. So I decided to translate it in &lt;strong&gt;Python&lt;/strong&gt; language,
+thinking it would be useful for other people trying to use that Gtk
+control. You can find the code here:&lt;/p&gt;
+&lt;p&gt;[sourcecode language='python']&lt;br&gt;
+import gtk&lt;br&gt;
+import gobject&lt;/p&gt;
+&lt;p&gt;DEFAULT_IMAGE_WIDTH = 100&lt;/p&gt;
+&lt;p&gt;# Main Window setup&lt;br&gt;
+window = gtk.Window(gtk.WINDOW_TOPLEVEL)&lt;br&gt;
+window.set_size_request(400, 240)&lt;br&gt;
+window.connect("destroy", gtk.main_quit)&lt;br&gt;
+window.set_title("Python GtkIconView Test")&lt;/p&gt;
+&lt;p&gt;# Add a VBox&lt;br&gt;
+vbox = gtk.VBox()&lt;br&gt;
+window.add(vbox)&lt;/p&gt;
+&lt;p&gt;# Setup Scrolled Window&lt;br&gt;
+scrolled_win = gtk.ScrolledWindow()&lt;br&gt;
+scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)&lt;/p&gt;
+&lt;p&gt;# Setup ListStore to contain images and description&lt;br&gt;
+model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)&lt;/p&gt;
+&lt;p&gt;# Create a tuple with image files&lt;br&gt;
+immagini = ("BD786-TFR.jpg", "guido_sottozero.jpg", "IMG_0056.JPG",
+"movies_card.jpg")&lt;/p&gt;
+&lt;p&gt;for im in immagini:&lt;br&gt;
+try:&lt;br&gt;
+pixbuf = gtk.gdk.pixbuf_new_from_file(im)&lt;br&gt;
+pix_w = pixbuf.get_width()&lt;br&gt;
+pix_h = pixbuf.get_height()&lt;br&gt;
+new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the
+scaled height before resizing image&lt;br&gt;
+scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h,
+gtk.gdk.INTERP_TILES)&lt;br&gt;
+model.append((scaled_pix, im))&lt;br&gt;
+except:&lt;br&gt;
+pass&lt;/p&gt;
+&lt;p&gt;# Setup GtkIconView&lt;br&gt;
+view = gtk.IconView(model) # Pass the model stored in a ListStore to
+the GtkIconView&lt;br&gt;
+view.set_pixbuf_column(0)&lt;br&gt;
+view.set_text_column(1)&lt;br&gt;
+view.set_selection_mode(gtk.SELECTION_MULTIPLE)&lt;br&gt;
+view.set_columns(0)&lt;br&gt;
+view.set_item_width(150)&lt;/p&gt;
+&lt;p&gt;# Pack objects and show them all&lt;br&gt;
+scrolled_win.add(view)&lt;br&gt;
+vbox.pack_start(scrolled_win)&lt;br&gt;
+window.show_all()&lt;/p&gt;
+&lt;p&gt;gtk.main()&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;The important thing to notice is that you have to store all the images
+in a &lt;strong&gt;GtkListStore&lt;/strong&gt; and pass it to the &lt;strong&gt;GtkIconView&lt;/strong&gt; as &lt;em&gt;"model"&lt;/em&gt;
+parameter. I hope this example is clear. If you have any question,
+please comment this post and I'll try to answer.&lt;/p&gt;
+&lt;p&gt;This is a screenshot of this example:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="gtkiconview" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/gtkiconview_sample.png"&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Tue, 15 Apr 2008 15:24:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-15:/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/</guid><category>gtk</category><category>gtkiconview</category><category>gtkliststore</category><category>HowTo</category><category>programming</category><category>Python</category><category>tutorial</category></item><item><title>Eclipse plugins for Maemo Development</title><link>https://www.andreagrandi.it/2008/02/26/eclipse-plugins-for-maemo-development/</link><description>&lt;p&gt;[Maemo Team]{style="font-weight: bold;"} has just released a
+[plugin]{style="font-weight: bold;"} for [Maemo Eclipse
+integration]{style="font-weight: bold;"}. This tool allows developers to
+use Eclipse IDE to develop and test Maemo applications.&lt;/p&gt;
+&lt;p&gt;This release includes:&lt;/p&gt;
+&lt;p&gt;[ 1]{style="font-weight: bold;"}. maemo [PC
+Connectivity]{style="font-weight: bold;"} version
+[0.1]{style="font-weight: bold;"} (Beta)&lt;br&gt;
+[ 2]{style="font-weight: bold;"}. maemo &lt;a href="http://esbox.garage.maemo.org/"&gt;ESBox
+plugin&lt;/a&gt; for Eclipse IDE version
+[1.3.6]{style="font-weight: bold;"} (Beta)&lt;br&gt;
+[ 3]{style="font-weight: bold;"}. maemo &lt;a href="http://pluthon.garage.maemo.org/"&gt;Pluthon
+plugin&lt;/a&gt; for Eclipse IDE version
+[0.1.7]{style="font-weight: bold;"} (Beta)&lt;/p&gt;
+&lt;p&gt;Maemo PC connectivity packages are tools and other components developer
+needs to install into his Internet Tablet to enable connectivity between
+developer PC and Internet Tablet.&lt;/p&gt;
+&lt;p&gt;Maemo ESBox plugin for Eclipse IDE integrates maemo SDK Scratchbox based
+development environment to the Eclipse development environment. ESBox
+plugin supports application developers using C, C++ or Python
+programming language.&lt;br&gt;
+Developers are able to do all their development work inside Eclipse,
+from starting the project using template to packaging final application
+into maemo installation package.&lt;/p&gt;
+&lt;p&gt;Maemo Pluthon plugin for Eclipse IDE integrates Eclipse IDE development
+environment to the Internet Tablet so that maemo Python developers do
+not need to use maemo SDK and Scratchbox as development environment.
+Maemo Pluthon plugin fully supports application development process with
+Python where developer develops and tests his Python application
+directly with Internet Tablet.&lt;/p&gt;
+&lt;p&gt;You can find more informations on the official plugin websites:&lt;/p&gt;
+&lt;p&gt;[ESbox:]{style="font-weight: bold;"} &lt;a href="http://esbox.garage.maemo.org/"&gt;http://esbox.garage.maemo.org/&lt;/a&gt;&lt;br&gt;
+[PluThon:]{style="font-weight: bold;"}
+&lt;a href="http://pluthon.garage.maemo.org/"&gt;http://pluthon.garage.maemo.org/&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Tue, 26 Feb 2008 14:47:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-26:/2008/02/26/eclipse-plugins-for-maemo-development/</guid><category>eclipse</category><category>maemo</category><category>nokia</category><category>programming</category></item></channel></rss>

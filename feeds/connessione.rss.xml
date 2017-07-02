@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - connessione</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Fri, 29 Feb 2008 18:59:00 +0000</lastBuildDate><item><title>Utilizzare SSH senza password: chiavi SSH</title><link>https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</link><description>&lt;p&gt;&lt;img alt="openssh_logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/openssh_logo.thumbnail.png"&gt;Quando
+vogliamo connetterci ad un server &lt;strong&gt;SSH&lt;/strong&gt;, solitamente utilizziamo un
+comando simile al seguente:&lt;/p&gt;
+&lt;p&gt;[code lang="bash"]&lt;br&gt;
+ssh user@remotehost.com&lt;br&gt;
+[/code]&lt;/p&gt;
+&lt;p&gt;Una volta connessi ci viene richiesta la password di accesso e subito
+dopo siamo connessi. Digitare ogni volta la password puo' essere
+scomodo, ed in alcuni casi questo potrebbe addirittura impedirci di
+creare uno script di automazione per velocizzare alcuni compiti.&lt;/p&gt;
+&lt;p&gt;Ci vengono in aiuto le &lt;strong&gt;chiavi SSH&lt;/strong&gt;. Generando una coppia di chiavi
+&lt;strong&gt;pubblica/privata&lt;/strong&gt; di SSH sulla propria macchina, ed esportando la
+chiave pubblica sul server remoto, possiamo fare in modo di autorizzare
+la nostra chiave remota, facendo si che le connessioni successive
+avvengano senza la richiesta di alcuna password.&lt;/p&gt;
+&lt;p&gt;Supponiamo (a scopo dimostrativo) che il server remoto si trovi
+all'indirizzo IP &lt;strong&gt;192.168.0.2&lt;/strong&gt; e supponiamo inoltre di avere un
+account chiamato &lt;strong&gt;user&lt;/strong&gt; sulla macchina remota.&lt;/p&gt;
+&lt;p&gt;Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
+macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
+verrebbe richiesta comunque al primo login di ogni sessione):&lt;/p&gt;
+&lt;p&gt;[code lang="bash"]&lt;br&gt;
+andy80@noteboontu:\~\$ ssh-keygen -t dsa&lt;br&gt;
+Generating public/private dsa key pair.&lt;br&gt;
+Enter file in which to save the key (/home/andy80/.ssh/id_dsa):&lt;br&gt;
+Enter passphrase (empty for no passphrase):&lt;br&gt;
+Enter same passphrase again:&lt;br&gt;
+Your identification has been saved in /home/andy80/.ssh/id_dsa.&lt;br&gt;
+Your public key has been saved in /home/andy80/.ssh/id_dsa.pub.&lt;br&gt;
+The key fingerprint is:&lt;br&gt;
+22:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu&lt;br&gt;
+[/code]&lt;/p&gt;
+&lt;p&gt;A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
+server remoto:&lt;/p&gt;
+&lt;p&gt;[code lang="bash"]&lt;br&gt;
+cd \~/.ssh/&lt;br&gt;
+scp id_dsa.pub user@192.168.0.2:./id_dsa.pub&lt;br&gt;
+[/code]&lt;/p&gt;
+&lt;p&gt;Ci verrà chiesta la nostra password remota, per poter effettuare la
+copia del file. A questo punto dobbiamo connetterci via SSH al server
+remoto:&lt;/p&gt;
+&lt;p&gt;[code lang="bash"]&lt;br&gt;
+ssh user@192.168.0.2&lt;br&gt;
+[/code]&lt;/p&gt;
+&lt;p&gt;Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
+i seguenti comandi:&lt;/p&gt;
+&lt;p&gt;[code lang="bash"]&lt;br&gt;
+cd .ssh&lt;br&gt;
+touch authorized_keys2&lt;br&gt;
+chmod 600 authorized_keys2&lt;br&gt;
+cat ../id_dsa.pub &amp;gt;&amp;gt; authorized_keys2&lt;br&gt;
+rm ../id_dsa.pub&lt;br&gt;
+[/code]&lt;/p&gt;
+&lt;p&gt;Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
+il server remoto, avverranno senza la richiesta di alcuna password.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 29 Feb 2008 18:59:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-29:/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</guid><category>chiavi</category><category>connessione</category><category>Linux</category><category>openssh</category><category>password</category><category>Sicurezza</category><category>ssh</category><category>ssh2</category></item></channel></rss>

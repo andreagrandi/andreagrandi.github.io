@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - SDK</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 17 Jan 2013 18:49:00 +0000</lastBuildDate><item><title>Using QtCreator to deploy and run a Qt application to a remote Linux device</title><link>https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</link><description>&lt;p&gt;QtCreator is a very flexible IDE and can really be adapted for a lot of
+things. I usually use it to develop mobile applications for Nokia N9 and
+BlackBerry 10, but it can be used for more generic tasks. In my case I
+wanted to be able to develop a Qt application using my desktop PC,
+deploy it and run on a remote (actually it's on the same desk) Linux
+machine running Xubuntu.&lt;/p&gt;
+&lt;p&gt;Doing this is quite easy and you don't need any specific plugin on
+QtCreator, but be sure to have at least version 2.6.x. Other than
+QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
+development machine and Xubuntu 12.10 for the remote netbook) and an SSH
+account on the remote PC.&lt;/p&gt;
+&lt;h2 id="add-the-remote-device-to-qtcreator" style="text-align: left;"&gt;Add the remote device to QtCreator&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="QtCreatorDevice" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorDevice.png"&gt;{.aligncenter
+.wp-image-748 width="488" height="282"}&lt;/p&gt;
+&lt;p&gt;To add the remote Linux device on QtCreator, use the
+&lt;strong&gt;Tools-&amp;gt;Options&lt;/strong&gt; menu and click on "&lt;strong&gt;Devices&lt;/strong&gt;" item. At this
+point click on "&lt;strong&gt;Add&lt;/strong&gt;" button and fill the fields using values similar
+to the screenshot. In particular specify a &lt;strong&gt;name&lt;/strong&gt; for the device, the
+&lt;strong&gt;IP&lt;/strong&gt; of the remote machine and a &lt;strong&gt;username&lt;/strong&gt; and &lt;strong&gt;password&lt;/strong&gt; that
+must already exist (I just created the user "andrea" on the Xubuntu
+machine and used the same password). I also had to set the &lt;strong&gt;timeout&lt;/strong&gt;
+to 20 seconds, because I had some connection problems and the connection
+kept dropping after 10 seconds trying. To verify if everything is
+working fine, just click on &lt;strong&gt;Test&lt;/strong&gt; button.&lt;/p&gt;
+&lt;h2&gt;Add a specific Qt version&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"&gt;&lt;img alt="QtCreatorQtVersion" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtVersion.png"&gt;{.aligncenter
+.size-full .wp-image-754 width="488"
+height="282"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To write your application you may need a specific Qt version that is
+different from the one distributed by your Linux distribution. There's
+no problem, QtCreator let you add different Qt versions without any
+conflict. In my case I installed the Qt5 version distributed by
+&lt;strong&gt;Canonical Qt5 Edgers
+Team&lt;/strong&gt;: &lt;a href="https://launchpad.net/~canonical-qt5-edgers"&gt;https://launchpad.net/~canonical-qt5-edgers&lt;/a&gt;&lt;br&gt;
+Once it's installed, just click on "&lt;strong&gt;Add&lt;/strong&gt;" button and select the qmake
+specific to the version you want to add (in my case it was in
+&lt;strong&gt;/opt/qt5/bin/qmake&lt;/strong&gt; ).&lt;/p&gt;
+&lt;h2&gt;Add a Qt Kit&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"&gt;&lt;img alt="QtCreatorQtKits" src="http://www.andreagrandi.it/wp-content/uploads/2013/01/QtCreatorQtKits.png"&gt;{.aligncenter
+.size-full .wp-image-757 width="488"
+height="282"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;QtCreator permits to add new &lt;strong&gt;Kit&lt;/strong&gt; (development configurations) and
+these kits are used during project creation to specify what you want to
+target. In my example I added a new kit choosing an appropriate &lt;strong&gt;name&lt;/strong&gt;
+"Qt5 Ubuntu", the &lt;strong&gt;device type&lt;/strong&gt;, the actual &lt;strong&gt;device&lt;/strong&gt; previously
+configured and finally the &lt;strong&gt;Qt version&lt;/strong&gt; that we added before. With a
+kit I have a complete "toolchain" that allow me to write applications
+for a particular device, with a specific Qt version.&lt;/p&gt;
+&lt;h2&gt;Putting the pieces together&lt;/h2&gt;
+&lt;p&gt;At this point you just have to create a new "&lt;strong&gt;Qt Quick 2&lt;/strong&gt;"
+application, and select the new kit you just created instead of the
+"Desktop" one. &lt;strong&gt;Please note&lt;/strong&gt; that there is a little problem that I
+haven't fixed yet (but I'm working on it): if you create, for example, a
+project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
+on the remote machine. By default your user doesn't have read+write
+permissions for that folder so I manualy created the folder and I gave a
+chmod 777 on it, just for testing. There are two possible ways to fix
+this: you could create a specific user that has read+write permissions
+on /opt/ or you could modify the deployment configuration to have the
+app deployed to the user /home (I will investigate on this possibility
+and I will write something in one of the next posts).&lt;/p&gt;
+&lt;h2&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;What all of this could be useful for? Well, do 2+2 and you'll easily
+guess ;) In the next weeks I will post more specific informations and I
+will update everyone with my progresses. Any comment is welcome! If you
+want to contribute to this you're welcome too of course.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 17 Jan 2013 18:49:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2013-01-17:/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</guid><category>deploy</category><category>Linux</category><category>Qt</category><category>QtCreator</category><category>SDK</category><category>Ubuntu</category></item><item><title>Nokia QtSDK installer crash on Ubuntu: how to fix it</title><link>https://www.andreagrandi.it/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</link><description>&lt;p&gt;If you try to install &lt;strong&gt;Nokia QtSDK&lt;/strong&gt; on Ubuntu using the Nokia
+installer (that provides a newer version than the one distributed in
+Ubuntu Software Center) you could get an error like this:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="text"]&lt;br&gt;
+(Qt_SDK_Lin32_offline_v1_1_3_en.run:3126): Gtk-CRITICAL **:
+IA__gtk_widget_style_get: assertion `GTK_IS_WIDGET (widget)'
+failed&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;to fix it, you need to run the installer with a specific parameter:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="text"]&lt;br&gt;
+andrea@centurion:\~/Downloads/Qt\$
+./Qt_SDK_Lin32_offline_v1_1_4_en.run -style cleanlooks&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;and everything should work!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 12 Jan 2012 19:36:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-01-12:/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</guid><category>11.04</category><category>11.10</category><category>installer</category><category>Natty</category><category>nokia</category><category>Oneiric</category><category>Qt</category><category>SDK</category><category>Ubuntu</category></item><item><title>Develop a GPS-aware application for the Nokia N810</title><link>https://www.andreagrandi.it/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/</link><description>&lt;p&gt;&lt;strong&gt;Paul Ferrill&lt;/strong&gt; has written a serie of three articles about writing a
+GPS-aware application for the Nokia N810, using the Maemo SDK, Eclipse
+and PluThon plugin.&lt;/p&gt;
+&lt;p&gt;Here is the complete serie:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia1/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 1:
+    Development
+    environment:&lt;/a&gt;
+    Learn how to configure a development environment targeted at the
+    Nokia N810 Internet Tablet, including setting up Eclipse on a target
+    development machine for the Python language.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 2:
+    Consider your
+    options:&lt;/a&gt;
+    Discover the details of code design, library selection, unit
+    testing, and user interface choices that make the most sense for
+    you.&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia3/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 3: Finish
+    the
+    job&lt;/a&gt;:
+    In this last of three installments, you'll put the final touches to
+    the GPS trip tracker and get it ready for release.&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Tue, 24 Feb 2009 15:51:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-24:/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/</guid><category>eclipse</category><category>gps</category><category>Python</category><category>SDK</category></item><item><title>Scratchbox on Ubuntu Hardy troubleshooting</title><link>https://www.andreagrandi.it/2008/04/21/scratchbox-on-ubuntu-hardy-troubleshooting/</link><description>&lt;p&gt;Yesterday I &lt;strong&gt;upgraded&lt;/strong&gt; from &lt;strong&gt;Ubuntu 7.10&lt;/strong&gt; to the new &lt;strong&gt;8.04 RC&lt;/strong&gt; and
+I "broke" my Scratchbox installation. I tried to install it again and I
+had still some problems logging into &lt;strong&gt;Scratchbox&lt;/strong&gt; and installing the
+&lt;strong&gt;SDK&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The I found this page:
+&lt;a href="http://suppressingfire.livejournal.com/35277.html"&gt;http://suppressingfire.livejournal.com/35277.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;that explain how to fix these problems. In particular if you get this
+kind of error trying to log into Scratchbox:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Inconsistency detected by ld.so: rtld.c: 1192: dl_main: Assertion `(void *) ph-&amp;gt;p_vaddr == _rtld_local._dl_sysinfo_dso' failed!&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;You can fix it in this way:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;echo 0 | sudo tee /proc/sys/vm/vdso_enabled&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;You can read the complete fix in my updated wiki:
+&lt;a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4"&gt;http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 21 Apr 2008 14:37:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-21:/2008/04/21/scratchbox-on-ubuntu-hardy-troubleshooting/</guid><category>maemo</category><category>nokia</category><category>scratchbox</category><category>SDK</category><category>tablet</category></item><item><title>Installing Maemo SDK 4 HowTo Updated</title><link>https://www.andreagrandi.it/2008/04/17/installing-maemo-sdk-4-howto-updated/</link><description>&lt;p&gt;I've updated my previous howto that explain how to install [Maemo SDK 4
+(Chinook)]{style="font-weight: bold;"}. The other howto was written when
+Maemo SDK 4 Beta was out, now it's updated to
+[4.0.1]{style="font-weight: bold;"} version of the SDK.&lt;/p&gt;
+&lt;p&gt;You can find it, as usual, on this wiki:
+&lt;a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4"&gt;http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you have any suggestion or if you want to give me any idea to improve
+this howto, please leave me a comment.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 17 Apr 2008 14:41:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-17:/2008/04/17/installing-maemo-sdk-4-howto-updated/</guid><category>chinook</category><category>HowTo</category><category>maemo</category><category>nokia</category><category>SDK</category></item><item><title>Android: rilasciata la m5-rc14 dell'SDK</title><link>https://www.andreagrandi.it/2008/02/14/android-rilasciata-la-m5-rc14-dellsdk/</link><description>&lt;p&gt;&lt;img alt="android_google" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/android_robot.thumbnail.gif"&gt;I
+laboratori di Google hanno da poco rilasciato una &lt;a href="http://code.google.com/android/download.html"&gt;versione
+aggiornata&lt;/a&gt; di
+&lt;strong&gt;Android&lt;/strong&gt;, l'SDK che permette di sviluppare applicazioni per i futuri
+telefonini Google, si tratta della versione &lt;strong&gt;m5-rc14&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Le principali novità di questa release sono le seguenti:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Nuova interfaccia utente:&lt;/strong&gt; anche se si tratta di una versione
+    ancora in sviluppo, è stata aggiornata l'interfaccia grafica di
+    Android.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Layout Animations:&lt;/strong&gt; è stata aggiunta la possibilità di creare
+    animazioni grazie alle classi presenti nel package
+    &lt;a href="http://code.google.com/android/migrating/m3-to-m5/m5-api-changes.html#animations"&gt;android.view.animation&lt;/a&gt;.
+    Si consiglia di controllare gli esempi presenti nei file
+    &lt;em&gt;LayoutAnimation*.java&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Geo-coding:&lt;/strong&gt; il package
+    &lt;a href="http://code.google.com/android/reference/android/location/Geocoder.html"&gt;android.location.Geocoder&lt;/a&gt;
+    permette di trasformare un indirizzo in coordinate geografiche e
+    viceversa.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Nuovi codec multimediali:&lt;/strong&gt; è stato aggiunto il supporto per i
+    seguenti formati: OGG Vorbis, Midi, XMF, iMelody, RTTL/RTX e OTA.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Aggiornato il plugin per Eclipse:&lt;/strong&gt; il plugin per eclipse presente
+    alcune novità, in particolare un editor per il Manifesto&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ulteriori informazioni sulle modifiche alle API, possono essere trovate
+su &lt;a href="http://code.google.com/android/migrating/m3-to-m5/m5-api-changes.html"&gt;questa
+pagina&lt;/a&gt;.
+Per tutto il resto si rimanda alla &lt;a href="http://code.google.com/android/index.html"&gt;pagina principale del
+progetto&lt;/a&gt; Android.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 14 Feb 2008 00:42:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-14:/2008/02/14/android-rilasciata-la-m5-rc14-dellsdk/</guid><category>android</category><category>cellulari</category><category>eclipse</category><category>Google</category><category>Java</category><category>Linux</category><category>Programmazione</category><category>SDK</category><category>telefonino</category></item><item><title>wxGTK working on Maemo</title><link>https://www.andreagrandi.it/2007/12/17/wxgtk-working-on-maemo/</link><description>&lt;p&gt;Reading the &lt;a href="http://wxwidgets.blogspot.com/2007/11/hildonizing-wxgtk.html"&gt;official WxWidget
+blog&lt;/a&gt;, I
+discovered that one of their developer was working to hildonize
+[WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
+just a test or if this library could work in Maemo, so I followed his
+suggestion and I grabbed the latest SVN sources:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;and I compiled it in this way:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cd wxWidgets ./configure --with-hildon make make install&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;then I grabbed a simple "HelloWorld" from the official documentation.
+You can find the complete source code
+&lt;a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I compiled the source code in this way:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;g++ hworld.cpp `wx-config --libs` `wx-config --cxxflags` -o hworld&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;then I ran it in the usual way:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;run-standalone.sh ./hworld&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The result? I think that a screenshoot is better than thousand words :)&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s1600-h/wxWindowsHildon.jpg"&gt;&lt;img alt="" id="BLOGGER_PHOTO_ID_5144273397928476850" src="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s400/wxWindowsHildon.jpg"&gt;&lt;/a&gt;&lt;br&gt;
+[N.b:]{style="font-weight: bold;"} I tested this inside Scratchbox,
+using [CHINOOK_x86]{style="font-weight: bold;"} target, so I think it
+will work fine on Os2008. This could be a good thing to help other
+developers porting some interesting applications (uhm... aMule for
+example ;) ) to Maemo.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 17 Dec 2007 14:48:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2007-12-17:/2007/12/17/wxgtk-working-on-maemo/</guid><category>maemo</category><category>SDK</category><category>tablet</category><category>wx</category></item><item><title>Installing qemu-arm-eabi patch into Scratchbox</title><link>https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/</link><description>&lt;p&gt;Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
+often when we try to execute some application we can get into this kind
+of errors (for example):&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sem_post: Function not implemented&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This happens because not all the functions have been implemented in the
+emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
+created a &lt;a href="http://sourceforge.net/projects/qemu-arm-eabi/"&gt;patched&lt;/a&gt;
+version of qemu-arm called [qemu-arm-eabi]{style="font-weight: bold;"}.&lt;/p&gt;
+&lt;p&gt;Thanks to [Marcelo Lira]{style="font-weight: bold;"}, we have a simple
+howto to install the patch into the Scratchbox environment.
+[Note:]{style="font-weight: bold;"} you have to execute these commands
+from outside the Scratchbox environment and you should not be logged
+into the environment at the same time.&lt;/p&gt;
+&lt;p&gt;[1.]{style="font-weight: bold;"} You need gcc 3.4, SDL dev library and
+Zlib dev:[&lt;br&gt;
+]{style="font-size: 78%;"}&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[2.]{style="font-weight: bold;"} Get the patched qemu-arm. Notice that
+the patches are already applied, everything is here, and you don't need
+to get the qemu sources.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;svn co  https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[3.]{style="font-weight: bold;"} Copy qemu to the cputransp dir on
+scratchbox[&lt;br&gt;
+]{style="font-size: 78%;"}&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[4.]{style="font-weight: bold;"} Add it to the list of cputransp
+methods. Open the file[&lt;br&gt;
+]{style="font-size: 78%;"}&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;and add this line:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;qemu-arm-eabi-sb2&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[5.]{style="font-weight: bold;"} Configure the target to use the patched
+qemu as transparency method. Edit the file:[&lt;br&gt;
+]{style="font-size: 78%; font-family: courier new;"}&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;and change this line:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;That's all! You're now ready to log again into your Scratchbox
+environment.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 16 Nov 2007 15:49:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2007-11-16:/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/</guid><category>maemo</category><category>qemu</category><category>scratchbox</category><category>SDK</category></item><item><title>Upgrading Maemo SDK 4 Beta to Maemo SDK 4 final release</title><link>https://www.andreagrandi.it/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/</link><description>&lt;p&gt;The final version of &lt;a href="http://maemo.org/development/sdks/maemo_4_0_chinook_sdk.html"&gt;Maemo SDK
+4&lt;/a&gt; is out.
+Like most other people I couldn't wait for the final release and I
+installed the beta version. The big question, when I did read about the
+final version was "how can I upgrade to the final version without
+installing it from scratch?!". Luckly one kind person helped me on
+maemo-developer mailing list, and suggested me to do a dist-upgrade from
+inside the Scratchbox environment. So, login into tour Scratchbox
+environment and execute this:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;[sbox-SDK_BETA_X86: ~] &amp;gt; fakeroot apt-get update [sbox-SDK_BETA_X86: ~] &amp;gt; fakeroot apt-get dist-upgrade&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[[[That's all! I don't know if this is the official method to do the
+upgrade, but it worked for me. I checked, after the upgrade, if I had
+the right packages installed, using this page:
+&lt;a href="http://tablets-dev.nokia.com/4.0/4.0b_vs_4.0_content_comparison.html"&gt;http://tablets-dev.nokia.com/4.0/4.0b_vs_4.0_content_comparison.html&lt;/a&gt;&lt;br&gt;
+and they were
+right.]{style="font-family: georgia;"}]{style="font-family: arial;"}]{style="font-family: verdana;"}&lt;/span&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sun, 11 Nov 2007 16:22:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2007-11-11:/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/</guid><category>maemo</category><category>SDK</category></item><item><title>Installing Maemo SDK 4 Beta</title><link>https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/</link><description>&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Maemo&lt;/strong&gt; is an opensource development platform for &lt;strong&gt;Linux&lt;/strong&gt; based
+devices. Actually is the base for the operating system installed on
+&lt;strong&gt;Nokia&lt;/strong&gt;
+&lt;a href="http://www.nokia.it/770" title="http://www.nokia.it/770"&gt;N770&lt;/a&gt;{.external
+.text},
+&lt;a href="http://europe.nokia.com/phones/n800" title="http://europe.nokia.com/phones/n800"&gt;N800&lt;/a&gt;{.external
+.text} and the upcoming
+&lt;a href="http://www.nokia.com/N810" title="http://www.nokia.com/N810"&gt;N810&lt;/a&gt;{.external
+.text} but it could be adopted, with few changes, even by other similar
+devices.&lt;/p&gt;
+&lt;p&gt;In particular, this version of Maemo SDK is the only one that allow
+developers to develop new applications for &lt;strong&gt;N810&lt;/strong&gt; and to start porting
+old application to this new platform.&lt;/p&gt;
+&lt;p&gt;The SDK is not only a set of libraries and compiler, it gives you a real
+environment that emulates the Nokia device, so the developer can write
+applications, debug them and test them. Both command line and gui
+application are supported in emulator.&lt;/p&gt;
+&lt;p&gt;Graphical environment is based on a real &lt;strong&gt;X server&lt;/strong&gt;, a &lt;strong&gt;window
+manager&lt;/strong&gt; and on &lt;strong&gt;GTK&lt;/strong&gt; libraries, with a particular extension called
+&lt;strong&gt;Hildon&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;With Maemo SDK you can:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Test Maemo applications using a normal PC with Linux.&lt;/li&gt;
+&lt;li&gt;Write and debug applications written by you.&lt;/li&gt;
+&lt;li&gt;Port existing applications written for Linux/GTK and verify if they
+    work correctly.&lt;/li&gt;
+&lt;li&gt;Compile and build ARMEL package so you can install them in the
+    device.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;[]{#Requirements}&lt;/p&gt;
+&lt;h2&gt;Requirements&lt;/h2&gt;
+&lt;p&gt;These are the minimum requirements to work with Maemo SDK:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Intel compatible processor (x86), at least 500 Mhz&lt;/li&gt;
+&lt;li&gt;256 Mb RAM&lt;/li&gt;
+&lt;li&gt;2 Gb space on hard disk&lt;/li&gt;
+&lt;li&gt;A Linux distribution (I suggest Debian or Ubuntu)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You need the following software packages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Scratchbox: a cross-compiling toolkit that allows you to compile
+    applications for different platform&lt;/li&gt;
+&lt;li&gt;Maemo SDK: you can find it at this address:
+    &lt;a href="http://www.maemo.org/downloads/download-sdk.html"&gt;http://www.maemo.org/downloads/download-sdk.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Xephyr Xserver:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Starting from &lt;strong&gt;4.x&lt;/strong&gt; version, Maemo has a simple installer script, so
+all you need are these two files:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-scratchbox-install_4.0beta.sh" title="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-scratchbox-install_4.0beta.sh"&gt;maemo-scratchbox-install_4.0beta.sh&lt;/a&gt;{.external
+    .text}&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-sdk-install_4.0beta.sh" title="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-sdk-install_4.0beta.sh"&gt;maemo-sdk-install_4.0beta.sh&lt;/a&gt;{.external
+    .text}&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;[]{#Installing_Scratchbox}&lt;/p&gt;
+&lt;h2&gt;Installing Scratchbox&lt;/h2&gt;
+&lt;p&gt;The first tool you have to install is &lt;strong&gt;Scratchbox&lt;/strong&gt;. I suggest you to
+use the script provided but you could choose also to install it manually
+(in this case please refer to [&lt;a href="http://scratchbox.org/documentation/user/scratchbox-1.0/html/installdoc.html" title="http://scratchbox.org/documentation/user/scratchbox-1.0/html/installdoc.html"&gt;this
+site&lt;/a&gt;{.external
+.text}] for detailed instructions).&lt;/p&gt;
+&lt;p&gt;Before beginning the installation of Scratchbox, you have to become
+&lt;strong&gt;root&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;First of all set the permission of the script file:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;chmod +x maemo-scratchbox-install_4.0beta.sh&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Then run it with these parameters:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;./maemo-scratchbox-install_4.0beta.sh -d -u andy80&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Please note that &lt;strong&gt;-d&lt;/strong&gt; tells the installer to install from Debian dpkg
+packages while &lt;strong&gt;-u&lt;/strong&gt; specifies your username (in my case is andy80, you
+have to change it using your local username).&lt;/p&gt;
+&lt;p&gt;Scratchbox environment will be installed in /scratchbox/&lt;/p&gt;
+&lt;p&gt;Please note that you'll have to logout and login again to be able to log
+into you new Scratchbox environment. To test it you simply have to start
+Scratchbox from your local user:&lt;br&gt;
+&lt;code&gt;andy80@noteboontu:~/download/maemo_4.0_beta$ /scratchbox/login&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Welcome to Scratchbox, the cross-compilation toolkit!&lt;/p&gt;
+&lt;p&gt;Use 'sb-menu' to change your compilation target.&lt;br&gt;
+See /scratchbox/doc/ for documentation.&lt;/p&gt;
+&lt;p&gt;[sbox-SDK_BETA_ARMEL: \~]&lt;br&gt;
+&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[]{#Installing_Maemo_SDK}&lt;/p&gt;
+&lt;h2&gt;Installing Maemo SDK&lt;/h2&gt;
+&lt;p&gt;When Scratchbox is correctly installed on your system, you can install
+the &lt;strong&gt;Maemo SDK&lt;/strong&gt;. Please note that you have to do it from &lt;strong&gt;normal
+user&lt;/strong&gt; (the user you specified in the installation of Scratchbox).&lt;/p&gt;
+&lt;p&gt;Simply run this command and follow instructions:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;bash maemo-sdk-install_4.0beta.sh&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;At the end you should get this message:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Installation was successful! ----------------------------&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;IMPORTANT! Please read this.&lt;/p&gt;
+&lt;p&gt;You now have the maemo 4.0beta 'chinook' installed on your computer.&lt;br&gt;
+You can now start your maemo SDK session with /scratchbox/login and&lt;br&gt;
+then select your target with 'sb-conf select SDK_BETA_ARMEL' for the&lt;br&gt;
+armel target or 'sb-conf select SDK_BETA_X86' for the i386 target.&lt;/p&gt;
+&lt;p&gt;If you have any problems with targets' package databases, you can try&lt;br&gt;
+running 'fakeroot apt-get -f install' on your scratchbox target.&lt;br&gt;
+This command will try to fix any problems with the package database.&lt;/p&gt;
+&lt;p&gt;Happy hacking!&lt;br&gt;
+&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[]{#Installing_Xephyr}&lt;/p&gt;
+&lt;h2&gt;Installing Xephyr&lt;/h2&gt;
+&lt;p&gt;Xephyr is an X11 server that provides a device screen for the developer
+so that you can see all the maemo application windows and visuals on
+your computer.&lt;/p&gt;
+&lt;p&gt;To install it in a Debian based distribution, simply execute this (from
+root):&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;apt-get install xserver-xephyr&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;[]{#Running_Xephyr}&lt;/p&gt;
+&lt;h2&gt;Running Xephyr&lt;/h2&gt;
+&lt;p&gt;To see if all works fine, you should start Xephyr and Maemo environment.
+Execute this from outside the Scratchbox environment:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac -extension Composite&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Now, from another shell, log into Scratchbox and execute this:&lt;br&gt;
+&lt;code&gt;[sbox-SDK_BETA_X86:~] &amp;gt; export DISPLAY=:2 [sbox-SDK_BETA_X86:~] &amp;gt; af-sb-init.sh start&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This should start the Hildon Application Framework inside the Xephyr
+window. That's all!&lt;/p&gt;
+&lt;p&gt;[]{#References}&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;p&gt;Here you can find a list of website where I took information from to
+write this guide:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt"&gt;http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.maemo.org/" title="http://www.maemo.org"&gt;http://www.maemo.org&lt;/a&gt;{.external
+    .free}&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 25 Oct 2007 16:24:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2007-10-25:/2007/10/25/installing-maemo-sdk-4-beta/</guid><category>maemo</category><category>nokia</category><category>SDK</category><category>tablet</category></item></channel></rss>

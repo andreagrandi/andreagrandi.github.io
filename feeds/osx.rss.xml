@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - OSX</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sun, 11 Oct 2015 19:44:00 +0100</lastBuildDate><item><title>How to configure EncFS on OSX 10.10 (Yosemite)</title><link>https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/</link><description>&lt;p&gt;With &lt;strong&gt;EncFS&lt;/strong&gt; it's possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc...), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It's
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.&lt;/p&gt;
+&lt;h2&gt;Installing EncFS&lt;/h2&gt;
+&lt;p&gt;EncFS can be installed from &lt;strong&gt;brew&lt;/strong&gt;. If you don't have brew package
+manager installed on OSX you can install it using this command:&lt;/p&gt;
+&lt;p&gt;``` {.lang:sh .decode:true}
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;After brew, you need to install **OSXFuse** from this
+website &amp;lt;http://osxfuse.github.io&amp;gt;
+
+Finally you can install **encfs** using this command:
+
+``` {.lang:sh .decode:true}
+brew install homebrew/fuse/encfs
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Configuring the encrypted folder&lt;/h2&gt;
+&lt;p&gt;Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:&lt;/p&gt;
+&lt;p&gt;``` {.lang:sh .decode:true}
+encfs ~/Dropbox/Private ~/Private&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;mounting&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;existing&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;prompted&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;creating&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt;
+&lt;span class="n"&gt;asked&lt;/span&gt; &lt;span class="n"&gt;some&lt;/span&gt; &lt;span class="n"&gt;questions&lt;/span&gt; &lt;span class="n"&gt;about&lt;/span&gt; &lt;span class="n"&gt;EncFS&lt;/span&gt; &lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+
+&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nl"&gt;Note&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;important&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;keep&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;BoxCryptor&lt;/span&gt; &lt;span class="n"&gt;Classic&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.boxcryptor.com/en/classic)** (in case&lt;/span&gt;
+&lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;want&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;use&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;same&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;under&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;please&lt;/span&gt; &lt;span class="n"&gt;refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt;
+&lt;span class="n"&gt;other&lt;/span&gt; &lt;span class="n"&gt;article&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;
+&lt;span class="nl"&gt;wrote&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="err"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&amp;gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;Mount&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;startup&lt;/span&gt;
+&lt;span class="o"&gt;-------------------------------------&lt;/span&gt;
+
+&lt;span class="n"&gt;First&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;need&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;OSX&lt;/span&gt;
+&lt;span class="n"&gt;keychain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Open&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;Keychain&lt;/span&gt; &lt;span class="n"&gt;Access&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;entry&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt;
+&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;account&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt; &lt;span class="n"&gt;write&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;
+&lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;click&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;Add&lt;/span&gt;&lt;span class="o"&gt;**:&lt;/span&gt;
+
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_keychain&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_access&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png){.aligncenter&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;full&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wp&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1052&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;428&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;397&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png)&lt;/span&gt;
+
+&lt;span class="n"&gt;Once&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;saved&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="n"&gt;editor&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;paste&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;script&lt;/span&gt;
+&lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_mount&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="err"&gt;\$&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="nl"&gt;folder&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+&lt;span class="err"&gt;```&lt;/span&gt; &lt;span class="p"&gt;{.&lt;/span&gt;&lt;span class="nl"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="cp"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="cp"&gt;# Secure EncFS Dropbox mounter by Daniel Widerin &amp;lt;daniel@widerin.net&amp;gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;SOURCE&lt;/span&gt;&lt;span class="o"&gt;=~/&lt;/span&gt;&lt;span class="n"&gt;Dropbox&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
+&lt;span class="n"&gt;TARGET&lt;/span&gt;&lt;span class="o"&gt;=~/&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
+&lt;span class="n"&gt;VOLUME_TITLE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
+&lt;span class="n"&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;ENCFS&lt;/span&gt;&lt;span class="o"&gt;=/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;
+
+&lt;span class="n"&gt;mount&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;grep&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
+&lt;span class="p"&gt;[[&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;$?&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;eq&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sbin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;diskutil&lt;/span&gt; &lt;span class="n"&gt;unmount&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt;
+ &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Create new mountpoint $TARGET&amp;quot;&lt;/span&gt;
+ &lt;span class="n"&gt;mkdir&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
+ &lt;span class="n"&gt;chmod&lt;/span&gt; &lt;span class="mo"&gt;0700&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
+&lt;span class="n"&gt;fi&lt;/span&gt;
+
+&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;ENCFS&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;SOURCE&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;extpass&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;$KEYCHAIN_PASSWORD&amp;#39; |grep password|cut -d &lt;/span&gt;&lt;span class="se"&gt;\\\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt; -f 2&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ovolname&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;VOLUME_TITLE&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make it &lt;strong&gt;executable&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;``` {.lang:sh .decode:true}
+chmod +x ~/encfs_mount.sh&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Open **AppleScript** editor and paste this text inside and save as an
+app in the \$HOME folder:
+
+[![Screenshot 2015-10-11
+19.27.14](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter
+.size-full .wp-image-1055 width=&amp;quot;484&amp;quot;
+height=&amp;quot;392&amp;quot;}](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)
+
+``` {.lang:sh .decode:true}
+do shell script &amp;quot;$HOME/encfs_mount.sh&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally, open "&lt;strong&gt;System Preferences&lt;/strong&gt;" -&amp;gt; "&lt;strong&gt;Users &amp;amp; Groups&lt;/strong&gt;" and
+add the previously saved application.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;&lt;img alt="Screenshot 2015-10-11
+19.27.44" src="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;{.aligncenter
+.size-full .wp-image-1056 width="463"
+height="380"}&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Final notes&lt;/h2&gt;
+&lt;p&gt;At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: &lt;strong&gt;do not save anything
+directly on \~/Dropbox/Private&lt;/strong&gt;, only read and save your files from
+\~/Private&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.maketecheasier.com/install-encfs-mac/"&gt;https://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://ninjatips.com/encrypt-dropbox-using-encfs/"&gt;http://ninjatips.com/encrypt-dropbox-using-encfs/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sun, 11 Oct 2015 19:44:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-10-11:/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/</guid><category>cloud</category><category>encfs</category><category>encryption</category><category>OSX</category><category>security</category></item><item><title>How to create a Docker image for PostgreSQL and persist data</title><link>https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</link><description>&lt;p&gt;Before I start, let me confirm to you that official
+&lt;a href="https://www.docker.com/"&gt;&lt;strong&gt;Docker&lt;/strong&gt;&lt;/a&gt; images for
+&lt;a href="http://www.postgresql.org/"&gt;&lt;strong&gt;PostgreSQL&lt;/strong&gt;&lt;/a&gt; already exist and are
+available here: &lt;a href="https://registry.hub.docker.com/_/postgres/"&gt;https://registry.hub.docker.com/_/postgres/&lt;/a&gt; so this
+howto wants to be a guide to explain how to create these images and talk
+about some of the Docker features.&lt;/p&gt;
+&lt;p&gt;I will assume that you have already installed Docker on your machine. I
+have tested these instructions both on &lt;strong&gt;Ubuntu Linux&lt;/strong&gt; and &lt;strong&gt;OSX&lt;/strong&gt; (OSX
+users will need to install &lt;a href="http://boot2docker.io/"&gt;boot2docker&lt;/a&gt;,
+instructions are not available in this guide).&lt;/p&gt;
+&lt;h2&gt;Dockerfile&lt;/h2&gt;
+&lt;p&gt;To create a Docker image we need to create a text file named
+&lt;strong&gt;Dockerfile&lt;/strong&gt; and use the available commands and syntax to declare how
+the image will be built. At the beginning of the file we need to specify
+the base image we are going to use and our contact informations:&lt;/p&gt;
+&lt;p&gt;``` {.theme:github .decode-attributes:false .tab-convert:true .lang:default .decode:true}
+FROM ubuntu:14.04
+MAINTAINER Andrea Grandi &lt;a href="&amp;#109;&amp;#97;&amp;#105;&amp;#108;&amp;#116;&amp;#111;&amp;#58;&amp;#110;&amp;#111;&amp;#115;&amp;#112;&amp;#97;&amp;#109;&amp;#116;&amp;#104;&amp;#97;&amp;#110;&amp;#107;&amp;#115;&amp;#64;&amp;#103;&amp;#109;&amp;#97;&amp;#105;&amp;#108;&amp;#46;&amp;#99;&amp;#111;&amp;#109;"&gt;&amp;#110;&amp;#111;&amp;#115;&amp;#112;&amp;#97;&amp;#109;&amp;#116;&amp;#104;&amp;#97;&amp;#110;&amp;#107;&amp;#115;&amp;#64;&amp;#103;&amp;#109;&amp;#97;&amp;#105;&amp;#108;&amp;#46;&amp;#99;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;In our case we are using **Ubuntu 14.04** as base image. After these
+instructions we need to add PostgreSQL package repository and GnuPG
+public key:
+
+``` {.theme:github .decode-attributes:false .lang:default .decode:true}
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+RUN echo &amp;quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&amp;quot; &amp;gt; /etc/apt/sources.list.d/pgdg.list
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then we need to update the packages available in Ubuntu and install
+PostgreSQL:&lt;/p&gt;
+&lt;p&gt;``` {.theme:github .decode-attributes:false .lang:default .decode:true}
+RUN apt-get update &amp;amp;&amp;amp; apt-get -y -q install python-software-properties software-properties-common &lt;br&gt;
+   &amp;amp;&amp;amp; apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;We are installing version 9.3 of PostgreSQL, instructions would be very
+similar for any other version of the database.
+
+**Note:** it&amp;#39;s important to have **apt-get update** and **apt-get
+install** commands in the same **RUN** line, else they would be
+considered two different layers by Docker and in case an updated package
+is available it won&amp;#39;t be installed when the image is rebuilt.
+
+At this point we switch to **postgres** user to execute the next
+commands:
+
+``` {.theme:github .lang:default .decode:true}
+USER postgres
+RUN /etc/init.d/postgresql start   
+   &amp;amp;&amp;amp; psql --command &amp;quot;CREATE USER pguser WITH SUPERUSER PASSWORD &amp;#39;pguser&amp;#39;;&amp;quot;   
+   &amp;amp;&amp;amp; createdb -O pguser pgdb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We switch to &lt;strong&gt;root&lt;/strong&gt; user and we complete the configuration:&lt;/p&gt;
+&lt;p&gt;``` {.theme:github .lang:default .decode:true}
+USER root
+RUN echo "host all  all    0.0.0.0/0  md5" &amp;gt;&amp;gt; /etc/postgresql/9.3/main/pg_hba.conf
+RUN echo "listen_addresses='*'" &amp;gt;&amp;gt; /etc/postgresql/9.3/main/postgresql.conf&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;We expose the port where PostgreSQL will listen to:
+
+``` {.theme:github .lang:default .decode:true}
+EXPOSE 5432
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We setup the data and shared folders that we will use later:&lt;/p&gt;
+&lt;p&gt;``` {.theme:github .lang:default .decode:true}
+RUN mkdir -p /var/run/postgresql &amp;amp;&amp;amp; chown -R postgres /var/run/postgresql
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Finally we switch again to the **postgres** user and we define the entry
+command for this image:
+
+``` {.theme:github .lang:default .decode:true}
+USER postgres
+CMD [&amp;quot;/usr/lib/postgresql/9.3/bin/postgres&amp;quot;, &amp;quot;-D&amp;quot;, &amp;quot;/var/lib/postgresql/9.3/main&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&amp;quot;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The full &lt;strong&gt;Dockerfile&lt;/strong&gt; is available
+here &lt;a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile"&gt;https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Building Docker image&lt;/h2&gt;
+&lt;p&gt;Once the Dockerfile is ready, we need to build the image before running
+it in a container. Please customize the tag name using your own
+docker.io hub account (or you won't be able to push it to the hub):&lt;/p&gt;
+&lt;p&gt;``` {.theme:github .lang:default .decode:true}
+docker build --rm=true -t andreagrandi/postgresql:9.3 .&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;Running the PostgreSQL Docker container&lt;/span&gt;
+&lt;span class="gh"&gt;---------------------------------------&lt;/span&gt;
+
+To run the container, once the image is built, you just need to use this
+command:
+
+&lt;span class="s"&gt;``` {.theme:github .lang:default .decode:true}&lt;/span&gt;
+&lt;span class="s"&gt;docker run -i -t -p 5432:5432 andreagrandi/postgresql:9.3&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Testing the running PostgreSQL&lt;/h2&gt;
+&lt;p&gt;To test the running container we can use any client, even the
+commandline one:&lt;/p&gt;
+&lt;p&gt;``` {.theme:github .lang:default .decode:true}
+psql -h localhost -p 5432 -U pguser -W pgdb&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;When you are prompted for password, type: **pguser**  
+Please note that **localhost** is only valid if you are running Docker
+on Ubuntu. If you are an OSX user, you need to discover the correct ip
+using: **boot2docker ip**
+
+Persisting data
+---------------
+
+You may have noticed that once you stop the container, if you previously
+wrote some data on the DB, that data is lost. This is because by default
+Docker containers are not persistent. We can resolve this problem using
+a data container. My only suggestion is not to do it manually and use a
+tool like [**fig**](http://www.fig.sh/) to orchestrate this. Fig is a
+tool to orchestrate containers and its features are being rewritten in
+Go language and integrated into Docker itself. So if you prepare a
+**fig.yml** configuration file now, you will be able, hopefully, to
+reuse it once this feature will be integrated into Docker. Please refer
+to fig website for the instructions to install it (briefly: under Ubuntu
+you can use **pip install fig** and under OSX you can use **brew install
+fig**).
+
+``` {.theme:github .lang:default .decode:true}
+dbdata:
+  image: andreagrandi/postgresql:9.3
+  volumes:
+    - /var/lib/postgresql
+  command: true
+
+db:
+  image: andreagrandi/postgresql:9.3
+  volumes_from:
+    - dbdata
+  ports:
+    - &amp;quot;5432:5432&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Save this file as &lt;strong&gt;fig.yml&lt;/strong&gt; in the same folder of the Dockerfile and
+spin up the container using this command: &lt;strong&gt;fig up&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{.theme:github .lang:default .decode:true}
+andreas-air:postgresql-docker andrea [master] $ fig up
+Recreating postgresqldocker_dbdata_1...
+Recreating postgresqldocker_db_1...
+Attaching to postgresqldocker_db_1
+db_1 | 2015-02-21 19:01:07 UTC [6-1] LOG:  database system was interrupted; last known up at 2015-02-21 17:46:10 UTC
+db_1 | 2015-02-21 19:01:07 UTC [6-2] LOG:  database system was not properly shut down; automatic recovery in progress
+db_1 | 2015-02-21 19:01:07 UTC [6-3] LOG:  redo starts at 0/1782F68
+db_1 | 2015-02-21 19:01:07 UTC [6-4] LOG:  record with zero length at 0/1782FA8
+db_1 | 2015-02-21 19:01:07 UTC [6-5] LOG:  redo done at 0/1782F68
+db_1 | 2015-02-21 19:01:07 UTC [6-6] LOG:  last completed transaction was at log time 2015-02-21 17:46:10.61746+00
+db_1 | 2015-02-21 19:01:07 UTC [1-1] LOG:  database system is ready to accept connections
+db_1 | 2015-02-21 19:01:07 UTC [10-1] LOG:  autovacuum launcher started&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you try to write some data on the database and then you stop (CTRL+C)
+the running containers and spin up them again, you will see that your
+data is still there.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This is just an example of how to prepare a Docker container for a
+specific service. The difficoult part is when you have to spin up
+multiple services (for example a Django web application using
+PostgreSQL, RabbitMQ, MongoDB etc...), connect them all together and
+orchestrate the solution. I will maybe talk about this in one of the
+next posts. You can find the full source code of my PostgreSQL Docker
+image, including the fig.yml file in this
+repository &lt;a href="https://github.com/andreagrandi/postgresql-docker"&gt;https://github.com/andreagrandi/postgresql-docker&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sat, 21 Feb 2015 20:24:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-02-21:/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</guid><category>containers</category><category>devops</category><category>docker</category><category>fig</category><category>Linux</category><category>OSX</category><category>postgresql</category></item><item><title>How to fix encfs installation on OSX 10.9 (Mavericks) and brew</title><link>https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</link><description>&lt;p&gt;After upgrading from OSX 10.8.x to 10.9 (Mavericks), &lt;strong&gt;encfs&lt;/strong&gt; recipe is
+broken. First of all you have to fix a problem with a library header:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then you can install encfs using this remote brew recipe:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It's also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it! Please note that this is just a workaround (thanks to
+&lt;strong&gt;Giovanni Bajo&lt;/strong&gt; for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here &lt;a href="https://gist.github.com/defunctzombie/7324625"&gt;https://gist.github.com/defunctzombie/7324625&lt;/a&gt; but I haven't
+tested it yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; to fully integrate encfs with OSX, I also suggest to follow
+this nice guide &lt;a href="http://www.maketecheasier.com/install-encfs-mac/"&gt;http://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 08 Nov 2013 21:17:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2013-11-08:/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</guid><category>cloud</category><category>encfs</category><category>encryption</category><category>fuse4x</category><category>OSX</category><category>security</category></item></channel></rss>

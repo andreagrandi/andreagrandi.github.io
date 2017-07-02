@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - golang</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sun, 19 Apr 2015 12:26:00 +0100</lastBuildDate><item><title>Goenv - Go Environment Manager</title><link>https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/</link><description>&lt;p&gt;To briefly explain what
+&lt;a href="https://bitbucket.org/ymotongpoo/goenv"&gt;&lt;strong&gt;Goenv&lt;/strong&gt;&lt;/a&gt; is, I will assume
+you have previously worked with &lt;strong&gt;Python&lt;/strong&gt;. Basically it's what
+&lt;strong&gt;Virtualenv&lt;/strong&gt; is for Python. Goenv (and it's wrapper &lt;strong&gt;goof&lt;/strong&gt;) creates
+a folder for a new project and set the &lt;strong&gt;\$GOPATH&lt;/strong&gt; env variable to that
+folder path. At this point every time you do &lt;strong&gt;go get&lt;/strong&gt;, the libraries
+will be installed in that specific &lt;strong&gt;\$GOPATH&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;It's very important to use separate \$GOPATH for each project, because
+this allow us to use different library versions for each project and
+&lt;strong&gt;avoid version conflicts&lt;/strong&gt;.&lt;/p&gt;
+&lt;h1&gt;Installation&lt;/h1&gt;
+&lt;p&gt;``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
+$ git clone https://bitbucket.org/ymotongpoo/goenv
+$ cd goenv
+$ go build -o goenv *.go
+$ chmod +x goenv
+$ sudo cp goenv /usr/bin&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Goenv is now installed, we will now install its wrapper **goof**:
+
+``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
+$ sudo cp shellscripts/goenvwrapper.sh /usr/bin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Edit &lt;strong&gt;.bashrc&lt;/strong&gt; (or &lt;strong&gt;.zshrc&lt;/strong&gt; if you use zsh) and append these lines:&lt;/p&gt;
+&lt;p&gt;``` {.toolbar:2 .lang:zsh .decode:true}
+export GOENVHOME=$HOME/goenvs
+source /usr/bin/goenvwrapper.sh&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;How to use it&lt;/span&gt;
+&lt;span class="gh"&gt;=============&lt;/span&gt;
+
+To &lt;span class="gs"&gt;**create**&lt;/span&gt; a new go environment use &lt;span class="gs"&gt;**make**&lt;/span&gt;:
+
+&lt;span class="s"&gt;``` {.toolbar:2 .lang:default .highlight:0 .decode:true}&lt;/span&gt;
+&lt;span class="s"&gt;➜  ~  goof make go-test&lt;/span&gt;
+&lt;span class="s"&gt;Do you want to create all parental directory of &amp;#39;/Users/andrea/goenvs/go-test&amp;#39;? [y/N]: y&lt;/span&gt;
+&lt;span class="s"&gt;Environment /Users/andrea/goenvs/go-test created!&lt;/span&gt;
+&lt;span class="s"&gt;(go:go-test) ➜  go-test&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To exit the go environment use &lt;strong&gt;deactivate&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
+(go:go-test) ➜  go-test  deactivate
+➜  go-test&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;To use an environment use **workon**:
+
+``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
+➜  go-test  goof workon go-test
+(go:go-test) ➜  go-test
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To show available environments use &lt;strong&gt;show&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{.toolbar:2 .lang:default .highlight:0 .decode:true}
+(go:go-test) ➜  go-test  goof show
+* go-test&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Goenv itself is not enough to manage Go packages. It would be like using
+&lt;strong&gt;Virtualenv&lt;/strong&gt; only and not using &lt;strong&gt;pip&lt;/strong&gt; and &lt;strong&gt;requirements&lt;/strong&gt;. In a
+future post I will explain how to use
+&lt;a href="https://github.com/tools/godep"&gt;&lt;strong&gt;Godep&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sun, 19 Apr 2015 12:26:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-04-19:/2015/04/19/goenv-go-environment-manager/</guid><category>go</category><category>golang</category></item><item><title>Go: defining methods on struct types</title><link>https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/</link><description>&lt;p&gt;In &lt;strong&gt;Go&lt;/strong&gt; it's possible to define &lt;strong&gt;methods&lt;/strong&gt; on &lt;strong&gt;struct types&lt;/strong&gt;. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.&lt;/p&gt;
+&lt;p&gt;In my case for example I needed something that could contain a Timer
+object, a string and a method that could start the timer and call a
+method at the end of the Timer execution. I implemented it in this way:&lt;/p&gt;
+&lt;p&gt;``` {.toolbar:2 .lang:go .decode:true}
+type DeviceTimer struct {
+    DeviceID    string
+    DeviceTimer *time.Timer
+}&lt;/p&gt;
+&lt;p&gt;func (timer DeviceTimer) startTimer() {
+    &amp;lt;-timer.DeviceTimer.C
+    notifyDeviceTimerExpired(timer.DeviceID)
+}&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The key point is **row 6** &amp;quot;*func (timer DeviceTimer) startTimer() { ...
+}*&amp;quot; where I defined a method called **startTimer** and I specify timer
+**DeviceTimer** inside the func definition. This basically &amp;quot;extends&amp;quot; the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:
+
+``` {.toolbar:2 .lang:go .decode:true}
+timer := time.NewTimer(time.Millisecond * 300)
+device_timer := DeviceTimer{&amp;quot;abc123&amp;quot;, timer}
+go device_timer.startTimer()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is all you need to do. If you want to read more about this subject,
+I can suggest to read these two articles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Go by Example: Methods&lt;/strong&gt; &lt;a href="https://gobyexample.com/methods"&gt;https://gobyexample.com/methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Inheritance and subclassing in Go - or its near likeness&lt;/strong&gt;
+    &lt;a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html"&gt;http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; I'm not a Go expert and these are just my personal notes I'm
+taking during my learning experience. I'm very keen to share my notes
+with everyone, but please don't take them as notes from an expert Go
+developer.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Mon, 16 Mar 2015 20:24:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-03-16:/2015/03/16/go-defining-methods-on-struct-types/</guid><category>go</category><category>golang</category><category>programming</category><category>struct</category></item></channel></rss>

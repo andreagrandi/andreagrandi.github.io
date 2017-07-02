@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - dropbox</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Fri, 12 Sep 2014 15:27:00 +0100</lastBuildDate><item><title>Create an EncFS volume compatible with BoxCryptor Classic</title><link>https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</link><description>&lt;p&gt;If you are planning to share an encrypted volume between Linux/OSX and
+Windows (I will assume you are sharing it on Dropbox, but you could use
+any similar service) and you are using
+&lt;a href="http://www.arg0.net/encfs"&gt;&lt;strong&gt;EncFS&lt;/strong&gt;&lt;/a&gt; under Linux/OSX and
+&lt;a href="https://www.boxcryptor.com"&gt;&lt;strong&gt;BoxCryptor&lt;/strong&gt;&lt;/a&gt; under Windows, there are
+some specifig settings to use when you create the EncFS volume. Infact
+even if BoxCryptor claims to be "encfs compatible", it's not 100%.&lt;/p&gt;
+&lt;p&gt;Suppose you want to create an encrypted volume located at
+&lt;strong&gt;\$HOME/.TestTmpEncrypted&lt;/strong&gt; and mounted at &lt;strong&gt;\$HOME/TestTmp&lt;/strong&gt; you need
+the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andrea-Inspiron-660:~ andrea $ encfs ~/.TestTmpEncrypted ~/TestTmp
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;answer "Y" when you are asked if you want to create the folders:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The directory &amp;quot;/home/andrea/.TestTmpEncrypted/&amp;quot; does not exist. Should it be created? (y,n) y
+The directory &amp;quot;/home/andrea/TestTmp&amp;quot; does not exist. Should it be created? (y,n) y
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At this point you will need to select between default paranoia mode or
+advanced mode. Please choose the &lt;strong&gt;advanced&lt;/strong&gt; one (x):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Creating new encrypted volume.
+Please choose from one of the following options:
+ enter &amp;quot;x&amp;quot; for expert configuration mode,
+ enter &amp;quot;p&amp;quot; for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?&amp;gt; x
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Manual configuration mode selected.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Select AES as cypher algorithm:
+
+The following cypher algorithms are available:
+1. AES : 16 byte block cipher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+2. Blowfish : 8 byte block cypher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+
+Enter the number corresponding to your choice: 1
+
+Selected algorithm &amp;quot;AES&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Select &lt;strong&gt;256&lt;/strong&gt; as key size:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Please select a key size in bits. The cypher you have chosen
+supports sizes from 128 to 256 bits in increments of 64 bits.
+For example:
+128, 192, 256
+Selected key size: 256
+
+Using key size of 256 bits
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Choose &lt;strong&gt;1024&lt;/strong&gt; as block size:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Select a block size in bytes. The cypher you have chosen
+supports sizes from 64 to 4096 bytes in increments of 16.
+Alternatively, just press enter for the default (1024 bytes)
+
+filesystem block size:
+
+Using filesystem block size of 1024 bytes
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Select &lt;strong&gt;Stream&lt;/strong&gt; as filename encoding:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The following filename encoding algorithms are available:
+1. Block : Block encoding, hides file name size somewhat
+2. Null : No encryption of filenames
+3. Stream : Stream encoding, keeps filenames as short as possible
+
+Enter the number corresponding to your choice: 3
+
+Selected algorithm &amp;quot;Stream&amp;quot;&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;filename initialization vector chaining&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enable filename initialization vector chaining?
+This makes filename encoding dependent on the complete path,
+rather then encoding each path element individually.
+The default here is Yes.
+Any response that does not begin with &amp;#39;n&amp;#39; will mean Yes: no
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;per-file initialization vectors&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enable per-file initialization vectors?
+This adds about 8 bytes per file to the storage requirements.
+It should not affect performance except possibly with applications
+which rely on block-aligned file io for performance.
+The default here is Yes.
+Any response that does not begin with &amp;#39;n&amp;#39; will mean Yes: no
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;external chained IV&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;External chained IV disabled, as both &amp;#39;IV chaining&amp;#39;
+and &amp;#39;unique IV&amp;#39; features are required for this option.
+Enable block authentication code headers
+on every block in a file? This adds about 12 bytes per block
+to the storage requirements for a file, and significantly affects
+performance but it also means [almost] any modifications or errors
+within a block will be caught and will cause a read error.
+The default here is No.
+Any response that does not begin with &amp;#39;y&amp;#39; will mean No: no
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;random bytes to each block header&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Add random bytes to each block header?
+This adds a performance penalty, but ensures that blocks
+have different authentication codes. Note that you can
+have the same benefits by enabling per-file initialisation
+vectors, which does not come with as great a performance
+penalty.
+Select a number of bytes, from 0 (no random bytes) to 8: 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Enable &lt;strong&gt;file-hole pass-through&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enable file-hole pass-through?
+This avoids writing encrypted blocks when file holes are created.
+The default here is Yes.
+Any response that does not begin with &amp;#39;n&amp;#39; will mean Yes: yes
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally you will see:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Configuration finished. The filesystem to be created has
+the following properties:
+Filesystem cypher: &amp;quot;ssl/aes&amp;quot;, version 3:0:2
+Filename encoding: &amp;quot;nameio/stream&amp;quot;, version 2:1:2
+Key Size: 256 bits
+Block Size: 1024 bytes
+File holes passed through to ciphertext.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At this point set a passphrase for your new volume:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Now you will need to enter a password for your filesystem.
+You will need to remember this password, as there is absolutely
+no recovery mechanism. However, the password can be changed
+later using encfsctl.
+
+New Encfs Password:
+Verify Encfs Password:
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should be able to mount this volume using BoxCryptor.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 12 Sep 2014 15:27:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2014-09-12:/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</guid><category>boxcryptor</category><category>dropbox</category><category>encfs</category></item></channel></rss>

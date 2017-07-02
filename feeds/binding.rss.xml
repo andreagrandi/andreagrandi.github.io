@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - binding</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 13 Aug 2009 10:39:00 +0100</lastBuildDate><item><title>Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</title><link>https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</link><description>&lt;p&gt;In the last post of this series, we saw how to write a simple binding
+and we finished to build and install it manually. This is of course not
+a good way to manage the building/installation procedure.&lt;/p&gt;
+&lt;p&gt;In Python we can use a library called &lt;strong&gt;distutils&lt;/strong&gt; that let us to
+automatize the building and installing process. I'll use the &lt;strong&gt;foo&lt;/strong&gt;
+source code to create the package, so it will be easier to understand.&lt;/p&gt;
+&lt;h2&gt;Using distutils&lt;/h2&gt;
+&lt;p&gt;All we have to do is to write a &lt;strong&gt;setup.py&lt;/strong&gt; file similar to this one:&lt;/p&gt;
+&lt;p&gt;[sourcecode lang="python"]&lt;br&gt;
+from distutils.core import setup, Extension&lt;/p&gt;
+&lt;p&gt;foomodule = Extension('foo', sources = ['foo.c'])&lt;/p&gt;
+&lt;p&gt;setup (name = 'Foo',&lt;br&gt;
+version = '1.0',&lt;br&gt;
+description = 'This is a package for Foo',&lt;br&gt;
+ext_modules = [foomodule])&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;As you can see, we have to first import needed modules with: &lt;strong&gt;from
+distutils.core import setup, Extension&lt;/strong&gt;&lt;br&gt;
+then we create an entry for each module we have (in this case just one,
+"foomodule"). We then call the &lt;strong&gt;setup()&lt;/strong&gt; method passing it all the
+parameters and our &lt;strong&gt;setup.py&lt;/strong&gt; is complete.&lt;/p&gt;
+&lt;h2&gt;Building and installing&lt;/h2&gt;
+&lt;p&gt;To test it we can try to build the package in this way:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;python2.5 setup.py build&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;if we want to install the module in our system:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;python2.5 setup.py install&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Official Python documentation:
+    &lt;a href="http://docs.python.org/extending/building.html"&gt;http://docs.python.org/extending/building.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 13 Aug 2009 10:39:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-13:/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</guid><category>binding</category><category>distutils</category><category>library</category><category>maemo</category><category>Python</category><category>setup</category></item><item><title>Writing Python bindings of existing C libraries – (2) – A simple example of binding</title><link>https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/</link><description>&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;As I promised in the preceding post, I'll provide a very easy example of
+a python binding. Let's suppose we don't want to use the methods
+included in Python to sum two integer values and we want to do it in C
+and then call the add method from a python script. I'll write the
+complete source code first and then I'll explain all the parts of it.&lt;/p&gt;
+&lt;h2&gt;Source Code&lt;/h2&gt;
+&lt;p&gt;[sourcecode language="C"]&lt;br&gt;
+#include &amp;lt;Python.h&amp;gt;&lt;/p&gt;
+&lt;p&gt;static PyObject *foo_add(PyObject *self, PyObject *args)&lt;br&gt;
+{&lt;br&gt;
+int a;&lt;br&gt;
+int b;&lt;/p&gt;
+&lt;p&gt;if (!PyArg_ParseTuple(args, "ii", &amp;amp;a, &amp;amp;b))&lt;br&gt;
+{&lt;br&gt;
+return NULL;&lt;br&gt;
+}&lt;/p&gt;
+&lt;p&gt;return Py_BuildValue("i", a + b);&lt;br&gt;
+}&lt;/p&gt;
+&lt;p&gt;static PyMethodDef foo_methods[] = {&lt;br&gt;
+{ "add", (PyCFunction)foo_add, METH_VARARGS, NULL },&lt;br&gt;
+{ NULL, NULL, 0, NULL }&lt;br&gt;
+};&lt;/p&gt;
+&lt;p&gt;PyMODINIT_FUNC initfoo()&lt;br&gt;
+{&lt;br&gt;
+Py_InitModule3("foo", foo_methods, "My first extension module.");&lt;br&gt;
+}&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;h2&gt;How it works&lt;/h2&gt;
+&lt;p&gt;First of all we have to include &lt;strong&gt;Python.h&lt;/strong&gt; in our C file. This allows
+us to write an extension for Python language. To be able to include this
+header, we must have the python development packages installed in our
+system. For example in Debian based distributions we can install them
+with this command:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo apt-get install python2.5-dev&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Every module has at least three parts. In the first part we write
+methods we want to call from the final python module: in this case we
+have a method called &lt;strong&gt;foo_add&lt;/strong&gt; where "&lt;em&gt;foo&lt;/em&gt;" is the name of the
+module and "&lt;em&gt;add&lt;/em&gt;" the name of the method. Every method is declared as
+&lt;strong&gt;static PyObject&lt;/strong&gt;. The method does anything particular except calling
+PyArg_ParseTuple to validate the input (we'll discuss this later),
+adding the two passed numbers and returning the result.&lt;/p&gt;
+&lt;p&gt;In the second part we have something like a dictionary, defined as
+static &lt;strong&gt;PyMethodDef&lt;/strong&gt; and called foo_methods (where "foo" again is the
+name of the module). For each method we want to expose in our python
+module, we have to add something like this:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{"add", (PyCFunction)foo_add, METH_VARARGS, NULL}&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;where "&lt;em&gt;add&lt;/em&gt;" is the name of the method we want to be visible in our
+module, &lt;em&gt;(PyCFunction)foo_add&lt;/em&gt; is a pointer to our foo_add method,
+implemented in the C module, METH_VARARGS means that we want to pass
+some parameters to the function and the last one would be the
+description of the method (we can leave it NULL if we want).&lt;/p&gt;
+&lt;p&gt;Third part allows us to register the defined method/s and the module:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Py_InitModule3("foo", foo_methods, "My first extension module.");&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;Parsing Parameters&lt;/h3&gt;
+&lt;p&gt;The &lt;strong&gt;PyArg_ParseTuple&lt;/strong&gt; function extracts arguments from the
+&lt;strong&gt;PyObject&lt;/strong&gt; passed as parameter to the current method and follows
+almost the sscanf syntax to parse parameters (in this case we had &lt;em&gt;"ii"&lt;/em&gt;
+for two integers). You can fin the complete reference here:
+&lt;a href="http://docs.python.org/c-api/arg.html"&gt;http://docs.python.org/c-api/arg.html&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Building and installing&lt;/h2&gt;
+&lt;p&gt;To build the module, we have to be in the source directory and execute
+this command:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;gcc -shared -I/usr/include/python2.5 foo.c -o foo.so&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;then we've to copy the generated module to the python's modules
+directory:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cp foo.so /usr/lib/python2.5/site-packages/&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Testing our module&lt;/h2&gt;
+&lt;p&gt;Testing the module is really easy. We've to start a python shell or
+create a python script with the following source code:&lt;/p&gt;
+&lt;p&gt;[sourcecode language="python"]&lt;br&gt;
+import foo&lt;br&gt;
+print foo.add(2, 3)&lt;br&gt;
+[/sourcecode]&lt;/p&gt;
+&lt;p&gt;if all is working fine, the printed result should be &lt;strong&gt;5&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://docs.python.org/extending/extending.html"&gt;http://docs.python.org/extending/extending.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html"&gt;http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id="_mcePaste"
+style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;"&gt;
+
+python2.5-dev
+
+&lt;/div&gt;
+
+&lt;div id="_mcePaste"
+style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;"&gt;
+
+python2.5-dev
+
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Thu, 06 Aug 2009 15:44:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-06:/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/</guid><category>binding</category><category>Igalia</category><category>maemo</category><category>Python</category></item></channel></rss>

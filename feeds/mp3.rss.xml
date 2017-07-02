@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Andrea Grandi - mp3</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sun, 22 Feb 2009 22:43:00 +0000</lastBuildDate><item><title>Convertire i file WMA in MP3 sotto Linux</title><link>https://www.andreagrandi.it/2009/02/22/convertire-i-file-wma-in-mp3-sotto-linux/</link><description>&lt;p&gt;Se abbiamo dei file audio in formato &lt;strong&gt;.wma&lt;/strong&gt; e li vogliamo convertire
+in formato &lt;strong&gt;.mp3&lt;/strong&gt; utilizzando Linux, è sufficiente creare un piccolo
+script in &lt;strong&gt;bash&lt;/strong&gt; che facendo uso di &lt;strong&gt;mplayer&lt;/strong&gt; e &lt;strong&gt;lame&lt;/strong&gt; provveda a
+convertire tutti i file che si trovano all'interno di una certa
+directory.&lt;/p&gt;
+&lt;p&gt;Creiamo un file chiamato &lt;strong&gt;wma2mp3.sh&lt;/strong&gt; con all'interno il seguente
+script:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;#!/bin/bash&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;current_directory=\$( pwd )&lt;/p&gt;
+&lt;p&gt;#remove spaces&lt;br&gt;
+for i in *.wma; do mv "\$i" `echo \$i | tr ' ' '_'`; done&lt;/p&gt;
+&lt;p&gt;#remove uppercase&lt;br&gt;
+for i in *.[Ww][Mm][Aa]; do mv "\$i" `echo \$i | tr '[A-Z]'
+'[a-z]'`; done&lt;/p&gt;
+&lt;p&gt;#Rip with Mplayer / encode with LAME&lt;br&gt;
+for i in *.wma ; do mplayer -vo null -vc dummy -af resample=44100 -ao
+pcm:waveheader \$i &amp;amp;&amp;amp; lame -m s audiodump.wav -o \$i; done&lt;/p&gt;
+&lt;p&gt;#convert file names&lt;br&gt;
+for i in *.wma; do mv "\$i" "`basename "\$i" .wma`.mp3"; done&lt;/p&gt;
+&lt;p&gt;rm audiodump.wav&lt;br&gt;
+&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;a questo punto basta mettere lo script nella cartella dove ci sono i
+file .wma, dare i permessi di esecuzione a tale file (&lt;strong&gt;chmod +x
+wma2mp3.sh&lt;/strong&gt;) ed eseguirlo con &lt;strong&gt;./wma2mp3.sh&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Fonte:
+&lt;a href="http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3"&gt;http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sun, 22 Feb 2009 22:43:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-22:/2009/02/22/convertire-i-file-wma-in-mp3-sotto-linux/</guid><category>conversione</category><category>mp3</category><category>wma</category></item></channel></rss>
