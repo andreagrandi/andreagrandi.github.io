@@ -156,7 +156,7 @@ directly on \~/Dropbox/Private</strong>, only read and save your files from
                 <div class="entry-content">
 <footer class="post-info">
         <span>Sat 21 February 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/devops-docker-howto-linux-postgresql.html">DevOps, Docker, HowTo, Linux, PostgreSQL</a></span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/containers.html">containers</a><a href="https://www.andreagrandi.it/tag/devops.html">devops</a><a href="https://www.andreagrandi.it/tag/docker.html">docker</a><a href="https://www.andreagrandi.it/tag/fig.html">fig</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/postgresql.html">postgresql</a></span>
 </footer><!-- /.post-info -->                <p>Before I start, let me confirm to you that official
 <a href="https://www.docker.com/"><strong>Docker</strong></a> images for
@@ -168,153 +168,148 @@ about some of the Docker features.</p>
 have tested these instructions both on <strong>Ubuntu Linux</strong> and <strong>OSX</strong> (OSX
 users will need to install <a href="http://boot2docker.io/">boot2docker</a>,
 instructions are not available in this guide).</p>
-<h2>Dockerfile</h2>
+<h3>Dockerfile</h3>
 <p>To create a Docker image we need to create a text file named
 <strong>Dockerfile</strong> and use the available commands and syntax to declare how
 the image will be built. At the beginning of the file we need to specify
 the base image we are going to use and our contact informations:</p>
-<p>``` {.theme:github .decode-attributes:false .tab-convert:true .lang:default .decode:true}
-FROM ubuntu:14.04
-MAINTAINER Andrea Grandi <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#110;&#111;&#115;&#112;&#97;&#109;&#116;&#104;&#97;&#110;&#107;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#110;&#111;&#115;&#112;&#97;&#109;&#116;&#104;&#97;&#110;&#107;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></p>
-<div class="highlight"><pre><span></span>In our case we are using **Ubuntu 14.04** as base image. After these
-instructions we need to add PostgreSQL package repository and GnuPG
-public key:
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> ubuntu:14.04</span>
+<span class="k">MAINTAINER</span><span class="s"> Andrea Grandi &lt;nospamthanks@gmail.com&gt;</span>
+</pre></div>
 
-``` {.theme:github .decode-attributes:false .lang:default .decode:true}
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-RUN echo &quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot; &gt; /etc/apt/sources.list.d/pgdg.list
+
+<p>In our case we are using <strong>Ubuntu 14.04</strong> as base image. After these
+instructions we need to add PostgreSQL package repository and GnuPG
+public key:</p>
+<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span> &gt; /etc/apt/sources.list.d/pgdg.list
 </pre></div>
 
 
 <p>then we need to update the packages available in Ubuntu and install
 PostgreSQL:</p>
-<p>``` {.theme:github .decode-attributes:false .lang:default .decode:true}
-RUN apt-get update &amp;&amp; apt-get -y -q install python-software-properties software-properties-common <br>
-   &amp;&amp; apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3</p>
-<div class="highlight"><pre><span></span>We are installing version 9.3 of PostgreSQL, instructions would be very
-similar for any other version of the database.
+<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
+  <span class="o">&amp;&amp;</span> apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
+</pre></div>
 
-**Note:** it&#39;s important to have **apt-get update** and **apt-get
-install** commands in the same **RUN** line, else they would be
+
+<p>We are installing version 9.3 of PostgreSQL, instructions would be very
+similar for any other version of the database.</p>
+<p><strong>Note:</strong> it's important to have <strong>apt-get update</strong> and <strong>apt-get
+install</strong> commands in the same <strong>RUN</strong> line, else they would be
 considered two different layers by Docker and in case an updated package
-is available it won&#39;t be installed when the image is rebuilt.
-
-At this point we switch to **postgres** user to execute the next
-commands:
-
-``` {.theme:github .lang:default .decode:true}
-USER postgres
-RUN /etc/init.d/postgresql start   
-   &amp;&amp; psql --command &quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;   
-   &amp;&amp; createdb -O pguser pgdb
+is available it won't be installed when the image is rebuilt.</p>
+<p>At this point we switch to <strong>postgres</strong> user to execute the next
+commands:</p>
+<div class="highlight"><pre><span></span>USER postgres
+<span class="k">RUN</span> /etc/init.d/postgresql start   
+  <span class="o">&amp;&amp;</span> psql --command <span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span>   
+  <span class="o">&amp;&amp;</span> createdb -O pguser pgdb
 </pre></div>
 
 
 <p>We switch to <strong>root</strong> user and we complete the configuration:</p>
-<p>``` {.theme:github .lang:default .decode:true}
-USER root
-RUN echo "host all  all    0.0.0.0/0  md5" &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
-RUN echo "listen_addresses='*'" &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf</p>
-<div class="highlight"><pre><span></span>We expose the port where PostgreSQL will listen to:
+<div class="highlight"><pre><span></span>USER root
+<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
+<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
+</pre></div>
 
-``` {.theme:github .lang:default .decode:true}
-EXPOSE 5432
+
+<p>We expose the port where PostgreSQL will listen to:</p>
+<div class="highlight"><pre><span></span><span class="k">EXPOSE</span><span class="s"> 5432</span>
 </pre></div>
 
 
 <p>We setup the data and shared folders that we will use later:</p>
-<p>``` {.theme:github .lang:default .decode:true}
-RUN mkdir -p /var/run/postgresql &amp;&amp; chown -R postgres /var/run/postgresql
-VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]</p>
-<div class="highlight"><pre><span></span>Finally we switch again to the **postgres** user and we define the entry
-command for this image:
+<div class="highlight"><pre><span></span><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
+<span class="k">VOLUME</span><span class="s">  [&quot;/etc/postgresql&quot;, &quot;/var/log/postgresql&quot;, &quot;/var/lib/postgresql&quot;]</span>
+</pre></div>
 
-``` {.theme:github .lang:default .decode:true}
-USER postgres
-CMD [&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;, &quot;-D&quot;, &quot;/var/lib/postgresql/9.3/main&quot;, &quot;-c&quot;, &quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;]
+
+<p>Finally we switch again to the <strong>postgres</strong> user and we define the entry
+command for this image:</p>
+<div class="highlight"><pre><span></span>USER postgres
+<span class="k">CMD</span><span class="s"> [&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;, &quot;-D&quot;, &quot;/var/lib/postgresql/9.3/main&quot;, &quot;-c&quot;, &quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;]</span>
 </pre></div>
 
 
 <p>The full <strong>Dockerfile</strong> is available
 here <a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile">https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile</a></p>
-<h2>Building Docker image</h2>
+<h3>Building Docker image</h3>
 <p>Once the Dockerfile is ready, we need to build the image before running
 it in a container. Please customize the tag name using your own
 docker.io hub account (or you won't be able to push it to the hub):</p>
-<p>``` {.theme:github .lang:default .decode:true}
-docker build --rm=true -t andreagrandi/postgresql:9.3 .</p>
-<div class="highlight"><pre><span></span><span class="gh">Running the PostgreSQL Docker container</span>
-<span class="gh">---------------------------------------</span>
-
-To run the container, once the image is built, you just need to use this
-command:
-
-<span class="s">``` {.theme:github .lang:default .decode:true}</span>
-<span class="s">docker run -i -t -p 5432:5432 andreagrandi/postgresql:9.3</span>
+<div class="highlight"><pre><span></span>docker build --rm<span class="o">=</span><span class="nb">true</span> -t andreagrandi/postgresql:9.3 .
 </pre></div>
 
 
-<h2>Testing the running PostgreSQL</h2>
+<h3>Running the PostgreSQL Docker container</h3>
+<p>To run the container, once the image is built, you just need to use this
+command:</p>
+<div class="highlight"><pre><span></span>docker run -i -t -p <span class="m">5432</span>:5432 andreagrandi/postgresql:9.3
+</pre></div>
+
+
+<h3>Testing the running PostgreSQL</h3>
 <p>To test the running container we can use any client, even the
 commandline one:</p>
-<p>``` {.theme:github .lang:default .decode:true}
-psql -h localhost -p 5432 -U pguser -W pgdb</p>
-<div class="highlight"><pre><span></span>When you are prompted for password, type: **pguser**  
-Please note that **localhost** is only valid if you are running Docker
+<div class="highlight"><pre><span></span>psql -h localhost -p <span class="m">5432</span> -U pguser -W pgdb
+</pre></div>
+
+
+<p>When you are prompted for password, type: <strong>pguser</strong><br>
+Please note that <strong>localhost</strong> is only valid if you are running Docker
 on Ubuntu. If you are an OSX user, you need to discover the correct ip
-using: **boot2docker ip**
-
-Persisting data
----------------
-
-You may have noticed that once you stop the container, if you previously
+using: <strong>boot2docker ip</strong></p>
+<h3>Persisting data</h3>
+<p>You may have noticed that once you stop the container, if you previously
 wrote some data on the DB, that data is lost. This is because by default
 Docker containers are not persistent. We can resolve this problem using
 a data container. My only suggestion is not to do it manually and use a
-tool like [**fig**](http://www.fig.sh/) to orchestrate this. Fig is a
+tool like <a href="http://www.fig.sh/"><strong>fig</strong></a> to orchestrate this. Fig is a
 tool to orchestrate containers and its features are being rewritten in
 Go language and integrated into Docker itself. So if you prepare a
-**fig.yml** configuration file now, you will be able, hopefully, to
+<strong>fig.yml</strong> configuration file now, you will be able, hopefully, to
 reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
-you can use **pip install fig** and under OSX you can use **brew install
-fig**).
+you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
+fig</strong>).</p>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">dbdata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
+  <span class="l l-Scalar l-Scalar-Plain">volumes</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span>
+  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 
-``` {.theme:github .lang:default .decode:true}
-dbdata:
-  image: andreagrandi/postgresql:9.3
-  volumes:
-    - /var/lib/postgresql
-  command: true
-
-db:
-  image: andreagrandi/postgresql:9.3
-  volumes_from:
-    - dbdata
-  ports:
-    - &quot;5432:5432&quot;
+<span class="l l-Scalar l-Scalar-Plain">db</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
+  <span class="l l-Scalar l-Scalar-Plain">volumes_from</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dbdata</span>
+  <span class="l l-Scalar l-Scalar-Plain">ports</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;5432:5432&quot;</span>
 </pre></div>
 
 
 <p>Save this file as <strong>fig.yml</strong> in the same folder of the Dockerfile and
 spin up the container using this command: <strong>fig up</strong></p>
-<p><code>{.theme:github .lang:default .decode:true}
-andreas-air:postgresql-docker andrea [master] $ fig up
+<div class="highlight"><pre><span></span>andreas-air:postgresql-docker andrea <span class="o">[</span>master<span class="o">]</span> $ fig up
 Recreating postgresqldocker_dbdata_1...
 Recreating postgresqldocker_db_1...
 Attaching to postgresqldocker_db_1
-db_1 | 2015-02-21 19:01:07 UTC [6-1] LOG:  database system was interrupted; last known up at 2015-02-21 17:46:10 UTC
-db_1 | 2015-02-21 19:01:07 UTC [6-2] LOG:  database system was not properly shut down; automatic recovery in progress
-db_1 | 2015-02-21 19:01:07 UTC [6-3] LOG:  redo starts at 0/1782F68
-db_1 | 2015-02-21 19:01:07 UTC [6-4] LOG:  record with zero length at 0/1782FA8
-db_1 | 2015-02-21 19:01:07 UTC [6-5] LOG:  redo done at 0/1782F68
-db_1 | 2015-02-21 19:01:07 UTC [6-6] LOG:  last completed transaction was at log time 2015-02-21 17:46:10.61746+00
-db_1 | 2015-02-21 19:01:07 UTC [1-1] LOG:  database system is ready to accept connections
-db_1 | 2015-02-21 19:01:07 UTC [10-1] LOG:  autovacuum launcher started</code></p>
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-1<span class="o">]</span> LOG:  database system was interrupted<span class="p">;</span> last known up at <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10 UTC
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-2<span class="o">]</span> LOG:  database system was not properly shut down<span class="p">;</span> automatic recovery in progress
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-3<span class="o">]</span> LOG:  redo starts at <span class="m">0</span>/1782F68
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-4<span class="o">]</span> LOG:  record with zero length at <span class="m">0</span>/1782FA8
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-5<span class="o">]</span> LOG:  redo <span class="k">done</span> at <span class="m">0</span>/1782F68
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-6<span class="o">]</span> LOG:  last completed transaction was at log <span class="nb">time</span> <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10.61746+00
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">1</span>-1<span class="o">]</span> LOG:  database system is ready to accept connections
+db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">10</span>-1<span class="o">]</span> LOG:  autovacuum launcher started
+</pre></div>
+
+
 <p>If you try to write some data on the database and then you stop (CTRL+C)
 the running containers and spin up them again, you will see that your
 data is still there.</p>
-<h2>Conclusion</h2>
+<h3>Conclusion</h3>
 <p>This is just an example of how to prepare a Docker container for a
 specific service. The difficoult part is when you have to spin up
 multiple services (for example a Django web application using
