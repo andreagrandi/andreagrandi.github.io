@@ -34,177 +34,6 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/" rel="bookmark"
-                           title="Permalink to Create an EncFS volume compatible with BoxCryptor Classic">Create an EncFS volume compatible with BoxCryptor Classic</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 12 September 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-sicurezza.html">HowTo, Linux, Sicurezza</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/boxcryptor.html">boxcryptor</a><a href="https://www.andreagrandi.it/tag/dropbox.html">dropbox</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a></span>
-</footer><!-- /.post-info -->                <p>If you are planning to share an encrypted volume between Linux/OSX and
-Windows (I will assume you are sharing it on Dropbox, but you could use
-any similar service) and you are using
-<a href="http://www.arg0.net/encfs"><strong>EncFS</strong></a> under Linux/OSX and
-<a href="https://www.boxcryptor.com"><strong>BoxCryptor</strong></a> under Windows, there are
-some specifig settings to use when you create the EncFS volume. Infact
-even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
-<p>Suppose you want to create an encrypted volume located at
-<strong>\$HOME/.TestTmpEncrypted</strong> and mounted at <strong>\$HOME/TestTmp</strong> you need
-the following command:</p>
-<div class="highlight"><pre><span></span>andrea-Inspiron-660:~ andrea $ encfs ~/.TestTmpEncrypted ~/TestTmp
-</pre></div>
-
-
-<p>answer "Y" when you are asked if you want to create the folders:</p>
-<div class="highlight"><pre><span></span>The directory &quot;/home/andrea/.TestTmpEncrypted/&quot; does not exist. Should it be created? (y,n) y
-The directory &quot;/home/andrea/TestTmp&quot; does not exist. Should it be created? (y,n) y
-</pre></div>
-
-
-<p>At this point you will need to select between default paranoia mode or
-advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
-<div class="highlight"><pre><span></span>Creating new encrypted volume.
-Please choose from one of the following options:
- enter &quot;x&quot; for expert configuration mode,
- enter &quot;p&quot; for pre-configured paranoia mode,
- anything else, or an empty line will select standard mode.
-?&gt; x
-</pre></div>
-
-
-<p>Manual configuration mode selected.</p>
-<div class="highlight"><pre><span></span>Select AES as cypher algorithm:
-
-The following cypher algorithms are available:
-1. AES : 16 byte block cipher
--- Supports key lengths of 128 to 256 bits
--- Supports block sizes of 64 to 4096 bytes
-2. Blowfish : 8 byte block cypher
--- Supports key lengths of 128 to 256 bits
--- Supports block sizes of 64 to 4096 bytes
-
-Enter the number corresponding to your choice: 1
-
-Selected algorithm &quot;AES&quot;
-</pre></div>
-
-
-<p>Select <strong>256</strong> as key size:</p>
-<div class="highlight"><pre><span></span>Please select a key size in bits. The cypher you have chosen
-supports sizes from 128 to 256 bits in increments of 64 bits.
-For example:
-128, 192, 256
-Selected key size: 256
-
-Using key size of 256 bits
-</pre></div>
-
-
-<p>Choose <strong>1024</strong> as block size:</p>
-<div class="highlight"><pre><span></span>Select a block size in bytes. The cypher you have chosen
-supports sizes from 64 to 4096 bytes in increments of 16.
-Alternatively, just press enter for the default (1024 bytes)
-
-filesystem block size:
-
-Using filesystem block size of 1024 bytes
-</pre></div>
-
-
-<p>Select <strong>Stream</strong> as filename encoding:</p>
-<div class="highlight"><pre><span></span>The following filename encoding algorithms are available:
-1. Block : Block encoding, hides file name size somewhat
-2. Null : No encryption of filenames
-3. Stream : Stream encoding, keeps filenames as short as possible
-
-Enter the number corresponding to your choice: 3
-
-Selected algorithm &quot;Stream&quot;&quot;
-</pre></div>
-
-
-<p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
-<div class="highlight"><pre><span></span>Enable filename initialization vector chaining?
-This makes filename encoding dependent on the complete path,
-rather then encoding each path element individually.
-The default here is Yes.
-Any response that does not begin with &#39;n&#39; will mean Yes: no
-</pre></div>
-
-
-<p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
-<div class="highlight"><pre><span></span>Enable per-file initialization vectors?
-This adds about 8 bytes per file to the storage requirements.
-It should not affect performance except possibly with applications
-which rely on block-aligned file io for performance.
-The default here is Yes.
-Any response that does not begin with &#39;n&#39; will mean Yes: no
-</pre></div>
-
-
-<p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
-<div class="highlight"><pre><span></span>External chained IV disabled, as both &#39;IV chaining&#39;
-and &#39;unique IV&#39; features are required for this option.
-Enable block authentication code headers
-on every block in a file? This adds about 12 bytes per block
-to the storage requirements for a file, and significantly affects
-performance but it also means [almost] any modifications or errors
-within a block will be caught and will cause a read error.
-The default here is No.
-Any response that does not begin with &#39;y&#39; will mean No: no
-</pre></div>
-
-
-<p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
-<div class="highlight"><pre><span></span>Add random bytes to each block header?
-This adds a performance penalty, but ensures that blocks
-have different authentication codes. Note that you can
-have the same benefits by enabling per-file initialisation
-vectors, which does not come with as great a performance
-penalty.
-Select a number of bytes, from 0 (no random bytes) to 8: 0
-</pre></div>
-
-
-<p>Enable <strong>file-hole pass-through</strong>:</p>
-<div class="highlight"><pre><span></span>Enable file-hole pass-through?
-This avoids writing encrypted blocks when file holes are created.
-The default here is Yes.
-Any response that does not begin with &#39;n&#39; will mean Yes: yes
-</pre></div>
-
-
-<p>Finally you will see:</p>
-<div class="highlight"><pre><span></span>Configuration finished. The filesystem to be created has
-the following properties:
-Filesystem cypher: &quot;ssl/aes&quot;, version 3:0:2
-Filename encoding: &quot;nameio/stream&quot;, version 2:1:2
-Key Size: 256 bits
-Block Size: 1024 bytes
-File holes passed through to ciphertext.
-</pre></div>
-
-
-<p>At this point set a passphrase for your new volume:</p>
-<div class="highlight"><pre><span></span>Now you will need to enter a password for your filesystem.
-You will need to remember this password, as there is absolutely
-no recovery mechanism. However, the password can be changed
-later using encfsctl.
-
-New Encfs Password:
-Verify Encfs Password:
-</pre></div>
-
-
-<p>You should be able to mount this volume using BoxCryptor.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
                     <h1><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="bookmark"
                            title="Permalink to How to configure Edimax EW-7811UN Wifi dongle on Raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
                 </header>
@@ -444,10 +273,52 @@ related event around <strong>London</strong>, if anyone is interested.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/" rel="bookmark"
+                           title="Permalink to How to fix encfs installation on OSX 10.9 (Mavericks) and brew">How to fix encfs installation on OSX 10.9 (Mavericks) and brew</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 08 November 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/fuse4x.html">fuse4x</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/security.html">security</a></span>
+</footer><!-- /.post-info -->                <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
+broken. First of all you have to fix a problem with a library header:</p>
+<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+</pre></div>
+
+
+<p>then you can install encfs using this remote brew recipe:</p>
+<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+</pre></div>
+
+
+<p>It's also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):</p>
+<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+</pre></div>
+
+
+<p>That's it! Please note that this is just a workaround (thanks to
+<strong>Giovanni Bajo</strong> for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here <a href="https://gist.github.com/defunctzombie/7324625">https://gist.github.com/defunctzombie/7324625</a> but I haven't
+tested it yet.</p>
+<p><strong>Update:</strong> to fully integrate encfs with OSX, I also suggest to follow
+this nice guide <a href="http://www.maketecheasier.com/install-encfs-mac/">http://www.maketecheasier.com/install-encfs-mac/</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">read more</a>
+<p><a href="https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/author/admin4.html">&laquo;</a>
-    Page 5 / 45
+    Page 5 / 44
         <a href="https://www.andreagrandi.it/author/admin6.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

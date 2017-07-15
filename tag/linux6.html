@@ -34,6 +34,76 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/" rel="bookmark"
+                           title="Permalink to Utilizzare SSH senza password: chiavi SSH">Utilizzare SSH senza password: chiavi SSH</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 29 February 2008</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/linux-sicurezza.html">Linux, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/chiavi.html">chiavi</a><a href="https://www.andreagrandi.it/tag/connessione.html">connessione</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/openssh.html">openssh</a><a href="https://www.andreagrandi.it/tag/password.html">password</a><a href="https://www.andreagrandi.it/tag/sicurezza.html">Sicurezza</a><a href="https://www.andreagrandi.it/tag/ssh.html">ssh</a><a href="https://www.andreagrandi.it/tag/ssh2.html">ssh2</a></span>
+</footer><!-- /.post-info -->                <p><img alt="openssh_logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/openssh_logo.thumbnail.png">Quando
+vogliamo connetterci ad un server <strong>SSH</strong>, solitamente utilizziamo un
+comando simile al seguente:</p>
+<p>[code lang="bash"]<br>
+ssh user@remotehost.com<br>
+[/code]</p>
+<p>Una volta connessi ci viene richiesta la password di accesso e subito
+dopo siamo connessi. Digitare ogni volta la password puo' essere
+scomodo, ed in alcuni casi questo potrebbe addirittura impedirci di
+creare uno script di automazione per velocizzare alcuni compiti.</p>
+<p>Ci vengono in aiuto le <strong>chiavi SSH</strong>. Generando una coppia di chiavi
+<strong>pubblica/privata</strong> di SSH sulla propria macchina, ed esportando la
+chiave pubblica sul server remoto, possiamo fare in modo di autorizzare
+la nostra chiave remota, facendo si che le connessioni successive
+avvengano senza la richiesta di alcuna password.</p>
+<p>Supponiamo (a scopo dimostrativo) che il server remoto si trovi
+all'indirizzo IP <strong>192.168.0.2</strong> e supponiamo inoltre di avere un
+account chiamato <strong>user</strong> sulla macchina remota.</p>
+<p>Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
+macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
+verrebbe richiesta comunque al primo login di ogni sessione):</p>
+<p>[code lang="bash"]<br>
+andy80@noteboontu:\~\$ ssh-keygen -t dsa<br>
+Generating public/private dsa key pair.<br>
+Enter file in which to save the key (/home/andy80/.ssh/id_dsa):<br>
+Enter passphrase (empty for no passphrase):<br>
+Enter same passphrase again:<br>
+Your identification has been saved in /home/andy80/.ssh/id_dsa.<br>
+Your public key has been saved in /home/andy80/.ssh/id_dsa.pub.<br>
+The key fingerprint is:<br>
+22:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu<br>
+[/code]</p>
+<p>A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
+server remoto:</p>
+<p>[code lang="bash"]<br>
+cd \~/.ssh/<br>
+scp id_dsa.pub user@192.168.0.2:./id_dsa.pub<br>
+[/code]</p>
+<p>Ci verrà chiesta la nostra password remota, per poter effettuare la
+copia del file. A questo punto dobbiamo connetterci via SSH al server
+remoto:</p>
+<p>[code lang="bash"]<br>
+ssh user@192.168.0.2<br>
+[/code]</p>
+<p>Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
+i seguenti comandi:</p>
+<p>[code lang="bash"]<br>
+cd .ssh<br>
+touch authorized_keys2<br>
+chmod 600 authorized_keys2<br>
+cat ../id_dsa.pub &gt;&gt; authorized_keys2<br>
+rm ../id_dsa.pub<br>
+[/code]</p>
+<p>Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
+il server remoto, avverranno senza la richiesta di alcuna password.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/">read more</a>
+<p><a href="https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/02/29/full-circle-magazine-10/" rel="bookmark"
                            title="Permalink to Full Circle Magazine #10">Full Circle Magazine #10</a></h1>
                 </header>
@@ -159,55 +229,11 @@ versione di Ubuntu, vi rimando alla pagina ufficiale:
                 <a class="readmore" href="https://www.andreagrandi.it/2008/02/03/ubuntu-804-alpha-4/">read more</a>
 <p><a href="https://www.andreagrandi.it/2008/02/03/ubuntu-804-alpha-4/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2008/02/01/rimborso-windows-come-ottenerlo-e-perche/" rel="bookmark"
-                           title="Permalink to Rimborso Windows: come ottenerlo e perche'">Rimborso Windows: come ottenerlo e perche'</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 01 February 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/linux.html">Linux</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/associazione.html">associazione</a><a href="https://www.andreagrandi.it/tag/consumatori.html">consumatori</a><a href="https://www.andreagrandi.it/tag/firenze.html">firenze</a><a href="https://www.andreagrandi.it/tag/flug.html">flug</a><a href="https://www.andreagrandi.it/tag/licenza.html">licenza</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/rimborso.html">rimborso</a><a href="https://www.andreagrandi.it/tag/windows.html">Windows</a></span>
-</footer><!-- /.post-info -->                <p><img alt="no_windows" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/windowsvistacapable20.thumbnail.jpg">Che
-lo si voglia o no, acquistando un computer in un qualsiasi negozio si e'
-costretti a comprare anche il sistema operativo Microsoft Windows gia'
-installato. Ma non tutti sanno che è possibile restituire il software
-non voluto ed ottenere un rimborso. Questo e' il tema dell'incontro che
-si terra' alla <strong>Stazione di Confine</strong> in <strong>via Attavante</strong> a
-<strong>Firenze</strong> il <strong>2 Febbraio 2008</strong> alle ore <strong>21:00</strong></p>
-<p>Durante l'hacknight organizzata dall'<strong>Hacklab</strong> di Firenze ed <strong>Firenze
-Linux User Group</strong> in video conferenza con l'<strong>Hacklab di Caserta</strong>,
-verrano illustrati i modi con cui far valere il diritto al rimborso e le
-gravi conseguenze generate dall'aggressione alla concorrenza sul mercato
-mondiale del software, non esclusivamente dei sistemi operativi, e anche
-a danno dello sviluppo tecnologico.</p>
-<p>Alla serata interverranno l'avv. Moretti dell'<strong>ADUC</strong> (Associazione
-Diritti Utenti e Consumatori) che ha seguito la prima causa italiana
-vinta da un utente che ha richiesto il rimborso del software
-preisntallato sul PC, e Marco Pieraccioli, l'utente che ha comprato quel
-computer ed avviato un processo che mira alla liberalizzazione del
-mercato del software, sarà presente un rappresentante dell'associazione
-Software Libero. L'evento potra' essere seguito anche in diretta su
-Internet.</p>
-<p>Per maggiori informazioni visitate il sito dell'ADUC:
-<a href="http://www.aduc.it/dyn/rimborsowindows">http://www.aduc.it/dyn/rimborsowindows</a><br>
-L'Hacklab di Firenze: <a href="http://hacknight.firenze.linux.it/wiki.php">http://hacknight.firenze.linux.it/wiki.php</a><br>
-FLUG Firenze Linux User Group: <a href="http://www.firenze.linux.it">http://www.firenze.linux.it</a><br>
-L'Hacklab di Caserta: <a href="http://81100.eu.org/">http://81100.eu.org/</a><br>
-La Stazione di Confine: <a href="http://www.stazionediconfine.it/">http://www.stazionediconfine.it/</a><br>
-Associazione Software Libero: <a href="http://www.softwarelibero.it/">http://www.softwarelibero.it/</a></p>
-<p>Per contatti: FLUG Firenze Linux User Group (Hacklab Firenze/ FLUG ):
-<strong>info</strong> [AT] <strong>firenze.linux.it</strong></p>
-                <a class="readmore" href="https://www.andreagrandi.it/2008/02/01/rimborso-windows-come-ottenerlo-e-perche/">read more</a>
-<p><a href="https://www.andreagrandi.it/2008/02/01/rimborso-windows-come-ottenerlo-e-perche/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/tag/linux5.html">&laquo;</a>
-    Page 6 / 6
+    Page 6 / 7
+        <a href="https://www.andreagrandi.it/tag/linux7.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">

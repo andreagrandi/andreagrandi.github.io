@@ -158,7 +158,7 @@ PostgreSQL, RabbitMQ, MongoDB etc...), connect them all together and
 orchestrate the solution. I will maybe talk about this in one of the
 next posts. You can find the full source code of my PostgreSQL Docker
 image, including the fig.yml file in this
-repository &lt;a href="https://github.com/andreagrandi/postgresql-docker"&gt;https://github.com/andreagrandi/postgresql-docker&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 21 Feb 2015 20:24:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-02-21:/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</guid><category>containers</category><category>devops</category><category>docker</category><category>fig</category><category>Linux</category><category>OSX</category><category>postgresql</category></item><item><title>Automatically pull updated Docker images and restart containers with docker-puller</title><link>https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/</link><description>&lt;p&gt;If you use &lt;a href="http://docker.io"&gt;docker.io&lt;/a&gt; (or any similar service) to
+repository &lt;a href="https://github.com/andreagrandi/postgresql-docker"&gt;https://github.com/andreagrandi/postgresql-docker&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 21 Feb 2015 20:24:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-02-21:/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</guid><category>containers</category><category>devops</category><category>docker</category><category>fig</category><category>Linux</category><category>OSX</category><category>postgresql</category></item><item><title>Automatically pull updated Docker images and restart containers with docker-puller</title><link>https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/</link><description>&lt;p&gt;If you use &lt;a href="https://docker.io"&gt;docker.io&lt;/a&gt; (or any similar service) to
 build your &lt;strong&gt;Docker&lt;/strong&gt; containers, it may be possible that, once the new
 image is generated, you want your Docker host to automatically pull it
 and restart the container.&lt;/p&gt;
@@ -181,19 +181,19 @@ good with &lt;strong&gt;Golang&lt;/strong&gt; (yet) to be able to do it in litt
 why I rewrote the service in Python (that is my daily language). I want
 to thank &lt;a href="https://github.com/cpuguy83"&gt;Brian Goff&lt;/a&gt; for the idea and all
 the people in &lt;strong&gt;#docker @ FreeNode&lt;/strong&gt; for the support.&lt;/p&gt;
-&lt;h2 id="how-to-use-docker-puller" style="color: #333333;"&gt;How to use docker-puller&lt;/h2&gt;
+&lt;h3&gt;How to use docker-puller&lt;/h3&gt;
 &lt;p&gt;Setting up the service should be quite easy. After you clone the
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a &lt;strong&gt;config.json&lt;/strong&gt; file where you define the &lt;strong&gt;host&lt;/strong&gt;, &lt;strong&gt;port&lt;/strong&gt;, a
 &lt;strong&gt;token&lt;/strong&gt; and a list of &lt;strong&gt;hooks&lt;/strong&gt; you want to react to. For example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{
-    &amp;quot;host&amp;quot;: &amp;quot;localhost&amp;quot;,
-    &amp;quot;port&amp;quot;: 8000,
-    &amp;quot;token&amp;quot;: &amp;quot;abc123&amp;quot;,
-    &amp;quot;hooks&amp;quot;: {
-        &amp;quot;hello&amp;quot;: &amp;quot;scripts/hello.sh&amp;quot;
-    }
-}
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;localhost&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;port&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;token&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;abc123&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;hooks&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;quot;hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;scripts/hello.sh&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -201,9 +201,9 @@ is a &lt;strong&gt;config.json&lt;/strong&gt; file where you define the &lt;stro
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker pull andreagrandi/test:latest
-docker stop test
-docker rm test
-docker run --name test -d -p 8000:80 andreagrandi/test:latest
+docker stop &lt;span class="nb"&gt;test&lt;/span&gt;
+docker rm &lt;span class="nb"&gt;test&lt;/span&gt;
+docker run --name &lt;span class="nb"&gt;test&lt;/span&gt; -d -p &lt;span class="m"&gt;8000&lt;/span&gt;:80 andreagrandi/test:latest
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -222,4 +222,4 @@ the POST, check for a valid token, get the hook name and will execute
 the relative script.&lt;/p&gt;
 &lt;p&gt;That's all! I hope this very simple service can be useful to other
 people and once again, if you want to improve it, I will be glad to
-accept your pull requests on GitHub.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sat, 25 Oct 2014 10:56:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2014-10-25:/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/</guid><category>containers</category><category>docker</category><category>docker.io</category><category>Flask</category><category>Python</category></item></channel></rss>
+accept your pull requests on GitHub.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 25 Oct 2014 10:56:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2014-10-25:/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/</guid><category>containers</category><category>docker</category><category>docker.io</category><category>Flask</category><category>Python</category><category>howto</category><category>Linux</category></item></channel></rss>

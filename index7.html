@@ -123,9 +123,9 @@ inside their ecosystem.</p>
                 <div class="entry-content">
 <footer class="post-info">
         <span>Sat 25 October 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux.html">HowTo, Linux</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/containers.html">containers</a><a href="https://www.andreagrandi.it/tag/docker.html">docker</a><a href="https://www.andreagrandi.it/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.it/tag/flask.html">Flask</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <p>If you use <a href="http://docker.io">docker.io</a> (or any similar service) to
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/containers.html">containers</a><a href="https://www.andreagrandi.it/tag/docker.html">docker</a><a href="https://www.andreagrandi.it/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.it/tag/flask.html">Flask</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a></span>
+</footer><!-- /.post-info -->                <p>If you use <a href="https://docker.io">docker.io</a> (or any similar service) to
 build your <strong>Docker</strong> containers, it may be possible that, once the new
 image is generated, you want your Docker host to automatically pull it
 and restart the container.</p>
@@ -148,19 +148,19 @@ good with <strong>Golang</strong> (yet) to be able to do it in little time. Thi
 why I rewrote the service in Python (that is my daily language). I want
 to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
 the people in <strong>#docker @ FreeNode</strong> for the support.</p>
-<h2 id="how-to-use-docker-puller" style="color: #333333;">How to use docker-puller</h2>
+<h3>How to use docker-puller</h3>
 <p>Setting up the service should be quite easy. After you clone the
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
 <strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span>{
-    &quot;host&quot;: &quot;localhost&quot;,
-    &quot;port&quot;: 8000,
-    &quot;token&quot;: &quot;abc123&quot;,
-    &quot;hooks&quot;: {
-        &quot;hello&quot;: &quot;scripts/hello.sh&quot;
-    }
-}
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 
 
@@ -168,9 +168,9 @@ is a <strong>config.json</strong> file where you define the <strong>host</strong
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):</p>
 <div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
-docker stop test
-docker rm test
-docker run --name test -d -p 8000:80 andreagrandi/test:latest
+docker stop <span class="nb">test</span>
+docker rm <span class="nb">test</span>
+docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
 </pre></div>
 
 
