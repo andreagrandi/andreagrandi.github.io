@@ -191,52 +191,6 @@ accept your pull requests on GitHub.</p>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/" rel="bookmark"
-                           title="Permalink to Configuring ddclient to update your dynamic DNS at noip.com">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 02 September 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux.html">HowTo, Linux</a></span>
-
-</footer><!-- /.post-info -->                <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
-services that are reliable to use. If you have, like in my situation, a
-RaspberryPi connected to your home DSL and you want it to be always
-reachable without knowing the current IP address (the IP could change if
-you have a normal DSL service at home), you need a dynamic DNS service.</p>
-<p>To update the noip.com one you just need <strong>ddclient,</strong> a tool that is
-available in Raspbian/Debian repository. You can install it with this
-command:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install ddclient
-</pre></div>
-
-
-<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
-<div class="highlight"><pre><span></span>protocol=dyndns2
-use=web, web=checkip.dyndns.com/, web-skip=&#39;IP Address&#39;
-server=dynupdate.no-ip.com
-login=yourusername
-password=yourpassword
-yourhostname.no-ip.org
-</pre></div>
-
-
-<p>and restart the client:</p>
-<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
-</pre></div>
-
-
-<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
-<strong>limitation</strong>: they need to be confirmed every 30 days (you will
-receive an email and you need to click on the link contained to update
-your DNS).</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
                     <h1><a href="https://www.andreagrandi.it/2009/07/05/ridimensionare-immagini-automaticamente-con-un-batch-e-imagemagick/" rel="bookmark"
                            title="Permalink to Ridimensionare immagini automaticamente con un batch e ImageMagick">Ridimensionare immagini automaticamente con un batch e ImageMagick</a></h1>
                 </header>
@@ -268,6 +222,49 @@ di 1024 pixel di larghezza, mantenendo ovviamente le proporzioni
 dell'immagine originale.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2009/07/05/ridimensionare-immagini-automaticamente-con-un-batch-e-imagemagick/">read more</a>
 <p><a href="https://www.andreagrandi.it/2009/07/05/ridimensionare-immagini-automaticamente-con-un-batch-e-imagemagick/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2008/12/17/scanner-mustek-scanexpress-1248-usb-su-ubuntu-linux/" rel="bookmark"
+                           title="Permalink to Scanner Mustek ScanExpress 1248 USB su Ubuntu Linux">Scanner Mustek ScanExpress 1248 USB su Ubuntu Linux</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 17 December 2008</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux.html">HowTo, Linux</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/mustek.html">mustek</a><a href="https://www.andreagrandi.it/tag/scanner.html">scanner</a></span>
+</footer><!-- /.post-info -->                <p><a href="http://www.mustek.de/eng_/html/produkte/se1248ub.htm"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/12/se1248ub.jpg" title="se1248ub">{.alignright
+.size-full .wp-image-187 width="180"
+height="134"}</a>Lo
+scanner <a href="http://www.mustek.de/eng_/html/produkte/se1248ub.htm"><strong>Mustek ScanExpress 1248
+USB</strong></a> è
+pienamente compatibile con Linux, però purtroppo non basta connetterlo
+per farlo funzionare. <strong>Ubuntu Linux 8.10</strong> non distribuisce il firmware
+necessario al suo funzionamento, però è possibile reperirlo ed
+installarlo con molta facilità.</p>
+<p>Per prima cosa dobbiamo assicurarci di avere il modello esatto di questo
+scanner. Per scoprirlo è sufficiente dare il comando <strong>lsusb</strong> da
+terminale. Dovremmo ottenere una stringa come la seguente:</p>
+<p><code>Bus 002 Device 003: ID 055f:021f Mustek Systems, Inc. SNAPSCAN e22</code></p>
+<p>A questo punto possiamo scaricare il suo firmware da <a href="http://www.meier-geinitz.de/sane/gt68xx-backend/">un
+sito</a> che li raccoglie
+tutti (quelli che sono compatibili ovviamente):
+<a href="http://www.meier-geinitz.de/sane/gt68xx-backend/firmware/SBSfw.usb"><strong>http://www.meier-geinitz.de/sane/gt68xx-backend/firmware/SBSfw.usb</strong></a></p>
+<p>Questo file va messo all'interno della cartella
+<strong>/usr/share/sane/gt68xx/</strong> (occorrono i permessi di root per poterlo
+fare, quindi il file andra' copiato tramite il comando <strong>sudo cp
+SBSfw.usb /usr/share/sane/gt68xx/</strong> ).</p>
+<p>Infine dobbiamo assicurarci di aver installato tutti i pacchetti
+necessari a farlo funzionare:</p>
+<p><code>sudo apt-get install sane libsane sane-utils libsane-extras xsane xsane-common</code></p>
+<p>Lo scanner è adesso pronto per funzionare.</p>
+<p><strong>Nota:</strong> nella <strong>Ubuntu 12.04</strong> la
+directory <strong>/usr/share/sane/gt68xx/</strong> non è presente di default e va
+creata manualmente con <strong>sudo mkdir </strong>/usr/share/sane/gt68xx/****</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2008/12/17/scanner-mustek-scanexpress-1248-usb-su-ubuntu-linux/">read more</a>
+<p><a href="https://www.andreagrandi.it/2008/12/17/scanner-mustek-scanexpress-1248-usb-su-ubuntu-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

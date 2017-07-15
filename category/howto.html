@@ -32,12 +32,59 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
+<footer class="post-info">
+        <span>Tue 02 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">linux</a><a href="https://www.andreagrandi.it/tag/dns.html">dns</a></span>
+</footer><!-- /.post-info --><p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
+services that are reliable to use. If you have, like in my situation, a
+RaspberryPi connected to your home DSL and you want it to be always
+reachable without knowing the current IP address (the IP could change if
+you have a normal DSL service at home), you need a dynamic DNS service.</p>
+<p>To update the noip.com one you just need <strong>ddclient,</strong> a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install ddclient
+</pre></div>
+
+
+<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
+<div class="highlight"><pre><span></span><span class="nv">protocol</span><span class="o">=</span>dyndns2
+<span class="nv">use</span><span class="o">=</span>web, <span class="nv">web</span><span class="o">=</span>checkip.dyndns.com/, web-skip<span class="o">=</span><span class="s1">&#39;IP Address&#39;</span>
+<span class="nv">server</span><span class="o">=</span>dynupdate.no-ip.com
+<span class="nv">login</span><span class="o">=</span>yourusername
+<span class="nv">password</span><span class="o">=</span>yourpassword
+yourhostname.no-ip.org
+</pre></div>
+
+
+<p>and restart the client:</p>
+<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
+</pre></div>
+
+
+<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
+<strong>limitation</strong>: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).</p><p><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/" rel="bookmark"
+                           title="Permalink to Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Sun 31 August 2014</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/dns.html">dns</a><a href="https://www.andreagrandi.it/tag/postfix.html">postfix</a><a href="https://www.andreagrandi.it/tag/vps.html">vps</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/digitalocean.html">digitalocean</a><a href="https://www.andreagrandi.it/tag/email.html">email</a></span>
-</footer><!-- /.post-info --><p>I have recently migrated my website from a shared hosting to a dedicated
+</footer><!-- /.post-info -->                <p>I have recently migrated my website from a shared hosting to a dedicated
 VPS on Digital Ocean. Having a VPS surely gives you unlimited
 possibilities, compared to a shared hosting, but of course you have to
 manage some services by yourself.</p>
@@ -96,11 +143,10 @@ careful when you configure the DNS records in the control panel. Are you
 curious to try how Digital Ocean VPS works? Fancy <strong>10\$ credit</strong>
 (enough for 2 months if you choose the basic droplet) for <strong>free</strong>? Use
 this link and enjoy it
-<a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p><p><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+<a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">read more</a>
+<p><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

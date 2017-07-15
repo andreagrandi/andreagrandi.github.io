@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - dns</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sun, 31 Aug 2014 17:02:00 +0100</lastBuildDate><item><title>Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</title><link>https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/</link><description>&lt;p&gt;I have recently migrated my website from a shared hosting to a dedicated
+<rss version="2.0"><channel><title>Andrea Grandi - dns</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Tue, 02 Sep 2014 16:26:00 +0100</lastBuildDate><item><title>Configuring ddclient to update your dynamic DNS at noip.com</title><link>https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/</link><description>&lt;p&gt;&lt;a href="http://noip.com"&gt;&lt;strong&gt;noip.com&lt;/strong&gt;&lt;/a&gt; is one of the few dynamic DNS free
+services that are reliable to use. If you have, like in my situation, a
+RaspberryPi connected to your home DSL and you want it to be always
+reachable without knowing the current IP address (the IP could change if
+you have a normal DSL service at home), you need a dynamic DNS service.&lt;/p&gt;
+&lt;p&gt;To update the noip.com one you just need &lt;strong&gt;ddclient,&lt;/strong&gt; a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install ddclient
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then you just need to edit &lt;strong&gt;/etc/ddclient.conf&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;protocol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dyndns2
+&lt;span class="nv"&gt;use&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;web, &lt;span class="nv"&gt;web&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;checkip.dyndns.com/, web-skip&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;IP Address&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;server&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dynupdate.no-ip.com
+&lt;span class="nv"&gt;login&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yourusername
+&lt;span class="nv"&gt;password&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yourpassword
+yourhostname.no-ip.org
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and restart the client:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo /etc/init.d/ddclient restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's all! Please remember that noip.com &lt;strong&gt;free accounts&lt;/strong&gt; have a
+&lt;strong&gt;limitation&lt;/strong&gt;: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 02 Sep 2014 16:26:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2014-09-02:/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/</guid><category>howto</category><category>linux</category><category>dns</category></item><item><title>Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</title><link>https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/</link><description>&lt;p&gt;I have recently migrated my website from a shared hosting to a dedicated
 VPS on Digital Ocean. Having a VPS surely gives you unlimited
 possibilities, compared to a shared hosting, but of course you have to
 manage some services by yourself.&lt;/p&gt;
