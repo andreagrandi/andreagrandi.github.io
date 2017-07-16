@@ -34,6 +34,107 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/" rel="bookmark"
+                           title="Permalink to Utilizzare la Carta Sanitaria Europea su Ubuntu Linux">Utilizzare la Carta Sanitaria Europea su Ubuntu Linux</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 11 November 2010</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/cse.html">CSE</a><a href="https://www.andreagrandi.it/tag/firefox.html">Firefox</a><a href="https://www.andreagrandi.it/tag/regione-toscana.html">Regione Toscana</a><a href="https://www.andreagrandi.it/tag/smartcard.html">SmartCard</a></span>
+</footer><!-- /.post-info -->                <p><a href="https://www.andreagrandi.it/images/2010/11/jpg_2056020.jpg"><img alt="CSE_Toscana" src="https://www.andreagrandi.it/images/2010/11/jpg_2056020.jpg" width="60%"></a></p>
+<p>In questo periodo le regioni stanno inviando a casa di ogni cittadino la nuova versione della
+<strong>Carta Sanitaria Europea</strong>, simile a quella che potete vedere nella
+foto. Questa nuova carta, oltre a conservare gli stessi utilizzi di
+quella vecchia, comprende anche un micro chip che permette di
+utilizzarla con i comuni lettori di smartcard.</p>
+<p>Ma a cosa serve poter utilizzare la CSE con un lettore di smartcard? Ad
+esempio ad accedere al proprio <strong>fascicolo sanitario</strong> tramite il sito
+della regione, che ci permetterà di vedere alcuni nostri dati come ad
+esempio: medicine prese, esenzioni, ricoveri in ospedale, ricoveri al
+pronto soccorso, risultati delle analisi ecc...</p>
+<p>Per accedere all'area riservata non viene utilizzato il classico metodo
+di username/password, ma bensì l'autenticazione tramite smartcard.</p>
+<h3>Installazione del lettore di smartcard</h3>
+<p><a href="https://www.andreagrandi.it/images/2010/11/miniLectorBox.jpg"><img alt="miniLectorBox" src="https://www.andreagrandi.it/images/2010/11/miniLectorBox.jpg" width="60%"></a></p>
+<p>Prima di utilizzare la carta su <strong>Ubuntu Linux</strong> è necessario intanto
+procurarsi un lettore di smartcard (<strong>vi consiglio di acquistare il
+kit</strong> che vendono dove siete andati ad attivare la vostra CSE, poichè
+viene venduto ad un prezzo vantaggioso di <strong>4,20€</strong> mentre se provate a
+comprare il lettore altrove non lo troverete a meno di 15-20€) e poi
+installare sul proprio sistema alcuni pacchetti necessari al suo
+funzionamento.</p>
+<p>Il lettore, una volta inserito nel proprio PC dovrebbe essere
+identificabile tramite la seguente stringa:</p>
+<div class="highlight"><pre><span></span>andrea@centurion:<span class="se">\~\$</span> lsusb
+Bus <span class="m">002</span> Device <span class="m">004</span>: ID 072f:90cc Advanced Card Systems, Ltd ACR38
+SmartCard Reader
+</pre></div>
+
+
+<p>Per installare il software necessario, occorre eseguire il seguente
+comando da terminale:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install pcsc-tools pcscd libccid
+</pre></div>
+
+
+<p>dopo di che dovrete procurarvi il driver del lettore, che potete trovare
+a <a href="http://www.regione.toscana.it/Carta_sanitaria/software/linux/Installazione_lettore_LINUX/lettore/soft_lettore.zip">questo
+indirizzo</a>
+ed installarlo con il seguente comando (dopo aver scompattato l'archivio
+in una cartella a piacimento):</p>
+<div class="highlight"><pre><span></span>sudo dpkg -i libminilector38u-bit4id.deb
+</pre></div>
+
+
+<p>Se tutto è stato eseguito correttamente, utilizzando il programma
+<strong>pcsc_scan</strong> da terminale, dovreste ottenere un output simile a
+questo:</p>
+<div class="highlight"><pre><span></span>andrea@centurion:<span class="se">\~\$</span> pcsc_scan  
+PC/SC device scanner  
+V <span class="m">1</span>.4.16 <span class="o">(</span>c<span class="o">)</span> <span class="m">2001</span>-2009, Ludovic Rousseau
+<span class="p">&amp;</span>lt<span class="p">;</span>ludovic.rousseau@free.fr<span class="p">&amp;</span>gt<span class="p">;</span>  
+Compiled with PC/SC lite version: <span class="m">1</span>.5.3  
+Scanning present readers...  
+<span class="m">0</span>: ACS ACR 38U-CCID <span class="m">00</span> <span class="m">00</span>
+
+Thu Nov <span class="m">11</span> <span class="m">14</span>:08:37 <span class="m">2010</span>  
+Reader <span class="m">0</span>: ACS ACR 38U-CCID <span class="m">00</span> <span class="m">00</span>  
+Card state: Card inserted,  
+ATR: 3B DF <span class="m">18</span> <span class="m">00</span> <span class="m">81</span> <span class="m">31</span> FE 7D <span class="m">00</span> 6B <span class="m">15</span> 0C <span class="m">01</span> <span class="m">81</span> <span class="m">01</span> <span class="m">11</span> <span class="m">01</span> <span class="m">43</span> 4E <span class="m">53</span> <span class="m">10</span> <span class="m">31</span> <span class="m">80</span> E8
+</pre></div>
+
+
+<h3>Configurazione di Firefox</h3>
+<p>Prima di poter configurare Firefox è necessario installare un'ultima
+libreria che permetterà al browser di poter interagire con il lettore di
+smartcard. Dobbiamo scaricare l'archivio presente a <a href="http://www.regione.toscana.it/Carta_sanitaria/software/linux/Installazione_CSE_LINUX/Software/smart_card.zip">questo
+indirizzo</a>,
+scompattarlo e poi copiare uno dei due file presenti (a seconda che si
+utilizzi un sistema a 32 o 64 bit) all'interno della cartella
+<strong>/usr/lib</strong> ed infine digitare il comando <strong>sudo ldconfig</strong> per
+aggiornare l'elenco delle librerie.</p>
+<p>A questo punto bisogna aprire <strong>Firefox</strong> ed andare su
+<strong>Modifica--&gt;Preferenze--&gt;Avanzate--&gt;Cifratura--&gt;Dispositivi
+di Sicurezza</strong> cliccare su <strong>Carica</strong> e specificare come descrizione
+<strong>"CSE"</strong> e come percorso quello dove avete copiato la libreria
+installata nel passo precedente (che ad esempio potrà trovarsi in
+<strong>/usr/lib/libaseCnsP11.so</strong> ).</p>
+<p>Per verificare che tutto funzioni correttamente è sufficiente fare click
+su <strong>Accedi</strong> e se ci verrà chiesto di inserire la "password" (che nel
+nostro caso sarà il <strong>PIN</strong> della smartcard) vorrà dire che tutto sta
+funzionando nel modo corretto.</p>
+<p>Per avere maggiori informazioni sulla <strong>Carta Sanitaria Europea</strong> e per
+conoscere tutti i servizi disponibili, vi consiglio di visitare la
+seguente pagina presente sul sito della <strong>Regione Toscana</strong>:
+<a href="http://www.regione.toscana.it/cartasanitaria/cse/cose/index.html">http://www.regione.toscana.it/cartasanitaria/cse/cose/index.html</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/">read more</a>
+<p><a href="https://www.andreagrandi.it/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/10/29/mini-antenna-parabolica-per-potenziare-il-segnale-dei-router-wireless/" rel="bookmark"
                            title="Permalink to Mini antenna parabolica per potenziare il segnale dei router wireless">Mini antenna parabolica per potenziare il segnale dei router wireless</a></h1>
                 </header>
