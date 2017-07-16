@@ -34,38 +34,6 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.it/2008/06/27/a-gps-per-nokia-n810/" rel="bookmark"
-                           title="Permalink to A-GPS per Nokia N810">A-GPS per Nokia N810</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 27 June 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/linux-maemo-it.html">Linux, Maemo (IT)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/a-gps.html">a-gps</a><a href="https://www.andreagrandi.it/tag/gps.html">gps</a><a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a></span>
-</footer><!-- /.post-info -->                <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/06/agps1.jpg" title="agps1">{.alignright
-.size-medium .wp-image-71 width="136" height="174"}Insieme alla <a href="http://maemo.org/news/announcements/view/os2008_feature_upgrade-reflash_your_tablet-for_the_last_time.html">nuova
-versione del
-firmware</a>
-per Nokia N800/N810, Nokia ha rilasciato anche una utility che promette
-di migliorare notevolmente i tempi di fix per il GPS del N810.</p>
-<p>Si tratta di <strong>agps-ui</strong> ed è disponibile sia nei repository "Maemo
-Extra", sia nel sito <a href="http://www.nokia.com/betalabs/agps-tablet">Nokia Beta
-Labs</a>. A-GPS sta per
-<a href="http://it.wikipedia.org/wiki/Assisted_GPS"><strong>Assisted GPS</strong></a> e si
-tratta di una tecnica che "aiuta" il ricevitore GPS a sintonizzarsi con
-i satelliti in un tempo assai minore da quello richiesto normalmente.</p>
-<p>In sintesi, sia triangolando la posizione grazie all'ausilio delle celle
-GSM, sia facendo indicare all'utente la posizione approssimativa di dove
-ci si trovi, il ricevitore GPS cerca di connettersi a quei satelliti che
-sa che sono visibili nella zona indicata, riducendo notevolmente il
-tempo richiesto per fare il fix della posizione.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2008/06/27/a-gps-per-nokia-n810/">read more</a>
-<p><a href="https://www.andreagrandi.it/2008/06/27/a-gps-per-nokia-n810/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/06/23/aggiornamento-del-sito-a-wordpress-251/" rel="bookmark"
                            title="Permalink to Aggiornamento del sito a WordPress 2.5.1">Aggiornamento del sito a WordPress 2.5.1</a></h1>
                 </header>
@@ -198,6 +166,45 @@ già rivisti e quindi ripensati per la sintassi e le funzionalità di
 Rails 2.x, in particolare quelli che trattano <strong>ActiveRecord</strong>.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2008/06/05/agile-web-development-with-rails-imparare-rails-2x/">read more</a>
 <p><a href="https://www.andreagrandi.it/2008/06/05/agile-web-development-with-rails-imparare-rails-2x/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2008/05/26/applicazioni-ruby-on-rails-che-non-utilizzano-database/" rel="bookmark"
+                           title="Permalink to Applicazioni Ruby On Rails che non utilizzano database">Applicazioni Ruby On Rails che non utilizzano database</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 26 May 2008</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/linux-programmazione-ruby-ruby-on-rails.html">Linux, Programmazione, Ruby, Ruby on Rails</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/activerecord.html">activerecord</a><a href="https://www.andreagrandi.it/tag/errore.html">errore</a><a href="https://www.andreagrandi.it/tag/mysql.html">MySQL</a><a href="https://www.andreagrandi.it/tag/ror.html">ror</a><a href="https://www.andreagrandi.it/tag/ruby.html">Ruby</a><a href="https://www.andreagrandi.it/tag/ruby-on-rails.html">Ruby on Rails</a></span>
+</footer><!-- /.post-info -->                <p>Se a qualcuno fosse capitato di recente di creare una semplice
+applicazione "<em>Hello World</em>" utilizzando il framework <a href="http://www.rubyonrails.org"><strong>Ruby on
+Rails</strong></a>, avrà notato che in fase di
+esecuzione si ottiene un errore di questo tipo:</p>
+<p><code>Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)</code></p>
+<p>Perchè un errore relativo a <strong>MySQL</strong> in un'applicazione che stampa
+semplicemente una stringa di testo? Nelle nuove versioni di <strong>RoR</strong>
+vengono caricati per default i moduli <strong>ActiveRecord</strong>,
+<strong>ActiveResource</strong> e <strong>ActionMailer</strong>. ActiveRecord in particolare si
+aspetta di trovare (per le impostazioni di default) un database MySQL
+funzionante.</p>
+<p>Per evitare questo errore è sufficiente decommentare una riga
+all'interno di environment.rb che si trova in
+<strong>\$PATH_APPLICAZIONE/config/environment.rb</strong>:</p>
+<p>[sourcecode language='ruby']<br>
+# Skip frameworks you're not going to use (only works if using
+vendor/rails).<br>
+# To use Rails without a database, you must remove the Active Record
+framework<br>
+config.frameworks -= [ :active_record, :active_resource,
+:action_mailer ]<br>
+[/sourcecode]</p>
+<p><em>Fonte:</em>
+<a href="http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html">http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2008/05/26/applicazioni-ruby-on-rails-che-non-utilizzano-database/">read more</a>
+<p><a href="https://www.andreagrandi.it/2008/05/26/applicazioni-ruby-on-rails-che-non-utilizzano-database/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
