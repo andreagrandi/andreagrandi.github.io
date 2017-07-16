@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - ssh2</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Fri, 29 Feb 2008 18:59:00 +0000</lastBuildDate><item><title>Utilizzare SSH senza password: chiavi SSH</title><link>https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</link><description>&lt;p&gt;&lt;img alt="openssh_logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/openssh_logo.thumbnail.png"&gt;Quando
-vogliamo connetterci ad un server &lt;strong&gt;SSH&lt;/strong&gt;, solitamente utilizziamo un
+<rss version="2.0"><channel><title>Andrea Grandi - ssh2</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Fri, 29 Feb 2008 18:59:00 +0000</lastBuildDate><item><title>Utilizzare SSH senza password: chiavi SSH</title><link>https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</link><description>&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png"&gt;&lt;img alt="openssh_logo" src="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png" width="40%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Quando vogliamo connetterci ad un server &lt;strong&gt;SSH&lt;/strong&gt;, solitamente utilizziamo un
 comando simile al seguente:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-ssh user@remotehost.com&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh user@remotehost.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Una volta connessi ci viene richiesta la password di accesso e subito
 dopo siamo connessi. Digitare ogni volta la password puo' essere
 scomodo, ed in alcuni casi questo potrebbe addirittura impedirci di
@@ -20,37 +21,41 @@ account chiamato &lt;strong&gt;user&lt;/strong&gt; sulla macchina remota.&lt;/p&
 &lt;p&gt;Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
 macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
 verrebbe richiesta comunque al primo login di ogni sessione):&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-andy80@noteboontu:\~\$ ssh-keygen -t dsa&lt;br&gt;
-Generating public/private dsa key pair.&lt;br&gt;
-Enter file in which to save the key (/home/andy80/.ssh/id_dsa):&lt;br&gt;
-Enter passphrase (empty for no passphrase):&lt;br&gt;
-Enter same passphrase again:&lt;br&gt;
-Your identification has been saved in /home/andy80/.ssh/id_dsa.&lt;br&gt;
-Your public key has been saved in /home/andy80/.ssh/id_dsa.pub.&lt;br&gt;
-The key fingerprint is:&lt;br&gt;
-22:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andy80@noteboontu:~$ ssh-keygen -t dsa  
+Generating public/private dsa key pair.  
+Enter file in which to save the key &lt;span class="o"&gt;(&lt;/span&gt;/home/andy80/.ssh/id_dsa&lt;span class="o"&gt;)&lt;/span&gt;:  
+Enter passphrase &lt;span class="o"&gt;(&lt;/span&gt;empty &lt;span class="k"&gt;for&lt;/span&gt; no passphrase&lt;span class="o"&gt;)&lt;/span&gt;:  
+Enter same passphrase again:  
+Your identification has been saved in /home/andy80/.ssh/id_dsa.  
+Your public key has been saved in /home/andy80/.ssh/id_dsa.pub.  
+The key fingerprint is:  
+&lt;span class="m"&gt;22&lt;/span&gt;:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
 server remoto:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-cd \~/.ssh/&lt;br&gt;
-scp id_dsa.pub user@192.168.0.2:./id_dsa.pub&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ~/.ssh/  
+scp id_dsa.pub user@192.168.0.2:./id_dsa.pub
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Ci verrà chiesta la nostra password remota, per poter effettuare la
 copia del file. A questo punto dobbiamo connetterci via SSH al server
 remoto:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-ssh user@192.168.0.2&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh user@192.168.0.2
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
 i seguenti comandi:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-cd .ssh&lt;br&gt;
-touch authorized_keys2&lt;br&gt;
-chmod 600 authorized_keys2&lt;br&gt;
-cat ../id_dsa.pub &amp;gt;&amp;gt; authorized_keys2&lt;br&gt;
-rm ../id_dsa.pub&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; .ssh  
+touch authorized_keys2  
+chmod &lt;span class="m"&gt;600&lt;/span&gt; authorized_keys2  
+cat ../id_dsa.pub &amp;gt;&amp;gt; authorized_keys2  
+rm ../id_dsa.pub
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
-il server remoto, avverranno senza la richiesta di alcuna password.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Fri, 29 Feb 2008 18:59:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-29:/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</guid><category>chiavi</category><category>connessione</category><category>Linux</category><category>openssh</category><category>password</category><category>Sicurezza</category><category>ssh</category><category>ssh2</category></item></channel></rss>
+il server remoto, avverranno senza la richiesta di alcuna password.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 29 Feb 2008 18:59:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-29:/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</guid><category>chiavi</category><category>connessione</category><category>Linux</category><category>openssh</category><category>password</category><category>Sicurezza</category><category>ssh</category><category>ssh2</category></item></channel></rss>
