@@ -34,82 +34,6 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/" rel="bookmark"
-                           title="Permalink to Goenv - Go Environment Manager">Goenv - Go Environment Manager</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 19 April 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/go-howto-programmazione.html">Go, HowTo, Programmazione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/go.html">go</a><a href="https://www.andreagrandi.it/tag/golang.html">golang</a></span>
-</footer><!-- /.post-info -->                <p>To briefly explain what
-<a href="https://bitbucket.org/ymotongpoo/goenv"><strong>Goenv</strong></a> is, I will assume
-you have previously worked with <strong>Python</strong>. Basically it's what
-<strong>Virtualenv</strong> is for Python. Goenv (and it's wrapper <strong>goof</strong>) creates
-a folder for a new project and set the <strong>\$GOPATH</strong> env variable to that
-folder path. At this point every time you do <strong>go get</strong>, the libraries
-will be installed in that specific <strong>\$GOPATH</strong>.</p>
-<p>It's very important to use separate \$GOPATH for each project, because
-this allow us to use different library versions for each project and
-<strong>avoid version conflicts</strong>.</p>
-<h1>Installation</h1>
-<p>``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
-$ git clone https://bitbucket.org/ymotongpoo/goenv
-$ cd goenv
-$ go build -o goenv *.go
-$ chmod +x goenv
-$ sudo cp goenv /usr/bin</p>
-<div class="highlight"><pre><span></span>Goenv is now installed, we will now install its wrapper **goof**:
-
-``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
-$ sudo cp shellscripts/goenvwrapper.sh /usr/bin
-</pre></div>
-
-
-<p>Edit <strong>.bashrc</strong> (or <strong>.zshrc</strong> if you use zsh) and append these lines:</p>
-<p>``` {.toolbar:2 .lang:zsh .decode:true}
-export GOENVHOME=$HOME/goenvs
-source /usr/bin/goenvwrapper.sh</p>
-<div class="highlight"><pre><span></span><span class="gh">How to use it</span>
-<span class="gh">=============</span>
-
-To <span class="gs">**create**</span> a new go environment use <span class="gs">**make**</span>:
-
-<span class="s">``` {.toolbar:2 .lang:default .highlight:0 .decode:true}</span>
-<span class="s">➜  ~  goof make go-test</span>
-<span class="s">Do you want to create all parental directory of &#39;/Users/andrea/goenvs/go-test&#39;? [y/N]: y</span>
-<span class="s">Environment /Users/andrea/goenvs/go-test created!</span>
-<span class="s">(go:go-test) ➜  go-test</span>
-</pre></div>
-
-
-<p>To exit the go environment use <strong>deactivate</strong>:</p>
-<p>``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
-(go:go-test) ➜  go-test  deactivate
-➜  go-test</p>
-<div class="highlight"><pre><span></span>To use an environment use **workon**:
-
-``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
-➜  go-test  goof workon go-test
-(go:go-test) ➜  go-test
-</pre></div>
-
-
-<p>To show available environments use <strong>show</strong>:</p>
-<p><code>{.toolbar:2 .lang:default .highlight:0 .decode:true}
-(go:go-test) ➜  go-test  goof show
-* go-test</code></p>
-<p>Goenv itself is not enough to manage Go packages. It would be like using
-<strong>Virtualenv</strong> only and not using <strong>pip</strong> and <strong>requirements</strong>. In a
-future post I will explain how to use
-<a href="https://github.com/tools/godep"><strong>Godep</strong></a>.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/" rel="bookmark"
                            title="Permalink to Go: defining methods on struct types">Go: defining methods on struct types</a></h1>
                 </header>
@@ -414,6 +338,124 @@ Verify Encfs Password:
 <p>You should be able to mount this volume using BoxCryptor.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="bookmark"
+                           title="Permalink to Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 02 March 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
+
+</footer><!-- /.post-info -->                <p>Developing a large web application or before deploying some code is very
+important to verify the quality of the code itself, check if we have
+introduced any regression or bug and have something that tell us if we
+are increasing or decreasing the quality of the code.</p>
+<p>Suppose we are in an organization or a company where the basic rule is:
+<strong>master</strong> branch is always ready/stable to be deployed. In a team
+usually people work on personal branches, then when the code is stable
+it's merged with master.</p>
+<p>How do we check if the code is stable and ready to be merged? First of
+all we need to cover all our code with <strong>proper tests</strong> (I won't go in
+details about unit testing here, I assume that the reader knows what I'm
+talking about), then we need to actually run them, possibly in an
+isolated environment that is similar to the production one, and check if
+they all pass. If they do, we are quite safe to merge our code with
+master branch.</p>
+<p>How can we ensure that all the developers remember to run tests when
+they push some new code? To make things a bit more real, let's take the
+example of a Python/Django product (or even a library) that currently
+supports <strong>Python 2.6, 2.7, 3.3</strong> and <strong>Django 1.4.x, 1.5.x, 1.6.x</strong>.
+The whole matrix consists of <strong>9 possible combinations</strong>. Do we have to
+manually run tests on 9 configurations? No, we don't.</p>
+<h2>Travis-ci.org</h2>
+<p><strong>Travis</strong> is a continuous integration tool that, once configured, takes
+care of these tasks and let us save lot of time (that we can use to
+actually write code). <a href="https://travis-ci.org">Travis-ci.org</a> is an
+online service that works with <a href="https://github.com"><strong>GitHub</strong></a> (it
+requires we use GitHub as repository for our code), and once we have
+connected the two accounts and configured a very simple file in our
+projects, it's automatically triggered when we push on our GitHub
+repository.</p>
+<p>The configuration consists of adding a file named <strong>.travis.yml</strong> in the
+root of our project. A working example is available here
+<a href="https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml">https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml</a>
+(all the env variables I set are not required normally, but that's where
+I save the values of my configuration, so they need to be initialized
+before I can run tests).</p>
+<p>The service supports most of the languages that are commonly used and
+even a good number of PAAS, making it very easy to automatically
+<strong>deploy</strong> our code. If it should not be enough for your needs, they
+also expose a public <strong>API</strong>. I suggest you to give a look at the
+official documentation that will explain everything in details
+<a href="http://docs.travis-ci.com">http://docs.travis-ci.com</a></p>
+<p>Once everything is configured, we will have something like this on our
+console
+<a href="https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128">https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128</a></p>
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console.png"><img alt="travis-ci-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console-1024x544.png">{.aligncenter
+.wp-image-832 width="614"
+height="326"}</a></p>
+<p>If something goes wrong (if tests don't pass for example) we receive a
+notification with all the informations about the failing build, and if
+we had configured an automatic deployment of course the code would not
+be deployed in case of a failing build.</p>
+<p>Travis-ci.org is <strong>completly free</strong> for opensource projects and has also
+a paid version for private repositories.</p>
+<h2 id="coveralls.io" style="text-align: left;">Coveralls.io</h2>
+<p>There is a nice tool available for Python called
+<a href="http://nedbatchelder.com/code/coverage"><strong>coverage</strong></a>. Basically it
+runs tests and checks the percentage of the source code that is covered
+by tests, producing a nice report that shows us the percentage for every
+single file/module and even the lines of code that have been tested.</p>
+<p>Thanks to Coveralls.io and the use of Travis, even these tasks are
+completly automatized and the results are available online like in this
+example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds/560853</a></p>
+<p>The configuration is quite easy. We need to connect our Coveralls.io
+profile with GitHub, like we did for Travis-ci.org and then enable the
+repository. To trigger Coveralls after a successful Travis build, we
+need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
+<div class="highlight"><pre><span></span>after_success:
+  - coveralls
+</pre></div>
+
+
+<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console.png"><img alt="coveralls-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console-1024x767.png">{.aligncenter
+.wp-image-836 width="614"
+height="460"}</a><br>
+Even Coveralls.io is <strong>completly free</strong> for opensource projects and
+offers a paid version for private repositories.</p>
+<h2>Heroku</h2>
+<p>I use <a href="https://www.heroku.com"><strong>Heroku</strong></a> to host and run my web
+application. Normally to deploy on Heroku you so something like this:
+<strong>git push heroku master</strong></p>
+<p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
+deploy the application on Heroku, if the build was successful:</p>
+<div class="highlight"><pre><span></span><span class="n">deploy</span><span class="o">:</span>
+  <span class="n">provider</span><span class="o">:</span> <span class="n">heroku</span>
+  <span class="n">api_key</span><span class="o">:</span>
+    <span class="n">secure</span><span class="o">:</span> <span class="n">R4LFkVu1</span><span class="sr">/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/</span><span class="n">FeUk0Yl</span><span class="o">+</span><span class="n">I</span><span class="o">=</span>
+  <span class="n">app</span><span class="o">:</span> <span class="n">workshopvenues</span>
+  <span class="n">on</span><span class="o">:</span>
+    <span class="n">repo</span><span class="o">:</span> <span class="n">andreagrandi</span><span class="o">/</span><span class="n">workshopvenues</span>
+  <span class="n">run</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py syncdb&quot;</span>
+    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py migrate&quot;</span>
+</pre></div>
+
+
+<p>Not only the code is deployed, after deployment the <strong>South migrations</strong>
+are executed.</p>
+<h2>Conclusion</h2>
+<p>These two tools are saving me lot of time and are ensuring that the code
+I release for a project I'm working on
+(<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
+is always tested when I push it on my repository.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">read more</a>
+<p><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
