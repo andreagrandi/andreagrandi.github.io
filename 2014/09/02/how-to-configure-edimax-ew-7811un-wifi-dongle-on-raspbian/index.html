@@ -40,18 +40,16 @@
     <div class="entry-content">
 <footer class="post-info">
         <span>Tue 02 September 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-raspberrypi.html">HowTo, Linux, RaspberryPi</a></span>
-
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/raspberrypi.html">RaspberryPI</a><a href="https://www.andreagrandi.it/tag/wifi.html">WIFI</a><a href="https://www.andreagrandi.it/tag/networking.html">networking</a><a href="https://www.andreagrandi.it/tag/debian.html">Debian</a></span>
 </footer><!-- /.post-info -->      <p>If you want to connect your <strong>RaspberryPi</strong> to your home network and you
 want to avoid cables, I suggest you to use the <strong>Edimax wifi adapter</strong>.
 This device is quite cheap (around £8 on
 <a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/">Amazon</a>)
 and it's very easy to configure on Raspbian (I assume you are using a
 recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png">{.aligncenter
-.wp-image-895 width="708"
-height="398"}</a></p>
-<h2>Configure the wifi adapter</h2>
+<p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
+<h3>Configure the wifi adapter</h3>
 <p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
 <div class="highlight"><pre><span></span>auto lo
 iface lo inet loopback
@@ -66,21 +64,21 @@ wpa-psk YOURWPAPASSWORD
 </pre></div>
 
 
-<h2>Power management issue</h2>
+<h3>Power management issue</h3>
 <p>There is a known "issue" with this adapter default configuration that
 makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using <strong>8192cu</strong>
 module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod | grep 8192
-8192cu 551136 0
+<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
+8192cu <span class="m">551136</span> <span class="m">0</span>
 </pre></div>
 
 
 <p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
 lines inside:</p>
-<div class="highlight"><pre><span></span># prevent power down of wireless when idle
-options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
+options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 
 
@@ -93,7 +91,7 @@ user, you don't need to be root):</p>
 
 
 <p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c 1 192.168.0.1
+<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
 </pre></div>
 
 
@@ -120,7 +118,7 @@ crontab -e
 </pre></div>
 
 
-<h2>Conclusion</h2>
+<h3>Conclusion</h3>
 <p>The configuration is done. Just reboot your RaspberryPi and enjoy your
 wifi connection.</p>
     </div><!-- /.entry-content -->

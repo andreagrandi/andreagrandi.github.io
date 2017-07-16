@@ -34,6 +34,135 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/" rel="bookmark"
+                           title="Permalink to Using Twitter Bootstrap with Node.js, Express and Jade">Using Twitter Bootstrap with Node.js, Express and Jade</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 24 February 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/bootstrap.html">Bootstrap</a><a href="https://www.andreagrandi.it/tag/css.html">css</a><a href="https://www.andreagrandi.it/tag/express.html">Express</a><a href="https://www.andreagrandi.it/tag/jade.html">Jade</a><a href="https://www.andreagrandi.it/tag/javascript.html">Javascript</a><a href="https://www.andreagrandi.it/tag/nodejs.html">NodeJs</a><a href="https://www.andreagrandi.it/tag/npm.html">npm</a><a href="https://www.andreagrandi.it/tag/twitter.html">twitter</a><a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info -->                <p>I've decided to write this post as a note to myself. I'm still learning
+Node.js and digging into Express/Jade, but I've read many people using
+the nice <a href="http://twitter.github.com/bootstrap/"><strong>Twitter Bootstrap</strong></a>
+and I was wondering if there was a way to integrate all these
+technologies. The short answer is: yes, we can!</p>
+<p><strong>Note:</strong> once again, I'm not a Node.js expert and surely there are
+other ways to achieve this task (for example there is a Node.js module
+called
+<a href="https://npmjs.org/package/twitter-bootstrap"><strong>twitter-bootstrap</strong></a>,
+but I haven't tried it). This tutorial is based on another tutorial I
+found, but it was not very updated and it had a more complicated way to
+install Bootstrap, so I decided to write a new one basing it on the
+original <a href="http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0">http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0</a></p>
+<h3>Preparing the environment</h3>
+<p>I will assume that you're running any Linux distribution (in my case I'm
+using Ubuntu 12.10, but feel free to use your own distribution). Be sure
+to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
+(I'm using Node.js 0.8.20 and npm 1.2.11).</p>
+<h3>Create a project folder and install the required dependencies</h3>
+<div class="highlight"><pre><span></span>mkdir node-bootstrap
+<span class="nb">cd</span> node-bootstrap
+npm install express
+npm install jade
+</pre></div>
+
+
+<h3>Create the basic project structure with Express</h3>
+<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+
+create : nodebootstrap
+create : nodebootstrap/package.json
+create : nodebootstrap/app.js
+create : nodebootstrap/public
+create : nodebootstrap/public/javascripts
+create : nodebootstrap/public/images
+create : nodebootstrap/public/stylesheets
+create : nodebootstrap/public/stylesheets/style.css
+create : nodebootstrap/routes
+create : nodebootstrap/routes/index.js
+create : nodebootstrap/routes/user.js
+create : nodebootstrap/views
+create : nodebootstrap/views/layout.jade
+create : nodebootstrap/views/index.jade
+
+install dependencies:
+$ <span class="nb">cd</span> nodebootstrap <span class="o">&amp;&amp;</span> npm install
+
+run the app:
+$ node app
+</pre></div>
+
+
+<p>You should already have installed all the needed dependencies, even
+without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
+<h3>Download and install Bootstrap</h3>
+<p>Download Twitter Boostrap from the official
+website <a href="http://twitter.github.com/bootstrap/assets/bootstrap.zip">http://twitter.github.com/bootstrap/assets/bootstrap.zip</a> and
+unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
+<h3>Bootstrap integration with Jade template system</h3>
+<p>At this point you need to edit the <strong>views/layout.jade</strong> file and
+include the references to Bootsrap</p>
+<div class="highlight"><pre><span></span><span class="nt">html</span>
+  <span class="nt">head</span>
+    <span class="nt">title</span><span class="p">=</span> <span class="n">title</span>
+    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap.min.css&#39;</span>)
+    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap-responsive.min.css&#39;</span>)
+    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/stylesheets/style.css&#39;</span>)
+    <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js&#39;</span>)
+    <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;/bootstrap/js/bootstrap.min.js&#39;</span>)
+  <span class="nt">body</span>
+    <span class="nt">block</span> content
+</pre></div>
+
+
+<h3>Test the Bootstrap integration</h3>
+<p>At this point we will modify <strong>views/index.jade</strong> that is the default
+template used to render the index</p>
+<div class="highlight"><pre><span></span><span class="nt">extends</span> layout
+
+    <span class="nt">block</span> content
+      <span class="nt">div</span><span class="nc">.top</span>
+        <span class="nt">form</span><span class="nc">.form-horizontal</span>(<span class="na">method=</span><span class="s">&quot;post&quot;</span><span class="err">,</span> <span class="na">id=</span><span class="s">&quot;loginForm&quot;</span>)
+          <span class="nt">label</span> Username
+          <span class="nt">input</span><span class="nc">.span3</span>(<span class="na">id=</span><span class="s">&quot;username&quot;</span><span class="err">,</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span><span class="err">,</span> <span class="na">name=</span><span class="s">&quot;User&quot;</span><span class="err">,</span> <span class="na">placeholder=</span><span class="s">&quot;Enter your username&quot;</span>)
+          <span class="nt">label</span> Password
+          <span class="nt">input</span><span class="nc">.span3</span>(<span class="na">id=</span><span class="s">&quot;password&quot;</span><span class="err">,</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span><span class="err">,</span> <span class="na">name=</span><span class="s">&quot;Password&quot;</span>)
+          <span class="nt">input</span><span class="nc">.btn</span>(<span class="na">type=</span><span class="s">&quot;submit&quot;</span><span class="err">,</span> <span class="na">value=</span><span class="s">&quot;Log In&quot;</span>)
+      <span class="nt">div</span><span class="nc">.container</span>
+        <span class="nt">div</span><span class="nc">.content</span>
+          <span class="nt">table</span><span class="nc">.table.table-striped</span>
+            <span class="nt">thead</span>
+              <span class="nt">tr</span>
+                <span class="nt">th</span> Table
+                <span class="nt">th</span> Heading
+            <span class="nt">tbody</span>
+              <span class="nt">tr</span>
+                <span class="nt">td</span> Blah
+                <span class="nt">td</span> Test
+              <span class="nt">tr</span>
+                <span class="nt">td</span> Hello
+                <span class="nt">td</span> World
+
+      <span class="nt">div</span><span class="nc">.footer</span>
+</pre></div>
+
+
+<p>Now go back to the terminal and execute the app:</p>
+<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+Express server listening on port <span class="m">3000</span>
+</pre></div>
+
+
+<p>Open your favourite browse and visit <a href="http://localhost:3000">http://localhost:3000</a> to see your
+first Bootstrap + Node.js application app and running.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/">read more</a>
+<p><a href="https://www.andreagrandi.it/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/10/29/mini-antenna-parabolica-per-potenziare-il-segnale-dei-router-wireless/" rel="bookmark"
                            title="Permalink to Mini antenna parabolica per potenziare il segnale dei router wireless">Mini antenna parabolica per potenziare il segnale dei router wireless</a></h1>
                 </header>

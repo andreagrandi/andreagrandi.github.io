@@ -34,102 +34,6 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="bookmark"
-                           title="Permalink to How to configure Edimax EW-7811UN Wifi dongle on Raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 02 September 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-raspberrypi.html">HowTo, Linux, RaspberryPi</a></span>
-
-</footer><!-- /.post-info -->                <p>If you want to connect your <strong>RaspberryPi</strong> to your home network and you
-want to avoid cables, I suggest you to use the <strong>Edimax wifi adapter</strong>.
-This device is quite cheap (around £8 on
-<a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/">Amazon</a>)
-and it's very easy to configure on Raspbian (I assume you are using a
-recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="http://www.andreagrandi.it/wp-content/uploads/2014/09/edimax-pi3.png">{.aligncenter
-.wp-image-895 width="708"
-height="398"}</a></p>
-<h2>Configure the wifi adapter</h2>
-<p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
-<div class="highlight"><pre><span></span>auto lo
-iface lo inet loopback
-iface eth0 inet dhcp
-
-allow-hotplug wlan0
-auto wlan0
-
-iface wlan0 inet dhcp
-wpa-ssid YOURESSID
-wpa-psk YOURWPAPASSWORD
-</pre></div>
-
-
-<h2>Power management issue</h2>
-<p>There is a known "issue" with this adapter default configuration that
-makes it to turn off if the wlan interface is not in use for some
-minutes. To avoid this you have to customize the parameters used to load
-the kernel module. First check that your adapter is using <strong>8192cu</strong>
-module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod | grep 8192
-8192cu 551136 0
-</pre></div>
-
-
-<p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
-lines inside:</p>
-<div class="highlight"><pre><span></span># prevent power down of wireless when idle
-options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
-</pre></div>
-
-
-<p>I also suggest to create a little entry in crontab to make the
-RaspberryPi ping your router every minute. This will ensure that your
-wifi connection will stay alive. To edit crontab just type (from pi
-user, you don't need to be root):</p>
-<div class="highlight"><pre><span></span>crontab -e
-</pre></div>
-
-
-<p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c 1 192.168.0.1
-</pre></div>
-
-
-<p>where 192.168.0.1 is the IP of your router (of course substitute this
-value with the ip of your router).</p>
-<h3>Keep Alive Script</h3>
-<p>I created a further script to keep my WIFI alive. This script will ping
-the router (change the IP using the one of your router) every 5 minutes
-and if the ping fails it brings down the wlan0 interface, the kernel
-module for the wifi and bring them up again.</p>
-<p>
-<script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
-</p>
-
-<p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
-<strong>root</strong> user:</p>
-<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
-crontab -e
-</pre></div>
-
-
-<p>Insert this line inside the crontab editor:</p>
-<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
-</pre></div>
-
-
-<h2>Conclusion</h2>
-<p>The configuration is done. Just reboot your RaspberryPi and enjoy your
-wifi connection.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
                     <h1><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="bookmark"
                            title="Permalink to Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
                 </header>
@@ -314,6 +218,41 @@ tested it yet.</p>
 this nice guide <a href="http://www.maketecheasier.com/install-encfs-mac/">http://www.maketecheasier.com/install-encfs-mac/</a></p>
                 <a class="readmore" href="https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">read more</a>
 <p><a href="https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/" rel="bookmark"
+                           title="Permalink to How to make subwoofer work in Ubuntu">How to make subwoofer work in Ubuntu</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 22 June 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-ubuntu-en.html">HowTo, Linux, Ubuntu (EN)</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/sound.html">sound</a><a href="https://www.andreagrandi.it/tag/subwoofer.html">subwoofer</a><a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a></span>
+</footer><!-- /.post-info -->                <p>Using the same computer with Windows 8 and Ubuntu I noticed that the
+sound was worse in Ubuntu and I discovered why soon: <strong>subwoofer</strong>
+doesn't work out of the box!</p>
+<h2>How to fix it</h2>
+<p>The fix is quite easy to apply (but it was not easy to find the right
+one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
+the end:</p>
+<div class="highlight"><pre><span></span>load-module module-combine channels=6 channel_map=front-left,front-right,rear-left,rear-right,front-center,lfe
+</pre></div>
+
+
+<p>then edit <strong>/etc/pulse/daemon.conf</strong>, modify the line
+"enable-lfe-remixing: no" to "<strong>enable-lfe-remixing: yes</strong>", then
+uncomment it (remove the semicolon in front of it). Reboot your PC and
+enjoy the subwoofer!</p>
+<h2>References</h2>
+<ul>
+<li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
+<li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/">read more</a>
+<p><a href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
