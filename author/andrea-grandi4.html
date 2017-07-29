@@ -34,6 +34,86 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/" rel="bookmark"
+                           title="Permalink to Automatically pull updated Docker images and restart containers with docker-puller">Automatically pull updated Docker images and restart containers with docker-puller</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 25 October 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/containers.html">containers</a><a href="https://www.andreagrandi.it/tag/docker.html">docker</a><a href="https://www.andreagrandi.it/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.it/tag/flask.html">Flask</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a></span>
+</footer><!-- /.post-info -->                <p>If you use <a href="https://docker.io">docker.io</a> (or any similar service) to
+build your <strong>Docker</strong> containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h3>How to use docker-puller</h3>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+docker stop <span class="nb">test</span>
+docker rm <span class="nb">test</span>
+docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
+</pre></div>
+
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">read more</a>
+<p><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="bookmark"
                            title="Permalink to How to configure Edimax EW-7811UN Wifi dongle on Raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
                 </header>
@@ -245,41 +325,6 @@ this link and enjoy it
 <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/" rel="bookmark"
-                           title="Permalink to How to make subwoofer work in Ubuntu">How to make subwoofer work in Ubuntu</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 22 June 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/sound.html">sound</a><a href="https://www.andreagrandi.it/tag/subwoofer.html">subwoofer</a><a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a></span>
-</footer><!-- /.post-info -->                <p>Using the same computer with Windows 8 and Ubuntu I noticed that the
-sound was worse in Ubuntu and I discovered why soon: <strong>subwoofer</strong>
-doesn't work out of the box!</p>
-<h3>How to fix it</h3>
-<p>The fix is quite easy to apply (but it was not easy to find the right
-one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
-the end:</p>
-<div class="highlight"><pre><span></span>load-module module-combine <span class="nv">channels</span><span class="o">=</span><span class="m">6</span> <span class="nv">channel_map</span><span class="o">=</span>front-left,front-right,rear-left,rear-right,front-center,lfe
-</pre></div>
-
-
-<p>then edit <strong>/etc/pulse/daemon.conf</strong>, modify the line
-"enable-lfe-remixing: no" to "<strong>enable-lfe-remixing: yes</strong>", then
-uncomment it (remove the semicolon in front of it). Reboot your PC and
-enjoy the subwoofer!</p>
-<h3>References</h3>
-<ul>
-<li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
-<li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>
-</ul>
-                <a class="readmore" href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/">read more</a>
-<p><a href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

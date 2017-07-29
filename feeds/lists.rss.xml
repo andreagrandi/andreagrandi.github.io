@@ -3,39 +3,35 @@
 While there can be many different ways of implementing this task, I
 found three in particular that I appreciate for different reasons. Let's
 define first a list of integers that we will reverse later.&lt;/p&gt;
-&lt;p&gt;``` {.lang:python .decode:true}
-l = [1, 2, 3, 4, 5, 6]&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;List&lt;/span&gt; &lt;span class="s s-Atom"&gt;slicing&lt;/span&gt;
-&lt;span class="s s-Atom"&gt;------------&lt;/span&gt;
-
-&lt;span class="nv"&gt;This&lt;/span&gt; &lt;span class="s s-Atom"&gt;method&lt;/span&gt; &lt;span class="s s-Atom"&gt;can&lt;/span&gt; &lt;span class="s s-Atom"&gt;be&lt;/span&gt; &lt;span class="s s-Atom"&gt;a&lt;/span&gt; &lt;span class="s s-Atom"&gt;bit&lt;/span&gt; &lt;span class="s s-Atom"&gt;obscure&lt;/span&gt; &lt;span class="s s-Atom"&gt;at&lt;/span&gt; &lt;span class="s s-Atom"&gt;first&lt;/span&gt; &lt;span class="s s-Atom"&gt;read&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s s-Atom"&gt;but&lt;/span&gt; &lt;span class="s s-Atom"&gt;basically&lt;/span&gt; &lt;span class="s s-Atom"&gt;it&lt;/span&gt; &lt;span class="s s-Atom"&gt;slices&lt;/span&gt;
-&lt;span class="s s-Atom"&gt;the&lt;/span&gt; &lt;span class="s s-Atom"&gt;whole&lt;/span&gt; &lt;span class="s s-Atom"&gt;list&lt;/span&gt; &lt;span class="s s-Atom"&gt;proceding&lt;/span&gt; &lt;span class="s s-Atom"&gt;in&lt;/span&gt; &lt;span class="s s-Atom"&gt;the&lt;/span&gt; &lt;span class="s s-Atom"&gt;reverse&lt;/span&gt; &lt;span class="nn"&gt;order&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-
-&lt;span class="err"&gt;```&lt;/span&gt; &lt;span class="p"&gt;{.&lt;/span&gt;&lt;span class="nn"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s s-Atom"&gt;python&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nn"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s s-Atom"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;input&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="s s-Atom"&gt;print&lt;/span&gt; &lt;span class="s s-Atom"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;::-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s s-Atom"&gt;output&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Reversed method&lt;/h2&gt;
+&lt;h3&gt;List slicing&lt;/h3&gt;
+&lt;p&gt;This method can be a bit obscure at first read, but basically it slices
+the whole list proceding in the reverse order:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[::&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Reversed method&lt;/h3&gt;
 &lt;p&gt;We use the
 &lt;strong&gt;&lt;a href="https://docs.python.org/2/library/functions.html#reversed"&gt;reversed&lt;/a&gt;&lt;/strong&gt; method
 that returns an iterable object and a list comprehension to generate the
 new list&lt;/p&gt;
-&lt;p&gt;``` {.lang:python .decode:true}
-[input]: print [x for x in reversed(l)]
-[output]: [6, 5, 4, 3, 2, 1]&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;Swapping values in place&lt;/span&gt;
-&lt;span class="gh"&gt;------------------------&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;reversed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-This last method is more verbose and it basically divides the list in
-two parts and swaps the first with sixth, the second with fifth, etc...
 
-&lt;span class="s"&gt;``` {.lang:python .decode:true}&lt;/span&gt;
-&lt;span class="s"&gt;[input]:&lt;/span&gt;
-&lt;span class="s"&gt;for i in range(0, len(l) / 2):&lt;/span&gt;
-&lt;span class="s"&gt;    l[i], l[len(l) -1 -i] = l[len(l) -1 -i], l[i]&lt;/span&gt;
-&lt;span class="s"&gt;print l&lt;/span&gt;
+&lt;h3&gt;Swapping values in place&lt;/h3&gt;
+&lt;p&gt;This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;
 
-&lt;span class="s"&gt;[output]: [6, 5, 4, 3, 2, 1]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">admin</dc:creator><pubDate>Sun, 11 Oct 2015 22:14:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-10-11:/2015/10/11/reversing-a-list-in-python/</guid><category>lists</category><category>Python</category><category>reversed</category></item></channel></rss>
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sun, 11 Oct 2015 22:14:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-10-11:/2015/10/11/reversing-a-list-in-python/</guid><category>lists</category><category>Python</category><category>reversed</category></item></channel></rss>

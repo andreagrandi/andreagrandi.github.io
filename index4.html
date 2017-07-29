@@ -132,47 +132,43 @@ that's how their SSL strict option works (at least for free plans).</p>
                 <div class="entry-content">
 <footer class="post-info">
         <span>Sun 11 October 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/lists.html">lists</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a></span>
 </footer><!-- /.post-info -->                <p>Sometimes we need to reverse the order of the elements in a Python list.
 While there can be many different ways of implementing this task, I
 found three in particular that I appreciate for different reasons. Let's
 define first a list of integers that we will reverse later.</p>
-<p>``` {.lang:python .decode:true}
-l = [1, 2, 3, 4, 5, 6]</p>
-<div class="highlight"><pre><span></span><span class="nv">List</span> <span class="s s-Atom">slicing</span>
-<span class="s s-Atom">------------</span>
-
-<span class="nv">This</span> <span class="s s-Atom">method</span> <span class="s s-Atom">can</span> <span class="s s-Atom">be</span> <span class="s s-Atom">a</span> <span class="s s-Atom">bit</span> <span class="s s-Atom">obscure</span> <span class="s s-Atom">at</span> <span class="s s-Atom">first</span> <span class="s s-Atom">read</span><span class="p">,</span> <span class="s s-Atom">but</span> <span class="s s-Atom">basically</span> <span class="s s-Atom">it</span> <span class="s s-Atom">slices</span>
-<span class="s s-Atom">the</span> <span class="s s-Atom">whole</span> <span class="s s-Atom">list</span> <span class="s s-Atom">proceding</span> <span class="s s-Atom">in</span> <span class="s s-Atom">the</span> <span class="s s-Atom">reverse</span> <span class="nn">order</span><span class="p">:</span>
-
-<span class="err">```</span> <span class="p">{.</span><span class="nn">lang</span><span class="p">:</span><span class="s s-Atom">python</span> <span class="p">.</span><span class="nn">decode</span><span class="p">:</span><span class="s s-Atom">true</span><span class="p">}</span>
-<span class="p">[</span><span class="s s-Atom">input</span><span class="p">]</span><span class="s s-Atom">:</span> <span class="s s-Atom">print</span> <span class="s s-Atom">l</span><span class="p">[</span><span class="s s-Atom">::-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">[</span><span class="s s-Atom">output</span><span class="p">]</span><span class="s s-Atom">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 </pre></div>
 
 
-<h2>Reversed method</h2>
+<h3>List slicing</h3>
+<p>This method can be a bit obscure at first read, but basically it slices
+the whole list proceding in the reverse order:</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="k">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>Reversed method</h3>
 <p>We use the
 <strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
 that returns an iterable object and a list comprehension to generate the
 new list</p>
-<p>``` {.lang:python .decode:true}
-[input]: print [x for x in reversed(l)]
-[output]: [6, 5, 4, 3, 2, 1]</p>
-<div class="highlight"><pre><span></span><span class="gh">Swapping values in place</span>
-<span class="gh">------------------------</span>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="k">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
 
-This last method is more verbose and it basically divides the list in
-two parts and swaps the first with sixth, the second with fifth, etc...
 
-<span class="s">``` {.lang:python .decode:true}</span>
-<span class="s">[input]:</span>
-<span class="s">for i in range(0, len(l) / 2):</span>
-<span class="s">    l[i], l[len(l) -1 -i] = l[len(l) -1 -i], l[i]</span>
-<span class="s">print l</span>
+<h3>Swapping values in place</h3>
+<p>This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">l</span>
 
-<span class="s">[output]: [6, 5, 4, 3, 2, 1]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 </pre></div>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
