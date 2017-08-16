@@ -1,5 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - Django</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sun, 12 Mar 2017 11:21:00 +0000</lastBuildDate><item><title>Creating a production ready API with Python and Django Rest Framework – part 3</title><link>https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/</link><description>&lt;p&gt;In the &lt;a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/"&gt;previous
+<rss version="2.0"><channel><title>Andrea Grandi - Django</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sun, 26 Mar 2017 17:08:00 +0100</lastBuildDate><item><title>Creating a production ready API with Python and Django Rest Framework – part 4</title><link>https://www.andreagrandi.it/2017/03/26/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/</link><description>&lt;p&gt;In the &lt;a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/"&gt;previous
+part&lt;/a&gt;
+of the tutorial we implemented &lt;strong&gt;details&lt;/strong&gt; management, &lt;strong&gt;relations&lt;/strong&gt;
+between models, &lt;strong&gt;nested APIs&lt;/strong&gt; and a different level of permissions.
+Our API is basically complete but it is working properly? Is the source
+code free of bugs? Would you feel confident to refactor the code without
+breaking something? The answer to all our question is probably no. &lt;strong&gt;I
+can't be sure if the code behaves properly nor I would feel confident
+refactoring anything without having some tests coverage&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;As I mentioned previously, we should have written tests since the
+beginning, but I really didn't want to mix too many concepts together
+and I wanted to let the user concentrate on the Rest Framework instead.&lt;/p&gt;
+&lt;h3&gt;Test structure and configuration&lt;/h3&gt;
+&lt;p&gt;Before beginning the fourth part of this tutorial, make sure you have
+grabbed the latest source code
+from &lt;a href="https://github.com/andreagrandi/drf-tutorial"&gt;https://github.com/andreagrandi/drf-tutorial&lt;/a&gt; and you have checked
+out the previous git tag:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.14
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Django has an integrated test runner but my personal choice is to use
+&lt;a href="https://doc.pytest.org/en/latest/"&gt;&lt;strong&gt;pytest&lt;/strong&gt;&lt;/a&gt;, so as first thing let's
+install the needed libraries:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pytest pytest-django
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As long as we respect a minimum of conventions (test files must start
+with &lt;strong&gt;test_&lt;/strong&gt; prefix), tests can be placed anywhere in the code. My
+advice is to put them all together in a separate folder and divide them
+according to app names. In our case we are going to create a folder
+named "&lt;strong&gt;tests&lt;/strong&gt;" at the same level of &lt;strong&gt;manage.py&lt;/strong&gt; file. Inside this
+folder we need to create a &lt;strong&gt;__init__.py&lt;/strong&gt; file and another folder
+called &lt;strong&gt;catalog&lt;/strong&gt; with an additional &lt;strong&gt;__init__.py&lt;/strong&gt; inside. Now,
+still at the same level of &lt;strong&gt;manage.py&lt;/strong&gt; create a file called
+&lt;strong&gt;pytest.ini&lt;/strong&gt; with this content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;pytest&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;DJANGO_SETTINGS_MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;drftutorial&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;settings&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Are you feeling confused? No problem. You can checkout the source code
+containing these changes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can check if you have done everything correctly going inside the
+drftutorial folder (the one containing &lt;strong&gt;manage.py&lt;/strong&gt;) and launching
+&lt;strong&gt;pytest&lt;/strong&gt;. If you see something like this, you did your changes
+correctly:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;drf-tutorial&lt;span class="o"&gt;)&lt;/span&gt; ➜  drftutorial git:&lt;span class="o"&gt;(&lt;/span&gt;master&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;pytest&lt;/span&gt;
+&lt;span class="o"&gt;=============================================================================================================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;==============================================================================================================================&lt;/span&gt;
+platform darwin -- Python &lt;span class="m"&gt;2&lt;/span&gt;.7.13, pytest-3.0.6, py-1.4.32, pluggy-0.4.0
+Django settings: drftutorial.settings &lt;span class="o"&gt;(&lt;/span&gt;from ini file&lt;span class="o"&gt;)&lt;/span&gt;
+rootdir: /Users/andrea/Projects/drf-tutorial/drftutorial, inifile: pytest.ini
+plugins: django-3.1.2
+collected &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;items&lt;/span&gt;
+
+&lt;span class="o"&gt;=========================================================================================================================&lt;/span&gt; no tests ran in &lt;span class="m"&gt;0&lt;/span&gt;.01 &lt;span class="nv"&gt;seconds&lt;/span&gt; &lt;span class="o"&gt;=========================================================================================================================&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;drf-tutorial&lt;span class="o"&gt;)&lt;/span&gt; ➜  drftutorial git:&lt;span class="o"&gt;(&lt;/span&gt;master&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Writing the first test&lt;/h3&gt;
+&lt;p&gt;To begin with, I will show you how to write a simple test that will
+verify if the API can return the products list. If you remember we
+implemented this API in the first part of the tutorial. First of all
+create a file called &lt;strong&gt;test_views.py&lt;/strong&gt; under the folder
+&lt;strong&gt;drftutorial/tests/catalog/&lt;/strong&gt; and add this code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.urls&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;rest_framework.test&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;APITestCase&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TestProductList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;APITestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nd"&gt;@pytest.mark.django_db&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_can_get_product_list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;product-list&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertEqual&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTP_200_OK&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertEqual&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;()),&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;before being able to run this test we need to change a little thing in
+the &lt;strong&gt;catalog/urls.py&lt;/strong&gt; file, something we should have done since the
+beginning. Please change the first url in this way, adding the &lt;strong&gt;name&lt;/strong&gt;
+parameter:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^products/$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ProductList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_view&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;product-list&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;at this point we are able to run our test suite again and verify the
+test is passing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;drf-tutorial&lt;span class="o"&gt;)&lt;/span&gt; ➜  drftutorial git:&lt;span class="o"&gt;(&lt;/span&gt;test-productlist&lt;span class="o"&gt;)&lt;/span&gt; ✗ pytest -v
+&lt;span class="o"&gt;=============================================================================================================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;==============================================================================================================================&lt;/span&gt;
+platform darwin -- Python &lt;span class="m"&gt;2&lt;/span&gt;.7.13, pytest-3.0.6, py-1.4.32, pluggy-0.4.0 -- /Users/andrea/.virtualenvs/drf-tutorial/bin/python2.7
+cachedir: .cache
+Django settings: drftutorial.settings &lt;span class="o"&gt;(&lt;/span&gt;from ini file&lt;span class="o"&gt;)&lt;/span&gt;
+rootdir: /Users/andrea/Projects/drf-tutorial/drftutorial, inifile: pytest.ini
+plugins: django-3.1.2
+collected &lt;span class="m"&gt;1&lt;/span&gt; items
+
+tests/catalog/test_views.py::TestProductList::test_can_get_product_list &lt;span class="nv"&gt;PASSED&lt;/span&gt;
+
+&lt;span class="o"&gt;===========================================================================================================================&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; passed in &lt;span class="m"&gt;0&lt;/span&gt;.98 &lt;span class="nv"&gt;seconds&lt;/span&gt; &lt;span class="o"&gt;===========================================================================================================================&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To checkout the source code at this point:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.16
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Explaining the test code&lt;/h3&gt;
+&lt;p&gt;When we implement a test, the first thing to do is to create a
+&lt;strong&gt;test_*&lt;/strong&gt; file and import the minimum necessary to write a test class
+and method. Each test class must inherit from &lt;strong&gt;APITestCase&lt;/strong&gt; and have a
+name that start with &lt;strong&gt;Test&lt;/strong&gt;, like &lt;strong&gt;TestProductList&lt;/strong&gt;. Since we use
+&lt;a href="https://doc.pytest.org/en/latest/"&gt;pytest&lt;/a&gt;, we need to mark our method
+with &lt;strong&gt;@pytest.mark.django_db decorator&lt;/strong&gt;, to tell the test suite our
+code will explicitly access the database. We are going to use the &lt;strong&gt;client&lt;/strong&gt; object
+that is integrated in APITestCase to perform the request. Before doing that we
+first get the local &lt;strong&gt;url&lt;/strong&gt; using Django's &lt;strong&gt;reverse&lt;/strong&gt; function. At this point
+we do the call using the client:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and then we assert a couple of things that we expect to be true:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertEqual&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTP_200_OK&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertEqual&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;()),&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We check that our API returns the &lt;strong&gt;200&lt;/strong&gt; status code and that in the returned
+JSON there are 8 elements.&lt;/p&gt;
+&lt;p&gt;It's normally a good practice to create test data inside the tests, but in our case
+we previously created a data migration that creates test data. Migrations are
+run every time we run tests so when we call our API, the data will be already there.&lt;/p&gt;
+&lt;h3&gt;Wrapping up&lt;/h3&gt;
+&lt;p&gt;I've written a few tests for all the views we have implemented until now and they are available
+if you checkout this version of the code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout tutorial-1.17
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I've only tested the views but it would be nice to test even the permission class, for example.
+Please remember to write your tests first, if possible: implementing the code will be much more natural
+once the tests are already in place.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sun, 26 Mar 2017 17:08:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2017-03-26:/2017/03/26/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/</guid><category>API</category><category>Django</category><category>framework</category><category>Python</category><category>rest</category><category>tutorial</category></item><item><title>Creating a production ready API with Python and Django Rest Framework – part 3</title><link>https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/</link><description>&lt;p&gt;In the &lt;a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/"&gt;previous
 part&lt;/a&gt;
 we implemented authentication, permissions and the possibility to POST
 new products for admins. In this new episode we will see how to
