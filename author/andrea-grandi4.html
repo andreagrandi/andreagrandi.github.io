@@ -34,6 +34,74 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
+                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 23 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
+<h3>Important things to know</h3>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h3>Writing a middleware</h3>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+
+
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h3>References</h3>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/" rel="bookmark"
                            title="Permalink to How to create a Docker image for PostgreSQL and persist data">How to create a Docker image for PostgreSQL and persist data</a></h1>
                 </header>
@@ -379,52 +447,6 @@ crontab -e
 wifi connection.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/" rel="bookmark"
-                           title="Permalink to Configuring ddclient to update your dynamic DNS at noip.com">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 02 September 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">linux</a><a href="https://www.andreagrandi.it/tag/dns.html">dns</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
-services that are reliable to use. If you have, like in my situation, a
-RaspberryPi connected to your home DSL and you want it to be always
-reachable without knowing the current IP address (the IP could change if
-you have a normal DSL service at home), you need a dynamic DNS service.</p>
-<p>To update the noip.com one you just need <strong>ddclient</strong> a tool that is
-available in Raspbian/Debian repository. You can install it with this
-command:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install ddclient
-</pre></div>
-
-
-<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
-<div class="highlight"><pre><span></span><span class="nv">protocol</span><span class="o">=</span>dyndns2
-<span class="nv">use</span><span class="o">=</span>web, <span class="nv">web</span><span class="o">=</span>checkip.dyndns.com/, web-skip<span class="o">=</span><span class="s1">&#39;IP Address&#39;</span>
-<span class="nv">server</span><span class="o">=</span>dynupdate.no-ip.com
-<span class="nv">login</span><span class="o">=</span>yourusername
-<span class="nv">password</span><span class="o">=</span>yourpassword
-yourhostname.no-ip.org
-</pre></div>
-
-
-<p>and restart the client:</p>
-<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
-</pre></div>
-
-
-<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
-<strong>limitation</strong>: they need to be confirmed every 30 days (you will
-receive an email and you need to click on the link contained to update
-your DNS).</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

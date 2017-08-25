@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - devops</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sat, 21 Feb 2015 20:24:00 +0000</lastBuildDate><item><title>How to create a Docker image for PostgreSQL and persist data</title><link>https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</link><description>&lt;p&gt;Before I start, let me confirm to you that official
+<rss version="2.0"><channel><title>Andrea Grandi - devops</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Fri, 25 Aug 2017 11:00:00 +0100</lastBuildDate><item><title>Getting latest Ubuntu AMI with Terraform</title><link>https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/</link><description>&lt;p&gt;When we need to create an EC2 resource on AWS using Terraform, we need to specify the AMI id to get the correct image.
+The id is not easy to memorise and it changes depending on the zone we are working one. On every new release the id changes again.
+So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?&lt;/p&gt;
+&lt;h3&gt;Getting latest Ubuntu AMI id&lt;/h3&gt;
+&lt;p&gt;In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="na"&gt;variable &amp;quot;aws_region&amp;quot; { default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;eu-west-2&amp;quot;&lt;/span&gt; &lt;span class=" -Punctuation"&gt;}&lt;/span&gt;&lt;span class="c1"&gt; # London&lt;/span&gt;
+
+&lt;span class="kr"&gt;provider&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;aws&amp;quot;&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;    region&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${var.aws_region}&amp;quot;&lt;/span&gt;
+&lt;span class="na"&gt;    access_key&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;youraccesskey&amp;quot;&lt;/span&gt;
+&lt;span class="na"&gt;    secret_key&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;yoursecretkey&amp;quot;&lt;/span&gt;
+&lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+
+&lt;span class="err"&gt;data&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;aws_ami&amp;quot; &amp;quot;ubuntu&amp;quot;&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;    most_recent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+
+    &lt;span class="err"&gt;filter&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;        name&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;
+&lt;span class="na"&gt;        values&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+
+    &lt;span class="err"&gt;filter&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;        name&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;virtualization-type&amp;quot;&lt;/span&gt;
+&lt;span class="na"&gt;        values&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hvm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+
+&lt;span class="na"&gt;    owners&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;099720109477&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # Canonical&lt;/span&gt;
+&lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+
+&lt;span class="kr"&gt;resource&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;aws_instance&amp;quot; &amp;quot;web&amp;quot;&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;    ami&lt;/span&gt;           &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${data.aws_ami.ubuntu.id}&amp;quot;&lt;/span&gt;
+&lt;span class="na"&gt;    instance_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;t2.micro&amp;quot;&lt;/span&gt;
+
+    &lt;span class="err"&gt;tags&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;        Name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;HelloUbuntu&amp;quot;&lt;/span&gt;
+    &lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+&lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+
+&lt;span class="err"&gt;output&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;image_id&amp;quot;&lt;/span&gt; &lt;span class=" -Punctuation"&gt;{&lt;/span&gt;
+&lt;span class="na"&gt;    value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${data.aws_ami.ubuntu.id}&amp;quot;&lt;/span&gt;
+&lt;span class=" -Punctuation"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After we have initialised our script using &lt;strong&gt;terraform init&lt;/strong&gt; if we run it, we will get the AMI id and the instance will be created:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;➜  example1$: terraform apply
+data.aws_ami.ubuntu: Refreshing state...
+aws_instance.web: Creating...
+    ami:                          &amp;quot;&amp;quot; =&amp;gt; &amp;quot;ami-03998867&amp;quot;
+    associate_public_ip_address:  &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    availability_zone:            &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    ebs_block_device.#:           &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    ephemeral_block_device.#:     &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    instance_state:               &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    instance_type:                &amp;quot;&amp;quot; =&amp;gt; &amp;quot;t2.micro&amp;quot;
+    ipv6_address_count:           &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    ipv6_addresses.#:             &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    key_name:                     &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    network_interface.#:          &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    network_interface_id:         &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    placement_group:              &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    primary_network_interface_id: &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    private_dns:                  &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    private_ip:                   &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    public_dns:                   &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    public_ip:                    &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    root_block_device.#:          &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    security_groups.#:            &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    source_dest_check:            &amp;quot;&amp;quot; =&amp;gt; &amp;quot;true&amp;quot;
+    subnet_id:                    &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    tags.%:                       &amp;quot;&amp;quot; =&amp;gt; &amp;quot;1&amp;quot;
+    tags.Name:                    &amp;quot;&amp;quot; =&amp;gt; &amp;quot;HelloUbuntu&amp;quot;
+    tenancy:                      &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    volume_tags.%:                &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+    vpc_security_group_ids.#:     &amp;quot;&amp;quot; =&amp;gt; &amp;quot;&amp;lt;computed&amp;gt;&amp;quot;
+aws_instance.web: Still creating... (10s elapsed)
+aws_instance.web: Still creating... (20s elapsed)
+aws_instance.web: Still creating... (30s elapsed)
+aws_instance.web: Creation complete (ID: i-0f58f8bd55b3a7e38)
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+image_id = ami-03998867
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 25 Aug 2017 11:00:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2017-08-25:/2017/08/25/getting-latest-ubuntu-ami-with-terraform/</guid><category>AWS</category><category>Terraform</category><category>Ubuntu</category><category>devops</category></item><item><title>How to create a Docker image for PostgreSQL and persist data</title><link>https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</link><description>&lt;p&gt;Before I start, let me confirm to you that official
 &lt;a href="https://www.docker.com/"&gt;&lt;strong&gt;Docker&lt;/strong&gt;&lt;/a&gt; images for
 &lt;a href="http://www.postgresql.org/"&gt;&lt;strong&gt;PostgreSQL&lt;/strong&gt;&lt;/a&gt; already exist and are
 available here: &lt;a href="https://registry.hub.docker.com/_/postgres/"&gt;https://registry.hub.docker.com/_/postgres/&lt;/a&gt; so this

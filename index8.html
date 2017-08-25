@@ -34,6 +34,177 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/" rel="bookmark"
+                           title="Permalink to Create an EncFS volume compatible with BoxCryptor Classic">Create an EncFS volume compatible with BoxCryptor Classic</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 12 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-sicurezza.html">HowTo, Linux, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/boxcryptor.html">boxcryptor</a><a href="https://www.andreagrandi.it/tag/dropbox.html">dropbox</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a></span>
+</footer><!-- /.post-info -->                <p>If you are planning to share an encrypted volume between Linux/OSX and
+Windows (I will assume you are sharing it on Dropbox, but you could use
+any similar service) and you are using
+<a href="http://www.arg0.net/encfs"><strong>EncFS</strong></a> under Linux/OSX and
+<a href="https://www.boxcryptor.com"><strong>BoxCryptor</strong></a> under Windows, there are
+some specifig settings to use when you create the EncFS volume. Infact
+even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
+<p>Suppose you want to create an encrypted volume located at
+<strong>\$HOME/.TestTmpEncrypted</strong> and mounted at <strong>\$HOME/TestTmp</strong> you need
+the following command:</p>
+<div class="highlight"><pre><span></span>andrea-Inspiron-660:~ andrea $ encfs ~/.TestTmpEncrypted ~/TestTmp
+</pre></div>
+
+
+<p>answer "Y" when you are asked if you want to create the folders:</p>
+<div class="highlight"><pre><span></span>The directory &quot;/home/andrea/.TestTmpEncrypted/&quot; does not exist. Should it be created? (y,n) y
+The directory &quot;/home/andrea/TestTmp&quot; does not exist. Should it be created? (y,n) y
+</pre></div>
+
+
+<p>At this point you will need to select between default paranoia mode or
+advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
+<div class="highlight"><pre><span></span>Creating new encrypted volume.
+Please choose from one of the following options:
+ enter &quot;x&quot; for expert configuration mode,
+ enter &quot;p&quot; for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?&gt; x
+</pre></div>
+
+
+<p>Manual configuration mode selected.</p>
+<div class="highlight"><pre><span></span>Select AES as cypher algorithm:
+
+The following cypher algorithms are available:
+1. AES : 16 byte block cipher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+2. Blowfish : 8 byte block cypher
+-- Supports key lengths of 128 to 256 bits
+-- Supports block sizes of 64 to 4096 bytes
+
+Enter the number corresponding to your choice: 1
+
+Selected algorithm &quot;AES&quot;
+</pre></div>
+
+
+<p>Select <strong>256</strong> as key size:</p>
+<div class="highlight"><pre><span></span>Please select a key size in bits. The cypher you have chosen
+supports sizes from 128 to 256 bits in increments of 64 bits.
+For example:
+128, 192, 256
+Selected key size: 256
+
+Using key size of 256 bits
+</pre></div>
+
+
+<p>Choose <strong>1024</strong> as block size:</p>
+<div class="highlight"><pre><span></span>Select a block size in bytes. The cypher you have chosen
+supports sizes from 64 to 4096 bytes in increments of 16.
+Alternatively, just press enter for the default (1024 bytes)
+
+filesystem block size:
+
+Using filesystem block size of 1024 bytes
+</pre></div>
+
+
+<p>Select <strong>Stream</strong> as filename encoding:</p>
+<div class="highlight"><pre><span></span>The following filename encoding algorithms are available:
+1. Block : Block encoding, hides file name size somewhat
+2. Null : No encryption of filenames
+3. Stream : Stream encoding, keeps filenames as short as possible
+
+Enter the number corresponding to your choice: 3
+
+Selected algorithm &quot;Stream&quot;&quot;
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
+<div class="highlight"><pre><span></span>Enable filename initialization vector chaining?
+This makes filename encoding dependent on the complete path,
+rather then encoding each path element individually.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
+<div class="highlight"><pre><span></span>Enable per-file initialization vectors?
+This adds about 8 bytes per file to the storage requirements.
+It should not affect performance except possibly with applications
+which rely on block-aligned file io for performance.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
+<div class="highlight"><pre><span></span>External chained IV disabled, as both &#39;IV chaining&#39;
+and &#39;unique IV&#39; features are required for this option.
+Enable block authentication code headers
+on every block in a file? This adds about 12 bytes per block
+to the storage requirements for a file, and significantly affects
+performance but it also means [almost] any modifications or errors
+within a block will be caught and will cause a read error.
+The default here is No.
+Any response that does not begin with &#39;y&#39; will mean No: no
+</pre></div>
+
+
+<p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
+<div class="highlight"><pre><span></span>Add random bytes to each block header?
+This adds a performance penalty, but ensures that blocks
+have different authentication codes. Note that you can
+have the same benefits by enabling per-file initialisation
+vectors, which does not come with as great a performance
+penalty.
+Select a number of bytes, from 0 (no random bytes) to 8: 0
+</pre></div>
+
+
+<p>Enable <strong>file-hole pass-through</strong>:</p>
+<div class="highlight"><pre><span></span>Enable file-hole pass-through?
+This avoids writing encrypted blocks when file holes are created.
+The default here is Yes.
+Any response that does not begin with &#39;n&#39; will mean Yes: yes
+</pre></div>
+
+
+<p>Finally you will see:</p>
+<div class="highlight"><pre><span></span>Configuration finished. The filesystem to be created has
+the following properties:
+Filesystem cypher: &quot;ssl/aes&quot;, version 3:0:2
+Filename encoding: &quot;nameio/stream&quot;, version 2:1:2
+Key Size: 256 bits
+Block Size: 1024 bytes
+File holes passed through to ciphertext.
+</pre></div>
+
+
+<p>At this point set a passphrase for your new volume:</p>
+<div class="highlight"><pre><span></span>Now you will need to enter a password for your filesystem.
+You will need to remember this password, as there is absolutely
+no recovery mechanism. However, the password can be changed
+later using encfsctl.
+
+New Encfs Password:
+Verify Encfs Password:
+</pre></div>
+
+
+<p>You should be able to mount this volume using BoxCryptor.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">read more</a>
+<p><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="bookmark"
                            title="Permalink to How to configure Edimax EW-7811UN Wifi dongle on Raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
                 </header>
@@ -245,124 +416,6 @@ this link and enjoy it
 <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="bookmark"
-                           title="Permalink to Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 02 March 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
-
-</footer><!-- /.post-info -->                <p>Developing a large web application or before deploying some code is very
-important to verify the quality of the code itself, check if we have
-introduced any regression or bug and have something that tell us if we
-are increasing or decreasing the quality of the code.</p>
-<p>Suppose we are in an organization or a company where the basic rule is:
-<strong>master</strong> branch is always ready/stable to be deployed. In a team
-usually people work on personal branches, then when the code is stable
-it's merged with master.</p>
-<p>How do we check if the code is stable and ready to be merged? First of
-all we need to cover all our code with <strong>proper tests</strong> (I won't go in
-details about unit testing here, I assume that the reader knows what I'm
-talking about), then we need to actually run them, possibly in an
-isolated environment that is similar to the production one, and check if
-they all pass. If they do, we are quite safe to merge our code with
-master branch.</p>
-<p>How can we ensure that all the developers remember to run tests when
-they push some new code? To make things a bit more real, let's take the
-example of a Python/Django product (or even a library) that currently
-supports <strong>Python 2.6, 2.7, 3.3</strong> and <strong>Django 1.4.x, 1.5.x, 1.6.x</strong>.
-The whole matrix consists of <strong>9 possible combinations</strong>. Do we have to
-manually run tests on 9 configurations? No, we don't.</p>
-<h2>Travis-ci.org</h2>
-<p><strong>Travis</strong> is a continuous integration tool that, once configured, takes
-care of these tasks and let us save lot of time (that we can use to
-actually write code). <a href="https://travis-ci.org">Travis-ci.org</a> is an
-online service that works with <a href="https://github.com"><strong>GitHub</strong></a> (it
-requires we use GitHub as repository for our code), and once we have
-connected the two accounts and configured a very simple file in our
-projects, it's automatically triggered when we push on our GitHub
-repository.</p>
-<p>The configuration consists of adding a file named <strong>.travis.yml</strong> in the
-root of our project. A working example is available here
-<a href="https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml">https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml</a>
-(all the env variables I set are not required normally, but that's where
-I save the values of my configuration, so they need to be initialized
-before I can run tests).</p>
-<p>The service supports most of the languages that are commonly used and
-even a good number of PAAS, making it very easy to automatically
-<strong>deploy</strong> our code. If it should not be enough for your needs, they
-also expose a public <strong>API</strong>. I suggest you to give a look at the
-official documentation that will explain everything in details
-<a href="http://docs.travis-ci.com">http://docs.travis-ci.com</a></p>
-<p>Once everything is configured, we will have something like this on our
-console
-<a href="https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128">https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128</a></p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console.png"><img alt="travis-ci-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/travis-ci-console-1024x544.png">{.aligncenter
-.wp-image-832 width="614"
-height="326"}</a></p>
-<p>If something goes wrong (if tests don't pass for example) we receive a
-notification with all the informations about the failing build, and if
-we had configured an automatic deployment of course the code would not
-be deployed in case of a failing build.</p>
-<p>Travis-ci.org is <strong>completly free</strong> for opensource projects and has also
-a paid version for private repositories.</p>
-<h2 id="coveralls.io" style="text-align: left;">Coveralls.io</h2>
-<p>There is a nice tool available for Python called
-<a href="http://nedbatchelder.com/code/coverage"><strong>coverage</strong></a>. Basically it
-runs tests and checks the percentage of the source code that is covered
-by tests, producing a nice report that shows us the percentage for every
-single file/module and even the lines of code that have been tested.</p>
-<p>Thanks to Coveralls.io and the use of Travis, even these tasks are
-completly automatized and the results are available online like in this
-example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds/560853</a></p>
-<p>The configuration is quite easy. We need to connect our Coveralls.io
-profile with GitHub, like we did for Travis-ci.org and then enable the
-repository. To trigger Coveralls after a successful Travis build, we
-need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
-<div class="highlight"><pre><span></span>after_success:
-  - coveralls
-</pre></div>
-
-
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console.png"><img alt="coveralls-console" src="http://www.andreagrandi.it/wp-content/uploads/2014/03/coveralls-console-1024x767.png">{.aligncenter
-.wp-image-836 width="614"
-height="460"}</a><br>
-Even Coveralls.io is <strong>completly free</strong> for opensource projects and
-offers a paid version for private repositories.</p>
-<h2>Heroku</h2>
-<p>I use <a href="https://www.heroku.com"><strong>Heroku</strong></a> to host and run my web
-application. Normally to deploy on Heroku you so something like this:
-<strong>git push heroku master</strong></p>
-<p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
-deploy the application on Heroku, if the build was successful:</p>
-<div class="highlight"><pre><span></span><span class="n">deploy</span><span class="o">:</span>
-  <span class="n">provider</span><span class="o">:</span> <span class="n">heroku</span>
-  <span class="n">api_key</span><span class="o">:</span>
-    <span class="n">secure</span><span class="o">:</span> <span class="n">R4LFkVu1</span><span class="sr">/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/</span><span class="n">FeUk0Yl</span><span class="o">+</span><span class="n">I</span><span class="o">=</span>
-  <span class="n">app</span><span class="o">:</span> <span class="n">workshopvenues</span>
-  <span class="n">on</span><span class="o">:</span>
-    <span class="n">repo</span><span class="o">:</span> <span class="n">andreagrandi</span><span class="o">/</span><span class="n">workshopvenues</span>
-  <span class="n">run</span><span class="o">:</span>
-    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py syncdb&quot;</span>
-    <span class="o">-</span> <span class="s2">&quot;python workshopvenues/manage.py migrate&quot;</span>
-</pre></div>
-
-
-<p>Not only the code is deployed, after deployment the <strong>South migrations</strong>
-are executed.</p>
-<h2>Conclusion</h2>
-<p>These two tools are saving me lot of time and are ensuring that the code
-I release for a project I'm working on
-(<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
-is always tested when I push it on my repository.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

@@ -32,12 +32,117 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/">How to create a Docker image for PostgreSQL and persist data</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/">Getting latest Ubuntu AMI with Terraform</a></h1>
+<footer class="post-info">
+        <span>Fri 25 August 2017</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/aws.html">AWS</a><a href="https://www.andreagrandi.it/tag/terraform.html">Terraform</a><a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.it/tag/devops.html">devops</a></span>
+</footer><!-- /.post-info --><p>When we need to create an EC2 resource on AWS using Terraform, we need to specify the AMI id to get the correct image.
+The id is not easy to memorise and it changes depending on the zone we are working one. On every new release the id changes again.
+So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
+<h3>Getting latest Ubuntu AMI id</h3>
+<p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
+<div class="highlight"><pre><span></span><span class="na">variable &quot;aws_region&quot; { default</span> <span class="o">=</span> <span class="s2">&quot;eu-west-2&quot;</span> <span class=" -Punctuation">}</span><span class="c1"> # London</span>
+
+<span class="kr">provider</span> <span class="s">&quot;aws&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
+<span class="na">    access_key</span> <span class="o">=</span> <span class="s2">&quot;youraccesskey&quot;</span>
+<span class="na">    secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
+<span class=" -Punctuation">}</span>
+
+<span class="err">data</span> <span class="s2">&quot;aws_ami&quot; &quot;ubuntu&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    most_recent</span> <span class="o">=</span> <span class="kt">true</span>
+
+    <span class="err">filter</span> <span class=" -Punctuation">{</span>
+<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
+<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span>
+    <span class=" -Punctuation">}</span>
+
+    <span class="err">filter</span> <span class=" -Punctuation">{</span>
+<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;virtualization-type&quot;</span>
+<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span>
+    <span class=" -Punctuation">}</span>
+
+<span class="na">    owners</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
+<span class=" -Punctuation">}</span>
+
+<span class="kr">resource</span> <span class="s">&quot;aws_instance&quot; &quot;web&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
+<span class="na">    instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
+
+    <span class="err">tags</span> <span class=" -Punctuation">{</span>
+<span class="na">        Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
+    <span class=" -Punctuation">}</span>
+<span class=" -Punctuation">}</span>
+
+<span class="err">output</span> <span class="s2">&quot;image_id&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
+<span class=" -Punctuation">}</span>
+</pre></div>
+
+
+<p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
+<div class="highlight"><pre><span></span>➜  example1$: terraform apply
+data.aws_ami.ubuntu: Refreshing state...
+aws_instance.web: Creating...
+    ami:                          &quot;&quot; =&gt; &quot;ami-03998867&quot;
+    associate_public_ip_address:  &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    availability_zone:            &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    ebs_block_device.#:           &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    ephemeral_block_device.#:     &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    instance_state:               &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    instance_type:                &quot;&quot; =&gt; &quot;t2.micro&quot;
+    ipv6_address_count:           &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    ipv6_addresses.#:             &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    key_name:                     &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    network_interface.#:          &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    network_interface_id:         &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    placement_group:              &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    primary_network_interface_id: &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    private_dns:                  &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    private_ip:                   &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    public_dns:                   &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    public_ip:                    &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    root_block_device.#:          &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    security_groups.#:            &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    source_dest_check:            &quot;&quot; =&gt; &quot;true&quot;
+    subnet_id:                    &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    tags.%:                       &quot;&quot; =&gt; &quot;1&quot;
+    tags.Name:                    &quot;&quot; =&gt; &quot;HelloUbuntu&quot;
+    tenancy:                      &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    volume_tags.%:                &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+    vpc_security_group_ids.#:     &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
+aws_instance.web: Still creating... (10s elapsed)
+aws_instance.web: Still creating... (20s elapsed)
+aws_instance.web: Still creating... (30s elapsed)
+aws_instance.web: Creation complete (ID: i-0f58f8bd55b3a7e38)
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+image_id = ami-03998867
+</pre></div>
+
+
+<p>That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.</p><p><a href="https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/" rel="bookmark"
+                           title="Permalink to How to create a Docker image for PostgreSQL and persist data">How to create a Docker image for PostgreSQL and persist data</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Sat 21 February 2015</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/containers.html">containers</a><a href="https://www.andreagrandi.it/tag/devops.html">devops</a><a href="https://www.andreagrandi.it/tag/docker.html">docker</a><a href="https://www.andreagrandi.it/tag/fig.html">fig</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/postgresql.html">postgresql</a></span>
-</footer><!-- /.post-info --><p>Before I start, let me confirm to you that official
+</footer><!-- /.post-info -->                <p>Before I start, let me confirm to you that official
 <a href="https://www.docker.com/"><strong>Docker</strong></a> images for
 <a href="http://www.postgresql.org/"><strong>PostgreSQL</strong></a> already exist and are
 available here: <a href="https://registry.hub.docker.com/_/postgres/">https://registry.hub.docker.com/_/postgres/</a> so this
@@ -196,12 +301,14 @@ PostgreSQL, RabbitMQ, MongoDB etc...), connect them all together and
 orchestrate the solution. I will maybe talk about this in one of the
 next posts. You can find the full source code of my PostgreSQL Docker
 image, including the fig.yml file in this
-repository <a href="https://github.com/andreagrandi/postgresql-docker">https://github.com/andreagrandi/postgresql-docker</a></p><p><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/#disqus_thread">comments</a></p>                </article>
+repository <a href="https://github.com/andreagrandi/postgresql-docker">https://github.com/andreagrandi/postgresql-docker</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 1
 </p>
-            </aside><!-- /#featured -->
-            </ol><!-- /#posts-list -->
             </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="social">
