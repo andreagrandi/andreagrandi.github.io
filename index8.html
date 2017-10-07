@@ -34,6 +34,86 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/" rel="bookmark"
+                           title="Permalink to Automatically pull updated Docker images and restart containers with docker-puller">Automatically pull updated Docker images and restart containers with docker-puller</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 25 October 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/containers.html">containers</a><a href="https://www.andreagrandi.it/tag/docker.html">docker</a><a href="https://www.andreagrandi.it/tag/dockerio.html">docker.io</a><a href="https://www.andreagrandi.it/tag/flask.html">Flask</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a></span>
+</footer><!-- /.post-info -->                <p>If you use <a href="https://docker.io">docker.io</a> (or any similar service) to
+build your <strong>Docker</strong> containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h3>How to use docker-puller</h3>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+docker stop <span class="nb">test</span>
+docker rm <span class="nb">test</span>
+docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
+</pre></div>
+
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">read more</a>
+<p><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/" rel="bookmark"
                            title="Permalink to Create an EncFS volume compatible with BoxCryptor Classic">Create an EncFS volume compatible with BoxCryptor Classic</a></h1>
                 </header>
@@ -342,85 +422,10 @@ your DNS).</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/" rel="bookmark"
-                           title="Permalink to Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 31 August 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/dns.html">dns</a><a href="https://www.andreagrandi.it/tag/postfix.html">postfix</a><a href="https://www.andreagrandi.it/tag/vps.html">vps</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/digitalocean.html">digitalocean</a><a href="https://www.andreagrandi.it/tag/email.html">email</a></span>
-</footer><!-- /.post-info -->                <p>I have recently migrated my website from a shared hosting to a dedicated
-VPS on Digital Ocean. Having a VPS surely gives you unlimited
-possibilities, compared to a shared hosting, but of course you have to
-manage some services by yourself.</p>
-<p>In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
-+ PHP) to serve my WordPress blog and Postfix to use email forwarding
-from my aliases to my personal email.</p>
-<h3>Configuring DNS on Digital Ocean</h3>
-<p>Understanding how to properly configure the DNS entries in the panel
-could be a bit tricky if it's not your daily bread. In particular there
-is a Digital Ocean configuration that assumes certain things about your
-droplet, so it's better to configure it properly.</p>
-<p>For example the droplet name should not be casual, but it should match
-your domain name: I initially called my host "andreagrandi" and I had to
-rename it to "andreagrandi.it" to have the proper PTR values.</p>
-<p>You will need to create at least a "mail" record, pointing to your IP
-and an "MX" record pointing to mail.yourdomain.com. (please note the dot
-at the end of the domain name). Here is the configuration of my own
-droplet (you will notice also a CNAME record. You need it if you want
-www.yourdomain.com to correctly point to your ip.</p>
-<p><a href="https://www.andreagrandi.it/images/2014/08/dns_config_digitalocean.jpg"><img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/images/2014/08/dns_config_digitalocean.jpg" width="100%"></a></p>
-<h3>Configuring Postfix</h3>
-<p>In my case I only needed some aliases that I use to forward emails to my
-GMail account, so the configuration is quite easy. First you need to
-install Postfix:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install postfix
-</pre></div>
-
-
-<p>Then you need to edit<strong> /etc/postfix/main.cf</strong> customizing myhostname
-with your domain name and add <strong>virtual_alias_maps</strong> and
-<strong>virtual_alias_domains</strong> parameters. Please also check that
-<strong>mynetworks</strong> is configured exactly as I did, or you will make your
-mail server vulnerable to spam bots. You can see my complete
-configuration here:</p>
-<p>
-<script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"></script>
-</p>
-
-<h3>Add your email aliases</h3>
-<p>Edit <strong>/etc/postfix/virtual</strong> file and add your aliases, one per line,
-like in this example:</p>
-<div class="highlight"><pre><span></span>info@yourdomain.com youremail@gmail.com
-sales@yourdomain.com youremail@gmail.com
-</pre></div>
-
-
-<p>At this point update the alias map and reload Postfix configuration:</p>
-<div class="highlight"><pre><span></span>sudo postmap /etc/postfix/virtual
-sudo /etc/init.d/postfix reload
-</pre></div>
-
-
-<h3>Conclusion</h3>
-<p>As you can see, configuring Postfix is quite easy, you just need to be
-careful when you configure the DNS records in the control panel. Are you
-curious to try how Digital Ocean VPS works? Fancy <strong>10\$ credit</strong>
-(enough for 2 months if you choose the basic droplet) for <strong>free</strong>? Use
-this link and enjoy it
-<a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/index7.html">&laquo;</a>
-    Page 8 / 48
+    Page 8 / 49
         <a href="https://www.andreagrandi.it/index9.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

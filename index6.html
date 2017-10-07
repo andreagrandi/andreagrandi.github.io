@@ -34,6 +34,74 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
+                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 23 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
+<h3>Important things to know</h3>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+    important: middlewares are processed from top to bottom during a
+    request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+    middleware. For example you can just implement <strong>process_request</strong>
+    and <strong>process_template_response</strong></li>
+<li>If you implement <strong>process_request</strong> and you decide to return an
+    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
+    ignored and only your response will be returned</li>
+</ul>
+<h3>Writing a middleware</h3>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+
+
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h3>References</h3>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/" rel="bookmark"
                            title="Permalink to Why I completely switched this website to HTTPS (and why you should do the same)">Why I completely switched this website to HTTPS (and why you should do the same)</a></h1>
                 </header>
@@ -168,86 +236,10 @@ accounts.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/" rel="bookmark"
-                           title="Permalink to Goenv - Go Environment Manager">Goenv - Go Environment Manager</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 19 April 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/go-howto-programmazione.html">Go, HowTo, Programmazione</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/go.html">go</a><a href="https://www.andreagrandi.it/tag/golang.html">golang</a></span>
-</footer><!-- /.post-info -->                <p>To briefly explain what
-<a href="https://bitbucket.org/ymotongpoo/goenv"><strong>Goenv</strong></a> is, I will assume
-you have previously worked with <strong>Python</strong>. Basically it's what
-<strong>Virtualenv</strong> is for Python. Goenv (and it's wrapper <strong>goof</strong>) creates
-a folder for a new project and set the <strong>\$GOPATH</strong> env variable to that
-folder path. At this point every time you do <strong>go get</strong>, the libraries
-will be installed in that specific <strong>\$GOPATH</strong>.</p>
-<p>It's very important to use separate \$GOPATH for each project, because
-this allow us to use different library versions for each project and
-<strong>avoid version conflicts</strong>.</p>
-<h1>Installation</h1>
-<p>``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
-$ git clone https://bitbucket.org/ymotongpoo/goenv
-$ cd goenv
-$ go build -o goenv *.go
-$ chmod +x goenv
-$ sudo cp goenv /usr/bin</p>
-<div class="highlight"><pre><span></span>Goenv is now installed, we will now install its wrapper **goof**:
-
-``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
-$ sudo cp shellscripts/goenvwrapper.sh /usr/bin
-</pre></div>
-
-
-<p>Edit <strong>.bashrc</strong> (or <strong>.zshrc</strong> if you use zsh) and append these lines:</p>
-<p>``` {.toolbar:2 .lang:zsh .decode:true}
-export GOENVHOME=$HOME/goenvs
-source /usr/bin/goenvwrapper.sh</p>
-<div class="highlight"><pre><span></span><span class="gh">How to use it</span>
-<span class="gh">=============</span>
-
-To <span class="gs">**create**</span> a new go environment use <span class="gs">**make**</span>:
-
-<span class="s">``` {.toolbar:2 .lang:default .highlight:0 .decode:true}</span>
-<span class="s">➜  ~  goof make go-test</span>
-<span class="s">Do you want to create all parental directory of &#39;/Users/andrea/goenvs/go-test&#39;? [y/N]: y</span>
-<span class="s">Environment /Users/andrea/goenvs/go-test created!</span>
-<span class="s">(go:go-test) ➜  go-test</span>
-</pre></div>
-
-
-<p>To exit the go environment use <strong>deactivate</strong>:</p>
-<p>``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
-(go:go-test) ➜  go-test  deactivate
-➜  go-test</p>
-<div class="highlight"><pre><span></span>To use an environment use **workon**:
-
-``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
-➜  go-test  goof workon go-test
-(go:go-test) ➜  go-test
-</pre></div>
-
-
-<p>To show available environments use <strong>show</strong>:</p>
-<p><code>{.toolbar:2 .lang:default .highlight:0 .decode:true}
-(go:go-test) ➜  go-test  goof show
-* go-test</code></p>
-<p>Goenv itself is not enough to manage Go packages. It would be like using
-<strong>Virtualenv</strong> only and not using <strong>pip</strong> and <strong>requirements</strong>. In a
-future post I will explain how to use
-<a href="https://github.com/tools/godep"><strong>Godep</strong></a>.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/04/19/goenv-go-environment-manager/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/index5.html">&laquo;</a>
-    Page 6 / 48
+    Page 6 / 49
         <a href="https://www.andreagrandi.it/index7.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
