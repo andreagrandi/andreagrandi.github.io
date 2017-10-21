@@ -1,5 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - Encryption</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sat, 30 Sep 2017 14:00:00 +0100</lastBuildDate><item><title>Configuring an offline GnuPG master key and subkeys on YubiKey</title><link>https://www.andreagrandi.it/2017/09/30/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/</link><description>&lt;p&gt;I've recently bought a &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey 4&lt;/a&gt; and 
+<rss version="2.0"><channel><title>Andrea Grandi - Encryption</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Sat, 21 Oct 2017 12:00:00 +0100</lastBuildDate><item><title>Keybase: PGP encryption made easy</title><link>https://www.andreagrandi.it/2017/10/21/keybase-pgp-encryption-made-easy/</link><description>&lt;p&gt;Using PGP can be quite hard, even if you have a lot of experience with computers.
+By the way encryption is what gives us privacy and permits us to safely transmit information
+and for this reason it should be easy to use, for everyone.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://keybase.io"&gt;Keybase&lt;/a&gt; really makes encryption easy to use.&lt;/p&gt;
+&lt;h3&gt;PGP identity&lt;/h3&gt;
+&lt;p&gt;When Keybase was launched it was mainly a wrapper for PGP commands
+to encrypt and decrypt a message for a certain user, but it also introduced a very nice
+chain of trust.&lt;/p&gt;
+&lt;p&gt;In Keybase it's possible to either generate a new PGP key or import an existing one
+but the most important thing is being able to verify our own identity using multiple proofs.&lt;/p&gt;
+&lt;p&gt;Many of us have a personal blog, a Twitter or Facebook accounts, a GitHub account etc...
+All these accounts combined together make our online identity.&lt;/p&gt;
+&lt;p&gt;Every Keybase account can be verified by other online identities. In Keybase
+you don't just say "I'm Andrea Grandi, this is my PGP key...". In Keybase you
+can link your existing online accounts to your Keybase account and show additional
+proofs of your identity.&lt;/p&gt;
+&lt;p&gt;Unless an attacker controls all your social accounts, they cannot impersonate and verify
+themselves as if they were you.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2017/10/keybase_identity.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2017/10/keybase_identity.png" width="100%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Once you are on Keybase, other users can look for you even using your GitHub or Twitter username
+without having to know your email address or Keybase username. This concept can be
+very useful in some situations, we will see it later.&lt;/p&gt;
+&lt;h3&gt;Encrypted Filesystem&lt;/h3&gt;
+&lt;p&gt;One of the first features launched by Keybase was their encrypted filesystem.
+There is a virtual folder located at &lt;strong&gt;/keybase&lt;/strong&gt; (on OSX/Linux or k:\keybase on Windows)
+where you will find at least three other folders: &lt;strong&gt;public&lt;/strong&gt;, &lt;strong&gt;private&lt;/strong&gt;, &lt;strong&gt;team&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4&gt;Public folders&lt;/h4&gt;
+&lt;p&gt;Anything you place inside the /public folder can be accessed by any Keybase user and it's
+automatically signed. Every user public folder/file can be accessed using their Keybase username,
+like for example &lt;strong&gt;/keybase/public/andreagrandi/hello.txt&lt;/strong&gt; but you can also use any other identity like
+&lt;strong&gt;/keybase/public/andreagrandi@github/hello.txt&lt;/strong&gt; or &lt;strong&gt;/keybase/public/andreagrandi@twitter/hello.txt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; This is very useful if you only know a person on Twitter (or GitHub etc...) and you want to
+share a file with them (or send a message, as we will see later) but you don't follow each other
+and you can't reach them privately.&lt;/p&gt;
+&lt;p&gt;This is a public folder example of one of the Keybase developers:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2017/10/keybase_chris_folder.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2017/10/keybase_chris_folder.png" width="60%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can put whatever you want in these folders: your public PGP key, your official avatar,
+your Signal fingerprint etc... the other users will access these files with the assurance they
+haven't been changed by anyone else in the middle.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; please keep in mind that Keybase doesn't work like Dropbox or similar. Files are not
+synced between your devices and Keybase servers. Files are streamed on demand, so &lt;strong&gt;you won't be able to access these files without a working Internet connection&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4&gt;Private folders&lt;/h4&gt;
+&lt;p&gt;Hey but... where is the encryption here?! Whatever you put inside your &lt;strong&gt;private&lt;/strong&gt;
+folder can only be read by you and only you. &lt;strong&gt;Not even Keybase employees can access the content of your files&lt;/strong&gt;,
+because they are encrypted before leaving your devices and decrypted on demand
+when you want to access them.&lt;/p&gt;
+&lt;p&gt;Do you want to share files with &lt;strong&gt;anotheruser&lt;/strong&gt;? No problem. Just create a file inside &lt;strong&gt;/keybase/private/andreagrandi,anotheruser&lt;/strong&gt;
+(the folder &lt;strong&gt;andreagrandi,anotheruser&lt;/strong&gt; will implicitely exist already) and that file will only be readable by you and &lt;strong&gt;anotheruser&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4&gt;Security and other information&lt;/h4&gt;
+&lt;p&gt;Keybase employes only have access to: 1) your top level folder names (like: "andreagrandi,anotheruser"),
+2) when and for how long you are reading/writing, 3) how much space you are using.&lt;/p&gt;
+&lt;p&gt;They won't be able to access the content of your files and not even the files or folders names.&lt;/p&gt;
+&lt;p&gt;Every user initially had 10GB quota available, but a few hints (including one of their &lt;a href="https://www.andreagrandi.it/images/2017/10/teams-splash-announcement.png"&gt;recent screenshots&lt;/a&gt;)
+say that now &lt;strong&gt;users have 250GB available&lt;/strong&gt; to store their files.&lt;/p&gt;
+&lt;p&gt;You can find more technical information about Keybase encrypted folders in this article: &lt;a href="https://keybase.io/docs/kbfs"&gt;https://keybase.io/docs/kbfs&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Encrypted Chat&lt;/h3&gt;
+&lt;p&gt;A few months ago Keybase introduced the encrypted chat. Messages between users
+are &lt;strong&gt;end to end encrypted&lt;/strong&gt; and cannot be read by anyone else, not even having access to Keybase
+servers.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2017/10/keybase_chat.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2017/10/keybase_chat.png" width="100%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;A better address book&lt;/h4&gt;
+&lt;p&gt;When we use services like WhatsApp or Signal, we are forced to share our telephone number if we want
+the other person to be able to contact us.&lt;/p&gt;
+&lt;p&gt;On Keybase I don't need to share my telephone number. Anyone can reach me using one of my online
+identities: &lt;strong&gt;andreagrandi@twitter&lt;/strong&gt;, &lt;strong&gt;andreagrandi@github&lt;/strong&gt; etc...&lt;/p&gt;
+&lt;p&gt;You can even send a message to a person who is &lt;strong&gt;not on Keybase yet&lt;/strong&gt;: if you send a message to
+randomuser@twitter, when randomuser joins Keybase and verify their Twitter account, the message
+will be encrypted for them and will be safely delivered.&lt;/p&gt;
+&lt;h4&gt;Security&lt;/h4&gt;
+&lt;p&gt;Keybase doesn't use PGP to encrypt chat or files. Transmitting the key across all devices
+wouldn't be safe so each message is encrypted using the public key of every device connected
+to the account.&lt;/p&gt;
+&lt;h4&gt;Command line&lt;/h4&gt;
+&lt;p&gt;Keybase works from the command line too. There is no need to use the graphic
+client to send a message to another user, you can do something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keybase chat send andreagrandi &lt;span class="s2"&gt;&amp;quot;Hello mate!&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can integrate messages in any script and it's even available a JSON API:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keybase chat &lt;span class="nb"&gt;help&lt;/span&gt; api
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For more details you can have a look a this blog post on their website: &lt;a href="https://keybase.io/blog/keybase-chat"&gt;https://keybase.io/blog/keybase-chat&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Teams&lt;/h3&gt;
+&lt;p&gt;Keybase has recently introduced Teams feature. The Chat becomes more similar to Slack, but with the difference that
+only team members can read the content of messages and files: the server only knows about team names and users, nobody else can
+access the content.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2017/10/teams-splash-announcement.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2017/10/teams-splash-announcement.png" width="100%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;It's important to mention that in Keybase there aren't private channels like there are in Slack: if a team wants to have
+channels accessible only from a restricted group of users, the admin needs to create a sub team. For example if you have a
+team called &lt;strong&gt;keybaselovers&lt;/strong&gt; you can create a sub team for admins only called &lt;strong&gt;keybaselovers.admins&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Teams have a dedicated encrypter folder that you will find under &lt;strong&gt;/keybase/team/keybaselovers&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;At the moment the features available from the UI are quite limited and are only available from the command line. In the next
+weeks these features will be available from the UI too. In the mean time you can have a look ad the commandline help:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keybase team --help &lt;span class="c1"&gt;# for admin&amp;#39;ing teams&lt;/span&gt;
+keybase chat --help &lt;span class="c1"&gt;# for admin&amp;#39;ing chat channels&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Create a Team&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keybase team create keybaselovers
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Add a user to a Team&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keybase team add-member keybaselovers --user&lt;span class="o"&gt;=&lt;/span&gt;alice --role&lt;span class="o"&gt;=&lt;/span&gt;writer
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For more information you can have a look at the official announcement page: &lt;a href="https://keybase.io/blog/introducing-keybase-teams"&gt;https://keybase.io/blog/introducing-keybase-teams&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Git&lt;/h3&gt;
+&lt;p&gt;Sometimes we have the need to store private information in a safe way and we want to be sure that nobody else is
+able to access these information.&lt;/p&gt;
+&lt;p&gt;Latest feature that has been added to Keybase is &lt;strong&gt;encrypted Git repositories&lt;/strong&gt;. They are like normal GitHub
+repositories, but their content is stored in a safer way.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2017/10/keybase_git.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2017/10/keybase_git.png" width="100%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;Privacy and Security&lt;/h4&gt;
+&lt;p&gt;What is the &lt;strong&gt;difference&lt;/strong&gt; with GitHub private repositories? In GitHub a private repository is used to store information that
+only our account can access, but the files are accessible in plain text by GitHub employees. With encrypted Git repositories
+instead, the &lt;strong&gt;information are encrypted before they leave our device&lt;/strong&gt; and they are stored encrypted. Nobody, without having our
+private key can read them, not even Keybase employees.&lt;/p&gt;
+&lt;h4&gt;Teams and Quota&lt;/h4&gt;
+&lt;p&gt;Encrypted Git repositories are of course available for teams too. Creating a team repository, it will be available to
+all the members of the team.&lt;/p&gt;
+&lt;p&gt;Both teams and single users have &lt;strong&gt;100GB of space&lt;/strong&gt; available (which is separate from Folders quota).&lt;/p&gt;
+&lt;h4&gt;Usage&lt;/h4&gt;
+&lt;p&gt;If I create my personal repository called &lt;strong&gt;documents&lt;/strong&gt; all I have to do to clone it and use it is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone keybase://private/andreagrandi/documents
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and I can use it as a normal git repository. Every time I commit and push something, the content will be &lt;strong&gt;signed and encrypted&lt;/strong&gt;
+and only available to the repository owner (which is me) or to the whole team if it's a team repository.&lt;/p&gt;
+&lt;p&gt;For more information, please have a look at the official announcement here: &lt;a href="https://keybase.io/blog/encrypted-git-for-everyone"&gt;https://keybase.io/blog/encrypted-git-for-everyone&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;Keybase is still in continuous development but it already offers a few interesting features which can help people
+in their every day life. I strongly advise anyone to &lt;a href="https://keybase.io"&gt;&lt;strong&gt;get an account&lt;/strong&gt;&lt;/a&gt;, play with the available features and &lt;strong&gt;report any bug&lt;/strong&gt;
+so the developers will be able to fix them and build an even better product. I can't wait to see the features they will
+announce in the next months!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 21 Oct 2017 12:00:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2017-10-21:/2017/10/21/keybase-pgp-encryption-made-easy/</guid><category>GnuPG</category><category>PGP</category><category>Security</category><category>Encryption</category><category>Keybase</category></item><item><title>Configuring an offline GnuPG master key and subkeys on YubiKey</title><link>https://www.andreagrandi.it/2017/09/30/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/</link><description>&lt;p&gt;I've recently bought a &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey 4&lt;/a&gt; and 
 decided to use it for GnuPG too, other than using it as hardware 2FA.&lt;/p&gt;
 &lt;p&gt;I've also decided to make my GnuPG configuration much more safe, generating the &lt;strong&gt;master key&lt;/strong&gt;
 on an &lt;strong&gt;offline&lt;/strong&gt; computer (in my case a simple RaspberryPi not connected to Internet) and &lt;strong&gt;generating a subkey&lt;/strong&gt;
