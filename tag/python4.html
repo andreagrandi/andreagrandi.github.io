@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Andrea Grandi - Python</title>
+        <title>Andrea Grandi - python</title>
         <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
         <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
         <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
@@ -33,6 +33,46 @@
 
                 <section id="content" class="body">
                     <ol id="posts-list" class="hfeed" start="3">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/" rel="bookmark"
+                           title="Permalink to Using Python PyPy in a virtual environment">Using Python PyPy in a virtual environment</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 18 December 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-python.html">HowTo, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/pypy.html">pypy</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>Sometimes we need to test if our code also works with
+<strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
+have already installed it in your system, first find out where it is
+installed:</p>
+<p>``` {.lang:zsh .decode:true}
+➜  ~  which pypy
+/usr/local/bin/pypy</p>
+<div class="highlight"><pre><span></span>then you need **mkvirtualenv** to create a virtual environment that will
+use this runtime:
+
+``` {.lang:zsh .decode:true}
+➜  ~  mkvirtualenv -p /usr/local/bin/pypy pypy-test
+Running virtualenv with interpreter /usr/local/bin/pypy
+New pypy executable in pypy-test/bin/pypy
+Installing setuptools, pip, wheel...done.
+(pypy-test)➜  ~  python
+Python 2.7.10 (f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559, Sep 01 2015, 06:26:30)
+[PyPy 2.6.1 with GCC 4.2.1 Compatible Apple LLVM 6.1.0 (clang-602.0.53)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;&gt;
+</pre></div>
+
+
+<p>That's it! You can now use this virtual environment to run your Python
+application using PyPy environment.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
             <li><article class="hentry">
                 <header>
                     <h1><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
@@ -278,78 +318,10 @@ if the value doesn't exist <strong>my_value</strong> will be assigned with
                 <a class="readmore" href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
-                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 23 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a></span>
-</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h3>Important things to know</h3>
-<p>There are four important things to know about middlewares:</p>
-<ul>
-<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
-<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-    important: middlewares are processed from top to bottom during a
-    request and from bottom to top during a response.</li>
-<li>You don't need to implement all the available methods of a
-    middleware. For example you can just implement <strong>process_request</strong>
-    and <strong>process_template_response</strong></li>
-<li>If you implement <strong>process_request</strong> and you decide to return an
-    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
-    ignored and only your response will be returned</li>
-</ul>
-<h3>Writing a middleware</h3>
-<p>In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-
-<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span>
-</pre></div>
-
-
-<p>Please don't care about how I calculated the time. I'm aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.</p>
-<p>If you want to see a <strong>complete example</strong> of a project that includes and
-uses this middleware, here you can find the complete source
-code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
-<h3>References</h3>
-<ul>
-<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
-<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
-<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
-</ul>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/tag/python3.html">&laquo;</a>
-    Page 4 / 8
+    Page 4 / 9
         <a href="https://www.andreagrandi.it/tag/python5.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

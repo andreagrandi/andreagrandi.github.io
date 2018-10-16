@@ -35,6 +35,121 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/12/10/getting-started-with-bbc-microbit-and-python/" rel="bookmark"
+                           title="Permalink to Getting started with BBC MicroBit and Python">Getting started with BBC MicroBit and Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 10 December 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-microbit-python.html">HowTo, Microbit, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.it/tag/psf.html">psf</a></span>
+</footer><!-- /.post-info -->                <p>A few days ago I had the great opportunity to attend an event organised
+in collaboration with <strong><a href="https://www.python.org/">Python Software
+Foundation</a></strong>, a few <strong>primary school
+teachers</strong> and hosted by <strong><a href="http://www.computingatschool.org.uk/">Computing at
+School</a></strong>, in <strong>London</strong>. The
+meeting was organised by <strong>Yvonne Walker</strong> (from CAS) and <strong>Nicholas
+Tollervey</strong> (PSF). The aim of the meeting was for teachers and
+developers to meet and discuss the opportunities offered
+by <strong><a href="https://micropython.org/">MicroPython</a></strong> on the <strong><a href="https://www.microbit.co.uk/">BBC
+micro:bit</a></strong>. During the event a
+<strong>BBC</strong> <strong>micro:bit</strong> board was loaned to each person for the purpose of
+developing Python scripts, MicroPython itself or educational resources
+for the <strong>BBC micro:bit</strong>. Nicholas made it very clear that there is an
+<strong>NDA</strong> in place until the device is delivered to the kids and explained
+what we could or couldn't do.</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/12/computing_at_school_microbit_reduced.jpg"><img alt="computing_at_school_microbit_reduced" src="https://www.andreagrandi.it/wp-content/uploads/2015/12/computing_at_school_microbit_reduced.jpg">{.aligncenter
+.wp-image-1094 width="729"
+height="546"}</a></p>
+<h2>The Board</h2>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/12/bbcfullbleed.jpg"><img alt="bbcfullbleed" src="https://www.andreagrandi.it/wp-content/uploads/2015/12/bbcfullbleed.jpg">{.aligncenter
+.wp-image-1082 width="515"
+height="334"}</a></p>
+<p>The board is a 4 x 5 cm device with an <strong>ARM Cortex-M0</strong> processor,
+<strong>accelerometer</strong> and magnetometer sensors, <strong>Bluetooth</strong> and <strong>USB
+connectivity</strong>, a <strong>display</strong> consisting of 25 LEDs, <strong>two programmable
+buttons</strong>, and can be powered by either USB or an external battery pack
+(source: <a href="https://en.wikipedia.org/wiki/Micro_Bit">https://en.wikipedia.org/wiki/Micro_Bit</a> ).</p>
+<h2>Flashing the firmware</h2>
+<p>Once you get a new board, it probably doesn't have a proper firmware and
+application flashed. I suggest you to download the <strong>Python MicroBit
+REPL</strong> from this repository: <a href="https://github.com/ntoll/microrepl">https://github.com/ntoll/microrepl</a><br>
+All you need to do is to connect the board to your computer, using a
+<strong>micro-USB cable</strong>. The device will be mounted as a volume. At this
+point, drag &amp; drop the file called
+<strong><a href="https://github.com/ntoll/microrepl/blob/master/firmware.hex">firmware.hex</a></strong>
+into the mounted volume. The firmware will be flashed and during the
+operation you will see a yellow led flashing.</p>
+<h2>Using MicroPython micro:bit REPL</h2>
+<p>To start writing some Python code on micro:bit you first need to clone
+this <a href="https://github.com/ntoll/microrepl">repository</a></p>
+<p>``` {.lang:default .decode:true}
+git clone git@github.com:ntoll/microrepl.git</p>
+<div class="highlight"><pre><span></span>once you have cloned the repository, you need to install the Python
+dependencies (I suggest you to do it from inside a **virtualenv**)
+
+``` {.lang:default .decode:true}
+pip install -r requirements.txt
+</pre></div>
+
+
+<p>start the MicroPython REPL</p>
+<p>``` {.lang:default .decode:true}
+python microrepl.py</p>
+<div class="highlight"><pre><span></span><span class="s s-Atom">and</span> <span class="s s-Atom">the</span> <span class="nv">Python</span> <span class="s s-Atom">shell</span> <span class="s s-Atom">will</span> <span class="s s-Atom">open</span><span class="p">,</span> <span class="s s-Atom">so</span> <span class="s s-Atom">you</span> <span class="s s-Atom">can</span> <span class="s s-Atom">start</span> <span class="s s-Atom">writing</span> <span class="s s-Atom">commands</span><span class="p">,</span> <span class="s s-Atom">like</span>
+<span class="s s-Atom">this</span> <span class="s s-Atom">one</span>
+
+<span class="err">```</span> <span class="p">{.</span><span class="nn">lang</span><span class="p">:</span><span class="s s-Atom">python</span> <span class="p">.</span><span class="nn">decode</span><span class="p">:</span><span class="s s-Atom">true</span><span class="p">}</span>
+<span class="p">(</span><span class="s s-Atom">microbit</span><span class="p">)</span><span class="s s-Atom">➜</span>  <span class="s s-Atom">microrepl</span> <span class="nn">git</span><span class="p">:(</span><span class="s s-Atom">master</span><span class="p">)</span> <span class="s s-Atom">python</span> <span class="s s-Atom">microrepl</span><span class="p">.</span><span class="s s-Atom">py</span>
+<span class="nv">Quit</span><span class="s s-Atom">:</span> <span class="nv">Ctrl</span><span class="s s-Atom">+</span><span class="p">]</span> <span class="p">|</span> <span class="nv">Stop</span> <span class="nn">program</span><span class="p">:</span> <span class="nv">Ctrl</span><span class="o">+</span><span class="nv">C</span> <span class="p">|</span> <span class="nv">Reset</span><span class="s s-Atom">:</span> <span class="nv">Ctrl</span><span class="o">+</span><span class="nv">D</span>
+<span class="nv">Type</span> <span class="s s-Atom">&#39;help()&#39;</span> <span class="p">(</span><span class="s s-Atom">without</span> <span class="s s-Atom">the</span> <span class="s s-Atom">quotes</span><span class="p">)</span> <span class="s s-Atom">then</span> <span class="s s-Atom">press</span> <span class="nv">ENTER</span><span class="p">.</span>
+
+<span class="s s-Atom">&gt;&gt;&gt;</span> <span class="s s-Atom">import</span> <span class="s s-Atom">this</span>
+<span class="nv">The</span> <span class="nv">Zen</span> <span class="s s-Atom">of</span> <span class="nv">MicroPython</span><span class="p">,</span> <span class="s s-Atom">by</span> <span class="nv">Nicholas</span> <span class="nv">H</span><span class="p">.</span><span class="nv">Tollervey</span>
+
+<span class="nv">Code</span><span class="p">,</span>
+<span class="nv">Hack</span> <span class="s s-Atom">it</span><span class="p">,</span>
+<span class="nv">Less</span> <span class="o">is</span> <span class="s s-Atom">more</span><span class="p">,</span>
+<span class="nv">Keep</span> <span class="s s-Atom">it</span> <span class="s s-Atom">simple</span><span class="p">,</span>
+<span class="nv">Small</span> <span class="o">is</span> <span class="s s-Atom">beautiful</span><span class="p">,</span>
+
+<span class="nv">Be</span> <span class="s s-Atom">brave</span><span class="p">!</span> <span class="nv">Break</span> <span class="s s-Atom">things</span><span class="p">!</span> <span class="nv">Learn</span> <span class="s s-Atom">and</span> <span class="s s-Atom">have</span> <span class="s s-Atom">fun</span><span class="p">!</span>
+<span class="nv">Express</span> <span class="s s-Atom">yourself</span> <span class="s s-Atom">with</span> <span class="nv">MicroPython</span><span class="p">.</span>
+
+<span class="nv">Happy</span> <span class="s s-Atom">hacking</span><span class="p">!</span> <span class="p">:-)</span>
+<span class="s s-Atom">&gt;&gt;&gt;</span>
+</pre></div>
+
+
+<h2>BBC micro:bit MicroPython Editor</h2>
+<p>Typing all the Python commands directly into the shell can be a bit
+difficult. You can use a very nice and dedicated editor to write code
+and produce the compiled application for the micro:bit. All you need to
+do is clone this <a href="https://github.com/ntoll/upyed">repository</a></p>
+<p><code>{.lang:default .decode:true}
+git clone git@github.com:ntoll/upyed.git</code></p>
+<p>Open the file named <strong>editor.html</strong> with your browser and start writing
+your code. When your code is done, you can generate the <strong>.hex</strong> file
+clicking on <strong>Download</strong> button. To load the compiled application you
+just need to drag &amp; drop the .hex file to the mounted device, exactly
+like you did the first time to flash it. If you need a reference for all
+the methods and libraries available, you can consult the official
+documentation
+here <a href="http://microbit-micropython.readthedocs.org/en/latest/index.html">http://microbit-micropython.readthedocs.org/en/latest/index.html</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://github.com/ntoll/microrepl">https://github.com/ntoll/microrepl</a></li>
+<li><a href="https://github.com/ntoll/upyed">https://github.com/ntoll/upyed</a></li>
+<li><a href="https://www.microbit.co.uk/">https://www.microbit.co.uk/</a></li>
+<li><a href="http://microbit-micropython.readthedocs.org/en/latest/index.html">http://microbit-micropython.readthedocs.org/en/latest/index.html</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/12/10/getting-started-with-bbc-microbit-and-python/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/12/10/getting-started-with-bbc-microbit-and-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/" rel="bookmark"
                            title="Permalink to Fix encfs under OSX after upgrading to 10.11.2">Fix encfs under OSX after upgrading to 10.11.2</a></h1>
                 </header>
@@ -205,126 +320,6 @@ two parts and swaps the first with sixth, the second with fifth, etc...</p>
 </pre></div>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/" rel="bookmark"
-                           title="Permalink to How to configure EncFS on OSX 10.10 (Yosemite)">How to configure EncFS on OSX 10.10 (Yosemite)</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 11 October 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/security.html">security</a></span>
-</footer><!-- /.post-info -->                <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
-(Dropbox, OneDrive, etc...), having a good level of privacy and
-security. Infact EncFS encrypt and decrypt our data automatically. It's
-available for Linux as well and using a commercial solution (that is
-currently unsupported) even on Windows.</p>
-<h2>Installing EncFS</h2>
-<p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
-manager installed on OSX you can install it using this command:</p>
-<p>``` {.lang:sh .decode:true}
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</p>
-<div class="highlight"><pre><span></span>After brew, you need to install **OSXFuse** from this
-website &lt;http://osxfuse.github.io&gt;
-
-Finally you can install **encfs** using this command:
-
-``` {.lang:sh .decode:true}
-brew install homebrew/fuse/encfs
-</pre></div>
-
-
-<h2>Configuring the encrypted folder</h2>
-<p>Now that EncFS is installed, you can either mount an existing EncFS
-volume or create a new one. In both cases the command is the same:</p>
-<p>``` {.lang:sh .decode:true}
-encfs ~/Dropbox/Private ~/Private</p>
-<div class="highlight"><pre><span></span><span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">mounting</span> <span class="n">an</span> <span class="n">existing</span> <span class="n">encrypted</span> <span class="n">volume</span><span class="p">,</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span> <span class="n">prompted</span>
-<span class="k">for</span> <span class="n">the</span> <span class="n">password</span><span class="p">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">creating</span> <span class="n">a</span> <span class="n">new</span> <span class="n">encrypted</span> <span class="n">volume</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span>
-<span class="n">asked</span> <span class="n">some</span> <span class="n">questions</span> <span class="n">about</span> <span class="n">EncFS</span> <span class="n">parameters</span><span class="p">.</span>
-
-<span class="o">**</span><span class="nl">Note</span><span class="p">:</span><span class="o">**</span> <span class="k">if</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">important</span> <span class="k">for</span> <span class="n">you</span> <span class="n">to</span> <span class="n">keep</span> <span class="n">compatibility</span> <span class="n">with</span>
-<span class="o">**</span><span class="p">[</span><span class="n">BoxCryptor</span> <span class="n">Classic</span><span class="p">](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.boxcryptor.com/en/classic)** (in case</span>
-<span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">same</span> <span class="n">volume</span> <span class="n">under</span> <span class="n">Windows</span><span class="p">),</span> <span class="n">please</span> <span class="n">refer</span> <span class="n">to</span> <span class="n">this</span>
-<span class="n">other</span> <span class="n">article</span> <span class="n">I</span>
-<span class="nl">wrote</span><span class="p">:</span><span class="err"> </span><span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&gt;</span>
-
-<span class="n">Mount</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">volume</span> <span class="n">on</span> <span class="n">startup</span>
-<span class="o">-------------------------------------</span>
-
-<span class="n">First</span> <span class="n">of</span> <span class="n">all</span> <span class="n">you</span> <span class="n">need</span> <span class="n">to</span> <span class="n">save</span> <span class="n">the</span> <span class="n">volume</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">password</span> <span class="n">inside</span> <span class="n">the</span> <span class="n">OSX</span>
-<span class="n">keychain</span><span class="p">.</span> <span class="n">Open</span> <span class="n">the</span> <span class="n">app</span> <span class="o">**</span><span class="n">Keychain</span> <span class="n">Access</span><span class="o">**</span> <span class="n">and</span> <span class="n">create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">entry</span> <span class="n">with</span>
-<span class="n">name</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span> <span class="n">and</span> <span class="n">account</span> <span class="n">value</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span><span class="p">,</span> <span class="n">then</span> <span class="n">write</span> <span class="n">your</span> <span class="o">**</span><span class="n">password</span><span class="o">**</span>
-<span class="n">and</span> <span class="n">click</span> <span class="o">**</span><span class="n">Add</span><span class="o">**:</span>
-
-<span class="p">[</span><span class="o">!</span><span class="p">[</span><span class="n">encfs</span><span class="err">\</span><span class="n">_keychain</span><span class="err">\</span><span class="n">_access</span><span class="p">](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png){.aligncenter</span>
-<span class="p">.</span><span class="n">size</span><span class="o">-</span><span class="n">full</span> <span class="p">.</span><span class="n">wp</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="mi">1052</span> <span class="n">width</span><span class="o">=</span><span class="s">&quot;428&quot;</span>
-<span class="n">height</span><span class="o">=</span><span class="s">&quot;397&quot;</span><span class="p">}](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png)</span>
-
-<span class="n">Once</span> <span class="n">the</span> <span class="n">password</span> <span class="n">is</span> <span class="n">saved</span><span class="p">,</span> <span class="o">**</span><span class="n">open</span> <span class="n">a</span> <span class="n">text</span> <span class="n">editor</span><span class="o">**</span> <span class="n">and</span> <span class="n">paste</span> <span class="n">this</span> <span class="n">script</span>
-<span class="n">and</span> <span class="n">save</span> <span class="n">it</span> <span class="n">as</span> <span class="o">**</span><span class="n">encfs</span><span class="err">\</span><span class="n">_mount</span><span class="p">.</span><span class="n">sh</span><span class="o">**</span> <span class="n">inside</span> <span class="n">your</span> <span class="o">**</span><span class="err">\$</span><span class="n">HOME</span><span class="o">**</span> <span class="nl">folder</span><span class="p">:</span>
-
-<span class="err">```</span> <span class="p">{.</span><span class="nl">lang</span><span class="p">:</span><span class="n">sh</span> <span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="nb">true</span><span class="p">}</span>
-<span class="cp">#!/bin/bash</span>
-<span class="cp"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
-
-<span class="n">SOURCE</span><span class="o">=~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Private</span>
-<span class="n">TARGET</span><span class="o">=~/</span><span class="n">Private</span>
-<span class="n">VOLUME_TITLE</span><span class="o">=</span><span class="n">Private</span>
-<span class="n">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="err">&#39;</span><span class="n">encfs</span><span class="err">&#39;</span>
-<span class="n">ENCFS</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">encfs</span>
-
-<span class="n">mount</span> <span class="o">|</span> <span class="n">grep</span> <span class="err">$</span><span class="n">TARGET</span> <span class="o">&gt;/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
-<span class="p">[[</span> <span class="s">&quot;$?&quot;</span> <span class="o">-</span><span class="n">eq</span> <span class="s">&quot;0&quot;</span> <span class="p">]]</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">diskutil</span> <span class="n">unmount</span> <span class="err">$</span><span class="n">TARGET</span>
-
-<span class="k">if</span> <span class="p">[</span> <span class="o">!</span> <span class="o">-</span><span class="n">d</span> <span class="err">$</span><span class="n">TARGET</span> <span class="p">];</span> <span class="n">then</span>
- <span class="n">echo</span> <span class="s">&quot;Create new mountpoint $TARGET&quot;</span>
- <span class="n">mkdir</span> <span class="err">$</span><span class="n">TARGET</span>
- <span class="n">chmod</span> <span class="mo">0700</span> <span class="err">$</span><span class="n">TARGET</span>
-<span class="n">fi</span>
-
-<span class="err">$</span><span class="n">ENCFS</span> <span class="err">$</span><span class="n">SOURCE</span> <span class="err">$</span><span class="n">TARGET</span> <span class="o">--</span><span class="n">extpass</span><span class="o">=</span><span class="s">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;$KEYCHAIN_PASSWORD&#39; |grep password|cut -d </span><span class="se">\\\&quot;</span><span class="s"> -f 2&quot;</span> <span class="o">-</span><span class="n">ovolname</span><span class="o">=</span><span class="err">$</span><span class="n">VOLUME_TITLE</span>
-</pre></div>
-
-
-<p>Make it <strong>executable</strong>:</p>
-<p>``` {.lang:sh .decode:true}
-chmod +x ~/encfs_mount.sh</p>
-<div class="highlight"><pre><span></span>Open **AppleScript** editor and paste this text inside and save as an
-app in the \$HOME folder:
-
-[![Screenshot 2015-10-11
-19.27.14](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter
-.size-full .wp-image-1055 width=&quot;484&quot;
-height=&quot;392&quot;}](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)
-
-``` {.lang:sh .decode:true}
-do shell script &quot;$HOME/encfs_mount.sh&quot;
-</pre></div>
-
-
-<p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
-add the previously saved application.</p>
-<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="Screenshot 2015-10-11
-19.27.44" src="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png">{.aligncenter
-.size-full .wp-image-1056 width="463"
-height="380"}</a></p>
-<h2>Final notes</h2>
-<p>At this point encfs is configured to be mounted at startup and to save
-the encrypted files inside Dropbox. Please note: <strong>do not save anything
-directly on \~/Dropbox/Private</strong>, only read and save your files from
-\~/Private</p>
-<h2>References</h2>
-<ul>
-<li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>
-<li><a href="http://ninjatips.com/encrypt-dropbox-using-encfs/">http://ninjatips.com/encrypt-dropbox-using-encfs/</a></li>
-</ul>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

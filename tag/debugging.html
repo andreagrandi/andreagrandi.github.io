@@ -33,12 +33,42 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2016/05/10/using-python-ipdb-from-jupyter/">Using Python ipdb from Jupyter</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/">Using ipdb with Python 3.7.x breakpoint</a></h1>
+<footer class="post-info">
+        <span>Tue 16 October 2018</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/debugging.html">debugging</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a></span>
+</footer><!-- /.post-info --><p>Python 3.7.x introduced a <a href="https://docs.python.org/3/whatsnew/3.7.html#pep-553-built-in-breakpoint">new method to insert a breakpoint</a> in the code.
+Before Python 3.7.x to insert a debugging point we had to write <code>import pdb; pdb.set_trace()</code> which honestly I could never remember (and I also created a snippet on VS Code to auto complete it).</p>
+<p>Now you can just write <code>breakpoint()</code> that's it!</p>
+<p>Now... the only problem is that by default that command will use <strong>pdb</strong> which is not exactly the best debugger you can have. I usually use <strong>ipdb</strong> but there wasn't an intuitive way of using it... and no, just installing it in your virtual environment, it won't be used by default.</p>
+<p>How to use it then? It's very simple. The new debugging command will read an environment variable named <strong>PYTHONBREAKPOINT</strong>. If you set it properly, you will be able to use ipdb instead of pdb.</p>
+<div class="highlight"><pre><span></span>export PYTHONBREAKPOINT=ipdb.set_trace
+</pre></div>
+
+
+<p>At this point, any time you use <code>breakpoint()</code> in your code, <strong>ipdb</strong> will be used instead of <strong>pdb</strong>.</p>
+<h4>References</h4>
+<ul>
+<li>https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c</li>
+</ul><p><a href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2016/05/10/using-python-ipdb-from-jupyter/" rel="bookmark"
+                           title="Permalink to Using Python ipdb from Jupyter">Using Python ipdb from Jupyter</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Tue 10 May 2016</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/debugging.html">debugging</a><a href="https://www.andreagrandi.it/tag/ipdb.html">ipdb</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
-</footer><!-- /.post-info --><p>If we try to use the usual ipdb commands from a Jupyter (IPython
+</footer><!-- /.post-info -->                <p>If we try to use the usual ipdb commands from a Jupyter (IPython
 notebook)</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
 </pre></div>
@@ -85,12 +115,14 @@ notebook)</p>
 </pre></div>
 
 
-<p><strong>Source:</strong> <a href="http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython">http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython</a></p><p><a href="https://www.andreagrandi.it/2016/05/10/using-python-ipdb-from-jupyter/#disqus_thread">comments</a></p>                </article>
+<p><strong>Source:</strong> <a href="http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython">http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2016/05/10/using-python-ipdb-from-jupyter/">read more</a>
+<p><a href="https://www.andreagrandi.it/2016/05/10/using-python-ipdb-from-jupyter/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 1
 </p>
-            </aside><!-- /#featured -->
-            </ol><!-- /#posts-list -->
             </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="social">

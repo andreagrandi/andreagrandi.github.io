@@ -35,6 +35,60 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/" rel="bookmark"
+                           title="Permalink to Installing qemu-arm-eabi patch into Scratchbox">Installing qemu-arm-eabi patch into Scratchbox</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 16 November 2007</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.it/tag/qemu.html">qemu</a><a href="https://www.andreagrandi.it/tag/scratchbox.html">scratchbox</a><a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a></span>
+</footer><!-- /.post-info -->                <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
+often when we try to execute some application we can get into this kind
+of errors (for example):</p>
+<p><code>sem_post: Function not implemented</code></p>
+<p>This happens because not all the functions have been implemented in the
+emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
+created a <a href="http://sourceforge.net/projects/qemu-arm-eabi/">patched</a>
+version of qemu-arm called [qemu-arm-eabi]{style="font-weight: bold;"}.</p>
+<p>Thanks to [Marcelo Lira]{style="font-weight: bold;"}, we have a simple
+howto to install the patch into the Scratchbox environment.
+[Note:]{style="font-weight: bold;"} you have to execute these commands
+from outside the Scratchbox environment and you should not be logged
+into the environment at the same time.</p>
+<p>[1.]{style="font-weight: bold;"} You need gcc 3.4, SDL dev library and
+Zlib dev:[<br>
+]{style="font-size: 78%;"}</p>
+<p><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev</code></p>
+<p>[2.]{style="font-weight: bold;"} Get the patched qemu-arm. Notice that
+the patches are already applied, everything is here, and you don't need
+to get the qemu sources.</p>
+<p><code>svn co  https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make</code></p>
+<p>[3.]{style="font-weight: bold;"} Copy qemu to the cputransp dir on
+scratchbox[<br>
+]{style="font-size: 78%;"}</p>
+<p><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2</code></p>
+<p>[4.]{style="font-weight: bold;"} Add it to the list of cputransp
+methods. Open the file[<br>
+]{style="font-size: 78%;"}</p>
+<p><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods</code></p>
+<p>and add this line:</p>
+<p><code>qemu-arm-eabi-sb2</code></p>
+<p>[5.]{style="font-weight: bold;"} Configure the target to use the patched
+qemu as transparency method. Edit the file:[<br>
+]{style="font-size: 78%; font-family: courier new;"}</p>
+<p><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config</code></p>
+<p>and change this line:</p>
+<p><code>SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2</code></p>
+<p>That's all! You're now ready to log again into your Scratchbox
+environment.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/">read more</a>
+<p><a href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2007/11/11/upgrading-maemo-sdk-4-beta-to-maemo-sdk-4-final-release/" rel="bookmark"
                            title="Permalink to Upgrading Maemo SDK 4 Beta to Maemo SDK 4 final release">Upgrading Maemo SDK 4 Beta to Maemo SDK 4 final release</a></h1>
                 </header>

@@ -35,6 +35,70 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/" rel="bookmark"
+                           title="Permalink to Creative Live Cam Notebook su Ubuntu Linux">Creative Live Cam Notebook su Ubuntu Linux</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 05 June 2008</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/linux-ubuntu-it.html">Linux, Ubuntu (IT)</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/cam.html">cam</a><a href="https://www.andreagrandi.it/tag/creative.html">creative</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/live.html">live</a><a href="https://www.andreagrandi.it/tag/ubuntu-en.html">Ubuntu (EN)</a><a href="https://www.andreagrandi.it/tag/webcam.html">webcam</a></span>
+</footer><!-- /.post-info -->                <p><img alt="Creative" src="http://www.andreagrandi.it/wp-content/uploads/2008/06/creative_live_cam_trasparente1.png">Finalmente
+sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
+Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech
+Quickcam for
+Notebook</a></strong>
+mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo
+con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam
+Notebook</strong></a>.</p>
+<p>Prima di proseguire nella lettura di questa guida, vi consiglio di
+verificare che il modello di "Creative Live Cam" che state cercando di
+installare, sia lo stesso che ho testato io. Potete verificarlo
+scrivendo in un terminale il comando <strong>lsusb</strong>:<br>
+<code>andy80@noteboontu:~$ lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000</code></p>
+<p>Ovvero dovrete verificare che l'identificativo del vostro modello sia
+esattamente <strong>041e:4068</strong></p>
+<p>Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio
+notebook e sperando che funzionasse) non ci sono riuscito, quindi mi
+sono deciso a fare una piccola ricerca su Google. Ho notato che molte
+persone hanno tentato (senza alcun successo) di far funzionare questa
+webcam con i driver <a href="http://mxhaard.free.fr/spca5xx.html"><strong>spca5xx</strong></a>
+che solitamente supportano un gran numero di webcam. Proseguendo nella
+mia ricerca ho trovato i driver
+<strong><a href="http://www.rastageeks.org/ov51x-jpeg/index.php/Main_Page">ov51x-JPEG</a></strong>
+che invece supportano il mio modello di webcam.</p>
+<p>L'installazione non è difficile, dobbiamo però assicurarci di aver
+installato sulla nostra macchina tutto il necessario per poter
+ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
+utilizzando sudo) questo comando:</p>
+<p><code>apt-get install build-essential linux-headers-$(uname -r)</code></p>
+<p>A questo punto dovrete scaricare i sorgenti del driver, da questo
+indirizzo: 
+<a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
+<p><code>root@noteboontu:~# wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</code></p>
+<p>Dobbiamo poi scompattarli con il seguente comando:</p>
+<p><code>root@noteboontu:~# tar xfvz ov51x-jpeg-1.5.7.tar.gz</code></p>
+<p>Infine dobbiamo compilare il modulo ed installarlo:</p>
+<p><code>root@noteboontu:~# cd ov51x-jpeg-1.5.7 root@noteboontu:~/ov51x-jpeg-1.5.7# make root@noteboontu:~/ov51x-jpeg-1.5.7# make install</code></p>
+<p>Se la compilazione e l'installazione del modulo sono andati a buon fine,
+possiamo finalmente caricare il modulo:</p>
+<p><code>root@noteboontu:~/ov51x-jpeg-1.5.7# modprobe ov51x-jpeg</code><br>
+Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
+cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
+modificare il file /etc/modprobe.d/options ed aggiungere la seguente
+riga:<br>
+<code>options ov51x-jpeg forceblock=1</code></p>
+<p>ovviamente prima di caricare il modulo. A questo punto l'installazione
+dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
+scrivere lasciando un commento a questo post, in modo che anche altri
+possano poi leggere la domanda/risposta.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/">read more</a>
+<p><a href="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/06/05/agile-web-development-with-rails-imparare-rails-2x/" rel="bookmark"
                            title="Permalink to Agile Web Development with Rails: imparare Rails 2.x">Agile Web Development with Rails: imparare Rails 2.x</a></h1>
                 </header>
@@ -157,64 +221,6 @@ ci auguriamo quindi che la promessa venga mantenuta e che le due suite
 possano finalmente scambiarsi i documenti in maniera ottimale.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2008/05/21/microsoft-office-2007-sp2-con-supporto-openoffice-odf-e-pdf/">read more</a>
 <p><a href="https://www.andreagrandi.it/2008/05/21/microsoft-office-2007-sp2-con-supporto-openoffice-odf-e-pdf/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2008/05/13/msn-e-la-censura-delle-conversazioni/" rel="bookmark"
-                           title="Permalink to MSN e la censura delle conversazioni">MSN e la censura delle conversazioni</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 13 May 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/censura-sicurezza.html">Censura, Sicurezza</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/censura.html">Censura</a><a href="https://www.andreagrandi.it/tag/conversazioni.html">conversazioni</a><a href="https://www.andreagrandi.it/tag/instant-messaging.html">instant messaging</a><a href="https://www.andreagrandi.it/tag/liberta.html">libertà</a><a href="https://www.andreagrandi.it/tag/microsoft.html">microsoft</a><a href="https://www.andreagrandi.it/tag/msn.html">msn</a></span>
-</footer><!-- /.post-info -->                <p><img alt="Censurato" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/censura.thumbnail.jpg">Lo
-sapevate che <strong>i server di MSN censurano le vostre conversazioni</strong>,
-filtrando i messaggi che, secondo loro, sono ritenuti "potenzialmente
-pericolosi" ?</p>
-<p>Non si tratta certo di una novità, purtroppo però molte persone ancora
-non sono a conoscenza di questo fatto e penso sia opportuno fare quanta
-piu' informazione possibile per mettere gli utenti MSN al corrente del
-comportamento di questo sistema di instant messaging.</p>
-<p><strong>Come funziona la comunicazione fra utenti MSN?</strong> Quando ci si connette
-a MSN e si vuole inviare un messaggio ad un nostro amico nella lista dei
-contatti, il messaggio viene prima inviato ai server di MSN e poi viene
-successivamente inviato al nostro amico da parte del server.</p>
-<p>Questo meccanismo fa si che la conversazione non sia diretta, ma passi
-attraverso qualcosa che è in grado di fare qualsiasi cosa:
-<strong>registrarla</strong>, <strong>analizzarla</strong> e persino <strong>bloccarla</strong>.</p>
-<p>E' quello che è accaduto in questi giorni con <a href="http://www.betadaily.com/2008/05/10/microsoft-starts-blocking-youtube-links-from-being-shared-on-msn-and-windows-live-messenger/">i link ai video di
-Youtube</a>
-e quello che sta accadendo da sempre a moltissimi link ritenuti
-pericolosi da "mamma Microsoft".</p>
-<p>Provate ad esempio ad inviare tramite MSN un link contenente la stringa
-"download.php" come ad esempio il link per scaricare OpenOffice (sarà un
-caso?!): 
-<strong>http://www.plio.it/download.php?q=d&amp;product=OpenOffice.org&amp;os=winwjre&amp;lang=it&amp;version=2.4.0</strong></p>
-<p>Il comportamento sarà lo stesso per tutti, qualsiasi client si usi
-(anche se utilizziamo un client MSN-compatibile, tipo Pidgin, su un
-altro sistema operativo), visto che il filtro avviene a livello di
-server: <strong>il messaggio non verrà recapitato</strong> alla persona alla quale
-abbiamo tentato di inviarlo.</p>
-<p>Come possiamo sapere quali saranno le parole che verranno censurate dai
-server di MSN? Non c'è modo. La lista delle parole censurate è
-ovviamente segreta. Cosa succederà un giorno se a Microsoft (magari con
-l'appoggio o la spinta di qualche governo) verrà in mente di iniziare a
-filtrare altri contenuti ritenuti "pericolosi"? Questa situazione
-purtroppo ricorda molto da vicino "<em>la grande muraglia</em>", ovvero il
-<strong>firewall</strong> con il quale tutti i navigatori residenti in Cina sono
-costretti a fare i conti durante la navigazione.</p>
-<p><strong>La soluzione ovviamente esiste:</strong> non utilizzare MSN come sistema di
-instant messaging, ma usare invece una piattaforma completamente aperta
-e non centralizzata, come ad esempio
-<a href="http://www.jabber.org/"><strong>Jabber</strong></a> dove la comunicazione avviene tra
-piu' server, e dove chiunque puo' mettere su un proprio server.</p>
-<p>Spero che questo post abbia aperto un po' gli occhi a coloro che fino ad
-ora erano un po' scettici su questo tipo di cose.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2008/05/13/msn-e-la-censura-delle-conversazioni/">read more</a>
-<p><a href="https://www.andreagrandi.it/2008/05/13/msn-e-la-censura-delle-conversazioni/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

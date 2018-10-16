@@ -35,6 +35,126 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/" rel="bookmark"
+                           title="Permalink to How to configure EncFS on OSX 10.10 (Yosemite)">How to configure EncFS on OSX 10.10 (Yosemite)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 11 October 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/security.html">security</a></span>
+</footer><!-- /.post-info -->                <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc...), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It's
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.</p>
+<h2>Installing EncFS</h2>
+<p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
+manager installed on OSX you can install it using this command:</p>
+<p>``` {.lang:sh .decode:true}
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</p>
+<div class="highlight"><pre><span></span>After brew, you need to install **OSXFuse** from this
+website &lt;http://osxfuse.github.io&gt;
+
+Finally you can install **encfs** using this command:
+
+``` {.lang:sh .decode:true}
+brew install homebrew/fuse/encfs
+</pre></div>
+
+
+<h2>Configuring the encrypted folder</h2>
+<p>Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:</p>
+<p>``` {.lang:sh .decode:true}
+encfs ~/Dropbox/Private ~/Private</p>
+<div class="highlight"><pre><span></span><span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">mounting</span> <span class="n">an</span> <span class="n">existing</span> <span class="n">encrypted</span> <span class="n">volume</span><span class="p">,</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span> <span class="n">prompted</span>
+<span class="k">for</span> <span class="n">the</span> <span class="n">password</span><span class="p">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">creating</span> <span class="n">a</span> <span class="n">new</span> <span class="n">encrypted</span> <span class="n">volume</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span>
+<span class="n">asked</span> <span class="n">some</span> <span class="n">questions</span> <span class="n">about</span> <span class="n">EncFS</span> <span class="n">parameters</span><span class="p">.</span>
+
+<span class="o">**</span><span class="nl">Note</span><span class="p">:</span><span class="o">**</span> <span class="k">if</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">important</span> <span class="k">for</span> <span class="n">you</span> <span class="n">to</span> <span class="n">keep</span> <span class="n">compatibility</span> <span class="n">with</span>
+<span class="o">**</span><span class="p">[</span><span class="n">BoxCryptor</span> <span class="n">Classic</span><span class="p">](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.boxcryptor.com/en/classic)** (in case</span>
+<span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">same</span> <span class="n">volume</span> <span class="n">under</span> <span class="n">Windows</span><span class="p">),</span> <span class="n">please</span> <span class="n">refer</span> <span class="n">to</span> <span class="n">this</span>
+<span class="n">other</span> <span class="n">article</span> <span class="n">I</span>
+<span class="nl">wrote</span><span class="p">:</span><span class="err"> </span><span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&gt;</span>
+
+<span class="n">Mount</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">volume</span> <span class="n">on</span> <span class="n">startup</span>
+<span class="o">-------------------------------------</span>
+
+<span class="n">First</span> <span class="n">of</span> <span class="n">all</span> <span class="n">you</span> <span class="n">need</span> <span class="n">to</span> <span class="n">save</span> <span class="n">the</span> <span class="n">volume</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">password</span> <span class="n">inside</span> <span class="n">the</span> <span class="n">OSX</span>
+<span class="n">keychain</span><span class="p">.</span> <span class="n">Open</span> <span class="n">the</span> <span class="n">app</span> <span class="o">**</span><span class="n">Keychain</span> <span class="n">Access</span><span class="o">**</span> <span class="n">and</span> <span class="n">create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">entry</span> <span class="n">with</span>
+<span class="n">name</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span> <span class="n">and</span> <span class="n">account</span> <span class="n">value</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span><span class="p">,</span> <span class="n">then</span> <span class="n">write</span> <span class="n">your</span> <span class="o">**</span><span class="n">password</span><span class="o">**</span>
+<span class="n">and</span> <span class="n">click</span> <span class="o">**</span><span class="n">Add</span><span class="o">**:</span>
+
+<span class="p">[</span><span class="o">!</span><span class="p">[</span><span class="n">encfs</span><span class="err">\</span><span class="n">_keychain</span><span class="err">\</span><span class="n">_access</span><span class="p">](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png){.aligncenter</span>
+<span class="p">.</span><span class="n">size</span><span class="o">-</span><span class="n">full</span> <span class="p">.</span><span class="n">wp</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="mi">1052</span> <span class="n">width</span><span class="o">=</span><span class="s">&quot;428&quot;</span>
+<span class="n">height</span><span class="o">=</span><span class="s">&quot;397&quot;</span><span class="p">}](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png)</span>
+
+<span class="n">Once</span> <span class="n">the</span> <span class="n">password</span> <span class="n">is</span> <span class="n">saved</span><span class="p">,</span> <span class="o">**</span><span class="n">open</span> <span class="n">a</span> <span class="n">text</span> <span class="n">editor</span><span class="o">**</span> <span class="n">and</span> <span class="n">paste</span> <span class="n">this</span> <span class="n">script</span>
+<span class="n">and</span> <span class="n">save</span> <span class="n">it</span> <span class="n">as</span> <span class="o">**</span><span class="n">encfs</span><span class="err">\</span><span class="n">_mount</span><span class="p">.</span><span class="n">sh</span><span class="o">**</span> <span class="n">inside</span> <span class="n">your</span> <span class="o">**</span><span class="err">\$</span><span class="n">HOME</span><span class="o">**</span> <span class="nl">folder</span><span class="p">:</span>
+
+<span class="err">```</span> <span class="p">{.</span><span class="nl">lang</span><span class="p">:</span><span class="n">sh</span> <span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="nb">true</span><span class="p">}</span>
+<span class="cp">#!/bin/bash</span>
+<span class="cp"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
+
+<span class="n">SOURCE</span><span class="o">=~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Private</span>
+<span class="n">TARGET</span><span class="o">=~/</span><span class="n">Private</span>
+<span class="n">VOLUME_TITLE</span><span class="o">=</span><span class="n">Private</span>
+<span class="n">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="err">&#39;</span><span class="n">encfs</span><span class="err">&#39;</span>
+<span class="n">ENCFS</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">encfs</span>
+
+<span class="n">mount</span> <span class="o">|</span> <span class="n">grep</span> <span class="err">$</span><span class="n">TARGET</span> <span class="o">&gt;/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+<span class="p">[[</span> <span class="s">&quot;$?&quot;</span> <span class="o">-</span><span class="n">eq</span> <span class="s">&quot;0&quot;</span> <span class="p">]]</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">diskutil</span> <span class="n">unmount</span> <span class="err">$</span><span class="n">TARGET</span>
+
+<span class="k">if</span> <span class="p">[</span> <span class="o">!</span> <span class="o">-</span><span class="n">d</span> <span class="err">$</span><span class="n">TARGET</span> <span class="p">];</span> <span class="n">then</span>
+ <span class="n">echo</span> <span class="s">&quot;Create new mountpoint $TARGET&quot;</span>
+ <span class="n">mkdir</span> <span class="err">$</span><span class="n">TARGET</span>
+ <span class="n">chmod</span> <span class="mo">0700</span> <span class="err">$</span><span class="n">TARGET</span>
+<span class="n">fi</span>
+
+<span class="err">$</span><span class="n">ENCFS</span> <span class="err">$</span><span class="n">SOURCE</span> <span class="err">$</span><span class="n">TARGET</span> <span class="o">--</span><span class="n">extpass</span><span class="o">=</span><span class="s">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;$KEYCHAIN_PASSWORD&#39; |grep password|cut -d </span><span class="se">\\\&quot;</span><span class="s"> -f 2&quot;</span> <span class="o">-</span><span class="n">ovolname</span><span class="o">=</span><span class="err">$</span><span class="n">VOLUME_TITLE</span>
+</pre></div>
+
+
+<p>Make it <strong>executable</strong>:</p>
+<p>``` {.lang:sh .decode:true}
+chmod +x ~/encfs_mount.sh</p>
+<div class="highlight"><pre><span></span>Open **AppleScript** editor and paste this text inside and save as an
+app in the \$HOME folder:
+
+[![Screenshot 2015-10-11
+19.27.14](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter
+.size-full .wp-image-1055 width=&quot;484&quot;
+height=&quot;392&quot;}](https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)
+
+``` {.lang:sh .decode:true}
+do shell script &quot;$HOME/encfs_mount.sh&quot;
+</pre></div>
+
+
+<p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
+add the previously saved application.</p>
+<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="Screenshot 2015-10-11
+19.27.44" src="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png">{.aligncenter
+.size-full .wp-image-1056 width="463"
+height="380"}</a></p>
+<h2>Final notes</h2>
+<p>At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: <strong>do not save anything
+directly on \~/Dropbox/Private</strong>, only read and save your files from
+\~/Private</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>
+<li><a href="http://ninjatips.com/encrypt-dropbox-using-encfs/">http://ninjatips.com/encrypt-dropbox-using-encfs/</a></li>
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" rel="bookmark"
                            title="Permalink to Understanding Python decorators optimizing a recursive Fibonacci implementation">Understanding Python decorators optimizing a recursive Fibonacci implementation</a></h1>
                 </header>
@@ -294,57 +414,6 @@ code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">ht
 </ul>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/" rel="bookmark"
-                           title="Permalink to Why I completely switched this website to HTTPS (and why you should do the same)">Why I completely switched this website to HTTPS (and why you should do the same)</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 22 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/sicurezza.html">Sicurezza</a></span>
-
-</footer><!-- /.post-info -->                <p>I must admit it, there was a time when I was not using <strong>HTTPS</strong>, not
-even to protect the admin section of the website. This means that anyone
-could have intercepted the password and published (or deleted) things in
-my name. Since a couple of years ago I started protecting my admin
-sectio using an SSL certificate.  I haven't done it before for a couple
-of reason: my hosting was on a provider that required a lot of money
-(something like 100\$/year) to enable SSL support, plus an SSL
-certificated costed at least 100-120\$/year.</p>
-<p>When I migrated my website on my own <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">VPS on
-DigitalOcean</a> I
-finally discovered that <strong><a href="https://www.startssl.com">StartSSL</a></strong> was
-giving <strong>free class 1 certificates</strong> and I immediately got one. I made
-the mistake to just serve the admin pages using HTTPS, not all the
-website. I regretted about this decision after readin a
-<a href="http://dannyman.toldme.com/2010/12/23/swa-yahoo-being-evil/">couple</a> of
-<a href="http://opensource.com/business/15/8/interview-daniel-roesler-utilityapi">articles</a>
-that were explaining how some internet providers where changing served
-HTTP pages injecting their own ads or banner. That was unacceptable to
-me and I swicthed the whole website to HTTPS.</p>
-<p>Basically, if you don't serve even your personal website using HTTPS,
-someone could change the page while it's being transfered to the
-requester. Imagine if you have (like me) a page on your blog that let
-people download your public PGP key. Users could be served with a
-different key, so someone else would be able to decrypt a message
-intended for you only. Scary, isn't it?</p>
-<p>If you need more informations about how to request a StartSSL
-certificate and how to install it on Nginx/Apache, I can suggest this
-nice tutorial: <a href="https://konklone.com/post/switch-to-https-now-for-free">https://konklone.com/post/switch-to-https-now-for-free</a></p>
-<p>If you need to serve a WordPress website, that configuration is not
-enough. In that case you may want to have a look at my own Nginx
-configuration, available at this
-address: <a href="https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c">https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c</a></p>
-<p>p.s: if you are you curious to try how Digital Ocean VPS works and fancy
-<strong>10\$ credit</strong> (enough for 2 months if you choose the basic droplet)
-for <strong>free, u</strong>se this link and enjoy
-it <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
