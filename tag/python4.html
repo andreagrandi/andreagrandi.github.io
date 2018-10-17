@@ -138,23 +138,21 @@ two parts and swaps the first with sixth, the second with fifth, etc...</p>
 </footer><!-- /.post-info -->                <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
 an argument and returns a function as a <em>value</em>. Here is an example of
 decorator definition:</p>
-<p>``` {.lang:python .decode:true}
-def foo(function):
-    # make a new function
-    def new_function():
-        # some code</p>
-<div class="highlight"><pre><span></span>return new_function
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="c1"># make a new function</span>
+    <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
+        <span class="c1"># some code</span>
+
+    <span class="k">return</span> <span class="n">new_function</span>
 </pre></div>
 
 
-<div class="highlight"><pre><span></span>To apply a decorator to an existing function, you just need to put
-**@*decorator\_name*** in the line before its definition, like this
-example:
-
-``` {.lang:python .decode:true}
-@foo
-def hello():
-    print &#39;Hello World&#39;
+<p>To apply a decorator to an existing function, you just need to put
+<strong>@*decorator_name</strong>* in the line before its definition, like this
+example:</p>
+<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s1">&#39;Hello World&#39;</span>
 </pre></div>
 
 
@@ -181,52 +179,44 @@ describe it in this way:</p>
 </ul>
 <p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
 one:</p>
-<p>``` {.lang:python .decode:true}
-def fib(n):
-    if n &lt; 2:
-        return n
-    else:
-        return fib(n-1) + fib(n-2)</p>
-<div class="highlight"><pre><span></span>What&#39;s the problem with this implementation? The code works as expected,
-but it&#39;s very **inefficient**. The next picture will explain what
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+
+<p>What's the problem with this implementation? The code works as expected,
+but it's very <strong>inefficient</strong>. The next picture will explain what
 happens when we will try, for example, to calculate the 5th number of
-the sequence:
-
-[![fibo](https://www.andreagrandi.it/wp-content/uploads/2015/08/fibo.png){.aligncenter
-.size-full .wp-image-1036 width=&quot;617&quot;
-height=&quot;359&quot;}](https://www.andreagrandi.it/wp-content/uploads/2015/08/fibo.png)
-
- 
-
-Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and...
+the sequence:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/fibo.png"><img alt="fibo" src="https://www.andreagrandi.it/images/2015/08/fibo.png" width="60%"></a></p>
+<p>Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and...
 the picture just tell us that we have calculated Fib(3) 2 times, Fib(2)
 3 times, Fib(1) 5 times! Why are we repeating the same operation every
-time if we already calculated the result?
+time if we already calculated the result?</p>
+<h2>Memoization</h2>
+<blockquote>
+<p>In computing, <strong>memoization</strong> is an optimization technique used
+primarily to speed up computer programs by storing the results of
+expensive function calls and returning the cached result when the same
+inputs occur again.</p>
+</blockquote>
+<p>We need to store values of the sequence we have already calculated and
+get them later when we need them. Let's implement a simple memoization
+decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
 
-Memoization
------------
-
-&gt; In computing, **memoization** is an optimization technique used
-&gt; primarily to speed up computer programs by storing the results of
-&gt; expensive function calls and returning the cached result when the same
-&gt; inputs occur again.
-
-We need to store values of the sequence we have already calculated and
-get them later when we need them. Let&#39;s implement a simple memoization
-decorator:
-
-``` {.lang:python .decode:true}
-def memoize(function):
-    cache = {}
-
-    def decorated_function(*args):
-        if args in cache:
-            return cache[args]
-        else:
-            val = function(*args)
-            cache[args] = val
-            return val
-    return decorated_function
+    <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">return</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">decorated_function</span>
 </pre></div>
 
 
@@ -240,25 +230,28 @@ returned to the caller.</p>
 <p>How much this decorator can speed up our fib method? Let's try to
 benchmark the execution using Python
 <strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
-<p>``` {.lang:python .decode:true}</p>
-<h1>First example, not using the memoize decorator</h1>
-<p>import timeit</p>
-<p>def fib(n):
-    if n &lt; 2:
-        return n
-    else:
-        return fib(n-1) + fib(n-2)</p>
-<p>t1 = timeit.Timer("fib(35)", "from <strong>main</strong> import fib")
-print t1.timeit(1)</p>
-<div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">required</span> <span class="n">time</span> <span class="n">to</span> <span class="n">calculate</span> <span class="n">the</span> <span class="mi">35</span><span class="n">th</span> <span class="n">number</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Fibonacci</span> <span class="n">sequence</span>
-<span class="n">on</span> <span class="n">my</span> <span class="n">laptop</span> <span class="ow">is</span><span class="p">:</span><span class="err"> </span><span class="o">**</span><span class="mf">4.73480010033</span><span class="o">**</span>
+<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
 
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="c1"># Second example, using the memoize decorator</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The required time to calculate the 35th number of the Fibonacci sequence
+on my laptop is: <strong>4.73480010033</strong></p>
+<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 <span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
-                             <span class="c1"># in a module named memoize.py</span>
+                            <span class="c1"># in a module named memoize.py</span>
 
 <span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
