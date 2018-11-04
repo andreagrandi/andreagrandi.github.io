@@ -35,6 +35,113 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2016/04/10/how-to-publish-a-python-package-to-pypi/" rel="bookmark"
+                           title="Permalink to How to publish a Python package to PyPI">How to publish a Python package to PyPI</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 10 April 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/pip.html">pip</a><a href="https://www.andreagrandi.it/tag/pypi.html">pypi</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p><strong>PyPI</strong> is the <strong>Python Package Index</strong>, that archive that let you
+install a package using pip, for example: <strong>pip install Flask</strong></p>
+<p>In the past days I started writing a <strong>Python API client</strong> for
+<strong><a href="https://www.toshl.com">Toshl</a></strong> expense manager and I decided to
+publish the library on PyPI. You can have a look at my library
+here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> (please note: it's
+still in development and <a href="https://developer.toshl.com/">Toshl API</a> is
+not even public yet) in case you are not sure how to structure it.</p>
+<p>I found a <a href="http://peterdowns.com/posts/first-time-with-pypi.html">nice
+guide</a> but it
+wasn't complete (for example it didn't say how to sign packages) so I
+decided to rewrite it adding more information.</p>
+<h3>Create PyPI accounts</h3>
+<p>To publish packages on PyPI you need to create two accounts: one for the
+<a href="http://pypi.python.org/pypi?%3Aaction=register_form">production server</a>
+and another one for the <a href="http://testpypi.python.org/pypi?%3Aaction=register_form">test
+server</a>. When
+you register, please specify (if you have one, but I really hope you do)
+the <strong>PGP</strong> id of your public key. Once the accounts are created, you
+need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
+the following configuration:</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>distutils<span class="o">]</span>
+index-servers <span class="o">=</span>
+pypi
+pypitest
+
+<span class="o">[</span>pypi<span class="o">]</span>
+<span class="nv">repository</span><span class="o">=</span>https://pypi.python.org/pypi
+<span class="nv">username</span><span class="o">=</span>your_username
+<span class="nv">password</span><span class="o">=</span>your_password
+
+<span class="o">[</span>pypitest<span class="o">]</span>
+<span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
+<span class="nv">username</span><span class="o">=</span>your_username
+<span class="nv">password</span><span class="o">=</span>your_password
+</pre></div>
+
+
+<p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
+details you sent during the registration.</p>
+<h3>Preparing the package</h3>
+<p>I assume you have structured your library in the proper way and have
+included a <strong>setup.py</strong> with all the configuration (it's not something
+specific to PyPI so you should have done it already). If you haven't I
+remember you can give a look at my library
+here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
+<strong>setup.py</strong>:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.3&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python&#39;</span><span class="p">,</span>
+    <span class="n">download_url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python/tarball/0.0.3&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Andrea Grandi&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s1">&#39;a.grandi@gmail.com&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Python client library for Toshl API.&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tests&#39;</span><span class="p">]),</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">platforms</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
+    <span class="n">license</span><span class="o">=</span><span class="s1">&#39;MIT&#39;</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<h3>Upload the package to PyPI Test server</h3>
+<p>The first time you upload the package you will need to register it:</p>
+<div class="highlight"><pre><span></span>python setup.py register -r pypitest
+</pre></div>
+
+
+<p>and then you will need to build the package and upload it (please note
+I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
+<div class="highlight"><pre><span></span>python setup.py sdist upload --sign -r pypitest
+</pre></div>
+
+
+<h3>Upload the package to PyPI production server</h3>
+<p>Once you have verified that you are able to build and upload the package
+to the test server (without getting any errors), you should upload it to
+the production server:</p>
+<div class="highlight"><pre><span></span>python setup.py register -r pypi
+python setup.py sdist upload --sign -r pypi
+</pre></div>
+
+
+<p>This is everything you need to do if you want to publish a Python
+package on PyPI. Happy coding!</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2016/04/10/how-to-publish-a-python-package-to-pypi/">read more</a>
+<p><a href="https://www.andreagrandi.it/2016/04/10/how-to-publish-a-python-package-to-pypi/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/" rel="bookmark"
                            title="Permalink to Using a light sensor with BBC micro:bit and MicroPython">Using a light sensor with BBC micro:bit and MicroPython</a></h1>
                 </header>
@@ -155,57 +262,6 @@ display if you keep it straight and shows a sad face if you bend it.</p>
 other examples.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/">read more</a>
 <p><a href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
-                           title="Permalink to Reversing a List in Python">Reversing a List in Python</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 11 October 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/lists.html">lists</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a></span>
-</footer><!-- /.post-info -->                <p>Sometimes we need to reverse the order of the elements in a Python list.
-While there can be many different ways of implementing this task, I
-found three in particular that I appreciate for different reasons. Let's
-define first a list of integers that we will reverse later.</p>
-<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>List slicing</h3>
-<p>This method can be a bit obscure at first read, but basically it slices
-the whole list proceding in the reverse order:</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="k">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>Reversed method</h3>
-<p>We use the
-<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
-that returns an iterable object and a list comprehension to generate the
-new list</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="k">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>Swapping values in place</h3>
-<p>This last method is more verbose and it basically divides the list in
-two parts and swaps the first with sixth, the second with fifth, etc...</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
-    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="k">print</span> <span class="n">l</span>
-
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

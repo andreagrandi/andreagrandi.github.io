@@ -35,6 +35,46 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/" rel="bookmark"
+                           title="Permalink to Using Python PyPy in a virtual environment">Using Python PyPy in a virtual environment</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 18 December 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-python.html">HowTo, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/pypy.html">pypy</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>Sometimes we need to test if our code also works with
+<strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
+have already installed it in your system, first find out where it is
+installed:</p>
+<p>``` {.lang:zsh .decode:true}
+➜  ~  which pypy
+/usr/local/bin/pypy</p>
+<div class="highlight"><pre><span></span>then you need **mkvirtualenv** to create a virtual environment that will
+use this runtime:
+
+``` {.lang:zsh .decode:true}
+➜  ~  mkvirtualenv -p /usr/local/bin/pypy pypy-test
+Running virtualenv with interpreter /usr/local/bin/pypy
+New pypy executable in pypy-test/bin/pypy
+Installing setuptools, pip, wheel...done.
+(pypy-test)➜  ~  python
+Python 2.7.10 (f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559, Sep 01 2015, 06:26:30)
+[PyPy 2.6.1 with GCC 4.2.1 Compatible Apple LLVM 6.1.0 (clang-602.0.53)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;&gt;
+</pre></div>
+
+
+<p>That's it! You can now use this virtual environment to run your Python
+application using PyPy environment.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/12/10/getting-started-with-bbc-microbit-and-python/" rel="bookmark"
                            title="Permalink to Getting started with BBC MicroBit and Python">Getting started with BBC MicroBit and Python</a></h1>
                 </header>
@@ -270,61 +310,10 @@ that's how their SSL strict option works (at least for free plans).</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
-                           title="Permalink to Reversing a List in Python">Reversing a List in Python</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 11 October 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/lists.html">lists</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a></span>
-</footer><!-- /.post-info -->                <p>Sometimes we need to reverse the order of the elements in a Python list.
-While there can be many different ways of implementing this task, I
-found three in particular that I appreciate for different reasons. Let's
-define first a list of integers that we will reverse later.</p>
-<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>List slicing</h3>
-<p>This method can be a bit obscure at first read, but basically it slices
-the whole list proceding in the reverse order:</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="k">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>Reversed method</h3>
-<p>We use the
-<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
-that returns an iterable object and a list comprehension to generate the
-new list</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="k">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>Swapping values in place</h3>
-<p>This last method is more verbose and it basically divides the list in
-two parts and swaps the first with sixth, the second with fifth, etc...</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
-    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="k">print</span> <span class="n">l</span>
-
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/index4.html">&laquo;</a>
-    Page 5 / 49
+    Page 5 / 50
         <a href="https://www.andreagrandi.it/index6.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

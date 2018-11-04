@@ -35,6 +35,38 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/" rel="bookmark"
+                           title="Permalink to Using virtualenv to manage multiple Python/Django environments in the same machine">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 25 April 2013</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/virtualenv.html">virtualenv</a></span>
+</footer><!-- /.post-info -->                <p>Developing Python applications sometimes it's useful to be able to test
+the code with different environments, for example a particular version
+of Python or a specific Django version etc... Setting up many different
+virtual machines would be really too much work and even using a chroot
+environment is not what you need in some cases. Thanks to
+<a href="https://github.com/pypa/virtualenv"><strong>virtualenv</strong></a> is it possible to
+create a self contained Python environment with all the specific
+libraries you may need. Using virtualenv is very easy:</p>
+<ul>
+<li>Creating the virtual environment: <strong>virtualenv
+    myenv --no-site-packages</strong></li>
+<li>Entering the virtual environment: <strong>source myenv/bin/activate</strong></li>
+<li>Deactivating the virtual environment: <strong>deactivate</strong></li>
+</ul>
+<p>That's it! Once you're inside the virtual environment you will be using
+the Python libraries inside it. I suggest you to install all the Python
+libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip</strong></a>.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">read more</a>
+<p><a href="https://www.andreagrandi.it/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/" rel="bookmark"
                            title="Permalink to Twitter client for Maemo in Qt + Python: call for developers and UI designers">Twitter client for Maemo in Qt + Python: call for developers and UI designers</a></h1>
                 </header>
@@ -262,114 +294,6 @@ feel free to report it on the pymaemo-developers mailing list [19].</p>
 team, who posted these informations on pymaemo-developers mailing list.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/">read more</a>
 <p><a href="https://www.andreagrandi.it/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/" rel="bookmark"
-                           title="Permalink to Writing Python bindings of existing C libraries – (2) – A simple example of binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 06 August 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/binding.html">binding</a><a href="https://www.andreagrandi.it/tag/igalia.html">Igalia</a><a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
-</footer><!-- /.post-info -->                <h2>Introduction</h2>
-<p>As I promised in the preceding post, I'll provide a very easy example of
-a python binding. Let's suppose we don't want to use the methods
-included in Python to sum two integer values and we want to do it in C
-and then call the add method from a python script. I'll write the
-complete source code first and then I'll explain all the parts of it.</p>
-<h2>Source Code</h2>
-<p>[sourcecode language="C"]<br>
-#include &lt;Python.h&gt;</p>
-<p>static PyObject *foo_add(PyObject *self, PyObject *args)<br>
-{<br>
-int a;<br>
-int b;</p>
-<p>if (!PyArg_ParseTuple(args, "ii", &amp;a, &amp;b))<br>
-{<br>
-return NULL;<br>
-}</p>
-<p>return Py_BuildValue("i", a + b);<br>
-}</p>
-<p>static PyMethodDef foo_methods[] = {<br>
-{ "add", (PyCFunction)foo_add, METH_VARARGS, NULL },<br>
-{ NULL, NULL, 0, NULL }<br>
-};</p>
-<p>PyMODINIT_FUNC initfoo()<br>
-{<br>
-Py_InitModule3("foo", foo_methods, "My first extension module.");<br>
-}<br>
-[/sourcecode]</p>
-<h2>How it works</h2>
-<p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
-us to write an extension for Python language. To be able to include this
-header, we must have the python development packages installed in our
-system. For example in Debian based distributions we can install them
-with this command:</p>
-<p><code>sudo apt-get install python2.5-dev</code></p>
-<p>Every module has at least three parts. In the first part we write
-methods we want to call from the final python module: in this case we
-have a method called <strong>foo_add</strong> where "<em>foo</em>" is the name of the
-module and "<em>add</em>" the name of the method. Every method is declared as
-<strong>static PyObject</strong>. The method does anything particular except calling
-PyArg_ParseTuple to validate the input (we'll discuss this later),
-adding the two passed numbers and returning the result.</p>
-<p>In the second part we have something like a dictionary, defined as
-static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
-name of the module). For each method we want to expose in our python
-module, we have to add something like this:</p>
-<p><code>{"add", (PyCFunction)foo_add, METH_VARARGS, NULL}</code></p>
-<p>where "<em>add</em>" is the name of the method we want to be visible in our
-module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
-implemented in the C module, METH_VARARGS means that we want to pass
-some parameters to the function and the last one would be the
-description of the method (we can leave it NULL if we want).</p>
-<p>Third part allows us to register the defined method/s and the module:</p>
-<p><code>Py_InitModule3("foo", foo_methods, "My first extension module.");</code></p>
-<h3>Parsing Parameters</h3>
-<p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
-<strong>PyObject</strong> passed as parameter to the current method and follows
-almost the sscanf syntax to parse parameters (in this case we had <em>"ii"</em>
-for two integers). You can fin the complete reference here:
-<a href="http://docs.python.org/c-api/arg.html">http://docs.python.org/c-api/arg.html</a></p>
-<h2>Building and installing</h2>
-<p>To build the module, we have to be in the source directory and execute
-this command:</p>
-<p><code>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so</code></p>
-<p>then we've to copy the generated module to the python's modules
-directory:</p>
-<p><code>cp foo.so /usr/lib/python2.5/site-packages/</code></p>
-<h2>Testing our module</h2>
-<p>Testing the module is really easy. We've to start a python shell or
-create a python script with the following source code:</p>
-<p>[sourcecode language="python"]<br>
-import foo<br>
-print foo.add(2, 3)<br>
-[/sourcecode]</p>
-<p>if all is working fine, the printed result should be <strong>5</strong></p>
-<h2>References</h2>
-<ul>
-<li><a href="http://docs.python.org/extending/extending.html">http://docs.python.org/extending/extending.html</a></li>
-<li><a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html">http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html</a></li>
-</ul>
-<div id="_mcePaste"
-style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;">
-
-python2.5-dev
-
-</div>
-
-<div id="_mcePaste"
-style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;">
-
-python2.5-dev
-
-</div>
-                <a class="readmore" href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/">read more</a>
-<p><a href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
