@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Andrea Grandi - OSX</title>
+        <title>Andrea Grandi - osx</title>
         <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
         <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
         <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
@@ -33,12 +33,123 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">How to configure EncFS on OSX 10.10 (Yosemite)</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on OSX</a></h1>
+<footer class="post-info">
+        <span>Wed 19 December 2018</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/osx.html">osx</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a></span>
+</footer><!-- /.post-info --><p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
+<p>Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.</p>
+<h2>Requirements</h2>
+<p>To follow these instructions you need to at least have installed <strong>brew</strong> on OSX. Please follow the instructions on the official website: <a href="https://brew.sh">https://brew.sh</a></p>
+<h2>Installing Python 3.7.x and Python 2.7.x</h2>
+<p>Even if I strongly suggest to start every new project with Python 3 (since Python 2 will only be supported until the end of 2019), there may be use cases when version 2 is still required, so I will give you the instructions to install both.</p>
+<h3>Installing Python 3.7.x</h3>
+<div class="highlight"><pre><span></span>brew install python
+</pre></div>
+
+
+<p>This will install Python 3 by default.</p>
+<h3>Installing Python 2.7.x</h3>
+<div class="highlight"><pre><span></span>brew install python@2
+</pre></div>
+
+
+<p>This will install version 2 of Python.</p>
+<h3>Add the Python locations to PATH</h3>
+<p>Edit your <code>.bashrc</code> or <code>.zshrc</code> and add this:</p>
+<div class="highlight"><pre><span></span>export PATH=&quot;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&quot;
+</pre></div>
+
+
+<p>You will need to close your terminal and reopen it for the changes to be applied. Once you have done it, you can verify if Python 3 and Python 2 have been installed correctly:</p>
+<div class="highlight"><pre><span></span>python --version
+Python 3.7.1
+</pre></div>
+
+
+<p>and</p>
+<div class="highlight"><pre><span></span>python2 --version
+Python 2.7.15
+</pre></div>
+
+
+<h2>Install virtualenv and virtualenvwrapper</h2>
+<p>When working with Python, it's a good thing not to install packages system wide, but confine them in virtual environments. A good and well tested way of doing that is to use <code>virtualenv</code> (and its companion <code>virtualenvwrapper</code>) which makes the most common operations easier.</p>
+<div class="highlight"><pre><span></span>pip install virtualenv
+pip install virtualenvwrapper
+</pre></div>
+
+
+<p>Those (and only those) two packages will be installed system wide, because we will need them to be available outside of a virtual environment.</p>
+<h3>Configure virtualenv</h3>
+<p>Edit again your <code>.bashrc</code> (or <code>.zshrc</code>) and add these lines:</p>
+<div class="highlight"><pre><span></span>export WORKON_HOME=~/.virtualenvs
+[ -f /usr/local/bin/virtualenvwrapper.sh ] &amp;&amp; source /usr/local/bin/virtualenvwrapper.sh
+</pre></div>
+
+
+<p>This will configure the default location where to store your virtual environments and will run a command every time you open a new terminal, to make sure <code>virtualenvwrapper</code> can work correctly.</p>
+<h2>Test if the installed tools are working</h2>
+<p>To make sure everything has been configured correctly, please close and reopen your terminal and let's try to create a new virtual environment:</p>
+<div class="highlight"><pre><span></span>mkvirtualenv test
+</pre></div>
+
+
+<p>which should output something like this:</p>
+<div class="highlight"><pre><span></span>Using base prefix &#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&#39;
+New python executable in /Users/andrea/.virtualenvs/test/bin/python3.7
+Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
+Installing setuptools, pip, wheel...
+done.
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
+(test) ➜  ~
+</pre></div>
+
+
+<p>If you see something similar, it means that the virtual environment has been created correctly. Please note that by default this command will create an environment base on Python 3. Do you need to create one for Python 2? No problem, you just need to do the following:</p>
+<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/python2 test
+</pre></div>
+
+
+<p>which should output this:</p>
+<div class="highlight"><pre><span></span>Running virtualenv with interpreter /usr/local/bin/python2
+New python executable in /Users/andrea/.virtualenvs/test/bin/python2.7
+Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
+Installing setuptools, pip, wheel...
+done.
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
+(test) ➜  ~
+</pre></div>
+
+
+<h2>Conclusion</h2>
+<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p><p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/" rel="bookmark"
+                           title="Permalink to How to configure EncFS on OSX 10.10 (Yosemite)">How to configure EncFS on OSX 10.10 (Yosemite)</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Sun 11 October 2015</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/security.html">security</a></span>
-</footer><!-- /.post-info --><p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
+</footer><!-- /.post-info -->                <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
 (Dropbox, OneDrive, etc...), having a good level of privacy and
 security. Infact EncFS encrypt and decrypt our data automatically. It's
 available for Linux as well and using a commercial solution (that is
@@ -142,11 +253,10 @@ directly on \~/Dropbox/Private</strong>, only read and save your files from
 <ul>
 <li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>
 <li><a href="http://ninjatips.com/encrypt-dropbox-using-encfs/">http://ninjatips.com/encrypt-dropbox-using-encfs/</a></li>
-</ul><p><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+</ul>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -202,7 +312,7 @@ considered two different layers by Docker and in case an updated package
 is available it won't be installed when the image is rebuilt.</p>
 <p>At this point we switch to <strong>postgres</strong> user to execute the next
 commands:</p>
-<div class="highlight"><pre><span></span>USER postgres
+<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> postgres</span>
 <span class="k">RUN</span> /etc/init.d/postgresql start   
   <span class="o">&amp;&amp;</span> psql --command <span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span>   
   <span class="o">&amp;&amp;</span> createdb -O pguser pgdb
@@ -210,7 +320,7 @@ commands:</p>
 
 
 <p>We switch to <strong>root</strong> user and we complete the configuration:</p>
-<div class="highlight"><pre><span></span>USER root
+<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> root</span>
 <span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
 <span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
 </pre></div>
@@ -223,14 +333,14 @@ commands:</p>
 
 <p>We setup the data and shared folders that we will use later:</p>
 <div class="highlight"><pre><span></span><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
-<span class="k">VOLUME</span><span class="s">  [&quot;/etc/postgresql&quot;, &quot;/var/log/postgresql&quot;, &quot;/var/lib/postgresql&quot;]</span>
+<span class="k">VOLUME</span>  <span class="p">[</span><span class="s2">&quot;/etc/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/log/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql&quot;</span><span class="p">]</span>
 </pre></div>
 
 
 <p>Finally we switch again to the <strong>postgres</strong> user and we define the entry
 command for this image:</p>
-<div class="highlight"><pre><span></span>USER postgres
-<span class="k">CMD</span><span class="s"> [&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;, &quot;-D&quot;, &quot;/var/lib/postgresql/9.3/main&quot;, &quot;-c&quot;, &quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;]</span>
+<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> postgres</span>
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;</span><span class="p">,</span> <span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql/9.3/main&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;</span><span class="p">]</span>
 </pre></div>
 
 
@@ -275,17 +385,17 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
 fig</strong>).</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">dbdata</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
-  <span class="l l-Scalar l-Scalar-Plain">volumes</span><span class="p p-Indicator">:</span>
+<div class="highlight"><pre><span></span><span class="nt">dbdata</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
+  <span class="nt">volumes</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span>
-  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 
-<span class="l l-Scalar l-Scalar-Plain">db</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
-  <span class="l l-Scalar l-Scalar-Plain">volumes_from</span><span class="p p-Indicator">:</span>
+<span class="nt">db</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
+  <span class="nt">volumes_from</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dbdata</span>
-  <span class="l l-Scalar l-Scalar-Plain">ports</span><span class="p p-Indicator">:</span>
+  <span class="nt">ports</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="s">&quot;5432:5432&quot;</span>
 </pre></div>
 

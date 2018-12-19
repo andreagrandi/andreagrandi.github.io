@@ -42,7 +42,7 @@ considered two different layers by Docker and in case an updated package
 is available it won't be installed when the image is rebuilt.&lt;/p&gt;
 &lt;p&gt;At this point we switch to &lt;strong&gt;postgres&lt;/strong&gt; user to execute the next
 commands:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER postgres
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
 &lt;span class="k"&gt;RUN&lt;/span&gt; /etc/init.d/postgresql start   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; psql --command &lt;span class="s2"&gt;&amp;quot;CREATE USER pguser WITH SUPERUSER PASSWORD &amp;#39;pguser&amp;#39;;&amp;quot;&lt;/span&gt;   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; createdb -O pguser pgdb
@@ -50,7 +50,7 @@ commands:&lt;/p&gt;
 
 
 &lt;p&gt;We switch to &lt;strong&gt;root&lt;/strong&gt; user and we complete the configuration:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER root
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; root&lt;/span&gt;
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;host all  all    0.0.0.0/0  md5&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/pg_hba.conf
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;listen_addresses=&amp;#39;*&amp;#39;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/postgresql.conf
 &lt;/pre&gt;&lt;/div&gt;
@@ -63,14 +63,14 @@ commands:&lt;/p&gt;
 
 &lt;p&gt;We setup the data and shared folders that we will use later:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; mkdir -p /var/run/postgresql &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chown -R postgres /var/run/postgresql
-&lt;span class="k"&gt;VOLUME&lt;/span&gt;&lt;span class="s"&gt;  [&amp;quot;/etc/postgresql&amp;quot;, &amp;quot;/var/log/postgresql&amp;quot;, &amp;quot;/var/lib/postgresql&amp;quot;]&lt;/span&gt;
+&lt;span class="k"&gt;VOLUME&lt;/span&gt;  &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/etc/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/log/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Finally we switch again to the &lt;strong&gt;postgres&lt;/strong&gt; user and we define the entry
 command for this image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;USER postgres
-&lt;span class="k"&gt;CMD&lt;/span&gt;&lt;span class="s"&gt; [&amp;quot;/usr/lib/postgresql/9.3/bin/postgres&amp;quot;, &amp;quot;-D&amp;quot;, &amp;quot;/var/lib/postgresql/9.3/main&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&amp;quot;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
+&lt;span class="k"&gt;CMD&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/lib/postgresql/9.3/bin/postgres&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-D&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql/9.3/main&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-c&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -115,17 +115,17 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use &lt;strong&gt;pip install fig&lt;/strong&gt; and under OSX you can use &lt;strong&gt;brew install
 fig&lt;/strong&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;dbdata&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;image&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;volumes&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
+  &lt;span class="nt"&gt;volumes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;/var/lib/postgresql&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;command&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
+  &lt;span class="nt"&gt;command&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
 
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;db&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;image&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;volumes_from&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+&lt;span class="nt"&gt;db&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
+  &lt;span class="nt"&gt;volumes_from&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;dbdata&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;ports&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="nt"&gt;ports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;5432:5432&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 

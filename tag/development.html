@@ -33,22 +33,132 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2018/11/04/why-i-mentor-on-exercism/">Why I mentor on Exercism.io</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on OSX</a></h1>
+<footer class="post-info">
+        <span>Wed 19 December 2018</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/osx.html">osx</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a></span>
+</footer><!-- /.post-info --><p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
+<p>Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.</p>
+<h2>Requirements</h2>
+<p>To follow these instructions you need to at least have installed <strong>brew</strong> on OSX. Please follow the instructions on the official website: <a href="https://brew.sh">https://brew.sh</a></p>
+<h2>Installing Python 3.7.x and Python 2.7.x</h2>
+<p>Even if I strongly suggest to start every new project with Python 3 (since Python 2 will only be supported until the end of 2019), there may be use cases when version 2 is still required, so I will give you the instructions to install both.</p>
+<h3>Installing Python 3.7.x</h3>
+<div class="highlight"><pre><span></span>brew install python
+</pre></div>
+
+
+<p>This will install Python 3 by default.</p>
+<h3>Installing Python 2.7.x</h3>
+<div class="highlight"><pre><span></span>brew install python@2
+</pre></div>
+
+
+<p>This will install version 2 of Python.</p>
+<h3>Add the Python locations to PATH</h3>
+<p>Edit your <code>.bashrc</code> or <code>.zshrc</code> and add this:</p>
+<div class="highlight"><pre><span></span>export PATH=&quot;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&quot;
+</pre></div>
+
+
+<p>You will need to close your terminal and reopen it for the changes to be applied. Once you have done it, you can verify if Python 3 and Python 2 have been installed correctly:</p>
+<div class="highlight"><pre><span></span>python --version
+Python 3.7.1
+</pre></div>
+
+
+<p>and</p>
+<div class="highlight"><pre><span></span>python2 --version
+Python 2.7.15
+</pre></div>
+
+
+<h2>Install virtualenv and virtualenvwrapper</h2>
+<p>When working with Python, it's a good thing not to install packages system wide, but confine them in virtual environments. A good and well tested way of doing that is to use <code>virtualenv</code> (and its companion <code>virtualenvwrapper</code>) which makes the most common operations easier.</p>
+<div class="highlight"><pre><span></span>pip install virtualenv
+pip install virtualenvwrapper
+</pre></div>
+
+
+<p>Those (and only those) two packages will be installed system wide, because we will need them to be available outside of a virtual environment.</p>
+<h3>Configure virtualenv</h3>
+<p>Edit again your <code>.bashrc</code> (or <code>.zshrc</code>) and add these lines:</p>
+<div class="highlight"><pre><span></span>export WORKON_HOME=~/.virtualenvs
+[ -f /usr/local/bin/virtualenvwrapper.sh ] &amp;&amp; source /usr/local/bin/virtualenvwrapper.sh
+</pre></div>
+
+
+<p>This will configure the default location where to store your virtual environments and will run a command every time you open a new terminal, to make sure <code>virtualenvwrapper</code> can work correctly.</p>
+<h2>Test if the installed tools are working</h2>
+<p>To make sure everything has been configured correctly, please close and reopen your terminal and let's try to create a new virtual environment:</p>
+<div class="highlight"><pre><span></span>mkvirtualenv test
+</pre></div>
+
+
+<p>which should output something like this:</p>
+<div class="highlight"><pre><span></span>Using base prefix &#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&#39;
+New python executable in /Users/andrea/.virtualenvs/test/bin/python3.7
+Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
+Installing setuptools, pip, wheel...
+done.
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
+(test) ➜  ~
+</pre></div>
+
+
+<p>If you see something similar, it means that the virtual environment has been created correctly. Please note that by default this command will create an environment base on Python 3. Do you need to create one for Python 2? No problem, you just need to do the following:</p>
+<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/python2 test
+</pre></div>
+
+
+<p>which should output this:</p>
+<div class="highlight"><pre><span></span>Running virtualenv with interpreter /usr/local/bin/python2
+New python executable in /Users/andrea/.virtualenvs/test/bin/python2.7
+Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
+Installing setuptools, pip, wheel...
+done.
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
+virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
+(test) ➜  ~
+</pre></div>
+
+
+<h2>Conclusion</h2>
+<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p><p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2018/11/04/why-i-mentor-on-exercism/" rel="bookmark"
+                           title="Permalink to Why I mentor on Exercism.io">Why I mentor on Exercism.io</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Sun 04 November 2018</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/mentoring.html">mentoring</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a><a href="https://www.andreagrandi.it/tag/exercism.html">exercism</a><a href="https://www.andreagrandi.it/tag/student.html">student</a></span>
-</footer><!-- /.post-info --><p>Exercism (<a href="https://exercism.io">https://exercism.io</a>) is a platform that has been created to help people improving their coding skills, thanks to the volunteers mentoring the students. There are tracks for almost all the popular languages and each track has coding tests that the students can download, solve offline using their preferred editor, and test the solution against the provided unit tests. Once the solution is ready to be reviewed (or even if it's not complete but the student needs help), it can be submitted to the website and it will go in a queue where the first available mentor will pick it and start mentoring.</p>
+</footer><!-- /.post-info -->                <p>Exercism (<a href="https://exercism.io">https://exercism.io</a>) is a platform that has been created to help people improving their coding skills, thanks to the volunteers mentoring the students. There are tracks for almost all the popular languages and each track has coding tests that the students can download, solve offline using their preferred editor, and test the solution against the provided unit tests. Once the solution is ready to be reviewed (or even if it's not complete but the student needs help), it can be submitted to the website and it will go in a queue where the first available mentor will pick it and start mentoring.</p>
 <p>The <strong>service is free</strong> to use for all the students and <strong>the mentors are all volunteers</strong> (this doesn't mean that the platform doesn't have any costs. If you are curious about the resources needed to keep the platform alive, you can give a look at <a href="https://www.reddit.com/r/Python/comments/9tugvn/exercismio_needs_python_mentors/e8zy5mq/">this answer on Reddit</a>.</p>
 <p>When I found out about the platform, I decided to use it (as student) to <strong>improve my Go coding skills</strong>. I must say that I've been learning a lot from the mentors and some of them are putting a lot of effort to give you all the possible advices to improve your coding style. In a single exercise once, I learnt at least five things about Go I didn't know before!</p>
 <p>I've been a Python developer (professionally) for the last 5 years, but I've never considered myself an "expert". I decided to give it a try with mentoring, because I felt I wanted to <strong>give something back to the community</strong>, so I registered as mentor too and started mentoring in the Python track.</p>
 <p>The first surprise has been that mentoring other students, I was probably learning more than how much I was teaching. First of all, once you already know how to solve a problem, it's always interesting to look at other possible solutions. I've found sometimes that students were providing better (more concise and readable) solutions than mine. Last but not least, before advising someone about conding style or a more idiomatic solution, I always double check things from different sources. There is nothing wrong making mistakes, especially if you are learning... but it would be damaging for the student if I was teaching them something wrong, so I need to be sure about what I say. This of course makes me study, even the basic things, again and again and at the end of the day, my skills are better too.</p>
 <p>Once you join the mentors group, you are invited to a private Slack where you can count on the help of other mentors (we have channels for each track/language) or ask questions. So, if you are not sure about something, you can always ask around.</p>
-<p>If my story and experience convinced you, <strong>Exercism is looking for more mentors!</strong> The more we have available, the less time the students have to wait in a queue to be mentored. You can find all the instructions at this address <a href="https://mentoring.exercism.io/">https://mentoring.exercism.io</a></p><p><a href="https://www.andreagrandi.it/2018/11/04/why-i-mentor-on-exercism/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+<p>If my story and experience convinced you, <strong>Exercism is looking for more mentors!</strong> The more we have available, the less time the students have to wait in a queue to be mentored. You can find all the instructions at this address <a href="https://mentoring.exercism.io/">https://mentoring.exercism.io</a></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2018/11/04/why-i-mentor-on-exercism/">read more</a>
+<p><a href="https://www.andreagrandi.it/2018/11/04/why-i-mentor-on-exercism/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -118,65 +228,10 @@ about this?</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2012/08/17/ubuntu-release-sprint-calling-for-feedback/">read more</a>
 <p><a href="https://www.andreagrandi.it/2012/08/17/ubuntu-release-sprint-calling-for-feedback/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2008/11/17/what-i-expect-in-the-future-of-maemo-development/" rel="bookmark"
-                           title="Permalink to What I expect in the future of Maemo Development">What I expect in the future of Maemo Development</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 17 November 2008</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/maemo-en.html">Maemo (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/development.html">development</a><a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a></span>
-</footer><!-- /.post-info -->                <p>In these days I was thinking about: <strong>what could be done to improve
-Maemo Development and power user experience?</strong> There are some points
-that would need to be improved. This little list pretends to be just a
-starting point. I hope to get some feedback so we can discuss further in
-the <strong>maemo-developers</strong> mailing list.</p>
-<p><strong>Documentation:</strong> Maemo developers use different libraries and toolkit
-(GTK, libui, ecc...). There is not a common place where I can look for
-documentation. I've to visit each library website and get it. It would
-be great to have a tool just like Qt Assistant, integrating all
-documentation, including examples and aggregating external articles
-using a "live RSS aggregator".</p>
-<p><strong>Kinetic scrolling:</strong> I really love
-<a href="http://mauku.henrikhedberg.com/">Mauku</a> application because of its
-kinetic scrolling, thanks to the <a href="http://miaouw.henrikhedberg.com/">Miaouw
-library</a>. It would be great to have
-this kind of scrolling to be part of Hildon UI. Of course I'd love to
-have Python bindings too :)</p>
-<p><strong>Eclipse Support:</strong> I think Eclipse support should be improved. I'd
-like to have a tool that makes .deb creation easier so developers can
-spend more time coding and not packaging applications. I'd like to see a
-GUI designer integrated into Eclipse (for "integrated" I mean something
-like Visual Studio GUI designer.... not an external tool like Glade).</p>
-<p><strong>Qt Creator:</strong> Trolltech (Nokia) just released a preview release of
-their <a href="http://trolltech.com/developer/qt-creator">Qt Creator</a>. A very
-powerfull IDE to develop Qt/C++ applications. It's still in alpha
-release, but... what about integrating Maemo development into it?
-(Supporting Python development too).</p>
-<p><strong>Maemo SAS hosting:</strong> sometimes we (well.. me at least :D ) need to
-write an application that uses a server part too and need to expose some
-API. Maemo.org offers hosting for the project, but what about the server
-part of the application? It would be fine if developers had the
-possibility to have the server side hosted by Maemo.org or Nokia.</p>
-<p><strong>Better GPS support:</strong> the GPS unit shipped with N810 is something
-unusable yet. I've tried using A-GPS too, but position fixing time is
-still bad, compared to an external GPS/bluetooth receiver. I often have
-to use my external GPS receiver to use my N810 without problems.</p>
-<p><strong>More audio/video codecs:</strong> often I'm not able to listen to online
-radios, streamings ecc... just because of a missing codec for the
-default Media Player.</p>
-<p>These are just some ideas. Please feel free to comment them, I'd like to
-discuss them together.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2008/11/17/what-i-expect-in-the-future-of-maemo-development/">read more</a>
-<p><a href="https://www.andreagrandi.it/2008/11/17/what-i-expect-in-the-future-of-maemo-development/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 1
+    Page 1 / 2
+        <a href="https://www.andreagrandi.it/tag/development2.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">
