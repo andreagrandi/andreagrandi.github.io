@@ -35,6 +35,78 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" rel="bookmark"
+                           title="Permalink to Using GtkIconView in Python: a small tutorial">Using GtkIconView in Python: a small tutorial</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 15 April 2008</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/gtk.html">gtk</a><a href="https://www.andreagrandi.it/tag/gtkiconview.html">gtkiconview</a><a href="https://www.andreagrandi.it/tag/gtkliststore.html">gtkliststore</a><a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a></span>
+</footer><!-- /.post-info -->                <p>In these days I was looking for a simple tutorial to understand how to
+use <strong>GtkIconView</strong>, but the only thing I was able to find was an
+example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
+thinking it would be useful for other people trying to use that Gtk
+control. You can find the code here:</p>
+<p>[sourcecode language='python']<br>
+import gtk<br>
+import gobject</p>
+<p>DEFAULT_IMAGE_WIDTH = 100</p>
+<p># Main Window setup<br>
+window = gtk.Window(gtk.WINDOW_TOPLEVEL)<br>
+window.set_size_request(400, 240)<br>
+window.connect("destroy", gtk.main_quit)<br>
+window.set_title("Python GtkIconView Test")</p>
+<p># Add a VBox<br>
+vbox = gtk.VBox()<br>
+window.add(vbox)</p>
+<p># Setup Scrolled Window<br>
+scrolled_win = gtk.ScrolledWindow()<br>
+scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)</p>
+<p># Setup ListStore to contain images and description<br>
+model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)</p>
+<p># Create a tuple with image files<br>
+immagini = ("BD786-TFR.jpg", "guido_sottozero.jpg", "IMG_0056.JPG",
+"movies_card.jpg")</p>
+<p>for im in immagini:<br>
+try:<br>
+pixbuf = gtk.gdk.pixbuf_new_from_file(im)<br>
+pix_w = pixbuf.get_width()<br>
+pix_h = pixbuf.get_height()<br>
+new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the
+scaled height before resizing image<br>
+scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h,
+gtk.gdk.INTERP_TILES)<br>
+model.append((scaled_pix, im))<br>
+except:<br>
+pass</p>
+<p># Setup GtkIconView<br>
+view = gtk.IconView(model) # Pass the model stored in a ListStore to
+the GtkIconView<br>
+view.set_pixbuf_column(0)<br>
+view.set_text_column(1)<br>
+view.set_selection_mode(gtk.SELECTION_MULTIPLE)<br>
+view.set_columns(0)<br>
+view.set_item_width(150)</p>
+<p># Pack objects and show them all<br>
+scrolled_win.add(view)<br>
+vbox.pack_start(scrolled_win)<br>
+window.show_all()</p>
+<p>gtk.main()<br>
+[/sourcecode]</p>
+<p>The important thing to notice is that you have to store all the images
+in a <strong>GtkListStore</strong> and pass it to the <strong>GtkIconView</strong> as <em>"model"</em>
+parameter. I hope this example is clear. If you have any question,
+please comment this post and I'll try to answer.</p>
+<p>This is a screenshot of this example:</p>
+<p><img alt="gtkiconview" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/gtkiconview_sample.png"></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/">read more</a>
+<p><a href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/04/09/pymaemo-talk-on-may-10th-in-florence-at-pycon2-conference/" rel="bookmark"
                            title="Permalink to PyMaemo Talk on May 10th in Florence at PyCon2 Conference">PyMaemo Talk on May 10th in Florence at PyCon2 Conference</a></h1>
                 </header>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - test</title>
+        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
+        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
+        <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi </a></h1>
+                <nav><ul>
+    
+                        <li><a href="https://www.andreagrandi.it/about/">About</a></li>
+    
+                        <li><a href="https://www.andreagrandi.it/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="https://www.andreagrandi.it/pgp-key/">PGP Key</a></li>
+                </ul>
+<form id="search" action="https://www.andreagrandi.it/search.html" onsubmit="return validateForm(this.elements['q'].value);">
+                        <input type="text" class="search-query" placeholder="" name="q" id="tipue_search_input">
+                    </form>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/">Skipping tests depending on the Python version</a></h1>
+<footer class="post-info">
+        <span>Thu 21 February 2019</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/test.html">test</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a><a href="https://www.andreagrandi.it/tag/testing.html">testing</a></span>
+</footer><!-- /.post-info --><p>Sometimes we want to run certain tests only on a specific version of Python.</p>
+<p>Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won't run
+under Python 3.</p>
+<p>Chances are that during the migration you are already using the <a href="https://pythonhosted.org/six/">six</a> library. The <strong>six</strong> libraries have
+two boolean properties which are initialised to <code>True</code> depending on the Python version which is being used: <code>PY2</code> when running under Python 2
+and <code>PY3</code> when running under Python 3.</p>
+<p>This library, combined with the <strong>skipIf</strong> method of <a href="https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures">unittest library</a>
+can be used to easily skip tests when using Python 3:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+
+<span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+
+    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">PY3</span><span class="p">,</span> <span class="s2">&quot;not compatible with Python 3&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This test won&#39;t run under Python 3</span>
+        <span class="k">pass</span>
+</pre></div>
+
+
+<h2>Credits</h2>
+<p>Thanks to my colleague <strong><a href="https://github.com/valnico">Nicola</a></strong> for giving me the inspiration to write this post.</p><p><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">rss feed</a></li>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>
+                    Powered by <a href="http://getpelican.com/">Pelican</a> and Python -
+                    Source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+                        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+                    </a>
+                </p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2140684-3']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'andrea-grandi-it';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

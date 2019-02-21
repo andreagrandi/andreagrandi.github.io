@@ -35,6 +35,100 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/" rel="bookmark"
+                           title="Permalink to How to configure Edimax EW-7811UN Wifi dongle on Raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 02 September 2014</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/raspberrypi.html">RaspberryPI</a><a href="https://www.andreagrandi.it/tag/wifi.html">WIFI</a><a href="https://www.andreagrandi.it/tag/networking.html">networking</a><a href="https://www.andreagrandi.it/tag/debian.html">Debian</a></span>
+</footer><!-- /.post-info -->                <p>If you want to connect your <strong>RaspberryPi</strong> to your home network and you
+want to avoid cables, I suggest you to use the <strong>Edimax wifi adapter</strong>.
+This device is quite cheap (around £8 on
+<a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/">Amazon</a>)
+and it's very easy to configure on Raspbian (I assume you are using a
+recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
+<p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
+<h3>Configure the wifi adapter</h3>
+<p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
+<div class="highlight"><pre><span></span>auto lo
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+auto wlan0
+
+iface wlan0 inet dhcp
+wpa-ssid YOURESSID
+wpa-psk YOURWPAPASSWORD
+</pre></div>
+
+
+<h3>Power management issue</h3>
+<p>There is a known "issue" with this adapter default configuration that
+makes it to turn off if the wlan interface is not in use for some
+minutes. To avoid this you have to customize the parameters used to load
+the kernel module. First check that your adapter is using <strong>8192cu</strong>
+module:</p>
+<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
+8192cu <span class="m">551136</span> <span class="m">0</span>
+</pre></div>
+
+
+<p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
+lines inside:</p>
+<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
+options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+
+
+<p>I also suggest to create a little entry in crontab to make the
+RaspberryPi ping your router every minute. This will ensure that your
+wifi connection will stay alive. To edit crontab just type (from pi
+user, you don't need to be root):</p>
+<div class="highlight"><pre><span></span>crontab -e
+</pre></div>
+
+
+<p>and insert this line at the end:</p>
+<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
+</pre></div>
+
+
+<p>where 192.168.0.1 is the IP of your router (of course substitute this
+value with the ip of your router).</p>
+<h3>Keep Alive Script</h3>
+<p>I created a further script to keep my WIFI alive. This script will ping
+the router (change the IP using the one of your router) every 5 minutes
+and if the ping fails it brings down the wlan0 interface, the kernel
+module for the wifi and bring them up again.</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
+</p>
+
+<p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
+<strong>root</strong> user:</p>
+<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+crontab -e
+</pre></div>
+
+
+<p>Insert this line inside the crontab editor:</p>
+<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
+</pre></div>
+
+
+<h3>Conclusion</h3>
+<p>The configuration is done. Just reboot your RaspberryPi and enjoy your
+wifi connection.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/">read more</a>
+<p><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/" rel="bookmark"
                            title="Permalink to Configuring ddclient to update your dynamic DNS at noip.com">Configuring ddclient to update your dynamic DNS at noip.com</a></h1>
                 </header>
@@ -270,34 +364,6 @@ I release for a project I'm working on
 is always tested when I push it on my repository.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">read more</a>
 <p><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/" rel="bookmark"
-                           title="Permalink to Factoryboy: Creating data for unit tests in an easy way">Factoryboy: Creating data for unit tests in an easy way</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 30 January 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a></span>
-
-</footer><!-- /.post-info -->                <p>I recently prepared a presentation about
-<a href="http://factoryboy.readthedocs.org"><strong>Factoryboy</strong></a>, a Python library
-that automates lot of the work when a developer needs to create some
-data for unit testing.</p>
-<p>I've been using this library since a couple of months, both in the
-company where I work and on a personal open source project I'm working
-on. I will give a presentation about this library in an internal
-workshop in my company and I'm available to give it in any Python/Django
-related event around <strong>London</strong>, if anyone is interested.</p>
-<p>The slides are already available:</p>
-<p>
-<script async class="speakerdeck-embed" data-id="55509260698a013170b8769b07168819" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
-</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/">read more</a>
-<p><a href="https://www.andreagrandi.it/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

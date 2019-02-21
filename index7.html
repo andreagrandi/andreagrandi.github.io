@@ -35,6 +35,156 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" rel="bookmark"
+                           title="Permalink to Understanding Python decorators optimizing a recursive Fibonacci implementation">Understanding Python decorators optimizing a recursive Fibonacci implementation</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 31 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/decorators.html">decorators</a><a href="https://www.andreagrandi.it/tag/fibonacci.html">fibonacci</a><a href="https://www.andreagrandi.it/tag/memoization.html">memoization</a><a href="https://www.andreagrandi.it/tag/memoize.html">memoize</a><a href="https://www.andreagrandi.it/tag/optimization.html">optimization</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
+an argument and returns a function as a <em>value</em>. Here is an example of
+decorator definition:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="c1"># make a new function</span>
+    <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
+        <span class="c1"># some code</span>
+
+    <span class="k">return</span> <span class="n">new_function</span>
+</pre></div>
+
+
+<p>To apply a decorator to an existing function, you just need to put
+<strong>@*decorator_name</strong>* in the line before its definition, like this
+example:</p>
+<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s1">&#39;Hello World&#39;</span>
+</pre></div>
+
+
+<p>This decorator doesn't do anything, so let's think about a more concrete
+problem we could solve using decorators.</p>
+<h2>Fibonacci sequence</h2>
+<p>By definition, the first two numbers in the
+<strong><a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci</a></strong> sequence
+are either 1 and 1 or 0 and 1. All the other numbers are the sum of the
+previous two numbers of the sequence. Example:</p>
+<ol>
+<li>0, 1: the third number is 1</li>
+<li>0, 1, 1: the fourth number is 2</li>
+<li>0, 1, 1, 2: the fifth number is 3</li>
+<li>0, 1, 1, 2, 3: the sixth number is 5</li>
+<li>etc...</li>
+</ol>
+<p>If we wanted to give a <strong>math definition</strong> of the sequence, we could
+describe it in this way:</p>
+<ul>
+<li><strong>F(0): 0</strong></li>
+<li><strong>F(1): 1</strong></li>
+<li><strong>F(n): F(n-1) + F(n-2)</strong></li>
+</ul>
+<p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
+one:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+
+<p>What's the problem with this implementation? The code works as expected,
+but it's very <strong>inefficient</strong>. The next picture will explain what
+happens when we will try, for example, to calculate the 5th number of
+the sequence:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/fibo.png"><img alt="fibo" src="https://www.andreagrandi.it/images/2015/08/fibo.png" width="60%"></a></p>
+<p>Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and...
+the picture just tell us that we have calculated Fib(3) 2 times, Fib(2)
+3 times, Fib(1) 5 times! Why are we repeating the same operation every
+time if we already calculated the result?</p>
+<h2>Memoization</h2>
+<blockquote>
+<p>In computing, <strong>memoization</strong> is an optimization technique used
+primarily to speed up computer programs by storing the results of
+expensive function calls and returning the cached result when the same
+inputs occur again.</p>
+</blockquote>
+<p>We need to store values of the sequence we have already calculated and
+get them later when we need them. Let's implement a simple memoization
+decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">return</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">decorated_function</span>
+</pre></div>
+
+
+<p>The decorator defines a dict at the beginning that is used as a cache.
+When we want to find the n number of the sequence, it first checks if
+the value was already calculated and that value is returned instead of
+being calculated again. If the value is not found, then the original
+function is being called and then the value is store in the cache, then
+returned to the caller.</p>
+<h2>Using the memoize decorator</h2>
+<p>How much this decorator can speed up our fib method? Let's try to
+benchmark the execution using Python
+<strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
+<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The required time to calculate the 35th number of the Fibonacci sequence
+on my laptop is: <strong>4.73480010033</strong></p>
+<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
+                            <span class="c1"># in a module named memoize.py</span>
+
+<span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The required time to calculate the 35th number of the Fibonacci sequence
+on my laptop is: <strong>0.000133037567139</strong></p>
+<p>Quite faster, don't you think? I will let you try how long does it take
+to calculate the 60th number of the sequence with and without using the
+decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/" rel="bookmark"
                            title="Permalink to Django Notes: read values from settings in a safe way">Django Notes: read values from settings in a safe way</a></h1>
                 </header>
@@ -188,39 +338,6 @@ for <strong>free, u</strong>se this link and enjoy
 it <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/07/23/django-notes-tests-setup-method-and-db-data/" rel="bookmark"
-                           title="Permalink to Django Notes: tests, setUp method and db data">Django Notes: tests, setUp method and db data</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 23 July 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/django-python.html">Django, Python</a></span>
-
-</footer><!-- /.post-info -->                <p>This won't be a full post, but just a quick note (probably the first one
-of a serie) about development with Django.</p>
-<p>When we write a <strong>TestCase</strong> test, if we have defined a <strong>setUp</strong>
-method, it will be called before the execution of each test. One could
-think that the database is completely reset after each test, but this is
-not true (not like I was thinking). After each test, whatever we wrote
-on the database is rolled back. If we create a "Client" row (assuming we
-have a model called Clients) in our setUp, when we call it the second
-time the ID won't be 1 as someone (me included) could expect. It will be
-2 instead, because the database has not completely deleted and created
-from scratch.</p>
-<p>This means that we can't assume that our Client ID will always be 1 for
-each test and we should rather reference to it in a dinamic way like:
-<strong>self.client.id</strong></p>
-<p>This could be a trivial thing for many people but I was not 100% sure
-about this so I asked for a confirmation on <strong>#django</strong> IRC room and
-people (expecially <strong>apollo13</strong>) was kind enough to explain me how it
-works.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/07/23/django-notes-tests-setup-method-and-db-data/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/07/23/django-notes-tests-setup-method-and-db-data/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

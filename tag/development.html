@@ -33,12 +33,52 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on OSX</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/">Skipping tests depending on the Python version</a></h1>
+<footer class="post-info">
+        <span>Thu 21 February 2019</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/test.html">test</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a><a href="https://www.andreagrandi.it/tag/testing.html">testing</a></span>
+</footer><!-- /.post-info --><p>Sometimes we want to run certain tests only on a specific version of Python.</p>
+<p>Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won't run
+under Python 3.</p>
+<p>Chances are that during the migration you are already using the <a href="https://pythonhosted.org/six/">six</a> library. The <strong>six</strong> libraries have
+two boolean properties which are initialised to <code>True</code> depending on the Python version which is being used: <code>PY2</code> when running under Python 2
+and <code>PY3</code> when running under Python 3.</p>
+<p>This library, combined with the <strong>skipIf</strong> method of <a href="https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures">unittest library</a>
+can be used to easily skip tests when using Python 3:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+
+<span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+
+    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">PY3</span><span class="p">,</span> <span class="s2">&quot;not compatible with Python 3&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This test won&#39;t run under Python 3</span>
+        <span class="k">pass</span>
+</pre></div>
+
+
+<h2>Credits</h2>
+<p>Thanks to my colleague <strong><a href="https://github.com/valnico">Nicola</a></strong> for giving me the inspiration to write this post.</p><p><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/" rel="bookmark"
+                           title="Permalink to Installing Python and virtualenv on OSX">Installing Python and virtualenv on OSX</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Wed 19 December 2018</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/osx.html">osx</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a></span>
-</footer><!-- /.post-info --><p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
+</footer><!-- /.post-info -->                <p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
 <p>Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.</p>
 <h2>Requirements</h2>
 <p>To follow these instructions you need to at least have installed <strong>brew</strong> on OSX. Please follow the instructions on the official website: <a href="https://brew.sh">https://brew.sh</a></p>
@@ -132,11 +172,10 @@ virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_
 
 
 <h2>Conclusion</h2>
-<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p><p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">read more</a>
+<p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -187,46 +226,6 @@ Before Python 3.7.x to insert a debugging point we had to write <code>import pdb
 </ul>
                 <a class="readmore" href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/">read more</a>
 <p><a href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2012/08/17/ubuntu-release-sprint-calling-for-feedback/" rel="bookmark"
-                           title="Permalink to Ubuntu Release Sprint: calling for feedback!">Ubuntu Release Sprint: calling for feedback!</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 17 August 2012</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/ubuntu-en.html">Ubuntu (EN)</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/development.html">development</a><a href="https://www.andreagrandi.it/tag/meeting.html">meeting</a><a href="https://www.andreagrandi.it/tag/sprint.html">sprint</a><a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a><a href="https://www.andreagrandi.it/tag/uds.html">UDS</a></span>
-</footer><!-- /.post-info -->                <p>During the last UDS party, I had an idea to improve Ubuntu development,
-but I didn't know if it could be a good idea or a stupid one, so I
-talked to <strong>Daniel Holbach</strong> and <strong>David Planella</strong> about it and they
-were happy to hear about it and Daniel told me to talk about
-this directly to <strong>Mark</strong> (and I did it).</p>
-<p>Let's explain the basic idea.</p>
-<p>From an UDS and the next one, it would be useful to have a
-development sprint where people can talk about assigned UDS blueprints,
-at which point they are on their tasks, if they have any problems and if
-they will finish them within the next UDS.</p>
-<p>Of course Canonical cannot organize another meeting, it would be
-very expensive, so the idea is: why don't we use <strong>Google Hangout</strong> to
-organize the sprint? I has a limit of 10 people, I know, but we could
-select (for example) 5 from the community and 5 from Canonical. There
-would be parallel meeting and tracks, we would use the same blueprints
-used during the last UDS and we would add further notes. The
-attendees would be able to listen and watch the stream and make
-questions through the available chat.</p>
-<p>I've also created a <strong>wiki</strong> page with more informations and you can
-find it here: <a href="https://wiki.ubuntu.com/UbuntuReleaseSprint">https://wiki.ubuntu.com/UbuntuReleaseSprint</a></p>
-<p>What do you think about? I know that Canonical is already
-organizing sprints and this could be a way to involve more the Ubuntu
-Community. Maybe we should schedule a session <strong>at next UDS</strong> to talk
-about this?</p>
-<p>I hope to get some <strong>feedback</strong> from you.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2012/08/17/ubuntu-release-sprint-calling-for-feedback/">read more</a>
-<p><a href="https://www.andreagrandi.it/2012/08/17/ubuntu-release-sprint-calling-for-feedback/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

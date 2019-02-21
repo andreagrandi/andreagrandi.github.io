@@ -33,12 +33,52 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on OSX</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/">Skipping tests depending on the Python version</a></h1>
+<footer class="post-info">
+        <span>Thu 21 February 2019</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/test.html">test</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a><a href="https://www.andreagrandi.it/tag/testing.html">testing</a></span>
+</footer><!-- /.post-info --><p>Sometimes we want to run certain tests only on a specific version of Python.</p>
+<p>Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won't run
+under Python 3.</p>
+<p>Chances are that during the migration you are already using the <a href="https://pythonhosted.org/six/">six</a> library. The <strong>six</strong> libraries have
+two boolean properties which are initialised to <code>True</code> depending on the Python version which is being used: <code>PY2</code> when running under Python 2
+and <code>PY3</code> when running under Python 3.</p>
+<p>This library, combined with the <strong>skipIf</strong> method of <a href="https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures">unittest library</a>
+can be used to easily skip tests when using Python 3:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+
+<span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+
+    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">PY3</span><span class="p">,</span> <span class="s2">&quot;not compatible with Python 3&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This test won&#39;t run under Python 3</span>
+        <span class="k">pass</span>
+</pre></div>
+
+
+<h2>Credits</h2>
+<p>Thanks to my colleague <strong><a href="https://github.com/valnico">Nicola</a></strong> for giving me the inspiration to write this post.</p><p><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/" rel="bookmark"
+                           title="Permalink to Installing Python and virtualenv on OSX">Installing Python and virtualenv on OSX</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Wed 19 December 2018</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/osx.html">osx</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a></span>
-</footer><!-- /.post-info --><p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
+</footer><!-- /.post-info -->                <p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
 <p>Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.</p>
 <h2>Requirements</h2>
 <p>To follow these instructions you need to at least have installed <strong>brew</strong> on OSX. Please follow the instructions on the official website: <a href="https://brew.sh">https://brew.sh</a></p>
@@ -132,11 +172,10 @@ virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_
 
 
 <h2>Conclusion</h2>
-<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p><p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">read more</a>
+<p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -187,61 +226,6 @@ Before Python 3.7.x to insert a debugging point we had to write <code>import pdb
 </ul>
                 <a class="readmore" href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/">read more</a>
 <p><a href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/" rel="bookmark"
-                           title="Permalink to Go: defining methods on struct types">Go: defining methods on struct types</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 16 March 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/go.html">Go</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/go.html">go</a><a href="https://www.andreagrandi.it/tag/golang.html">golang</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/struct.html">struct</a></span>
-</footer><!-- /.post-info -->                <p>In <strong>Go</strong> it's possible to define <strong>methods</strong> on <strong>struct types</strong>. The
-syntax needed for it can be a bit strange for people that are used to
-define classes and methods in Java, C# etc... but once you learn it
-it's quite easy to use.</p>
-<p>In my case for example I needed something that could contain a Timer
-object, a string and a method that could start the timer and call a
-method at the end of the Timer execution. I implemented it in this way:</p>
-<p>``` {.toolbar:2 .lang:go .decode:true}
-type DeviceTimer struct {
-    DeviceID    string
-    DeviceTimer *time.Timer
-}</p>
-<p>func (timer DeviceTimer) startTimer() {
-    &lt;-timer.DeviceTimer.C
-    notifyDeviceTimerExpired(timer.DeviceID)
-}</p>
-<div class="highlight"><pre><span></span>The key point is **row 6** &quot;*func (timer DeviceTimer) startTimer() { ...
-}*&quot; where I defined a method called **startTimer** and I specify timer
-**DeviceTimer** inside the func definition. This basically &quot;extends&quot; the
-struct DeviceTimer adding that method to it. This means that I can call
-that method in this way:
-
-``` {.toolbar:2 .lang:go .decode:true}
-timer := time.NewTimer(time.Millisecond * 300)
-device_timer := DeviceTimer{&quot;abc123&quot;, timer}
-go device_timer.startTimer()
-</pre></div>
-
-
-<p>This is all you need to do. If you want to read more about this subject,
-I can suggest to read these two articles:</p>
-<ul>
-<li><strong>Go by Example: Methods</strong> <a href="https://gobyexample.com/methods">https://gobyexample.com/methods</a></li>
-<li><strong>Inheritance and subclassing in Go - or its near likeness</strong>
-    <a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html">http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html</a></li>
-</ul>
-<p><strong>Note:</strong> I'm not a Go expert and these are just my personal notes I'm
-taking during my learning experience. I'm very keen to share my notes
-with everyone, but please don't take them as notes from an expert Go
-developer.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

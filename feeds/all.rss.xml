@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Wed, 19 Dec 2018 15:00:00 +0000</lastBuildDate><item><title>Installing Python and virtualenv on OSX</title><link>https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/</link><description>&lt;p&gt;Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.&lt;/p&gt;
+<rss version="2.0"><channel><title>Andrea Grandi</title><link>https://www.andreagrandi.it/</link><description></description><lastBuildDate>Thu, 21 Feb 2019 20:00:00 +0000</lastBuildDate><item><title>Skipping tests depending on the Python version</title><link>https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/</link><description>&lt;p&gt;Sometimes we want to run certain tests only on a specific version of Python.&lt;/p&gt;
+&lt;p&gt;Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won't run
+under Python 3.&lt;/p&gt;
+&lt;p&gt;Chances are that during the migration you are already using the &lt;a href="https://pythonhosted.org/six/"&gt;six&lt;/a&gt; library. The &lt;strong&gt;six&lt;/strong&gt; libraries have
+two boolean properties which are initialised to &lt;code&gt;True&lt;/code&gt; depending on the Python version which is being used: &lt;code&gt;PY2&lt;/code&gt; when running under Python 2
+and &lt;code&gt;PY3&lt;/code&gt; when running under Python 3.&lt;/p&gt;
+&lt;p&gt;This library, combined with the &lt;strong&gt;skipIf&lt;/strong&gt; method of &lt;a href="https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures"&gt;unittest library&lt;/a&gt;
+can be used to easily skip tests when using Python 3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;six&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MyTestCase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;unittest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+    &lt;span class="nd"&gt;@unittest.skipIf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;six&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PY3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;not compatible with Python 3&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_example&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# This test won&amp;#39;t run under Python 3&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Credits&lt;/h2&gt;
+&lt;p&gt;Thanks to my colleague &lt;strong&gt;&lt;a href="https://github.com/valnico"&gt;Nicola&lt;/a&gt;&lt;/strong&gt; for giving me the inspiration to write this post.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 21 Feb 2019 20:00:00 +0000</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2019-02-21:/2019/02/21/skipping-tests-depending-python-version/</guid><category>python</category><category>test</category><category>programming</category><category>software</category><category>development</category><category>testing</category></item><item><title>Installing Python and virtualenv on OSX</title><link>https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/</link><description>&lt;p&gt;Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.&lt;/p&gt;
 &lt;p&gt;Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.&lt;/p&gt;
 &lt;h2&gt;Requirements&lt;/h2&gt;
 &lt;p&gt;To follow these instructions you need to at least have installed &lt;strong&gt;brew&lt;/strong&gt; on OSX. Please follow the instructions on the official website: &lt;a href="https://brew.sh"&gt;https://brew.sh&lt;/a&gt;&lt;/p&gt;

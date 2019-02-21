@@ -35,6 +35,61 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/" rel="bookmark"
+                           title="Permalink to Go: defining methods on struct types">Go: defining methods on struct types</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 16 March 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/go.html">Go</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/go.html">go</a><a href="https://www.andreagrandi.it/tag/golang.html">golang</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/struct.html">struct</a></span>
+</footer><!-- /.post-info -->                <p>In <strong>Go</strong> it's possible to define <strong>methods</strong> on <strong>struct types</strong>. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.</p>
+<p>In my case for example I needed something that could contain a Timer
+object, a string and a method that could start the timer and call a
+method at the end of the Timer execution. I implemented it in this way:</p>
+<p>``` {.toolbar:2 .lang:go .decode:true}
+type DeviceTimer struct {
+    DeviceID    string
+    DeviceTimer *time.Timer
+}</p>
+<p>func (timer DeviceTimer) startTimer() {
+    &lt;-timer.DeviceTimer.C
+    notifyDeviceTimerExpired(timer.DeviceID)
+}</p>
+<div class="highlight"><pre><span></span>The key point is **row 6** &quot;*func (timer DeviceTimer) startTimer() { ...
+}*&quot; where I defined a method called **startTimer** and I specify timer
+**DeviceTimer** inside the func definition. This basically &quot;extends&quot; the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:
+
+``` {.toolbar:2 .lang:go .decode:true}
+timer := time.NewTimer(time.Millisecond * 300)
+device_timer := DeviceTimer{&quot;abc123&quot;, timer}
+go device_timer.startTimer()
+</pre></div>
+
+
+<p>This is all you need to do. If you want to read more about this subject,
+I can suggest to read these two articles:</p>
+<ul>
+<li><strong>Go by Example: Methods</strong> <a href="https://gobyexample.com/methods">https://gobyexample.com/methods</a></li>
+<li><strong>Inheritance and subclassing in Go - or its near likeness</strong>
+    <a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html">http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html</a></li>
+</ul>
+<p><strong>Note:</strong> I'm not a Go expert and these are just my personal notes I'm
+taking during my learning experience. I'm very keen to share my notes
+with everyone, but please don't take them as notes from an expert Go
+developer.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" rel="bookmark"
                            title="Permalink to Using GtkIconView in Python: a small tutorial">Using GtkIconView in Python: a small tutorial</a></h1>
                 </header>
