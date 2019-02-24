@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Andrea Grandi - deploy</title>
+        <title>Andrea Grandi - ci</title>
         <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
         <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
         <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
@@ -58,90 +58,11 @@ and sync the built pages with the existing ones (this avoid creating a commit wh
 <p><strong>Please note:</strong> regardless of CircleCI settings, the deployment will only happens if we are pushing (or merging a pull request) to <strong>master</strong> (<code>if [ "${CIRCLE_BRANCH}" = "master" ]; then</code>) and it will actually commit and push pages only if there is something new to commit (<code>if git commit -m "CircleCI build $CIRCLE_BUILD_NUM pushed to Github Pages" ; then</code>). For example if I'm just updating something in the CircleCI configuration, which doesn't change anything in the content, the pages won't be deployed again.</p>
 <h2>Conclusion</h2>
 <p>My first impression of CircleCI is that is faster than TravisCI and this means that I can publish my content more quickly. The possibility of using Docker containers as base image is really powerful and in more complex scenarios we can reproduce the building environment locally on our machine. If you have any advices about how to improve my build script, feel free to leave a comment here.</p><p><a href="https://www.andreagrandi.it/2019/02/24/how-to-deploy-static-website-github-pages-circleci/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/" rel="bookmark"
-                           title="Permalink to Using QtCreator to deploy and run a Qt application to a remote Linux device">Using QtCreator to deploy and run a Qt application to a remote Linux device</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 17 January 2013</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/deploy.html">deploy</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/qt.html">Qt</a><a href="https://www.andreagrandi.it/tag/qtcreator.html">QtCreator</a><a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a><a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a></span>
-</footer><!-- /.post-info -->                <p>QtCreator is a very flexible IDE and can really be adapted for a lot of
-things. I usually use it to develop mobile applications for Nokia N9 and
-BlackBerry 10, but it can be used for more generic tasks. In my case I
-wanted to be able to develop a Qt application using my desktop PC,
-deploy it and run on a remote (actually it's on the same desk) Linux
-machine running Xubuntu.</p>
-<p>Doing this is quite easy and you don't need any specific plugin on
-QtCreator, but be sure to have at least version 2.6.x. Other than
-QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
-development machine and Xubuntu 12.10 for the remote netbook) and an SSH
-account on the remote PC.</p>
-<h3>Add the remote device to QtCreator</h3>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png"><img alt="QtCreatorDevice" src="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png" width="100%"></a></p>
-<p>To add the remote Linux device on QtCreator, use the
-<strong>Tools-&gt;Options</strong> menu and click on "<strong>Devices</strong>" item. At this
-point click on "<strong>Add</strong>" button and fill the fields using values similar
-to the screenshot. In particular specify a <strong>name</strong> for the device, the
-<strong>IP</strong> of the remote machine and a <strong>username</strong> and <strong>password</strong> that
-must already exist (I just created the user "andrea" on the Xubuntu
-machine and used the same password). I also had to set the <strong>timeout</strong>
-to 20 seconds, because I had some connection problems and the connection
-kept dropping after 10 seconds trying. To verify if everything is
-working fine, just click on <strong>Test</strong> button.</p>
-<h3>Add a specific Qt version</h3>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png"><img alt="QtCreatorQtVersion" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png" width="100%"></a></p>
-<p>To write your application you may need a specific Qt version that is
-different from the one distributed by your Linux distribution. There's
-no problem, QtCreator let you add different Qt versions without any
-conflict. In my case I installed the Qt5 version distributed by
-<strong>Canonical Qt5 Edgers
-Team</strong>: <a href="https://launchpad.net/~canonical-qt5-edgers">https://launchpad.net/~canonical-qt5-edgers</a><br>
-Once it's installed, just click on "<strong>Add</strong>" button and select the qmake
-specific to the version you want to add (in my case it was in
-<strong>/opt/qt5/bin/qmake</strong> ).</p>
-<h3>Add a Qt Kit</h3>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png"><img alt="QtCreatorQtKits" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png" width="100%"></a></p>
-<p>QtCreator permits to add new <strong>Kit</strong> (development configurations) and
-these kits are used during project creation to specify what you want to
-target. In my example I added a new kit choosing an appropriate <strong>name</strong>
-"Qt5 Ubuntu", the <strong>device type</strong>, the actual <strong>device</strong> previously
-configured and finally the <strong>Qt version</strong> that we added before. With a
-kit I have a complete "toolchain" that allow me to write applications
-for a particular device, with a specific Qt version.</p>
-<h3>Putting the pieces together</h3>
-<p>At this point you just have to create a new "<strong>Qt Quick 2</strong>"
-application, and select the new kit you just created instead of the
-"Desktop" one. <strong>Please note</strong> that there is a little problem that I
-haven't fixed yet (but I'm working on it): if you create, for example, a
-project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
-on the remote machine. By default your user doesn't have read+write
-permissions for that folder so I manualy created the folder and I gave a
-chmod 777 on it, just for testing. There are two possible ways to fix
-this: you could create a specific user that has read+write permissions
-on /opt/ or you could modify the deployment configuration to have the
-app deployed to the user /home (I will investigate on this possibility
-and I will write something in one of the next posts).</p>
-<h3>Final thoughts</h3>
-<p>What all of this could be useful for? Well, do 2+2 and you'll easily
-guess ;) In the next weeks I will post more specific informations and I
-will update everyone with my progresses. Any comment is welcome! If you
-want to contribute to this you're welcome too of course.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/">read more</a>
-<p><a href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 1
 </p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
             </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="social">
