@@ -90,23 +90,23 @@ these two parameters:</p>
 <p>``` {.lang:default .decode:true}
 ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem;
 ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem;</p>
-<div class="highlight"><pre><span></span>In case you want to have a look at my full Nginx configuration file, as
-reference, you can find it
-here &lt;https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8&gt;
+<div class="highlight"><pre><span></span><span class="nv">In</span> <span class="nv">case</span> <span class="nv">you</span> <span class="nv">want</span> <span class="nv">to</span> <span class="nv">have</span> <span class="nv">a</span> <span class="nv">look</span> <span class="nv">at</span> <span class="nv">my</span> <span class="nv">full</span> <span class="nv">Nginx</span> <span class="nv">configuration</span> <span class="nv">file</span>, <span class="nv">as</span>
+<span class="nv">reference</span>, <span class="nv">you</span> <span class="nv">can</span> <span class="nv">find</span> <span class="nv">it</span>
+<span class="nv">here</span> <span class="o">&lt;</span><span class="nv">https</span>:<span class="o">//</span><span class="nv">gist</span>.<span class="nv">github</span>.<span class="nv">com</span><span class="o">/</span><span class="nv">andreagrandi</span><span class="o">/</span><span class="mi">8</span><span class="nv">b194c99cd3e77fdb5a8</span><span class="o">&gt;</span>
 
-Automatic renewal
------------------
+<span class="nv">Automatic</span> <span class="nv">renewal</span>
+<span class="o">-----------------</span>
 
-The last thing to be configured is a crontab rule to call the script
-every... 2 months. Why 2 months? Letsencrypt SSL **certificates expire
-in 3 months**. Usually SSL certificates are valid at least for 1 year,
-but Letsencrypt decided to make it 3 months to incentivate the
-automation of the renewal. I set it to 2 months, so if anything goes
-wrong I still have plenty of time to do it manually. To edit crontab for
-root user execute **crontab -e** and add this line:
+<span class="nv">The</span> <span class="nv">last</span> <span class="nv">thing</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">configured</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">crontab</span> <span class="nv">rule</span> <span class="nv">to</span> <span class="k">call</span> <span class="nl">the</span> <span class="nv">script</span>
+<span class="nv">every</span>... <span class="mi">2</span> <span class="nv">months</span>. <span class="nv">Why</span> <span class="mi">2</span> <span class="nv">months</span>? <span class="nv">Letsencrypt</span> <span class="nv">SSL</span> <span class="o">**</span><span class="nv">certificates</span> <span class="nv">expire</span>
+<span class="nv">in</span> <span class="mi">3</span> <span class="nv">months</span><span class="o">**</span>. <span class="nv">Usually</span> <span class="nv">SSL</span> <span class="nv">certificates</span> <span class="nv">are</span> <span class="nv">valid</span> <span class="nv">at</span> <span class="nv">least</span> <span class="k">for</span> <span class="mi">1</span> <span class="nv">year</span>,
+<span class="nv">but</span> <span class="nv">Letsencrypt</span> <span class="nv">decided</span> <span class="nv">to</span> <span class="nv">make</span> <span class="nv">it</span> <span class="mi">3</span> <span class="nv">months</span> <span class="nv">to</span> <span class="nv">incentivate</span> <span class="nv">the</span>
+<span class="nv">automation</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">renewal</span>. <span class="nv">I</span> <span class="nv">set</span> <span class="nv">it</span> <span class="nv">to</span> <span class="mi">2</span> <span class="nv">months</span>, <span class="nv">so</span> <span class="k">if</span> <span class="nv">anything</span> <span class="nv">goes</span>
+<span class="nv">wrong</span> <span class="nv">I</span> <span class="nv">still</span> <span class="nv">have</span> <span class="nv">plenty</span> <span class="nv">of</span> <span class="nv">time</span> <span class="nv">to</span> <span class="k">do</span> <span class="nv">it</span> <span class="nv">manually</span>. <span class="nv">To</span> <span class="nv">edit</span> <span class="nv">crontab</span> <span class="k">for</span>
+<span class="nv">root</span> <span class="nv">user</span> <span class="nv">execute</span> <span class="o">**</span><span class="nv">crontab</span> <span class="o">-</span><span class="nv">e</span><span class="o">**</span> <span class="nv">and</span> <span class="nv">add</span> <span class="nv">this</span> <span class="nv">line</span>:
 
-``` {.lang:default .decode:true}
-0 3 1 */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &amp;&amp; service nginx reload
+``` {.<span class="nv">lang</span>:<span class="nv">default</span> .<span class="nv">decode</span>:<span class="nv">true</span>}
+<span class="mi">0</span> <span class="mi">3</span> <span class="mi">1</span> <span class="o">*/</span><span class="mi">2</span> <span class="o">*</span> <span class="o">/</span><span class="nv">root</span><span class="o">/</span><span class="nv">letsencrypt</span><span class="o">/</span><span class="nv">letsencrypt</span><span class="o">-</span><span class="nv">auto</span> <span class="nv">certonly</span> <span class="o">--</span><span class="nv">webroot</span> <span class="o">-</span><span class="nv">w</span> <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">www</span><span class="o">/</span><span class="nv">andreagrandi</span>.<span class="nv">it</span><span class="o">/</span> <span class="o">-</span><span class="nv">d</span> <span class="nv">www</span>.<span class="nv">andreagrandi</span>.<span class="nv">it</span> <span class="o">-</span><span class="nv">d</span> <span class="nv">andreagrandi</span>.<span class="nv">it</span> <span class="o">--</span><span class="nv">email</span> <span class="nv">email</span>@<span class="nv">domain</span>.<span class="nv">com</span> <span class="o">--</span><span class="nv">renew</span><span class="o">-</span><span class="nv">by</span><span class="o">-</span><span class="nv">default</span> <span class="o">--</span><span class="nv">agree</span><span class="o">-</span><span class="nv">tos</span> <span class="o">&amp;&amp;</span> <span class="nv">service</span> <span class="nv">nginx</span> <span class="nv">reload</span>
 </pre></div>
 
 

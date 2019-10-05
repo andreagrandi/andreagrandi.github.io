@@ -77,7 +77,7 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 <span class="na">    ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
 <span class="na">    instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
 
-    <span class="err">tags</span> <span class=" -Punctuation">{</span>
+    <span class="kd">tags</span> <span class=" -Punctuation">{</span>
 <span class="na">        Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
     <span class=" -Punctuation">}</span>
 <span class=" -Punctuation">}</span>
@@ -89,46 +89,46 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 
 
 <p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
-<div class="highlight"><pre><span></span>➜  example1$: terraform apply
-data.aws_ami.ubuntu: Refreshing state...
-aws_instance.web: Creating...
-    ami:                          &quot;&quot; =&gt; &quot;ami-03998867&quot;
-    associate_public_ip_address:  &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    availability_zone:            &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    ebs_block_device.#:           &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    ephemeral_block_device.#:     &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    instance_state:               &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    instance_type:                &quot;&quot; =&gt; &quot;t2.micro&quot;
-    ipv6_address_count:           &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    ipv6_addresses.#:             &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    key_name:                     &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    network_interface.#:          &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    network_interface_id:         &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    placement_group:              &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    primary_network_interface_id: &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    private_dns:                  &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    private_ip:                   &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    public_dns:                   &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    public_ip:                    &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    root_block_device.#:          &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    security_groups.#:            &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    source_dest_check:            &quot;&quot; =&gt; &quot;true&quot;
-    subnet_id:                    &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    tags.%:                       &quot;&quot; =&gt; &quot;1&quot;
-    tags.Name:                    &quot;&quot; =&gt; &quot;HelloUbuntu&quot;
-    tenancy:                      &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    volume_tags.%:                &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-    vpc_security_group_ids.#:     &quot;&quot; =&gt; &quot;&lt;computed&gt;&quot;
-aws_instance.web: Still creating... (10s elapsed)
-aws_instance.web: Still creating... (20s elapsed)
-aws_instance.web: Still creating... (30s elapsed)
-aws_instance.web: Creation complete (ID: i-0f58f8bd55b3a7e38)
+<div class="highlight"><pre><span></span><span class="err">➜</span>  <span class="n">example1$</span><span class="p">:</span> <span class="n">terraform</span> <span class="n">apply</span>
+<span class="k">data</span><span class="p">.</span><span class="n">aws_ami</span><span class="p">.</span><span class="n">ubuntu</span><span class="p">:</span> <span class="n">Refreshing</span> <span class="k">state</span><span class="p">...</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Creating</span><span class="p">...</span>
+    <span class="n">ami</span><span class="p">:</span>                          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;ami-03998867&quot;</span>
+    <span class="n">associate_public_ip_address</span><span class="p">:</span>  <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">availability_zone</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">ebs_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>           <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">ephemeral_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">instance_state</span><span class="p">:</span>               <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">instance_type</span><span class="p">:</span>                <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;t2.micro&quot;</span>
+    <span class="n">ipv6_address_count</span><span class="p">:</span>           <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">ipv6_addresses</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>             <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">key_name</span><span class="p">:</span>                     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">network_interface</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">network_interface_id</span><span class="p">:</span>         <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">placement_group</span><span class="p">:</span>              <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">primary_network_interface_id</span><span class="p">:</span> <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">private_dns</span><span class="p">:</span>                  <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">private_ip</span><span class="p">:</span>                   <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">public_dns</span><span class="p">:</span>                   <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">public_ip</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">root_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">security_groups</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">source_dest_check</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;true&quot;</span>
+    <span class="n">subnet_id</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">tags</span><span class="p">.</span><span class="o">%</span><span class="p">:</span>                       <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;1&quot;</span>
+    <span class="n">tags</span><span class="p">.</span><span class="n">Name</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;HelloUbuntu&quot;</span>
+    <span class="n">tenancy</span><span class="p">:</span>                      <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">volume_tags</span><span class="p">.</span><span class="o">%</span><span class="p">:</span>                <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">vpc_security_group_ids</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">10</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">20</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">30</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Creation</span> <span class="n">complete</span> <span class="p">(</span><span class="n">ID</span><span class="p">:</span> <span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="n">f58f8bd55b3a7e38</span><span class="p">)</span>
 
-Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+<span class="n">Apply</span> <span class="n">complete</span><span class="o">!</span> <span class="n">Resources</span><span class="p">:</span> <span class="mi">1</span> <span class="n">added</span><span class="p">,</span> <span class="mi">0</span> <span class="n">changed</span><span class="p">,</span> <span class="mi">0</span> <span class="n">destroyed</span><span class="p">.</span>
 
-Outputs:
+<span class="n">Outputs</span><span class="p">:</span>
 
-image_id = ami-03998867
+<span class="n">image_id</span> <span class="o">=</span> <span class="n">ami</span><span class="o">-</span><span class="mi">03998867</span>
 </pre></div>
 
 

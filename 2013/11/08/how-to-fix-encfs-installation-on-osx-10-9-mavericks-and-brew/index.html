@@ -45,19 +45,19 @@
 <span>| tags: <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a><a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a><a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/fuse4x.html">fuse4x</a><a href="https://www.andreagrandi.it/tag/osx.html">OSX</a><a href="https://www.andreagrandi.it/tag/security.html">security</a></span>
 </footer><!-- /.post-info -->      <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
 broken. First of all you have to fix a problem with a library header:</p>
-<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+<div class="highlight"><pre><span></span><span class="nv">sudo</span> <span class="nv">ln</span> <span class="o">-</span><span class="nv">s</span> <span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="k">include</span><span class="o">/</span><span class="nv">sys</span><span class="o">/</span><span class="nv">_endian</span>.<span class="nv">h</span> <span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="k">include</span><span class="o">/</span><span class="nv">sys</span><span class="o">/</span><span class="nv">endian</span>.<span class="nv">h</span>
 </pre></div>
 
 
 <p>then you can install encfs using this remote brew recipe:</p>
-<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+<div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">reinstall</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gist</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">ghibble</span><span class="o">/</span><span class="mi">7297078</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">cae1ff000a5e1cfc670f5b7a611279ed494b63af</span><span class="o">/</span><span class="n">encfs</span><span class="p">.</span><span class="n">rb</span>
 </pre></div>
 
 
 <p>It's also possible that you have to fix fuse4x installation before being
 able to use encfs (I had to do it):</p>
-<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
-sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cp</span> <span class="o">-</span><span class="n">rfX</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">fuse4x</span><span class="o">-</span><span class="n">kext</span><span class="o">/</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">.</span><span class="mi">2</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Extensions</span><span class="o">/</span><span class="n">fuse4x</span><span class="p">.</span><span class="n">kext</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Extensions</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="o">+</span><span class="n">s</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Extensions</span><span class="o">/</span><span class="n">fuse4x</span><span class="p">.</span><span class="n">kext</span><span class="o">/</span><span class="n">Support</span><span class="o">/</span><span class="n">load_fuse4x</span>
 </pre></div>
 
 

@@ -60,16 +60,16 @@ type DeviceTimer struct {
     &lt;-timer.DeviceTimer.C
     notifyDeviceTimerExpired(timer.DeviceID)
 }</p>
-<div class="highlight"><pre><span></span>The key point is **row 6** &quot;*func (timer DeviceTimer) startTimer() { ...
-}*&quot; where I defined a method called **startTimer** and I specify timer
-**DeviceTimer** inside the func definition. This basically &quot;extends&quot; the
-struct DeviceTimer adding that method to it. This means that I can call
-that method in this way:
+<div class="highlight"><pre><span></span><span class="n">The</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">**</span><span class="k">row</span><span class="w"> </span><span class="mi">6</span><span class="o">**</span><span class="w"> </span><span class="ss">&quot;*func (timer DeviceTimer) startTimer() { ...</span>
+<span class="ss">}*&quot;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="o">**</span><span class="n">startTimer</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">timer</span><span class="w"></span>
+<span class="o">**</span><span class="n">DeviceTimer</span><span class="o">**</span><span class="w"> </span><span class="n">inside</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="n">definition</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">basically</span><span class="w"> </span><span class="ss">&quot;extends&quot;</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<span class="n">struct</span><span class="w"> </span><span class="n">DeviceTimer</span><span class="w"> </span><span class="n">adding</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">call</span><span class="w"></span>
+<span class="n">that</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nl">way</span><span class="p">:</span><span class="w"></span>
 
-``` {.toolbar:2 .lang:go .decode:true}
-timer := time.NewTimer(time.Millisecond * 300)
-device_timer := DeviceTimer{&quot;abc123&quot;, timer}
-go device_timer.startTimer()
+<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">toolbar</span><span class="p">:</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">go</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
+<span class="n">timer</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">NewTimer</span><span class="p">(</span><span class="nc">time</span><span class="p">.</span><span class="n">Millisecond</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">300</span><span class="p">)</span><span class="w"></span>
+<span class="n">device_timer</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">DeviceTimer</span><span class="err">{</span><span class="ss">&quot;abc123&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">timer</span><span class="err">}</span><span class="w"></span>
+<span class="k">go</span><span class="w"> </span><span class="n">device_timer</span><span class="p">.</span><span class="n">startTimer</span><span class="p">()</span><span class="w"></span>
 </pre></div>
 
 
@@ -313,12 +313,12 @@ their instructions and create an account directly on their dashboard.
 You can create up to <strong>5 accounts for free</strong>. If you need more, they
 offer a paid service for that. In my case all I had to do was updating
 my DNS with the following configuration:</p>
-<div class="highlight"><pre><span></span>_xmpp-client._tcp.andreagrandi.it. IN SRV 10 0 5222 xmpp1.hosted.im.
-_xmpp-client._tcp.andreagrandi.it. IN SRV 20 0 5222 xmpp2.hosted.im.
-_xmpp-server._tcp.andreagrandi.it. IN SRV 20 0 5269 xmpp2.hosted.im.
-_xmpp-server._tcp.andreagrandi.it. IN SRV 10 0 5269 xmpp1.hosted.im.
-_jabber._tcp.andreagrandi.it. IN SRV 20 0 5269 xmpp2.hosted.im.
-_jabber._tcp.andreagrandi.it. IN SRV 10 0 5269 xmpp1.hosted.im.
+<div class="highlight"><pre><span></span><span class="n">_xmpp</span><span class="o">-</span><span class="n">client</span><span class="p">.</span><span class="n">_tcp</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="p">.</span> <span class="k">IN</span> <span class="n">SRV</span> <span class="mi">10</span> <span class="mi">0</span> <span class="mi">5222</span> <span class="n">xmpp1</span><span class="p">.</span><span class="n">hosted</span><span class="p">.</span><span class="n">im</span><span class="p">.</span>
+<span class="n">_xmpp</span><span class="o">-</span><span class="n">client</span><span class="p">.</span><span class="n">_tcp</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="p">.</span> <span class="k">IN</span> <span class="n">SRV</span> <span class="mi">20</span> <span class="mi">0</span> <span class="mi">5222</span> <span class="n">xmpp2</span><span class="p">.</span><span class="n">hosted</span><span class="p">.</span><span class="n">im</span><span class="p">.</span>
+<span class="n">_xmpp</span><span class="o">-</span><span class="n">server</span><span class="p">.</span><span class="n">_tcp</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="p">.</span> <span class="k">IN</span> <span class="n">SRV</span> <span class="mi">20</span> <span class="mi">0</span> <span class="mi">5269</span> <span class="n">xmpp2</span><span class="p">.</span><span class="n">hosted</span><span class="p">.</span><span class="n">im</span><span class="p">.</span>
+<span class="n">_xmpp</span><span class="o">-</span><span class="n">server</span><span class="p">.</span><span class="n">_tcp</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="p">.</span> <span class="k">IN</span> <span class="n">SRV</span> <span class="mi">10</span> <span class="mi">0</span> <span class="mi">5269</span> <span class="n">xmpp1</span><span class="p">.</span><span class="n">hosted</span><span class="p">.</span><span class="n">im</span><span class="p">.</span>
+<span class="n">_jabber</span><span class="p">.</span><span class="n">_tcp</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="p">.</span> <span class="k">IN</span> <span class="n">SRV</span> <span class="mi">20</span> <span class="mi">0</span> <span class="mi">5269</span> <span class="n">xmpp2</span><span class="p">.</span><span class="n">hosted</span><span class="p">.</span><span class="n">im</span><span class="p">.</span>
+<span class="n">_jabber</span><span class="p">.</span><span class="n">_tcp</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="p">.</span> <span class="k">IN</span> <span class="n">SRV</span> <span class="mi">10</span> <span class="mi">0</span> <span class="mi">5269</span> <span class="n">xmpp1</span><span class="p">.</span><span class="n">hosted</span><span class="p">.</span><span class="n">im</span><span class="p">.</span>
 </pre></div>
 
 
