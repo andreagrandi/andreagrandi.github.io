@@ -16,7 +16,7 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi </a></h1>
+                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi</a></h1>
                 <nav><ul>
     
                         <li><a href="https://www.andreagrandi.it/about/">About</a></li>
@@ -33,6 +33,583 @@
 
                 <section id="content" class="body">
                     <ol id="posts-list" class="hfeed" start="3">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2017/09/30/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/" rel="bookmark"
+                           title="Permalink to Configuring an offline GnuPG master key and subkeys on YubiKey">Configuring an offline GnuPG master key and subkeys on YubiKey</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 30 September 2017</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/gnupg.html">GnuPG</a><a href="https://www.andreagrandi.it/tag/pgp.html">PGP</a><a href="https://www.andreagrandi.it/tag/security.html">Security</a><a href="https://www.andreagrandi.it/tag/yubikey.html">YubiKey</a><a href="https://www.andreagrandi.it/tag/encryption.html">Encryption</a></span>
+</footer><!-- /.post-info -->                <p>I've recently bought a <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey 4</a> and 
+decided to use it for GnuPG too, other than using it as hardware 2FA.</p>
+<p>I've also decided to make my GnuPG configuration much more safe, generating the <strong>master key</strong>
+on an <strong>offline</strong> computer (in my case a simple RaspberryPi not connected to Internet) and <strong>generating a subkey</strong>
+that will be moved to my <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>.</p>
+<h4>Disclaimer</h4>
+<p>Always think about what your <strong>threat model</strong> is before deciding something is 100% safe for you.
+I'm not claiming this setup/configuration is bullet proof. If you want to protect your GnuPG key from most of the hackers,
+keyloggers and if you want to use it on different computers without ever compromising your secret key, this setup
+can be what you are looking for. If you think you may be victim of a targeted state sponsored attack, I'm not sure this
+setup could be enough.</p>
+<h4>Why keeping offline the master key?</h4>
+<p>If you only use your master key on a computer that never connects to Internet (I reckon you will want to update/patch it
+from time to time, that's why we are going to keep the master key on an external USB key) you are at least safe from remote attacks.</p>
+<h4>Why using subkeys?</h4>
+<p>Your GnuPG master key is also your "identity" among every PGP user. If you loose your master key or if your key is compromised
+you need to rebuild your identity and reputation from scratch. Instead, if a subkey is compromised, you can revoke the subkey (using your
+master key) and generate a new subkey.</p>
+<h4>How a YubiKey makes things safer?</h4>
+<p>If you always use your subkey from a <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>, it's very unlikely that your
+private key can be stolen: it's impossible to read it from the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> and if you loose your YubiKey
+or if it's physically stolen, the attacker will still need your passphrase and your YubiKey PIN.</p>
+<h3>Requirements</h3>
+<ul>
+<li>1 <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey 4</a></li>
+<li>2 USB keys (in theory you only need one, but I strongly suggest you have another one as backup)</li>
+<li>1 offline computer (a simple RaspberryPi with no Internet connection will be fine)</li>
+</ul>
+<h3>Initial setup</h3>
+<p>From now on, I will assume that you have prepared a computer for offline use (in my case I'm using a RaspberryPi 2 with
+Raspbian) and you will type the next commands there and only there.</p>
+<p>Plug one of the <strong>USB key</strong> (you can format it with VFAT for simplicity) in the offline computer and wait for the system to mount it.
+At this point it should be mounted in a path like this: <strong>/media/AABB-BAAC</strong></p>
+<p>Now set the GnuPG working directory and create it:</p>
+<div class="highlight"><pre><span></span>user@debian:~$ export GNUPGHOME=/media/AABB-BAAC/gnupghome
+user@debian:~$ mkdir $GNUPGHOME
+</pre></div>
+
+
+<h4>Second disclaimer</h4>
+<p>If you think your threat model doesn't include someone can hack your computer from remote,
+you can ignore my advice and type these commands on your main laptop (at your own risk).</p>
+<h4>Note</h4>
+<p>For my own convenience, to write this tutorial I reproduced all these steps on my MacBook because it was easier to copy/paste
+commands and outputs but I've tested it with the exact setup I'm describing, and it
+should be compatible with OSX and Linux.
+When you see something has been masked it's just to hide (from spam) things like my email or to protect the serial number
+of my <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>. Last but not least, the output shown here could not match exactly the one you get on your own PC and this also
+depends on the GnuPG version you are using.</p>
+<h3>Generating the master key</h3>
+<p>The master key must be generated using the advanced mode, because by default when a new master key is generated, also a new subkey
+is created with all the capabilities (Authentication + Signing + Encryption), while we want something different.</p>
+<p><strong>Note:</strong> PGP keys up to <strong>4096 bits</strong> are only supported in <strong>YubiKey 4</strong> models. If you have a <strong>YubiKey NEO</strong> you must use
+a <strong>2048 bits</strong> key because it's the maximum size supported. Here you will create a PGP key with <strong>only
+the Authentication capability</strong>. If your GnuPG version doesn't allow this, choose "sign only", just don't
+create the encryption capability at this time.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --expert --gen-key
+gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+gpg: directory `/media/AABB-BAAC/gnupghome&#39; created
+gpg: new configuration file `/media/AABB-BAAC/gnupghome/gpg.conf&#39; created
+gpg: WARNING: options in `/media/AABB-BAAC/gnupghome/gpg.conf&#39; are not yet active during this run
+gpg: keyring `/media/AABB-BAAC/gnupghome/secring.gpg&#39; created
+gpg: keyring `/media/AABB-BAAC/gnupghome/pubring.gpg&#39; created
+Please select what kind of key you want:
+(1) RSA and RSA (default)
+(2) DSA and Elgamal
+(3) DSA (sign only)
+(4) RSA (sign only)
+(7) DSA (set your own capabilities)
+(8) RSA (set your own capabilities)
+Your selection? 8
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+Current allowed actions: Sign Certify Encrypt
+
+(S) Toggle the sign capability
+(E) Toggle the encrypt capability
+(A) Toggle the authenticate capability
+(Q) Finished
+
+Your selection? s
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+Current allowed actions: Certify Encrypt
+
+(S) Toggle the sign capability
+(E) Toggle the encrypt capability
+(A) Toggle the authenticate capability
+(Q) Finished
+
+Your selection? e
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+Current allowed actions: Certify
+
+(S) Toggle the sign capability
+(E) Toggle the encrypt capability
+(A) Toggle the authenticate capability
+(Q) Finished
+
+Your selection? q
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048) 4096
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+        0 = key does not expire
+    &lt;n&gt;  = key expires in n days
+    &lt;n&gt;w = key expires in n weeks
+    &lt;n&gt;m = key expires in n months
+    &lt;n&gt;y = key expires in n years
+Key is valid for? (0) 2y
+Key expires at Wed 25 Sep 18:39:49 2019 BST
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: Andrea Grandi
+Email address: user@email.com
+Comment:
+You selected this USER-ID:
+    &quot;Andrea Grandi &lt;user@email.com&gt;&quot;
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+You need a Passphrase to protect your secret key.
+
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: /media/AABB-BAAC/gnupghome/trustdb.gpg: trustdb created
+gpg: key 2240402E marked as ultimately trusted
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+gpg: next trustdb check due at 2019-09-25
+pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
+    Key fingerprint = 7D4C 4090 DB50 1693 4614  F6FC 6206 9DE9 2240 402E
+uid       [ultimate] Andrea Grandi &lt;user@email.com&gt;
+</pre></div>
+
+
+<p><strong>Note:</strong> please remember to save your passphrase in a safe place. Choose something you
+can remember because you will need it every time you need to sign, encrypt or decrypt something.</p>
+<h3>Creating a revocation certificate</h3>
+<p>It's very important to create a revocation certificate to be used if and when 
+in the future you want to change your master key and revoke the existing one:</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --gen-revoke 2240402E &gt; 2240402E-revocation-certificate.asc
+
+sec  4096R/2240402E 2017-09-25 Andrea Grandi &lt;user@email.com&gt;
+
+Create a revocation certificate for this key? (y/N) y
+Please select the reason for the revocation:
+0 = No reason specified
+1 = Key has been compromised
+2 = Key is superseded
+3 = Key is no longer used
+Q = Cancel
+(Probably you want to select 1 here)
+Your decision? 3
+Enter an optional description; end it with an empty line:
+&gt;
+Reason for revocation: Key is no longer used
+(No description given)
+Is this okay? (y/N) y
+
+You need a passphrase to unlock the secret key for
+user: &quot;Andrea Grandi &lt;user@email.com&gt;&quot;
+4096-bit RSA key, ID 2240402E, created 2017-09-25
+
+ASCII armored output forced.
+Revocation certificate created.
+
+Please move it to a medium which you can hide away; if Mallory gets
+access to this certificate he can use it to make your key unusable.
+It is smart to print this certificate and store it away, just in case
+your media become unreadable.  But have some caution:  The print system of
+your machine might store the data and make it available to others!
+</pre></div>
+
+
+<h3>Creating Encryption subkey</h3>
+<p>To create a subkey we need to edit the existing key (please note that <strong>2240402E</strong>
+is the last 8 chars from the fingerprint of the previously generated master key)
+and specify we want to create an Encryption only key.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --edit-key 2240402E
+gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+                    trust: ultimate      validity: ultimate
+[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; addkey
+Key is protected.
+
+You need a passphrase to unlock the secret key for
+user: &quot;Andrea Grandi &lt;user@email.com&gt;&quot;
+4096-bit RSA key, ID 2240402E, created 2017-09-25
+
+Please select what kind of key you want:
+(3) DSA (sign only)
+(4) RSA (sign only)
+(5) Elgamal (encrypt only)
+(6) RSA (encrypt only)
+Your selection? 6
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048) 4096
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+        0 = key does not expire
+    &lt;n&gt;  = key expires in n days
+    &lt;n&gt;w = key expires in n weeks
+    &lt;n&gt;m = key expires in n months
+    &lt;n&gt;y = key expires in n years
+Key is valid for? (0) 2y
+Key expires at Wed 25 Sep 18:47:21 2019 BST
+Is this correct? (y/N) y
+Really create? (y/N) y
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+
+pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+                    trust: ultimate      validity: ultimate
+sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; save
+</pre></div>
+
+
+<h3>Export a backup of the secret keys</h3>
+<p>It's very important to export a backup of the secret keys at this point.
+Writing the secret subkey to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> is a destructive process: keys are moved
+to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>, they are not copied.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --export-secret-key 2240402E &gt; 2240402E-secret.pgp
+</pre></div>
+
+
+<p><strong>Note:</strong> this backup includes both the secret master key and the secret subkey.
+Please remember to <strong>save a backup of this key</strong> on a couple of separate USB keys: you will need
+this keys to generate future subkeys and/or to revoke the existing ones.</p>
+<h3>Programming the YubiKey with all GnuPG keys</h3>
+<p>We have previously created the <strong>master key</strong> and the <strong>encryption subkey</strong>. Now we will
+create the <strong>authentication</strong> and <strong>signing</strong> keys directly on the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> (we don't
+need to have a copy of these keys) and we will move the secret encryption key
+to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --edit-key 2240402E
+gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+                    trust: ultimate      validity: ultimate
+sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; addcardkey
+Signature key ....: [none]
+Encryption key....: [none]
+Authentication key: [none]
+
+Please select the type of key to generate:
+(1) Signature key
+(2) Encryption key
+(3) Authentication key
+Your selection? 1
+
+What keysize do you want for the Signature key? (4096)
+Key is protected.
+
+You need a passphrase to unlock the secret key for
+user: &quot;Andrea Grandi &lt;user@email.com&gt;&quot;
+4096-bit RSA key, ID 2240402E, created 2017-09-25
+
+Please specify how long the key should be valid.
+        0 = key does not expire
+    &lt;n&gt;  = key expires in n days
+    &lt;n&gt;w = key expires in n weeks
+    &lt;n&gt;m = key expires in n months
+    &lt;n&gt;y = key expires in n years
+Key is valid for? (0) 2y
+Key expires at Wed 25 Sep 18:50:42 2019 BST
+Is this correct? (y/N) y
+Really create? (y/N) y
+
+pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+                    trust: ultimate      validity: ultimate
+sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+sub  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25  usage: S
+[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; addcardkey
+Signature key ....: 6FAB DC46 1847 3550 3769  2D32 0DE1 36B4 771B 0554
+Encryption key....: [none]
+Authentication key: [none]
+
+Please select the type of key to generate:
+(1) Signature key
+(2) Encryption key
+(3) Authentication key
+Your selection? 3
+
+What keysize do you want for the Authentication key? (4096)
+Key is protected.
+
+You need a passphrase to unlock the secret key for
+user: &quot;Andrea Grandi &lt;user@email.com&gt;&quot;
+4096-bit RSA key, ID 2240402E, created 2017-09-25
+
+Please specify how long the key should be valid.
+        0 = key does not expire
+    &lt;n&gt;  = key expires in n days
+    &lt;n&gt;w = key expires in n weeks
+    &lt;n&gt;m = key expires in n months
+    &lt;n&gt;y = key expires in n years
+Key is valid for? (0) 2y
+Key expires at Wed 25 Sep 18:54:51 2019 BST
+Is this correct? (y/N) y
+Really create? (y/N) y
+
+pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+                    trust: ultimate      validity: ultimate
+sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+sub  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25  usage: S
+sub  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25  usage: A
+[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; toggle
+
+sec  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25
+ssb  4096R/01731555  created: 2017-09-25  expires: never
+ssb  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25
+                    card-no: 0006 05672181
+ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
+                    card-no: 0006 05672181
+(1)  Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; key 1
+
+sec  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25
+ssb* 4096R/01731555  created: 2017-09-25  expires: never
+ssb  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25
+                    card-no: 0006 05672181
+ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
+                    card-no: 0006 05672181
+(1)  Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; keytocard
+Signature key ....: 6FAB DC46 1847 3550 3769  2D32 0DE1 36B4 771B 0554
+Encryption key....: [none]
+Authentication key: BD26 3AD8 985E CAB0 9F32  7307 DF7C F7C0 A9B5 334C
+
+Please select where to store the key:
+(2) Encryption key
+Your selection? 2
+
+You need a passphrase to unlock the secret key for
+user: &quot;Andrea Grandi &lt;user@email.com&gt;&quot;
+4096-bit RSA key, ID 01731555, created 2017-09-25
+
+
+sec  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25
+ssb* 4096R/01731555  created: 2017-09-25  expires: never
+                    card-no: 0006 05672181
+ssb  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25
+                    card-no: 0006 05672181
+ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
+                    card-no: 0006 05672181
+(1)  Andrea Grandi &lt;user@email.com&gt;
+
+gpg&gt; save
+</pre></div>
+
+
+<h4>Check public keys</h4>
+<p>Just to verify everything has been created correctly, we check the public keys.
+We should see one <strong>pub</strong> key and three <strong>sub</strong>:</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg -k
+/media/AABB-BAAC/gnupghome/pubring.gpg
+--------------------------------
+pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
+uid       [ultimate] Andrea Grandi &lt;user@email.com&gt;
+sub   4096R/01731555 2017-09-25 [expires: 2019-09-25]
+sub   4096R/771B0554 2017-09-25 [expires: 2019-09-25]
+sub   4096R/A9B5334C 2017-09-25 [expires: 2019-09-25]
+</pre></div>
+
+
+<h4>Check private keys</h4>
+<p>When we check the private keys we should see that one key is still local, marked as <strong>sec</strong> (it's
+the private key of the master key), while three other keys are marked as <strong>ssb&gt;</strong>
+which means they have been moved to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>:</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg -K
+/media/AABB-BAAC/gnupghome/secring.gpg
+--------------------------------
+sec   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
+uid                  Andrea Grandi &lt;user@email.com&gt;
+ssb&gt;  4096R/01731555 2017-09-25
+ssb&gt;  4096R/771B0554 2017-09-25
+ssb&gt;  4096R/A9B5334C 2017-09-25
+</pre></div>
+
+
+<h4>Import back secret keys from backup (only for multiple YubiKeys)</h4>
+<p>As previously said, when we write the encryption subkey to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>, the key
+is <strong>moved</strong> and not just copied, so we need to import back the secret key into
+the keyring. It's important to have a backup of the subkey too, not because we need it
+in case the key is compromised etc... but because we need it in case we want to write
+multiple YubiKeys with the same encryption key, so that we have a backup key to use.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --import &lt; 2240402E-secret.pgp
+</pre></div>
+
+
+<h4>Completely remove secret keys from laptop</h4>
+<p>Once you have programmed the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> and you are sure the secret keys are
+backed up on a couple of USB keys, you are ready to remove the secret keys from your laptop.</p>
+<p><strong>Note:</strong> you don't need to remove anything if you have conducted the whole setup
+on a spare offline PC (or on a RaspberryPi) because that's not your every day computer.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --delete-secret-key 2240402E
+</pre></div>
+
+
+<h3>Exporting the public PGP key</h3>
+<p>As you know, PGP keys are composed by a secret part and a public one. The public one
+must be distributed publicly and it's the one people will use to encrypt messages directed
+to you.</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --armor --export 2240402E &gt; 2240402E.asc
+</pre></div>
+
+
+<p>If you have a personal blog/website I suggest to upload it there (for example mine
+can be found here <a href="https://www.andreagrandi.it/2240402E.asc">https://www.andreagrandi.it/2240402E.asc</a>)</p>
+<h3>Change YubiKey PINs and complete configuration</h3>
+<p>Every <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> is sold with a certain default configuration: there is a <strong>user PIN</strong>
+that is required every time we need to use the key to sign/decrypt something (in addition
+to our passphrase) and there is an <strong>admin PIN</strong> that is required every time we change
+certain settings on the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>.</p>
+<p>The default values are:</p>
+<ul>
+<li>user PIN: 123456</li>
+<li>admin PIN: 12345678</li>
+</ul>
+<p>I strongly recommend you to change them following this example:</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --card-edit
+
+Reader ...........: Yubico Yubikey 4 OTP U2F CCID
+Application ID ...: D000000000000000000000000000000000
+Version ..........: 2.1
+Manufacturer .....: Yubico
+Serial number ....: 012345678
+Name of cardholder: [not set]
+Language prefs ...: [not set]
+Sex ..............: unspecified
+URL of public key : [not set]
+Login data .......: [not set]
+Signature PIN ....: not forced
+Key attributes ...: rsa4096 rsa4096 rsa4096
+Max. PIN lengths .: 127 127 127
+PIN retry counter : 3 0 3
+Signature counter : 3
+Signature key ....: 6FAB DC46 1847 3550 3769  2D32 0DE1 36B4 771B 0554
+    created ....: 2017-09-25 17:50:37
+Encryption key....: FC6F 40BC 4173 8D13 2D7C  E958 BCDC EA84 0173 1555
+    created ....: 2017-09-25 17:47:09
+Authentication key: BD26 3AD8 985E CAB0 9F32  7307 DF7C F7C0 A9B5 334C
+    created ....: 2017-09-25 17:54:49
+General key info..: sub  rsa4096/0DE136B4771B0554 2017-09-25 Andrea Grandi &lt;user@email.com&gt;
+sec#  rsa4096/62069DE92240402E  created: 2017-09-25  expires: 2019-09-25
+ssb&gt;  rsa4096/BCDCEA8401731555  created: 2017-09-25  expires: 2019-09-25
+                                card-no: 0006 05672181
+ssb&gt;  rsa4096/0DE136B4771B0554  created: 2017-09-25  expires: 2019-09-25
+                                card-no: 0006 05672181
+ssb&gt;  rsa4096/DF7CF7C0A9B5334C  created: 2017-09-25  expires: 2019-09-25
+                                card-no: 0006 05672181
+
+gpg/card&gt; admin
+Admin commands are allowed
+
+# Change the PIN and Admin PINs
+gpg/card&gt; passwd
+gpg: OpenPGP card no. D000000000000000000000000000000000 detected
+
+1 - change PIN
+2 - unblock PIN
+3 - change Admin PIN
+4 - set the Reset Code
+Q - quit
+
+Your selection? 1
+PIN changed.
+
+1 - change PIN
+2 - unblock PIN
+3 - change Admin PIN
+4 - set the Reset Code
+Q - quit
+
+Your selection? 3
+PIN changed.
+
+1 - change PIN
+2 - unblock PIN
+3 - change Admin PIN
+4 - set the Reset Code
+Q - quit
+
+Your selection? q
+
+# Make sure the PIN is entered before signing
+gpg/card&gt; forcesig
+
+# Set the URL where the OpenPGP public key can be found.
+gpg/card&gt; url
+URL to retrieve public key: https://www.andreagrandi.it/2240402E.asc
+
+# Fetch the public key into the local keyring
+gpg/card&gt; fetch
+
+gpg/card&gt; quit
+</pre></div>
+
+
+<p><strong>Note:</strong> when you want to use your <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> on any computer (for example your work laptop)
+you need to at least import your public PGP key into the keyring. If the key is not
+read automatically, you may need to give it a refresh using this command:</p>
+<div class="highlight"><pre><span></span>user@debian:~$ gpg --card-status
+</pre></div>
+
+
+<h4>Careful with PINs</h4>
+<p>Please remember that you can only digit a wrong user PIN for a maximum of three times.
+After three time you will need to edit the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> (with <strong>gpg --card-edit</strong>) become admin
+and use the <strong>unblock PIN</strong> option. If you digit the wrong admin PIN for three time, you will have
+to follow a quite complicated procedure (explained at this address: <a href="https://developers.yubico.com/ykneo-openpgp/ResetApplet.html">https://developers.yubico.com/ykneo-openpgp/ResetApplet.html</a>)
+and your <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> will be reset with factory settings, deleting your PGP keys from it.</p>
+<h3>References</h3>
+<p>To write this tutorial I originally followed other articles online. The main ones are:</p>
+<ul>
+<li><a href="https://www.esev.com/blog/post/2015-01-pgp-ssh-key-on-yubikey-neo/">https://www.esev.com/blog/post/2015-01-pgp-ssh-key-on-yubikey-neo/</a></li>
+<li><a href="https://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/">https://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/</a></li>
+<li><a href="https://wiki.debian.org/Subkeys">https://wiki.debian.org/Subkeys</a></li>
+<li><a href="https://www.paulfurley.com/gpg-for-humans-preparing-an-offline-machine/">https://www.paulfurley.com/gpg-for-humans-preparing-an-offline-machine/</a></li>
+<li><a href="https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/">https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/</a></li>
+<li><a href="https://rnorth.org/gpg-and-ssh-with-yubikey-for-mac">https://rnorth.org/gpg-and-ssh-with-yubikey-for-mac</a></li>
+</ul>
+<h4>Amazon Association disclaimer</h4>
+<p>I'm trying a little experiment with the Amazon Association program. Basically, if you click
+on any of the YubiKey links and decide to buy it, I will get a little commission from it.
+I've never tried this before and I've no idea if it works or not. I'm writing this here just for the
+sake of transparency.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2017/09/30/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/">read more</a>
+<p><a href="https://www.andreagrandi.it/2017/09/30/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
             <li><article class="hentry">
                 <header>
                     <h1><a href="https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/" rel="bookmark"
@@ -57,7 +634,7 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 <span class="na">    secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
 <span class=" -Punctuation">}</span>
 
-<span class="err">data</span> <span class="s2">&quot;aws_ami&quot; &quot;ubuntu&quot;</span> <span class=" -Punctuation">{</span>
+<span class="kr">data</span> <span class="s">&quot;aws_ami&quot; &quot;ubuntu&quot;</span> <span class=" -Punctuation">{</span>
 <span class="na">    most_recent</span> <span class="o">=</span> <span class="kt">true</span>
 
     <span class="err">filter</span> <span class=" -Punctuation">{</span>
@@ -82,7 +659,7 @@ So, how can we be sure to get the correct ID for our region, of the latest image
     <span class=" -Punctuation">}</span>
 <span class=" -Punctuation">}</span>
 
-<span class="err">output</span> <span class="s2">&quot;image_id&quot;</span> <span class=" -Punctuation">{</span>
+<span class="kr">output</span> <span class="s">&quot;image_id&quot;</span> <span class=" -Punctuation">{</span>
 <span class="na">    value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
 <span class=" -Punctuation">}</span>
 </pre></div>
@@ -226,7 +803,7 @@ create a file called <strong>test_views.py</strong> under the folder
 
 
 <span class="k">class</span> <span class="nc">TestProductList</span><span class="p">(</span><span class="n">APITestCase</span><span class="p">):</span>
-    <span class="nd">@pytest.mark.django_db</span>
+    <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">django_db</span>
     <span class="k">def</span> <span class="nf">test_can_get_product_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;product-list&#39;</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -362,291 +939,6 @@ that is in the output/ folder and <strong>git push</strong> it on this repositor
 <p>I finally moved away from my VPS and from now on I will be able to concentrate my time on content only instead of spending part of it to maintain my server. Last but not least, the possibility to write my content offline, will hopefully allow me to write from places (train, airplane) where I've never written from before. If you have any suggestion or if if you notice any error, feel free to leave a comment here below. In alternative, since now this blog is completely open source and on GitHub, you can fork it and make a pull request!</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2017/07/02/migrating-from-wordpress-to-static-generated-website/">read more</a>
 <p><a href="https://www.andreagrandi.it/2017/07/02/migrating-from-wordpress-to-static-generated-website/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/" rel="bookmark"
-                           title="Permalink to Creating a production ready API with Python and Django Rest Framework – part 3">Creating a production ready API with Python and Django Rest Framework – part 3</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 12 March 2017</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/api.html">API</a><a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/framework.html">framework</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/rest.html">rest</a><a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a></span>
-</footer><!-- /.post-info -->                <p>In the <a href="https://www.andreagrandi.it/2016/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2.md">previous
-part</a>
-we implemented authentication, permissions and the possibility to POST
-new products for admins. In this new episode we will see how to
-implement <strong>details</strong> management, <strong>relations</strong> between models, <strong>nested
-APIs</strong> and a different level of permissions.</p>
-<p>If you haven't completed the previous parts or if you want to begin from
-this one, checkout the right code first:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.10
-</pre></div>
-
-
-<h3>Handling Product Details</h3>
-<p>Our current API methods allow us to list all the products we have in our
-catalog and to create a new one (if we have admin permissions), but what
-if we wanted to delete or update a single one? What if we wanted to get
-only a specific product? We need to handle details.</p>
-<p>As first thing we need to change the <strong>ProductSerializer</strong> to return the
-id of the product. Edit <strong>catalog/serializers.py</strong> and change the class
-in this way:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>After changing the serializer we need to implement a new view called
-<strong>ProductDetail</strong>. Edit <strong>catalog/views.py</strong> and add the following
-imports:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span>
-<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
-<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
-<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
-</pre></div>
-
-
-<p>and the following class:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">Product</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">Http404</span>
-
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">product</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_204_NO_CONTENT</span><span class="p">)</span>
-</pre></div>
-
-
-<p>let's connect the new view to the urls, editing catalog/urls.py and
-changing the code in this way:</p>
-<div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<p>If we try to <strong>PUT</strong>, <strong>DELETE</strong> or <strong>GET</strong> a product like
-<strong>/products/1/</strong> we can now update, delete or retrieve an existing item,
-but there is a little problem: we haven't set any permission on this
-class, so anyone can do it. The previous view was also more compact, why
-don't we use a generic view to perform these basic operations? Let's
-refactor <strong>ProductDetail</strong> with a
-<a href="http://www.django-rest-framework.org/api-guide/generic-views/#retrieveupdatedestroyapiview"><strong>RetrieveUpdateDestroyAPIView</strong></a>
-generic class. Open <strong>catalog/views.py</strong> and change the class code in
-this way:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
-</pre></div>
-
-
-<p>That's it! With just three lines of code we have now implemented the
-same feature of the previous class, plus we have set the correct
-permissions.</p>
-<p>To checkout the code at this point:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.12
-</pre></div>
-
-
-<h3>Reviews - Relations between models</h3>
-<p>As many online catalogs already have, it would be nice if our API had an
-endpoint where it is possible to leave a review for a product and get a
-list of reviews for a specific product. To implement this feature we
-need to add a new model to our application. Edit <strong>catalog/models.py</strong>
-adding this import:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
-</pre></div>
-
-
-<p>and this Django model:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Review</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
-    <span class="n">review</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
-    <span class="n">rating</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
-    <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
-</pre></div>
-
-
-<p>after creating the model, please remember to create the related DB
-<strong>migration</strong>:</p>
-<div class="highlight"><pre><span></span>$ ./manage.py makemigrations catalog
-</pre></div>
-
-
-<p>When the model is ready, we have to do some changes to the serializers.
-First of all we need to write a new one, for our new <strong>Review</strong> model.
-Then we have to change our <strong>ProductSerializer</strong> so that it will return
-its related reviews. Each Product can have multiple Review. And each
-Review will be always linked to a specific Product. Edit
-<strong>catalog/serializers.py</strong> and change it in this way:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
-<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
-
-
-<span class="k">class</span> <span class="nc">ReviewSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="n">created_by</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ReadOnlyField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">&#39;created_by.username&#39;</span><span class="p">)</span>
-
-    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Review</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;review&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;created_by&#39;</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="n">reviews</span> <span class="o">=</span> <span class="n">ReviewSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p><strong>Note:</strong> in <strong>ReviewSerializer</strong> when we serialise the user contained
-in <strong>created_by</strong> field, return the username instead of the id (to make
-it more human readable). Another important thing to notice is that the
-value of the <strong>related_name</strong> we have set in the <strong>Review</strong> model must
-match with the field name we have added in <strong>ProductSerializer fields</strong>
-property. In this case we have set it to <strong>reviews</strong>.</p>
-<p>At this point we need to add a new view. Edit <strong>catalog/views.py</strong> and
-add the following imports:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">IsAuthenticatedOrReadOnly</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
-<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span><span class="p">,</span> <span class="n">ReviewSerializer</span>
-</pre></div>
-
-
-<p>then add this class:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ReviewList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
-        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-            <span class="n">created_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
-            <span class="n">product_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
-</pre></div>
-
-
-<p>As you can notice, I had to customise the <strong>perform_create</strong> method
-because the default one doesn't know anything about the fact we want to
-set the <strong>created_by</strong> and <strong>product_id</strong> fields. Finally we need to
-bind this new view to a specific url, so we need to edit
-<strong>catalog/urls.py</strong> and add this:</p>
-<div class="highlight"><pre><span></span><span class="o">...</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<p>At this point any authenticated user should be able to <strong>POST a review</strong>
-for a product and anyone should be able to get the <strong>list of reviews</strong>
-for each product. If you have any problem with the code and want to move
-to this point, please checkout this:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.13
-</pre></div>
-
-
-<h3>Nested APIs details</h3>
-<p>To complete our API endpoints for Review, we need to add an additional
-feature that will let users to edit/delete their own review. Before
-implementing the new view, we need a little bit of refactoring and a new
-permission class. Edit <strong>catalog/permissions.py</strong> and add this new
-class:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IsOwnerOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">has_object_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">True</span>
-
-        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">created_by</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-</pre></div>
-
-
-<p>Basically this will permit changes to the review only to its author. Now
-we are going to add new urls and doing some refactoring at the same
-time. Edit <strong>catalog/urls.py</strong> and change the urls in this way:</p>
-<div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span>
-        <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
-    <span class="p">),</span>
-    <span class="n">url</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span>
-        <span class="n">views</span><span class="o">.</span><span class="n">ReviewDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
-    <span class="p">),</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<p>You may have noticed that I substituted <strong>pk</strong> with <strong>product_id</strong>. In
-the latest url I added, we need to be able to identify two primary keys:
-the one for the product and the one for the review. I renamed the
-previous ones for consistency. Now it's time to add the new view for
-Review details. Edit <strong>catalog/view.py</strong> and add this class:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ReviewDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="n">IsOwnerOrReadOnly</span><span class="p">)</span>
-    <span class="n">lookup_url_kwarg</span> <span class="o">=</span> <span class="s1">&#39;review_id&#39;</span>
-
-    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;review_id&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">review</span><span class="p">)</span>
-</pre></div>
-
-
-<p>What are we doing here? You may have noticed that we set a new property
-called <strong>lookup_url_kwarg</strong>. That property is being used to determine
-the keyword in <strong>urls.py</strong> to be used for the primary key lookup.</p>
-<p>You will also need to do some refactoring to the other views, to adapt
-them to the changes we just did to the urls. I suggest you to have a
-look at the diffs
-here: <a href="https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14">https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14</a>
-or you can have a look at the whole file
-here <a href="https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py">https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py</a></p>
-<p>In alternative, you can fetch the whole source code at this point:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.14
-</pre></div>
-
-
-<h3>Wrapping Up</h3>
-<p>In this third part of the tutorial you learned how to handle model
-details in the API and how relations between different model work. In
-the <a href="https://www.andreagrandi.it/2017/2-creating-a-production-ready-api-with-python-and-django-rest-framework-part-4.md">next part of the tutorial</a>
-we will do something we should have done since the beginning: adding <strong>tests</strong> to 
-our code and learn how to properly
-test the API.</p>
-<h3>Feedback Please</h3>
-<p>If you enjoyed this tutorial, please leave me some feedback!
-I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">read more</a>
-<p><a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

@@ -16,7 +16,7 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi </a></h1>
+                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi</a></h1>
                 <nav><ul>
     
                         <li><a href="https://www.andreagrandi.it/about/">About</a></li>
@@ -33,6 +33,57 @@
 
                 <section id="content" class="body">
                     <ol id="posts-list" class="hfeed" start="3">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
+                           title="Permalink to Reversing a List in Python">Reversing a List in Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 11 October 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/lists.html">lists</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a></span>
+</footer><!-- /.post-info -->                <p>Sometimes we need to reverse the order of the elements in a Python list.
+While there can be many different ways of implementing this task, I
+found three in particular that I appreciate for different reasons. Let's
+define first a list of integers that we will reverse later.</p>
+<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>List slicing</h3>
+<p>This method can be a bit obscure at first read, but basically it slices
+the whole list proceding in the reverse order:</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>Reversed method</h3>
+<p>We use the
+<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
+that returns an iterable object and a list comprehension to generate the
+new list</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>Swapping values in place</h3>
+<p>This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span> <span class="n">l</span>
+
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
             <li><article class="hentry">
                 <header>
                     <h1><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/" rel="bookmark"
@@ -120,16 +171,16 @@ encfs ~/Dropbox/Private ~/Private</p>
 <p>Make it <strong>executable</strong>:</p>
 <p>``` {.lang:sh .decode:true}
 chmod +x ~/encfs_mount.sh</p>
-<div class="highlight"><pre><span></span><span class="nv">Open</span> <span class="o">**</span><span class="nv">AppleScript</span><span class="o">**</span> <span class="nv">editor</span> <span class="nv">and</span> <span class="nv">paste</span> <span class="nv">this</span> <span class="nv">text</span> <span class="nv">inside</span> <span class="nv">and</span> <span class="nv">save</span> <span class="nv">as</span> <span class="nv">an</span>
-<span class="nv">app</span> <span class="nv">in</span> <span class="nv">the</span> \$<span class="nv">HOME</span> <span class="nv">folder</span>:
+<div class="highlight"><pre><span></span><span class="k">Open</span> <span class="o">**</span><span class="n">AppleScript</span><span class="o">**</span> <span class="n">editor</span> <span class="k">and</span> <span class="n">paste</span> <span class="n">this</span> <span class="nb">text</span> <span class="n">inside</span> <span class="k">and</span> <span class="n">save</span> <span class="k">as</span> <span class="n">an</span>
+<span class="n">app</span> <span class="k">in</span> <span class="n">the</span> <span class="err">\$</span><span class="n">HOME</span> <span class="n">folder</span><span class="p">:</span>
 
-[<span class="o">!</span>[<span class="nv">Screenshot</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span>
-<span class="mi">19</span>.<span class="mi">27</span>.<span class="mi">14</span>]<span class="ss">(</span><span class="nv">https</span>:<span class="o">//</span><span class="nv">www</span>.<span class="nv">andreagrandi</span>.<span class="nv">it</span><span class="o">/</span><span class="nv">wp</span><span class="o">-</span><span class="nv">content</span><span class="o">/</span><span class="nv">uploads</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="nv">Screenshot</span><span class="o">-</span><span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span>.<span class="mi">27</span>.<span class="mi">14</span>.<span class="nv">png</span><span class="ss">)</span>{.<span class="nv">aligncenter</span>
-.<span class="nv">size</span><span class="o">-</span><span class="nv">full</span> .<span class="nv">wp</span><span class="o">-</span><span class="nv">image</span><span class="o">-</span><span class="mi">1055</span> <span class="nv">width</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">484</span><span class="s2">&quot;</span>
-<span class="nv">height</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">392</span><span class="s2">&quot;</span>}]<span class="ss">(</span><span class="nv">https</span>:<span class="o">//</span><span class="nv">www</span>.<span class="nv">andreagrandi</span>.<span class="nv">it</span><span class="o">/</span><span class="nv">wp</span><span class="o">-</span><span class="nv">content</span><span class="o">/</span><span class="nv">uploads</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="nv">Screenshot</span><span class="o">-</span><span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span>.<span class="mi">27</span>.<span class="mi">14</span>.<span class="nv">png</span><span class="ss">)</span>
+<span class="p">[</span><span class="o">!</span><span class="p">[</span><span class="n">Screenshot</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span>
+<span class="mi">19</span><span class="p">.</span><span class="mi">27</span><span class="p">.</span><span class="mi">14</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="o">/</span><span class="n">wp</span><span class="o">-</span><span class="n">content</span><span class="o">/</span><span class="n">uploads</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">Screenshot</span><span class="o">-</span><span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span><span class="p">.</span><span class="mi">27</span><span class="p">.</span><span class="mi">14</span><span class="p">.</span><span class="n">png</span><span class="p">)</span><span class="err">{</span><span class="p">.</span><span class="n">aligncenter</span>
+<span class="p">.</span><span class="k">size</span><span class="o">-</span><span class="k">full</span> <span class="p">.</span><span class="n">wp</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="mi">1055</span> <span class="n">width</span><span class="o">=</span><span class="ss">&quot;484&quot;</span>
+<span class="n">height</span><span class="o">=</span><span class="ss">&quot;392&quot;</span><span class="err">}</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="o">/</span><span class="n">wp</span><span class="o">-</span><span class="n">content</span><span class="o">/</span><span class="n">uploads</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">Screenshot</span><span class="o">-</span><span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span><span class="p">.</span><span class="mi">27</span><span class="p">.</span><span class="mi">14</span><span class="p">.</span><span class="n">png</span><span class="p">)</span>
 
-``` {.<span class="nv">lang</span>:<span class="nv">sh</span> .<span class="nv">decode</span>:<span class="nv">true</span>}
-<span class="k">do</span> <span class="nv">shell</span> <span class="nv">script</span> <span class="s2">&quot;</span><span class="s">$HOME/encfs_mount.sh</span><span class="s2">&quot;</span>
+<span class="o">```</span> <span class="err">{</span><span class="p">.</span><span class="n">lang</span><span class="p">:</span><span class="n">sh</span> <span class="p">.</span><span class="n">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span>
+<span class="k">do</span> <span class="n">shell</span> <span class="n">script</span> <span class="ss">&quot;$HOME/encfs_mount.sh&quot;</span>
 </pre></div>
 
 
@@ -181,7 +232,7 @@ decorator definition:</p>
 example:</p>
 <div class="highlight"><pre><span></span><span class="nd">@foo</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
-    <span class="k">print</span> <span class="s1">&#39;Hello World&#39;</span>
+    <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
 </pre></div>
 
 
@@ -270,7 +321,7 @@ benchmark the execution using Python
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
 
@@ -290,7 +341,7 @@ on my laptop is: <strong>4.73480010033</strong></p>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
 
@@ -340,78 +391,10 @@ if the value doesn't exist <strong>my_value</strong> will be assigned with
                 <a class="readmore" href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
-                           title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 23 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a><a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a></span>
-</footer><!-- /.post-info -->                <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h3>Important things to know</h3>
-<p>There are four important things to know about middlewares:</p>
-<ul>
-<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
-<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-    important: middlewares are processed from top to bottom during a
-    request and from bottom to top during a response.</li>
-<li>You don't need to implement all the available methods of a
-    middleware. For example you can just implement <strong>process_request</strong>
-    and <strong>process_template_response</strong></li>
-<li>If you implement <strong>process_request</strong> and you decide to return an
-    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
-    ignored and only your response will be returned</li>
-</ul>
-<h3>Writing a middleware</h3>
-<p>In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-
-<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span>
-</pre></div>
-
-
-<p>Please don't care about how I calculated the time. I'm aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.</p>
-<p>If you want to see a <strong>complete example</strong> of a project that includes and
-uses this middleware, here you can find the complete source
-code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
-<h3>References</h3>
-<ul>
-<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
-<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
-<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
-</ul>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/index6.html">&laquo;</a>
-    Page 7 / 50
+    Page 7 / 51
         <a href="https://www.andreagrandi.it/index8.html">&raquo;</a>
 </p>
             </section><!-- /#content -->

@@ -16,7 +16,7 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi </a></h1>
+                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi</a></h1>
                 <nav><ul>
     
                         <li><a href="https://www.andreagrandi.it/about/">About</a></li>
@@ -33,6 +33,47 @@
 
                 <section id="content" class="body">
                     <ol id="posts-list" class="hfeed" start="3">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2009/02/22/convertire-i-file-wma-in-mp3-sotto-linux/" rel="bookmark"
+                           title="Permalink to Convertire i file WMA in MP3 sotto Linux">Convertire i file WMA in MP3 sotto Linux</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 22 February 2009</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/howto-linux-programmazione.html">HowTo, Linux, Programmazione</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/conversione.html">conversione</a><a href="https://www.andreagrandi.it/tag/mp3.html">mp3</a><a href="https://www.andreagrandi.it/tag/wma.html">wma</a></span>
+</footer><!-- /.post-info -->                <p>Se abbiamo dei file audio in formato <strong>.wma</strong> e li vogliamo convertire
+in formato <strong>.mp3</strong> utilizzando Linux, è sufficiente creare un piccolo
+script in <strong>bash</strong> che facendo uso di <strong>mplayer</strong> e <strong>lame</strong> provveda a
+convertire tutti i file che si trovano all'interno di una certa
+directory.</p>
+<p>Creiamo un file chiamato <strong>wma2mp3.sh</strong> con all'interno il seguente
+script:</p>
+<p><code>#!/bin/bash</code></p>
+<p>current_directory=\$( pwd )</p>
+<p>#remove spaces<br>
+for i in *.wma; do mv "\$i" `echo \$i | tr ' ' '_'`; done</p>
+<p>#remove uppercase<br>
+for i in *.[Ww][Mm][Aa]; do mv "\$i" `echo \$i | tr '[A-Z]'
+'[a-z]'`; done</p>
+<p>#Rip with Mplayer / encode with LAME<br>
+for i in *.wma ; do mplayer -vo null -vc dummy -af resample=44100 -ao
+pcm:waveheader \$i &amp;&amp; lame -m s audiodump.wav -o \$i; done</p>
+<p>#convert file names<br>
+for i in *.wma; do mv "\$i" "`basename "\$i" .wma`.mp3"; done</p>
+<p>rm audiodump.wav<br>
+</code></p>
+<p>a questo punto basta mettere lo script nella cartella dove ci sono i
+file .wma, dare i permessi di esecuzione a tale file (<strong>chmod +x
+wma2mp3.sh</strong>) ed eseguirlo con <strong>./wma2mp3.sh</strong></p>
+<p><em>Fonte:
+<a href="http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3">http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3</a></em></p>
+                <a class="readmore" href="https://www.andreagrandi.it/2009/02/22/convertire-i-file-wma-in-mp3-sotto-linux/">read more</a>
+<p><a href="https://www.andreagrandi.it/2009/02/22/convertire-i-file-wma-in-mp3-sotto-linux/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
             <li><article class="hentry">
                 <header>
                     <h1><a href="https://www.andreagrandi.it/2009/02/14/evitare-che-wordpress-modifichi-il-codice-da-copia-incollare/" rel="bookmark"
@@ -130,54 +171,10 @@ this on </strong>maemo-community*<em> mailing list.</em></p>
                 <a class="readmore" href="https://www.andreagrandi.it/2009/02/11/maemo-on-google-summer-of-code-2009/">read more</a>
 <p><a href="https://www.andreagrandi.it/2009/02/11/maemo-on-google-summer-of-code-2009/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2009/02/07/nuove-versioni-di-skype-per-linux-qualcosa-si-muove/" rel="bookmark"
-                           title="Permalink to Nuove versioni di Skype per Linux: qualcosa si muove">Nuove versioni di Skype per Linux: qualcosa si muove</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 07 February 2009</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/linux-skype.html">Linux, Skype</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/skype.html">Skype</a><a href="https://www.andreagrandi.it/tag/sviluppo.html">sviluppo</a></span>
-</footer><!-- /.post-info -->                <p><a href="http://www.andreagrandi.it/wp-content/uploads/2008/05/skype_logo.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/skype_logo.jpg" title="Skype Logo">{.alignright
-.size-full .wp-image-53 width="128"
-height="128"}</a>Gli
-utenti <strong>Linux</strong> che utilizzano <strong>Skype</strong> lo sanno: la versione
-disponibile per il pinguino non è mai stata aggiornata come quella per
-Windows. Su Linux siamo ancora alla versione <strong>2.0.0.72</strong> da piu' di un
-anno, nonostante siano stati segnalati da tempo vari <strong>problemi</strong> sia
-con l'<strong>audio</strong> che con il <strong>video</strong>.</p>
-<p>Pochi giorni fa uno degli sviluppatori della versione Linux di Skype, ha
-pubblicato sul <a href="http://share.skype.com/sites/linux/2009/01/skype_for_linux_updates.html">proprio
-blog</a>
-qualche aggiornamento su come sta procedendo lo sviluppo della versione
-Linux, in particolare:</p>
-<ul>
-<li>la libreria <strong>audio</strong> è stata completamente riscritta e sono state
-    risolte delle incompatibilità con gli auricolari bluetooth</li>
-<li>aggiornamenti anche alla libreria <strong>video</strong> in modo da renderla piu'
-    stabile e compatibile con un maggior numero di webcam</li>
-<li>l'<strong>interfaccia</strong> utente verrà completamente <strong>ridisegnata</strong>
-    ispirandosi alla versione 4.0 per Windows</li>
-<li>verrà aggiunto il supporto per un maggior numero di sistemi
-    operativi, come ad esempio <strong>FreeBSD</strong>, <strong>OpenSolaris</strong> e le
-    versione di <strong>Linux a 64 bit</strong></li>
-<li>sono stati assunti in questi mesi diversi sviluppatori esperti di
-    Linux e delle librerie Qt e ne verranno assunti altri nei prossimi
-    mesi</li>
-</ul>
-<p>A questo punto non ci resta che attendere, sperando di veder uscire una
-nuova versione almeno entro la fine dell'anno.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2009/02/07/nuove-versioni-di-skype-per-linux-qualcosa-si-muove/">read more</a>
-<p><a href="https://www.andreagrandi.it/2009/02/07/nuove-versioni-di-skype-per-linux-qualcosa-si-muove/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
         <a href="https://www.andreagrandi.it/index28.html">&laquo;</a>
-    Page 29 / 50
+    Page 29 / 51
         <a href="https://www.andreagrandi.it/index30.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
