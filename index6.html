@@ -35,6 +35,47 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/" rel="bookmark"
+                           title="Permalink to Using BBC MicroBit accelerometer with Python">Using BBC MicroBit accelerometer with Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 26 January 2016</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/bbc.html">bbc</a><a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a></span>
+</footer><!-- /.post-info -->                <p>In these days I'm having a bit of fun with <strong><a href="https://www.microbit.co.uk/">BBC
+MicroBit</a></strong> board and I'm learning how to
+use the different sensors available. The latest one I wanted to try was
+the accelerometer. The board can "sense" if you are moving it in any of
+the 3 dimensional axes: X, Y, Z. According to the
+<a href="https://microbit-micropython.readthedocs.org/en/latest/accelerometer.html">documentation</a>
+there are four methods available that can be used to get these
+values: <strong>microbit.accelerometer.get_values()</strong> will return you a tuple with all the 3 values, while 
+<strong>microbit.accelerometer.get_x()</strong>, <strong>microbit.accelerometer.get_y()</strong>, <strong>microbit.accelerometer.get_z()</strong>
+will give you the single values.</p>
+<p>The documentation on the official website doesn't explain much and for
+example I didn't even know what was the range of the values I can get
+back from these methods (by the way it's <strong>between -1024</strong> and
+<strong>1024</strong>), so I decided to play with the code directly and write a very
+simple example. The small example I wrote, shows a smile on the board
+display if you keep it straight and shows a sad face if you bend it.</p>
+<p>This is the result:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/LX8fYBsOxA0" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+<p>and this is all the needed code of the application:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/f4a7c8ee8597dde3070d.js"></script>
+</p>
+
+<p>In the next days I will try to play with more sensors and to publish
+other examples.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/">read more</a>
+<p><a href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/" rel="bookmark"
                            title="Permalink to Using Python PyPy in a virtual environment">Using Python PyPy in a virtual environment</a></h1>
                 </header>
@@ -216,97 +257,6 @@ dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchive
 </pre></div>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/" rel="bookmark"
-                           title="Permalink to Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal">Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 06 December 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/devops-howto-linux.html">DevOps, HowTo, Linux</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/letsencrypt.html">letsencrypt</a><a href="https://www.andreagrandi.it/tag/security.html">security</a><a href="https://www.andreagrandi.it/tag/ssl.html">ssl</a></span>
-</footer><!-- /.post-info -->                <p>Finally <strong><a href="https://letsencrypt.org/">Letsencrypt</a></strong> went to <strong>public
-beta</strong> and I really couldn't wait to use it on my VPS (where this blog
-is hosted). Until few days ago I was using a <strong>free SSL</strong> certificate
-from <a href="https://www.startssl.com/">StartSSL</a>. The service is nice and I'm
-grateful to them for this important resource they are providing for
-free, but it must be said that their renewal procedure isn't one of the
-most user friendly.</p>
-<p>For people who don't know the service yet, <strong>Letsencrypt</strong> not only
-gives <strong>free SSL certificates</strong>, they also provide a command line tool
-that people can use to request a new certificate or to renew an existing
-one. This means that you don't have to worry anymore if/when your
-certificate expires, you can set a crontab command and have the
-certificate <strong>automatically renewed</strong> for you.</p>
-<h2>Client installation</h2>
-<p>To request a SSL certificate you need to install their command line
-utility. Unless it has already been packaged for your distribution, for
-the moment it's much easier to get it from git as they explain in their
-<a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
-instructions</a>:</p>
-<p>``` {.lang:sh .decode:true}
-git clone https://github.com/letsencrypt/letsencrypt
-cd letsencrypt
-./letsencrypt-auto</p>
-<div class="highlight"><pre><span></span><span class="gh">Getting the SSL certificate</span>
-<span class="gh">---------------------------</span>
-
-There are a few different options available to request a certificate,
-but the easiest one is to use the <span class="gs">**--webroot**</span> option, specifying the
-document root of your website so that the client will be able to put
-there a verification (temporary) file that will be served to the remote
-service and used as verification method. In my case I only needed this
-command:
-
-<span class="s">``` {.lang:sh .decode:true}</span>
-<span class="s">./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos</span>
-</pre></div>
-
-
-<p>Please note that I had to specify both www.andreagrandi.it and
-andreagrandi.it as domains, otherwise it would have been invalid when
-requesting just andreagrandi.it resources.</p>
-<h2>Configuration files and certificates installation</h2>
-<p>The command above will save all the configuration under
-<strong>/etc/letsencrypt/</strong> and all the generated certificates under
-<strong>/etc/letsencrypt/live/www.andreagrandi.it/*.pem</strong> (all the *.pem
-files here are symbolic links to the current certificate). If you are
-using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
-<strong>privkey.pem</strong> and you can set them in your Nginx configuration using
-these two parameters:</p>
-<p>``` {.lang:default .decode:true}
-ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem;</p>
-<div class="highlight"><pre><span></span><span class="ow">In</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">my</span><span class="w"> </span><span class="k">full</span><span class="w"> </span><span class="n">Nginx</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
-<span class="n">reference</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="n">it</span><span class="w"></span>
-<span class="n">here</span><span class="w"> </span><span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">gist</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">andreagrandi</span><span class="o">/</span><span class="mi">8</span><span class="n">b194c99cd3e77fdb5a8</span><span class="o">&gt;</span><span class="w"></span>
-
-<span class="n">Automatic</span><span class="w"> </span><span class="n">renewal</span><span class="w"></span>
-<span class="c1">-----------------</span>
-
-<span class="n">The</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">thing</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">configured</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">crontab</span><span class="w"> </span><span class="k">rule</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">call</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">script</span><span class="w"></span>
-<span class="k">every</span><span class="p">...</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="p">.</span><span class="w"> </span><span class="n">Why</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="vm">?</span><span class="w"> </span><span class="n">Letsencrypt</span><span class="w"> </span><span class="n">SSL</span><span class="w"> </span><span class="o">**</span><span class="n">certificates</span><span class="w"> </span><span class="n">expire</span><span class="w"></span>
-<span class="ow">in</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">months</span><span class="o">**</span><span class="p">.</span><span class="w"> </span><span class="n">Usually</span><span class="w"> </span><span class="n">SSL</span><span class="w"> </span><span class="n">certificates</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">least</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="nf">year</span><span class="p">,</span><span class="w"></span>
-<span class="n">but</span><span class="w"> </span><span class="n">Letsencrypt</span><span class="w"> </span><span class="n">decided</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">months</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">incentivate</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="n">automation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">renewal</span><span class="p">.</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="p">,</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">anything</span><span class="w"> </span><span class="n">goes</span><span class="w"></span>
-<span class="n">wrong</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">still</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">plenty</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">time</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">manually</span><span class="p">.</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="n">edit</span><span class="w"> </span><span class="n">crontab</span><span class="w"> </span><span class="k">for</span><span class="w"></span>
-<span class="n">root</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">execute</span><span class="w"> </span><span class="o">**</span><span class="n">crontab</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nl">line</span><span class="p">:</span><span class="w"></span>
-
-<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">default</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
-<span class="mi">0</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*/</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">-</span><span class="n">auto</span><span class="w"> </span><span class="n">certonly</span><span class="w"> </span><span class="c1">--webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &amp;&amp; service nginx reload</span>
-</pre></div>
-
-
-<p>Just a final note. You may have noticed that this website presents an
-SSL certificate issued by COMODO. That's because I have
-<strong><a href="https://www.cloudflare.com/">CloudFlare</a></strong> in front of my website and
-that's how their SSL strict option works (at least for free plans).</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

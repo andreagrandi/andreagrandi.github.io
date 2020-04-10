@@ -35,6 +35,97 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/" rel="bookmark"
+                           title="Permalink to Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal">Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 06 December 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/devops-howto-linux.html">DevOps, HowTo, Linux</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a><a href="https://www.andreagrandi.it/tag/letsencrypt.html">letsencrypt</a><a href="https://www.andreagrandi.it/tag/security.html">security</a><a href="https://www.andreagrandi.it/tag/ssl.html">ssl</a></span>
+</footer><!-- /.post-info -->                <p>Finally <strong><a href="https://letsencrypt.org/">Letsencrypt</a></strong> went to <strong>public
+beta</strong> and I really couldn't wait to use it on my VPS (where this blog
+is hosted). Until few days ago I was using a <strong>free SSL</strong> certificate
+from <a href="https://www.startssl.com/">StartSSL</a>. The service is nice and I'm
+grateful to them for this important resource they are providing for
+free, but it must be said that their renewal procedure isn't one of the
+most user friendly.</p>
+<p>For people who don't know the service yet, <strong>Letsencrypt</strong> not only
+gives <strong>free SSL certificates</strong>, they also provide a command line tool
+that people can use to request a new certificate or to renew an existing
+one. This means that you don't have to worry anymore if/when your
+certificate expires, you can set a crontab command and have the
+certificate <strong>automatically renewed</strong> for you.</p>
+<h2>Client installation</h2>
+<p>To request a SSL certificate you need to install their command line
+utility. Unless it has already been packaged for your distribution, for
+the moment it's much easier to get it from git as they explain in their
+<a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
+instructions</a>:</p>
+<p>``` {.lang:sh .decode:true}
+git clone https://github.com/letsencrypt/letsencrypt
+cd letsencrypt
+./letsencrypt-auto</p>
+<div class="highlight"><pre><span></span><span class="gh">Getting the SSL certificate</span>
+<span class="gh">---------------------------</span>
+
+There are a few different options available to request a certificate,
+but the easiest one is to use the <span class="gs">**--webroot**</span> option, specifying the
+document root of your website so that the client will be able to put
+there a verification (temporary) file that will be served to the remote
+service and used as verification method. In my case I only needed this
+command:
+
+<span class="s">``` {.lang:sh .decode:true}</span>
+<span class="s">./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos</span>
+</pre></div>
+
+
+<p>Please note that I had to specify both www.andreagrandi.it and
+andreagrandi.it as domains, otherwise it would have been invalid when
+requesting just andreagrandi.it resources.</p>
+<h2>Configuration files and certificates installation</h2>
+<p>The command above will save all the configuration under
+<strong>/etc/letsencrypt/</strong> and all the generated certificates under
+<strong>/etc/letsencrypt/live/www.andreagrandi.it/*.pem</strong> (all the *.pem
+files here are symbolic links to the current certificate). If you are
+using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
+<strong>privkey.pem</strong> and you can set them in your Nginx configuration using
+these two parameters:</p>
+<p>``` {.lang:default .decode:true}
+ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem;</p>
+<div class="highlight"><pre><span></span><span class="ow">In</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">my</span><span class="w"> </span><span class="k">full</span><span class="w"> </span><span class="n">Nginx</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
+<span class="n">reference</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="n">it</span><span class="w"></span>
+<span class="n">here</span><span class="w"> </span><span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">gist</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">andreagrandi</span><span class="o">/</span><span class="mi">8</span><span class="n">b194c99cd3e77fdb5a8</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="n">Automatic</span><span class="w"> </span><span class="n">renewal</span><span class="w"></span>
+<span class="c1">-----------------</span>
+
+<span class="n">The</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">thing</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">configured</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">crontab</span><span class="w"> </span><span class="k">rule</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">call</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">script</span><span class="w"></span>
+<span class="k">every</span><span class="p">...</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="p">.</span><span class="w"> </span><span class="n">Why</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="vm">?</span><span class="w"> </span><span class="n">Letsencrypt</span><span class="w"> </span><span class="n">SSL</span><span class="w"> </span><span class="o">**</span><span class="n">certificates</span><span class="w"> </span><span class="n">expire</span><span class="w"></span>
+<span class="ow">in</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">months</span><span class="o">**</span><span class="p">.</span><span class="w"> </span><span class="n">Usually</span><span class="w"> </span><span class="n">SSL</span><span class="w"> </span><span class="n">certificates</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">least</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="nf">year</span><span class="p">,</span><span class="w"></span>
+<span class="n">but</span><span class="w"> </span><span class="n">Letsencrypt</span><span class="w"> </span><span class="n">decided</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">months</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">incentivate</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<span class="n">automation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">renewal</span><span class="p">.</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="p">,</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">anything</span><span class="w"> </span><span class="n">goes</span><span class="w"></span>
+<span class="n">wrong</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">still</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">plenty</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">time</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">manually</span><span class="p">.</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="n">edit</span><span class="w"> </span><span class="n">crontab</span><span class="w"> </span><span class="k">for</span><span class="w"></span>
+<span class="n">root</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">execute</span><span class="w"> </span><span class="o">**</span><span class="n">crontab</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nl">line</span><span class="p">:</span><span class="w"></span>
+
+<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">default</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
+<span class="mi">0</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*/</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">-</span><span class="n">auto</span><span class="w"> </span><span class="n">certonly</span><span class="w"> </span><span class="c1">--webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &amp;&amp; service nginx reload</span>
+</pre></div>
+
+
+<p>Just a final note. You may have noticed that this website presents an
+SSL certificate issued by COMODO. That's because I have
+<strong><a href="https://www.cloudflare.com/">CloudFlare</a></strong> in front of my website and
+that's how their SSL strict option works (at least for free plans).</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/" rel="bookmark"
                            title="Permalink to Reversing a List in Python">Reversing a List in Python</a></h1>
                 </header>
@@ -171,16 +262,16 @@ encfs ~/Dropbox/Private ~/Private</p>
 <p>Make it <strong>executable</strong>:</p>
 <p>``` {.lang:sh .decode:true}
 chmod +x ~/encfs_mount.sh</p>
-<div class="highlight"><pre><span></span><span class="k">Open</span> <span class="o">**</span><span class="n">AppleScript</span><span class="o">**</span> <span class="n">editor</span> <span class="k">and</span> <span class="n">paste</span> <span class="n">this</span> <span class="nb">text</span> <span class="n">inside</span> <span class="k">and</span> <span class="n">save</span> <span class="k">as</span> <span class="n">an</span>
-<span class="n">app</span> <span class="k">in</span> <span class="n">the</span> <span class="err">\$</span><span class="n">HOME</span> <span class="n">folder</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="nf">Open</span> <span class="p">**</span><span class="no">AppleScript</span><span class="p">**</span> <span class="no">editor</span> <span class="no">and</span> <span class="no">paste</span> <span class="no">this</span> <span class="no">text</span> <span class="no">inside</span> <span class="no">and</span> <span class="no">save</span> <span class="no">as</span> <span class="no">an</span>
+<span class="nf">app</span> <span class="no">in</span> <span class="no">the</span> <span class="err">\</span><span class="no">$HOME</span> <span class="no">folder</span><span class="p">:</span>
 
-<span class="p">[</span><span class="o">!</span><span class="p">[</span><span class="n">Screenshot</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span>
-<span class="mi">19</span><span class="p">.</span><span class="mi">27</span><span class="p">.</span><span class="mi">14</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="o">/</span><span class="n">wp</span><span class="o">-</span><span class="n">content</span><span class="o">/</span><span class="n">uploads</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">Screenshot</span><span class="o">-</span><span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span><span class="p">.</span><span class="mi">27</span><span class="p">.</span><span class="mi">14</span><span class="p">.</span><span class="n">png</span><span class="p">)</span><span class="err">{</span><span class="p">.</span><span class="n">aligncenter</span>
-<span class="p">.</span><span class="k">size</span><span class="o">-</span><span class="k">full</span> <span class="p">.</span><span class="n">wp</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="mi">1055</span> <span class="n">width</span><span class="o">=</span><span class="ss">&quot;484&quot;</span>
-<span class="n">height</span><span class="o">=</span><span class="ss">&quot;392&quot;</span><span class="err">}</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">andreagrandi</span><span class="p">.</span><span class="n">it</span><span class="o">/</span><span class="n">wp</span><span class="o">-</span><span class="n">content</span><span class="o">/</span><span class="n">uploads</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">Screenshot</span><span class="o">-</span><span class="mi">2015</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span><span class="p">.</span><span class="mi">27</span><span class="p">.</span><span class="mi">14</span><span class="p">.</span><span class="n">png</span><span class="p">)</span>
+<span class="err">[![</span><span class="nf">Screenshot</span> <span class="mi">2015</span><span class="p">-</span><span class="mi">10</span><span class="p">-</span><span class="mi">11</span>
+<span class="err">19</span><span class="nf">.27.14</span><span class="p">](</span><span class="no">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter</span>
+<span class="na">.size-full</span> <span class="no">.wp-image-1055</span> <span class="no">width</span><span class="err">=</span><span class="s">&quot;484&quot;</span>
+<span class="nf">height</span><span class="err">=&quot;</span><span class="mi">392</span><span class="err">&quot;}</span><span class="p">](</span><span class="no">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)</span>
 
-<span class="o">```</span> <span class="err">{</span><span class="p">.</span><span class="n">lang</span><span class="p">:</span><span class="n">sh</span> <span class="p">.</span><span class="n">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span>
-<span class="k">do</span> <span class="n">shell</span> <span class="n">script</span> <span class="ss">&quot;$HOME/encfs_mount.sh&quot;</span>
+<span class="err">```</span> <span class="err">{</span><span class="nl">.lang:</span><span class="nf">sh</span> <span class="no">.decode</span><span class="p">:</span><span class="no">true</span><span class="err">}</span>
+<span class="nf">do</span> <span class="no">shell</span> <span class="no">script</span> <span class="err">&quot;</span><span class="no">$HOME</span><span class="err">/</span><span class="no">encfs_mount.sh</span><span class="err">&quot;</span>
 </pre></div>
 
 
@@ -352,44 +443,6 @@ to calculate the 60th number of the sequence with and without using the
 decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/" rel="bookmark"
-                           title="Permalink to Django Notes: read values from settings in a safe way">Django Notes: read values from settings in a safe way</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 29 August 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/getattr.html">getattr</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/settings.html">settings</a></span>
-</footer><!-- /.post-info -->                <p>Working on <strong>Django</strong> projects I find very often that many developers
-access the values that are defined in <strong>settings</strong> in this way</p>
-<p>``` {.lang:python .decode:true}
-from django.conf import settings</p>
-<p>my_value = settings.MY_SETTING</p>
-<div class="highlight"><pre><span></span><span class="n">What</span> <span class="n">happens</span> <span class="k">if</span> <span class="o">**</span><span class="n">MY</span>\<span class="n">_SETTING</span><span class="o">**</span> <span class="n">has</span> <span class="ow">not</span> <span class="n">been</span> <span class="n">defined</span> <span class="ow">in</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">py</span><span class="o">**</span><span class="err">?</span>
-<span class="n">The</span> <span class="n">code</span> <span class="n">will</span> <span class="k">raise</span> <span class="n">an</span> <span class="n">error</span> <span class="ow">and</span> <span class="n">crash</span><span class="p">,</span> <span class="n">of</span> <span class="n">course</span><span class="o">.</span> <span class="n">How</span> <span class="n">can</span> <span class="n">we</span> <span class="n">make</span> <span class="n">the</span>
-<span class="n">code</span> <span class="n">more</span> <span class="n">reliable</span><span class="err">?</span> <span class="n">We</span> <span class="n">could</span> <span class="o">*</span><span class="k">try</span><span class="o">/</span><span class="k">except</span><span class="o">*</span> <span class="n">the</span> <span class="n">code</span> <span class="n">block</span> <span class="n">that</span> <span class="n">tries</span> <span class="n">to</span>
-<span class="n">read</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">maybe</span> <span class="nb">set</span> <span class="n">a</span> <span class="n">value</span> <span class="k">if</span> <span class="n">we</span> <span class="n">get</span> <span class="n">an</span> <span class="n">exception</span><span class="p">,</span> <span class="n">but</span> <span class="n">this</span>
-<span class="n">would</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">a</span> <span class="n">clean</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span> <span class="n">job</span><span class="o">.</span>
-
-<span class="n">A</span> <span class="n">cleaner</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">use</span> <span class="o">**</span><span class="nb">getattr</span><span class="o">**</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">way</span><span class="p">:</span>
-
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
-
-<span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p><strong>getattr</strong> will try to read <strong>MY_SETTING</strong> value from <strong>settings.py</strong>,
-if the value doesn't exist <strong>my_value</strong> will be assigned with
-<strong>my-default-value</strong>.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

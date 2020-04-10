@@ -33,12 +33,82 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2020/02/25/google-is-moving-eu-citizens-data-to-us/">Google is moving some EU citizens data to US</a></h1>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2020/04/10/covid-api-free-and-open-source-api-service-for-covid19-data/">covid-api - a free and open source API service for COVID-19 data</a></h1>
+<footer class="post-info">
+        <span>Fri 10 April 2020</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/covid.html">covid</a><a href="https://www.andreagrandi.it/tag/api.html">api</a><a href="https://www.andreagrandi.it/tag/rest.html">rest</a><a href="https://www.andreagrandi.it/tag/data.html">data</a><a href="https://www.andreagrandi.it/tag/covid-19.html">covid-19</a><a href="https://www.andreagrandi.it/tag/service.html">service</a><a href="https://www.andreagrandi.it/tag/free.html">free</a><a href="https://www.andreagrandi.it/tag/open.html">open</a><a href="https://www.andreagrandi.it/tag/source.html">source</a></span>
+</footer><!-- /.post-info --><h2>Introduction</h2>
+<p>In this period of COVID-19 emergency, many countries are publishing COVID related data that is being used by many existing projects and researchers.</p>
+<p>The main problem with these data is that they are being released in CSV format on some GitHub repository. While we fully appreciate the opennes of this format, unfortunataly it can introduce an additional work to be done (downloading the data, cleaning it, importing the data into a database, keeping it updated etc...) before someone can consume and analyse the data.</p>
+<h2>covid-api</h2>
+<p>covid-api project is a <strong>free</strong> and <strong>open source</strong> API service which automatically imports the data from various sources (at the moment we support the <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins CSSE</a> data source) and makes it available as a REST API.</p>
+<p>The service is still under development, but an initial version (with regularly updated data) is already available at <a href="https://api.covid19data.cloud">https://api.covid19data.cloud</a>.</p>
+<h2>How to use the data</h2>
+<p>To consume the API you don't need an account nor you need to authenticate in any way. You just need to request the right endpoint using the supported parameters.</p>
+<p>Here is an example for Python language:</p>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.covid19data.cloud/v1/jh/daily-reports?last_update_from=2020-04-01&amp;last_update_to=2020-04-03&amp;country=Italy&#39;</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+<span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">35343</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-01T21:58:34&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">110574</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13155</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">16847</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">37895</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-02T23:25:14&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">115242</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13915</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">18278</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Further API documentation is available at https://api.covid19data.cloud/docs</p>
+<h2>Next steps</h2>
+<p>While we keep polishing the code and <a href="https://github.com/andreagrandi/covid-api/issues/43">improving the existing data import</a> procedure, we are planning to support additional data sources. The next one we are going to support is the <a href="https://github.com/andreagrandi/covid-api/issues/46"><strong>Italian Protezione Civile</strong></a>.</p>
+<p>If you are aware of an additional data source that you would like to see covered, please let us know (creating a new Issue on GitHub) or send us a pull request.</p>
+<h2>Contribute to the project</h2>
+<p>If you are a Python developer and would like to contribute to the project, my advice is to first have a look at the main documentation available in the <a href="https://github.com/andreagrandi/covid-api/blob/master/README.md">README</a>.</p>
+<p>Then I suggest to have a look at the existing <a href="https://github.com/andreagrandi/covid-api/issues">Issues</a> and see where help is needed or in alternative you can open a new Issue or send a pull request with fixes and improvements.</p>
+<p>I also recommend to become familiar with our <a href="https://github.com/andreagrandi/covid-api/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before sending any contribution.</p>
+<h2>Sponsors and Thanks</h2>
+<p>I want to thank <a href="https://www.heroku.com/">Heroku</a> for accepting to sponsor the hosting of this service.</p>
+<p>I also want to thank all the <a href="https://github.com/andreagrandi/covid-api/graphs/contributors">volunteers</a> involved in the project for their help and contributions.</p>
+<h2>Disclaimer</h2>
+<p>We are doing our best to keep the available data updated, clean (removing duplicates), and to provide a reliable service, 
+but we are not in any way responsible for the accuracy of the data nor for the availability of the service itself. 
+Please <strong>use it at your own risk</strong>.</p>
+<p><strong>Abuse notice</strong>: we are currently not requiring any registration or authentication to use this service because 
+we would like to keep it as simple as possible. 
+Please do not abuse the service or you will force us to require a registration (subject to approval) to continue using it.</p><p><a href="https://www.andreagrandi.it/2020/04/10/covid-api-free-and-open-source-api-service-for-covid19-data/#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://www.andreagrandi.it/2020/02/25/google-is-moving-eu-citizens-data-to-us/" rel="bookmark"
+                           title="Permalink to Google is moving some EU citizens data to US">Google is moving some EU citizens data to US</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <span>Tue 25 February 2020</span>
 	        <span>| in <a href="https://www.andreagrandi.it/category/privacy.html">Privacy</a></span>
 <span>| tags: <a href="https://www.andreagrandi.it/tag/privacy.html">privacy</a><a href="https://www.andreagrandi.it/tag/google.html">google</a><a href="https://www.andreagrandi.it/tag/gdpr.html">gdpr</a><a href="https://www.andreagrandi.it/tag/eu.html">eu</a><a href="https://www.andreagrandi.it/tag/brexit.html">brexit</a><a href="https://www.andreagrandi.it/tag/citizens.html">citizens</a><a href="https://www.andreagrandi.it/tag/data.html">data</a><a href="https://www.andreagrandi.it/tag/controller.html">controller</a></span>
-</footer><!-- /.post-info --><h2>What is going on</h2>
+</footer><!-- /.post-info -->                <h2>What is going on</h2>
 <p>As you may have heard already, because of <strong>brexit</strong>, <a href="https://www.independent.co.uk/life-style/gadgets-and-tech/news/google-uk-us-data-brexit-gdpr-trump-protection-information-a9348191.html">Google is moving UK citizens data</a> from the Northern Ireland data controller to the US one (Google LLC).
 Leaving the EU, UK citizens are not protected anymore by GDPR, and while this may be unfair, Google is legally allowed to do it.</p>
 <h2>The problem</h2>
@@ -93,11 +163,10 @@ use our services, you can find more information about your options in our Freque
 
 Thank you for using Google’s services.
 Your Google team
-</pre></div><p><a href="https://www.andreagrandi.it/2020/02/25/google-is-moving-eu-citizens-data-to-us/#disqus_thread">comments</a></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+</pre></div>
+                <a class="readmore" href="https://www.andreagrandi.it/2020/02/25/google-is-moving-eu-citizens-data-to-us/">read more</a>
+<p><a href="https://www.andreagrandi.it/2020/02/25/google-is-moving-eu-citizens-data-to-us/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -171,116 +240,6 @@ can be used to easily skip tests when using Python 3:</p>
 <p>Thanks to my colleague <strong><a href="https://github.com/valnico">Nicola</a></strong> for giving me the inspiration to write this post.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/">read more</a>
 <p><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/" rel="bookmark"
-                           title="Permalink to Installing Python and virtualenv on OSX">Installing Python and virtualenv on OSX</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 19 December 2018</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/python.html">python</a><a href="https://www.andreagrandi.it/tag/osx.html">osx</a><a href="https://www.andreagrandi.it/tag/programming.html">programming</a><a href="https://www.andreagrandi.it/tag/software.html">software</a><a href="https://www.andreagrandi.it/tag/development.html">development</a></span>
-</footer><!-- /.post-info -->                <p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
-<p>Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.</p>
-<h2>Requirements</h2>
-<p>To follow these instructions you need to at least have installed <strong>brew</strong> on OSX. Please follow the instructions on the official website: <a href="https://brew.sh">https://brew.sh</a></p>
-<h2>Installing Python 3.7.x and Python 2.7.x</h2>
-<p>Even if I strongly suggest to start every new project with Python 3 (since Python 2 will only be supported until the end of 2019), there may be use cases when version 2 is still required, so I will give you the instructions to install both.</p>
-<h3>Installing Python 3.7.x</h3>
-<div class="highlight"><pre><span></span>brew install python
-</pre></div>
-
-
-<p>This will install Python 3 by default.</p>
-<h3>Installing Python 2.7.x</h3>
-<div class="highlight"><pre><span></span>brew install python@2
-</pre></div>
-
-
-<p>This will install version 2 of Python.</p>
-<h3>Add the Python locations to PATH</h3>
-<p>Edit your <code>.bashrc</code> or <code>.zshrc</code> and add this:</p>
-<div class="highlight"><pre><span></span>export PATH=&quot;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&quot;
-</pre></div>
-
-
-<p>You will need to close your terminal and reopen it for the changes to be applied. Once you have done it, you can verify if Python 3 and Python 2 have been installed correctly:</p>
-<div class="highlight"><pre><span></span>python --version
-Python 3.7.1
-</pre></div>
-
-
-<p>and</p>
-<div class="highlight"><pre><span></span>python2 --version
-Python 2.7.15
-</pre></div>
-
-
-<h2>Install virtualenv and virtualenvwrapper</h2>
-<p>When working with Python, it's a good thing not to install packages system wide, but confine them in virtual environments. A good and well tested way of doing that is to use <code>virtualenv</code> (and its companion <code>virtualenvwrapper</code>) which makes the most common operations easier.</p>
-<div class="highlight"><pre><span></span>pip install virtualenv
-pip install virtualenvwrapper
-</pre></div>
-
-
-<p>Those (and only those) two packages will be installed system wide, because we will need them to be available outside of a virtual environment.</p>
-<h3>Configure virtualenv</h3>
-<p>Edit again your <code>.bashrc</code> (or <code>.zshrc</code>) and add these lines:</p>
-<div class="highlight"><pre><span></span>export WORKON_HOME=~/.virtualenvs
-[ -f /usr/local/bin/virtualenvwrapper.sh ] &amp;&amp; source /usr/local/bin/virtualenvwrapper.sh
-</pre></div>
-
-
-<p>This will configure the default location where to store your virtual environments and will run a command every time you open a new terminal, to make sure <code>virtualenvwrapper</code> can work correctly.</p>
-<h2>Test if the installed tools are working</h2>
-<p>To make sure everything has been configured correctly, please close and reopen your terminal and let's try to create a new virtual environment:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv test
-</pre></div>
-
-
-<p>which should output something like this:</p>
-<div class="highlight"><pre><span></span>Using base prefix &#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&#39;
-New python executable in /Users/andrea/.virtualenvs/test/bin/python3.7
-Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
-Installing setuptools, pip, wheel...
-done.
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
-(test) ➜  ~
-</pre></div>
-
-
-<p>If you see something similar, it means that the virtual environment has been created correctly. Please note that by default this command will create an environment base on Python 3. Do you need to create one for Python 2? No problem, you just need to do the following:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/python2 test
-</pre></div>
-
-
-<p>which should output this:</p>
-<div class="highlight"><pre><span></span>Running virtualenv with interpreter /usr/local/bin/python2
-New python executable in /Users/andrea/.virtualenvs/test/bin/python2.7
-Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
-Installing setuptools, pip, wheel...
-done.
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
-(test) ➜  ~
-</pre></div>
-
-
-<h2>Conclusion</h2>
-<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">read more</a>
-<p><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">

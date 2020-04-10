@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Andrea Grandi - service</title>
+        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
+        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
+        <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi</a></h1>
+                <nav><ul>
+    
+                        <li><a href="https://www.andreagrandi.it/about/">About</a></li>
+    
+                        <li><a href="https://www.andreagrandi.it/curriculum/">Curriculum</a></li>
+    
+                        <li><a href="https://www.andreagrandi.it/pgp-key/">PGP Key</a></li>
+                </ul>
+<form id="search" action="https://www.andreagrandi.it/search.html" onsubmit="return validateForm(this.elements['q'].value);">
+                        <input type="text" class="search-query" placeholder="" name="q" id="tipue_search_input">
+                    </form>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://www.andreagrandi.it/2020/04/10/covid-api-free-and-open-source-api-service-for-covid19-data/">covid-api - a free and open source API service for COVID-19 data</a></h1>
+<footer class="post-info">
+        <span>Fri 10 April 2020</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/development.html">Development</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/covid.html">covid</a><a href="https://www.andreagrandi.it/tag/api.html">api</a><a href="https://www.andreagrandi.it/tag/rest.html">rest</a><a href="https://www.andreagrandi.it/tag/data.html">data</a><a href="https://www.andreagrandi.it/tag/covid-19.html">covid-19</a><a href="https://www.andreagrandi.it/tag/service.html">service</a><a href="https://www.andreagrandi.it/tag/free.html">free</a><a href="https://www.andreagrandi.it/tag/open.html">open</a><a href="https://www.andreagrandi.it/tag/source.html">source</a></span>
+</footer><!-- /.post-info --><h2>Introduction</h2>
+<p>In this period of COVID-19 emergency, many countries are publishing COVID related data that is being used by many existing projects and researchers.</p>
+<p>The main problem with these data is that they are being released in CSV format on some GitHub repository. While we fully appreciate the opennes of this format, unfortunataly it can introduce an additional work to be done (downloading the data, cleaning it, importing the data into a database, keeping it updated etc...) before someone can consume and analyse the data.</p>
+<h2>covid-api</h2>
+<p>covid-api project is a <strong>free</strong> and <strong>open source</strong> API service which automatically imports the data from various sources (at the moment we support the <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins CSSE</a> data source) and makes it available as a REST API.</p>
+<p>The service is still under development, but an initial version (with regularly updated data) is already available at <a href="https://api.covid19data.cloud">https://api.covid19data.cloud</a>.</p>
+<h2>How to use the data</h2>
+<p>To consume the API you don't need an account nor you need to authenticate in any way. You just need to request the right endpoint using the supported parameters.</p>
+<p>Here is an example for Python language:</p>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.covid19data.cloud/v1/jh/daily-reports?last_update_from=2020-04-01&amp;last_update_to=2020-04-03&amp;country=Italy&#39;</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+<span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">35343</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-01T21:58:34&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">110574</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13155</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">16847</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">37895</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-02T23:25:14&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">115242</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13915</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">18278</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Further API documentation is available at https://api.covid19data.cloud/docs</p>
+<h2>Next steps</h2>
+<p>While we keep polishing the code and <a href="https://github.com/andreagrandi/covid-api/issues/43">improving the existing data import</a> procedure, we are planning to support additional data sources. The next one we are going to support is the <a href="https://github.com/andreagrandi/covid-api/issues/46"><strong>Italian Protezione Civile</strong></a>.</p>
+<p>If you are aware of an additional data source that you would like to see covered, please let us know (creating a new Issue on GitHub) or send us a pull request.</p>
+<h2>Contribute to the project</h2>
+<p>If you are a Python developer and would like to contribute to the project, my advice is to first have a look at the main documentation available in the <a href="https://github.com/andreagrandi/covid-api/blob/master/README.md">README</a>.</p>
+<p>Then I suggest to have a look at the existing <a href="https://github.com/andreagrandi/covid-api/issues">Issues</a> and see where help is needed or in alternative you can open a new Issue or send a pull request with fixes and improvements.</p>
+<p>I also recommend to become familiar with our <a href="https://github.com/andreagrandi/covid-api/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before sending any contribution.</p>
+<h2>Sponsors and Thanks</h2>
+<p>I want to thank <a href="https://www.heroku.com/">Heroku</a> for accepting to sponsor the hosting of this service.</p>
+<p>I also want to thank all the <a href="https://github.com/andreagrandi/covid-api/graphs/contributors">volunteers</a> involved in the project for their help and contributions.</p>
+<h2>Disclaimer</h2>
+<p>We are doing our best to keep the available data updated, clean (removing duplicates), and to provide a reliable service, 
+but we are not in any way responsible for the accuracy of the data nor for the availability of the service itself. 
+Please <strong>use it at your own risk</strong>.</p>
+<p><strong>Abuse notice</strong>: we are currently not requiring any registration or authentication to use this service because 
+we would like to keep it as simple as possible. 
+Please do not abuse the service or you will force us to require a registration (subject to approval) to continue using it.</p><p><a href="https://www.andreagrandi.it/2020/04/10/covid-api-free-and-open-source-api-service-for-covid19-data/#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">rss feed</a></li>
+
+                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
+                            <li><a href="https://github.com/andreagrandi">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>
+                    Powered by <a href="http://getpelican.com/">Pelican</a> and Python -
+                    Source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+                        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+                    </a>
+                </p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2140684-3']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'andrea-grandi-it';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

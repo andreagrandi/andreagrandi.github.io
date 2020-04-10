@@ -35,6 +35,44 @@
                     <ol id="posts-list" class="hfeed" start="3">
             <li><article class="hentry">
                 <header>
+                    <h1><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/" rel="bookmark"
+                           title="Permalink to Django Notes: read values from settings in a safe way">Django Notes: read values from settings in a safe way</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 29 August 2015</span>
+	        <span>| in <a href="https://www.andreagrandi.it/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a></span>
+<span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/getattr.html">getattr</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/settings.html">settings</a></span>
+</footer><!-- /.post-info -->                <p>Working on <strong>Django</strong> projects I find very often that many developers
+access the values that are defined in <strong>settings</strong> in this way</p>
+<p>``` {.lang:python .decode:true}
+from django.conf import settings</p>
+<p>my_value = settings.MY_SETTING</p>
+<div class="highlight"><pre><span></span><span class="n">What</span> <span class="n">happens</span> <span class="k">if</span> <span class="o">**</span><span class="n">MY</span>\<span class="n">_SETTING</span><span class="o">**</span> <span class="n">has</span> <span class="ow">not</span> <span class="n">been</span> <span class="n">defined</span> <span class="ow">in</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">py</span><span class="o">**</span><span class="err">?</span>
+<span class="n">The</span> <span class="n">code</span> <span class="n">will</span> <span class="k">raise</span> <span class="n">an</span> <span class="n">error</span> <span class="ow">and</span> <span class="n">crash</span><span class="p">,</span> <span class="n">of</span> <span class="n">course</span><span class="o">.</span> <span class="n">How</span> <span class="n">can</span> <span class="n">we</span> <span class="n">make</span> <span class="n">the</span>
+<span class="n">code</span> <span class="n">more</span> <span class="n">reliable</span><span class="err">?</span> <span class="n">We</span> <span class="n">could</span> <span class="o">*</span><span class="k">try</span><span class="o">/</span><span class="k">except</span><span class="o">*</span> <span class="n">the</span> <span class="n">code</span> <span class="n">block</span> <span class="n">that</span> <span class="n">tries</span> <span class="n">to</span>
+<span class="n">read</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">maybe</span> <span class="nb">set</span> <span class="n">a</span> <span class="n">value</span> <span class="k">if</span> <span class="n">we</span> <span class="n">get</span> <span class="n">an</span> <span class="n">exception</span><span class="p">,</span> <span class="n">but</span> <span class="n">this</span>
+<span class="n">would</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">a</span> <span class="n">clean</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span> <span class="n">job</span><span class="o">.</span>
+
+<span class="n">A</span> <span class="n">cleaner</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">use</span> <span class="o">**</span><span class="nb">getattr</span><span class="o">**</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">way</span><span class="p">:</span>
+
+<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>getattr</strong> will try to read <strong>MY_SETTING</strong> value from <strong>settings.py</strong>,
+if the value doesn't exist <strong>my_value</strong> will be assigned with
+<strong>my-default-value</strong>.</p>
+                <a class="readmore" href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">read more</a>
+<p><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
                     <h1><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/" rel="bookmark"
                            title="Permalink to How to write a custom Django Middleware">How to write a custom Django Middleware</a></h1>
                 </header>
@@ -183,59 +221,6 @@ people (expecially <strong>apollo13</strong>) was kind enough to explain me how 
 works.</p>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/07/23/django-notes-tests-setup-method-and-db-data/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/07/23/django-notes-tests-setup-method-and-db-data/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/" rel="bookmark"
-                           title="Permalink to Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 12 July 2015</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/python.html">Python</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/importio.html">import.io</a><a href="https://www.andreagrandi.it/tag/music.html">music</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/somafm.html">soma.fm</a><a href="https://www.andreagrandi.it/tag/spotify.html">spotify</a></span>
-</footer><!-- /.post-info -->                <p>I'm a big fan of <a href="http://somafm.com">Soma.fm</a> (a 25+ channels streaming
-radio based in San Francisco) and during the years I've been writing
-clients for this radio for different mobile platforms (Maemo, MeeGo,
-Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
-their "<a href="http://somafm.com/indiepop/"><strong>Indie Pop Rock</strong></a>" channel that
-during these years made me discover some very good artists.</p>
-<p>When <strong>Spotify</strong> finally was available in Italy (I'm still using it
-right now that I live in the UK), something that I always missed was a
-radio with the same good music. Why not just listening to Soma.fm?
-Because I like to listen to the music while I commute and in the London
-Underground it's nearly impossible to have signal.</p>
-<p>So I was thinking: it would be nice to have <strong>a Spotify playlist with
-Soma.fm tracks</strong>. Wait a moment.... <strong>I can do it!</strong></p>
-<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg">{.aligncenter
-.size-full .wp-image-981 width="542"
-height="422"}</a></p>
-<p>Soma.fm publishes the tracks history with all the tracks streamed during
-the last hour <a href="http://somafm.com/indiepop/songhistory.html">http://somafm.com/indiepop/songhistory.html</a> so I just
-needed something to parse this list for me and return me a well
-formatted version.</p>
-<p>Thanks to <a href="https://import.io"><strong>import.io</strong></a> (it's a service that takes
-a web page as input, parse the data and generates a RESTful API to
-access this data) I was able to easily get the data I needed. At this
-point I only needed to be able to loop through the list, search each
-track on Spotify and add it to my playlist.</p>
-<p>The <strong>source code is fully available</strong> here
-<a href="https://github.com/andreagrandi/spotisoma">https://github.com/andreagrandi/spotisoma</a></p>
-<p><strong>Note:</strong> you can't just get the code and run it. You will need to get
-your own <strong>import.io api key</strong>, generate your import.io api url, get a
-<a href="https://developer.spotify.com/technologies/libspotify/keys/"><strong>Spotify application
-key</strong></a> (the
-old/deprecated one, since it was nearly impossible for me to use oauth
-in a simple Python script due to the fact I didn't have an endpoint to
-receive the token back. You can get more informations here:
-<a href="https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys">https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys</a>)
-and set your env variables with your Spotify username and password. Last
-but not least: the <strong>old Spotify library</strong> only works with <strong>Premium</strong>
-accounts.</p>
-                <a class="readmore" href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/">read more</a>
-<p><a href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
