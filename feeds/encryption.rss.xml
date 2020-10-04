@@ -719,22 +719,20 @@ utility. Unless it has already been packaged for your distribution, for
 the moment it's much easier to get it from git as they explain in their
 &lt;a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation"&gt;installation
 instructions&lt;/a&gt;:&lt;/p&gt;
-&lt;p&gt;``` {.lang:sh .decode:true}
-git clone https://github.com/letsencrypt/letsencrypt
-cd letsencrypt
-./letsencrypt-auto&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;Getting the SSL certificate&lt;/span&gt;
-&lt;span class="gh"&gt;---------------------------&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/letsencrypt/letsencrypt
+&lt;span class="nb"&gt;cd&lt;/span&gt; letsencrypt
+./letsencrypt-auto
+&lt;/pre&gt;&lt;/div&gt;
 
-There are a few different options available to request a certificate,
-but the easiest one is to use the &lt;span class="gs"&gt;**--webroot**&lt;/span&gt; option, specifying the
+
+&lt;h2&gt;Getting the SSL certificate&lt;/h2&gt;
+&lt;p&gt;There are a few different options available to request a certificate,
+but the easiest one is to use the &lt;strong&gt;--webroot&lt;/strong&gt; option, specifying the
 document root of your website so that the client will be able to put
 there a verification (temporary) file that will be served to the remote
 service and used as verification method. In my case I only needed this
-command:
-
-&lt;span class="s"&gt;``` {.lang:sh .decode:true}&lt;/span&gt;
-&lt;span class="s"&gt;./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos&lt;/span&gt;
+command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -749,26 +747,23 @@ files here are symbolic links to the current certificate). If you are
 using &lt;strong&gt;Nginx&lt;/strong&gt; the only files you need are &lt;strong&gt;fullchain.pem&lt;/strong&gt; and
 &lt;strong&gt;privkey.pem&lt;/strong&gt; and you can set them in your Nginx configuration using
 these two parameters:&lt;/p&gt;
-&lt;p&gt;``` {.lang:default .decode:true}
-ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ow"&gt;In&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;want&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;have&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;look&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;my&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;full&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Nginx&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;configuration&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;reference&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;can&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;here&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;gist&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;andreagrandi&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;b194c99cd3e77fdb5a8&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem&lt;span class="p"&gt;;&lt;/span&gt;
+ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;span class="n"&gt;Automatic&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;renewal&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="c1"&gt;-----------------&lt;/span&gt;
 
-&lt;span class="n"&gt;The&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;last&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;be&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;configured&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;crontab&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;rule&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;call&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="k"&gt;every&lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Why&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="vm"&gt;?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Letsencrypt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SSL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;certificates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expire&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Usually&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SSL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;certificates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;valid&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;least&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;year&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;but&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Letsencrypt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;decided&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;make&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;incentivate&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;automation&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;renewal&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;anything&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;goes&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;wrong&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;still&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;have&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;plenty&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;time&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;manually&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;To&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;edit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;crontab&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;user&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;execute&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;crontab&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;add&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;this&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;line&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-
-&lt;span class="err"&gt;```&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="k"&gt;true&lt;/span&gt;&lt;span class="err"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;letsencrypt&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;letsencrypt&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;auto&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;certonly&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;--webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &amp;amp;&amp;amp; service nginx reload&lt;/span&gt;
+&lt;p&gt;In case you want to have a look at my full Nginx configuration file, as
+reference, you can find it
+here &lt;a href="https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8"&gt;https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Automatic renewal&lt;/h2&gt;
+&lt;p&gt;The last thing to be configured is a crontab rule to call the script
+every... 2 months. Why 2 months? Letsencrypt SSL &lt;strong&gt;certificates expire
+in 3 months&lt;/strong&gt;. Usually SSL certificates are valid at least for 1 year,
+but Letsencrypt decided to make it 3 months to incentivate the
+automation of the renewal. I set it to 2 months, so if anything goes
+wrong I still have plenty of time to do it manually. To edit crontab for
+root user execute &lt;strong&gt;crontab -e&lt;/strong&gt; and add this line:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; service nginx reload
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -783,98 +778,82 @@ currently unsupported) even on Windows.&lt;/p&gt;
 &lt;h2&gt;Installing EncFS&lt;/h2&gt;
 &lt;p&gt;EncFS can be installed from &lt;strong&gt;brew&lt;/strong&gt;. If you don't have brew package
 manager installed on OSX you can install it using this command:&lt;/p&gt;
-&lt;p&gt;``` {.lang:sh .decode:true}
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;After&lt;/span&gt; &lt;span class="n"&gt;brew&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;need&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;OSXFuse&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt;
-&lt;span class="n"&gt;website&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;osxfuse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ruby -e &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;span class="n"&gt;Finally&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 
-&lt;span class="o"&gt;```&lt;/span&gt; &lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="k"&gt;true&lt;/span&gt;&lt;span class="err"&gt;}&lt;/span&gt;
-&lt;span class="n"&gt;brew&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;homebrew&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;fuse&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;
+&lt;p&gt;After brew, you need to install &lt;strong&gt;OSXFuse&lt;/strong&gt; from this
+website &lt;a href="http://osxfuse.github.io"&gt;http://osxfuse.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Finally you can install &lt;strong&gt;encfs&lt;/strong&gt; using this command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;brew install homebrew/fuse/encfs
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Configuring the encrypted folder&lt;/h2&gt;
 &lt;p&gt;Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:&lt;/p&gt;
-&lt;p&gt;``` {.lang:sh .decode:true}
-encfs ~/Dropbox/Private ~/Private&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;mounting&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;existing&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;prompted&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;creating&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt;
-&lt;span class="n"&gt;asked&lt;/span&gt; &lt;span class="n"&gt;some&lt;/span&gt; &lt;span class="n"&gt;questions&lt;/span&gt; &lt;span class="n"&gt;about&lt;/span&gt; &lt;span class="n"&gt;EncFS&lt;/span&gt; &lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;encfs ~/Dropbox/Private ~/Private
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nl"&gt;Note&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;important&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;keep&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;BoxCryptor&lt;/span&gt; &lt;span class="n"&gt;Classic&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.boxcryptor.com/en/classic)** (in case&lt;/span&gt;
-&lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;want&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;use&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;same&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;under&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;please&lt;/span&gt; &lt;span class="n"&gt;refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt;
-&lt;span class="n"&gt;other&lt;/span&gt; &lt;span class="n"&gt;article&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;
-&lt;span class="nl"&gt;wrote&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&amp;gt;&lt;/span&gt;
 
-&lt;span class="n"&gt;Mount&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;encrypted&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;startup&lt;/span&gt;
-&lt;span class="o"&gt;-------------------------------------&lt;/span&gt;
+&lt;p&gt;If you are mounting an existing encrypted volume, you will be prompted
+for the password. If you are creating a new encrypted volume you will be
+asked some questions about EncFS parameters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; if it's important for you to keep compatibility with
+&lt;strong&gt;&lt;a href="https://www.boxcryptor.com/en/classic"&gt;BoxCryptor Classic&lt;/a&gt;&lt;/strong&gt; (in case
+you want to use the same volume under Windows), please refer to this
+other article I
+wrote: &lt;a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/"&gt;https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Mount the encrypted volume on startup&lt;/h2&gt;
+&lt;p&gt;First of all you need to save the volume's password inside the OSX
+keychain. Open the app &lt;strong&gt;Keychain Access&lt;/strong&gt; and create a new entry with
+name &lt;strong&gt;encfs&lt;/strong&gt; and account value &lt;strong&gt;encfs&lt;/strong&gt;, then write your &lt;strong&gt;password&lt;/strong&gt;
+and click &lt;strong&gt;Add&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"&gt;&lt;img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Once the password is saved, &lt;strong&gt;open a text editor&lt;/strong&gt; and paste this script
+and save it as &lt;strong&gt;encfs_mount.sh&lt;/strong&gt; inside your &lt;strong&gt;\$HOME&lt;/strong&gt; folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="c1"&gt;# Secure EncFS Dropbox mounter by Daniel Widerin &amp;lt;daniel@widerin.net&amp;gt;&lt;/span&gt;
 
-&lt;span class="n"&gt;First&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;need&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;OSX&lt;/span&gt;
-&lt;span class="n"&gt;keychain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Open&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;Keychain&lt;/span&gt; &lt;span class="n"&gt;Access&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;entry&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt;
-&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;account&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt; &lt;span class="n"&gt;write&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;
-&lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;click&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;Add&lt;/span&gt;&lt;span class="o"&gt;**:&lt;/span&gt;
+&lt;span class="nv"&gt;SOURCE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/Dropbox/Private
+&lt;span class="nv"&gt;TARGET&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/Private
+&lt;span class="nv"&gt;VOLUME_TITLE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Private
+&lt;span class="nv"&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;encfs&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;ENCFS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/bin/encfs
 
-&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_keychain&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_access&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png){.aligncenter&lt;/span&gt;
-&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;full&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wp&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1052&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;428&amp;quot;&lt;/span&gt;
-&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;397&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}](&lt;/span&gt;&lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png)&lt;/span&gt;
+mount &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="nv"&gt;$TARGET&lt;/span&gt; &amp;gt;/dev/null
+&lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; -eq &lt;span class="s2"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; /usr/sbin/diskutil unmount &lt;span class="nv"&gt;$TARGET&lt;/span&gt;
 
-&lt;span class="n"&gt;Once&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;saved&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="n"&gt;editor&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;paste&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;script&lt;/span&gt;
-&lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;_mount&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;inside&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="err"&gt;\$&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="nl"&gt;folder&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -d &lt;span class="nv"&gt;$TARGET&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Create new mountpoint &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+mkdir &lt;span class="nv"&gt;$TARGET&lt;/span&gt;
+chmod &lt;span class="m"&gt;0700&lt;/span&gt; &lt;span class="nv"&gt;$TARGET&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
 
-&lt;span class="err"&gt;```&lt;/span&gt; &lt;span class="p"&gt;{.&lt;/span&gt;&lt;span class="nl"&gt;lang&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="cp"&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class="cp"&gt;# Secure EncFS Dropbox mounter by Daniel Widerin &amp;lt;daniel@widerin.net&amp;gt;&lt;/span&gt;
-
-&lt;span class="n"&gt;SOURCE&lt;/span&gt;&lt;span class="o"&gt;=~/&lt;/span&gt;&lt;span class="n"&gt;Dropbox&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
-&lt;span class="n"&gt;TARGET&lt;/span&gt;&lt;span class="o"&gt;=~/&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
-&lt;span class="n"&gt;VOLUME_TITLE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;Private&lt;/span&gt;
-&lt;span class="n"&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;
-&lt;span class="n"&gt;ENCFS&lt;/span&gt;&lt;span class="o"&gt;=/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;encfs&lt;/span&gt;
-
-&lt;span class="n"&gt;mount&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;grep&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;
-&lt;span class="p"&gt;[[&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;$?&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;eq&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sbin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;diskutil&lt;/span&gt; &lt;span class="n"&gt;unmount&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
-
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt;
- &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Create new mountpoint $TARGET&amp;quot;&lt;/span&gt;
- &lt;span class="n"&gt;mkdir&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
- &lt;span class="n"&gt;chmod&lt;/span&gt; &lt;span class="mo"&gt;0700&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt;
-&lt;span class="n"&gt;fi&lt;/span&gt;
-
-&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;ENCFS&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;SOURCE&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;TARGET&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;extpass&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;$KEYCHAIN_PASSWORD&amp;#39; |grep password|cut -d &lt;/span&gt;&lt;span class="se"&gt;\\\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt; -f 2&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ovolname&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;VOLUME_TITLE&lt;/span&gt;
+&lt;span class="nv"&gt;$ENCFS&lt;/span&gt; &lt;span class="nv"&gt;$SOURCE&lt;/span&gt; &lt;span class="nv"&gt;$TARGET&lt;/span&gt; --extpass&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39; |grep password|cut -d \\\&amp;quot; -f 2&amp;quot;&lt;/span&gt; -ovolname&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$VOLUME_TITLE&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Make it &lt;strong&gt;executable&lt;/strong&gt;:&lt;/p&gt;
-&lt;p&gt;``` {.lang:sh .decode:true}
-chmod +x ~/encfs_mount.sh&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nf"&gt;Open&lt;/span&gt; &lt;span class="p"&gt;**&lt;/span&gt;&lt;span class="no"&gt;AppleScript&lt;/span&gt;&lt;span class="p"&gt;**&lt;/span&gt; &lt;span class="no"&gt;editor&lt;/span&gt; &lt;span class="no"&gt;and&lt;/span&gt; &lt;span class="no"&gt;paste&lt;/span&gt; &lt;span class="no"&gt;this&lt;/span&gt; &lt;span class="no"&gt;text&lt;/span&gt; &lt;span class="no"&gt;inside&lt;/span&gt; &lt;span class="no"&gt;and&lt;/span&gt; &lt;span class="no"&gt;save&lt;/span&gt; &lt;span class="no"&gt;as&lt;/span&gt; &lt;span class="no"&gt;an&lt;/span&gt;
-&lt;span class="nf"&gt;app&lt;/span&gt; &lt;span class="no"&gt;in&lt;/span&gt; &lt;span class="no"&gt;the&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="no"&gt;$HOME&lt;/span&gt; &lt;span class="no"&gt;folder&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod +x ~/encfs_mount.sh
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;span class="err"&gt;[![&lt;/span&gt;&lt;span class="nf"&gt;Screenshot&lt;/span&gt; &lt;span class="mi"&gt;2015&lt;/span&gt;&lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;
-&lt;span class="err"&gt;19&lt;/span&gt;&lt;span class="nf"&gt;.27.14&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="no"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter&lt;/span&gt;
-&lt;span class="na"&gt;.size-full&lt;/span&gt; &lt;span class="no"&gt;.wp-image-1055&lt;/span&gt; &lt;span class="no"&gt;width&lt;/span&gt;&lt;span class="err"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;484&amp;quot;&lt;/span&gt;
-&lt;span class="nf"&gt;height&lt;/span&gt;&lt;span class="err"&gt;=&amp;quot;&lt;/span&gt;&lt;span class="mi"&gt;392&lt;/span&gt;&lt;span class="err"&gt;&amp;quot;}&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="no"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)&lt;/span&gt;
 
-&lt;span class="err"&gt;```&lt;/span&gt; &lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="nl"&gt;.lang:&lt;/span&gt;&lt;span class="nf"&gt;sh&lt;/span&gt; &lt;span class="no"&gt;.decode&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="no"&gt;true&lt;/span&gt;&lt;span class="err"&gt;}&lt;/span&gt;
-&lt;span class="nf"&gt;do&lt;/span&gt; &lt;span class="no"&gt;shell&lt;/span&gt; &lt;span class="no"&gt;script&lt;/span&gt; &lt;span class="err"&gt;&amp;quot;&lt;/span&gt;&lt;span class="no"&gt;$HOME&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="no"&gt;encfs_mount.sh&lt;/span&gt;&lt;span class="err"&gt;&amp;quot;&lt;/span&gt;
+&lt;p&gt;Open &lt;strong&gt;AppleScript&lt;/strong&gt; editor and paste this text inside and save as an
+app in the \$HOME folder:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt; shell script &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/encfs_mount.sh&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Finally, open "&lt;strong&gt;System Preferences&lt;/strong&gt;" -&amp;gt; "&lt;strong&gt;Users &amp;amp; Groups&lt;/strong&gt;" and
 add the previously saved application.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;&lt;img alt="Screenshot 2015-10-11
-19.27.44" src="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;{.aligncenter
-.size-full .wp-image-1056 width="463"
-height="380"}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png" width="60%"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Final notes&lt;/h2&gt;
 &lt;p&gt;At this point encfs is configured to be mounted at startup and to save
 the encrypted files inside Dropbox. Please note: &lt;strong&gt;do not save anything
-directly on \~/Dropbox/Private&lt;/strong&gt;, only read and save your files from
-\~/Private&lt;/p&gt;
+directly on &lt;code&gt;~/Dropbox/Private&lt;/code&gt;&lt;/strong&gt;, only read and save your files from
+&lt;code&gt;~/Private&lt;/code&gt;&lt;/p&gt;
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://www.maketecheasier.com/install-encfs-mac/"&gt;https://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/li&gt;

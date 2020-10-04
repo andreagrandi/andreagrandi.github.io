@@ -52,98 +52,82 @@ currently unsupported) even on Windows.</p>
 <h2>Installing EncFS</h2>
 <p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
 manager installed on OSX you can install it using this command:</p>
-<p>``` {.lang:sh .decode:true}
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</p>
-<div class="highlight"><pre><span></span><span class="k">After</span> <span class="n">brew</span><span class="p">,</span> <span class="n">you</span> <span class="n">need</span> <span class="k">to</span> <span class="n">install</span> <span class="o">**</span><span class="n">OSXFuse</span><span class="o">**</span> <span class="k">from</span> <span class="n">this</span>
-<span class="n">website</span> <span class="o">&lt;</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">osxfuse</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span></span>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
 
-<span class="n">Finally</span> <span class="n">you</span> <span class="n">can</span> <span class="n">install</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span> <span class="k">using</span> <span class="n">this</span> <span class="n">command</span><span class="p">:</span>
 
-<span class="o">```</span> <span class="err">{</span><span class="p">.</span><span class="n">lang</span><span class="p">:</span><span class="n">sh</span> <span class="p">.</span><span class="n">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span>
-<span class="n">brew</span> <span class="n">install</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">fuse</span><span class="o">/</span><span class="n">encfs</span>
+<p>After brew, you need to install <strong>OSXFuse</strong> from this
+website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
+<p>Finally you can install <strong>encfs</strong> using this command:</p>
+<div class="highlight"><pre><span></span>brew install homebrew/fuse/encfs
 </pre></div>
 
 
 <h2>Configuring the encrypted folder</h2>
 <p>Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:</p>
-<p>``` {.lang:sh .decode:true}
-encfs ~/Dropbox/Private ~/Private</p>
-<div class="highlight"><pre><span></span><span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">mounting</span> <span class="n">an</span> <span class="n">existing</span> <span class="n">encrypted</span> <span class="n">volume</span><span class="p">,</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span> <span class="n">prompted</span>
-<span class="k">for</span> <span class="n">the</span> <span class="n">password</span><span class="p">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">are</span> <span class="n">creating</span> <span class="n">a</span> <span class="n">new</span> <span class="n">encrypted</span> <span class="n">volume</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span>
-<span class="n">asked</span> <span class="n">some</span> <span class="n">questions</span> <span class="n">about</span> <span class="n">EncFS</span> <span class="n">parameters</span><span class="p">.</span>
+<div class="highlight"><pre><span></span>encfs ~/Dropbox/Private ~/Private
+</pre></div>
 
-<span class="o">**</span><span class="nl">Note</span><span class="p">:</span><span class="o">**</span> <span class="k">if</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">important</span> <span class="k">for</span> <span class="n">you</span> <span class="n">to</span> <span class="n">keep</span> <span class="n">compatibility</span> <span class="n">with</span>
-<span class="o">**</span><span class="p">[</span><span class="n">BoxCryptor</span> <span class="n">Classic</span><span class="p">](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.boxcryptor.com/en/classic)** (in case</span>
-<span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">same</span> <span class="n">volume</span> <span class="n">under</span> <span class="n">Windows</span><span class="p">),</span> <span class="n">please</span> <span class="n">refer</span> <span class="n">to</span> <span class="n">this</span>
-<span class="n">other</span> <span class="n">article</span> <span class="n">I</span>
-<span class="nl">wrote</span><span class="p">:</span> <span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&gt;</span>
 
-<span class="n">Mount</span> <span class="n">the</span> <span class="n">encrypted</span> <span class="n">volume</span> <span class="n">on</span> <span class="n">startup</span>
-<span class="o">-------------------------------------</span>
+<p>If you are mounting an existing encrypted volume, you will be prompted
+for the password. If you are creating a new encrypted volume you will be
+asked some questions about EncFS parameters.</p>
+<p><strong>Note:</strong> if it's important for you to keep compatibility with
+<strong><a href="https://www.boxcryptor.com/en/classic">BoxCryptor Classic</a></strong> (in case
+you want to use the same volume under Windows), please refer to this
+other article I
+wrote: <a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</a></p>
+<h2>Mount the encrypted volume on startup</h2>
+<p>First of all you need to save the volume's password inside the OSX
+keychain. Open the app <strong>Keychain Access</strong> and create a new entry with
+name <strong>encfs</strong> and account value <strong>encfs</strong>, then write your <strong>password</strong>
+and click <strong>Add</strong>:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
+<p>Once the password is saved, <strong>open a text editor</strong> and paste this script
+and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
 
-<span class="n">First</span> <span class="n">of</span> <span class="n">all</span> <span class="n">you</span> <span class="n">need</span> <span class="n">to</span> <span class="n">save</span> <span class="n">the</span> <span class="n">volume</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">password</span> <span class="n">inside</span> <span class="n">the</span> <span class="n">OSX</span>
-<span class="n">keychain</span><span class="p">.</span> <span class="n">Open</span> <span class="n">the</span> <span class="n">app</span> <span class="o">**</span><span class="n">Keychain</span> <span class="n">Access</span><span class="o">**</span> <span class="n">and</span> <span class="n">create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">entry</span> <span class="n">with</span>
-<span class="n">name</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span> <span class="n">and</span> <span class="n">account</span> <span class="n">value</span> <span class="o">**</span><span class="n">encfs</span><span class="o">**</span><span class="p">,</span> <span class="n">then</span> <span class="n">write</span> <span class="n">your</span> <span class="o">**</span><span class="n">password</span><span class="o">**</span>
-<span class="n">and</span> <span class="n">click</span> <span class="o">**</span><span class="n">Add</span><span class="o">**:</span>
+<span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
+<span class="nv">TARGET</span><span class="o">=</span>~/Private
+<span class="nv">VOLUME_TITLE</span><span class="o">=</span>Private
+<span class="nv">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="s1">&#39;encfs&#39;</span>
+<span class="nv">ENCFS</span><span class="o">=</span>/usr/local/bin/encfs
 
-<span class="p">[</span><span class="o">!</span><span class="p">[</span><span class="n">encfs</span><span class="err">\</span><span class="n">_keychain</span><span class="err">\</span><span class="n">_access</span><span class="p">](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png){.aligncenter</span>
-<span class="p">.</span><span class="n">size</span><span class="o">-</span><span class="n">full</span> <span class="p">.</span><span class="n">wp</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="mi">1052</span> <span class="n">width</span><span class="o">=</span><span class="s">&quot;428&quot;</span>
-<span class="n">height</span><span class="o">=</span><span class="s">&quot;397&quot;</span><span class="p">}](</span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/encfs_keychain_access.png)</span>
+mount <span class="p">|</span> grep <span class="nv">$TARGET</span> &gt;/dev/null
+<span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$?</span><span class="s2">&quot;</span> -eq <span class="s2">&quot;0&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> /usr/sbin/diskutil unmount <span class="nv">$TARGET</span>
 
-<span class="n">Once</span> <span class="n">the</span> <span class="n">password</span> <span class="n">is</span> <span class="n">saved</span><span class="p">,</span> <span class="o">**</span><span class="n">open</span> <span class="n">a</span> <span class="n">text</span> <span class="n">editor</span><span class="o">**</span> <span class="n">and</span> <span class="n">paste</span> <span class="n">this</span> <span class="n">script</span>
-<span class="n">and</span> <span class="n">save</span> <span class="n">it</span> <span class="n">as</span> <span class="o">**</span><span class="n">encfs</span><span class="err">\</span><span class="n">_mount</span><span class="p">.</span><span class="n">sh</span><span class="o">**</span> <span class="n">inside</span> <span class="n">your</span> <span class="o">**</span><span class="err">\$</span><span class="n">HOME</span><span class="o">**</span> <span class="nl">folder</span><span class="p">:</span>
+<span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$TARGET</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="nb">echo</span> <span class="s2">&quot;Create new mountpoint </span><span class="nv">$TARGET</span><span class="s2">&quot;</span>
+mkdir <span class="nv">$TARGET</span>
+chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
+<span class="k">fi</span>
 
-<span class="err">```</span> <span class="p">{.</span><span class="nl">lang</span><span class="p">:</span><span class="n">sh</span> <span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="nb">true</span><span class="p">}</span>
-<span class="cp">#!/bin/bash</span>
-<span class="cp"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
-
-<span class="n">SOURCE</span><span class="o">=~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Private</span>
-<span class="n">TARGET</span><span class="o">=~/</span><span class="n">Private</span>
-<span class="n">VOLUME_TITLE</span><span class="o">=</span><span class="n">Private</span>
-<span class="n">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="err">&#39;</span><span class="n">encfs</span><span class="err">&#39;</span>
-<span class="n">ENCFS</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">encfs</span>
-
-<span class="n">mount</span> <span class="o">|</span> <span class="n">grep</span> <span class="err">$</span><span class="n">TARGET</span> <span class="o">&gt;/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
-<span class="p">[[</span> <span class="s">&quot;$?&quot;</span> <span class="o">-</span><span class="n">eq</span> <span class="s">&quot;0&quot;</span> <span class="p">]]</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">diskutil</span> <span class="n">unmount</span> <span class="err">$</span><span class="n">TARGET</span>
-
-<span class="k">if</span> <span class="p">[</span> <span class="o">!</span> <span class="o">-</span><span class="n">d</span> <span class="err">$</span><span class="n">TARGET</span> <span class="p">];</span> <span class="n">then</span>
- <span class="n">echo</span> <span class="s">&quot;Create new mountpoint $TARGET&quot;</span>
- <span class="n">mkdir</span> <span class="err">$</span><span class="n">TARGET</span>
- <span class="n">chmod</span> <span class="mo">0700</span> <span class="err">$</span><span class="n">TARGET</span>
-<span class="n">fi</span>
-
-<span class="err">$</span><span class="n">ENCFS</span> <span class="err">$</span><span class="n">SOURCE</span> <span class="err">$</span><span class="n">TARGET</span> <span class="o">--</span><span class="n">extpass</span><span class="o">=</span><span class="s">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;$KEYCHAIN_PASSWORD&#39; |grep password|cut -d </span><span class="se">\\\&quot;</span><span class="s"> -f 2&quot;</span> <span class="o">-</span><span class="n">ovolname</span><span class="o">=</span><span class="err">$</span><span class="n">VOLUME_TITLE</span>
+<span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
 </pre></div>
 
 
 <p>Make it <strong>executable</strong>:</p>
-<p>``` {.lang:sh .decode:true}
-chmod +x ~/encfs_mount.sh</p>
-<div class="highlight"><pre><span></span><span class="nf">Open</span> <span class="p">**</span><span class="no">AppleScript</span><span class="p">**</span> <span class="no">editor</span> <span class="no">and</span> <span class="no">paste</span> <span class="no">this</span> <span class="no">text</span> <span class="no">inside</span> <span class="no">and</span> <span class="no">save</span> <span class="no">as</span> <span class="no">an</span>
-<span class="nf">app</span> <span class="no">in</span> <span class="no">the</span> <span class="err">\</span><span class="no">$HOME</span> <span class="no">folder</span><span class="p">:</span>
+<div class="highlight"><pre><span></span>chmod +x ~/encfs_mount.sh
+</pre></div>
 
-<span class="err">[![</span><span class="nf">Screenshot</span> <span class="mi">2015</span><span class="p">-</span><span class="mi">10</span><span class="p">-</span><span class="mi">11</span>
-<span class="err">19</span><span class="nf">.27.14</span><span class="p">](</span><span class="no">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png){.aligncenter</span>
-<span class="na">.size-full</span> <span class="no">.wp-image-1055</span> <span class="no">width</span><span class="err">=</span><span class="s">&quot;484&quot;</span>
-<span class="nf">height</span><span class="err">=&quot;</span><span class="mi">392</span><span class="err">&quot;}</span><span class="p">](</span><span class="no">https</span><span class="p">:</span><span class="c1">//www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.14.png)</span>
 
-<span class="err">```</span> <span class="err">{</span><span class="nl">.lang:</span><span class="nf">sh</span> <span class="no">.decode</span><span class="p">:</span><span class="no">true</span><span class="err">}</span>
-<span class="nf">do</span> <span class="no">shell</span> <span class="no">script</span> <span class="err">&quot;</span><span class="no">$HOME</span><span class="err">/</span><span class="no">encfs_mount.sh</span><span class="err">&quot;</span>
+<p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
+app in the \$HOME folder:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
+<div class="highlight"><pre><span></span><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
 </pre></div>
 
 
 <p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
 add the previously saved application.</p>
-<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="Screenshot 2015-10-11
-19.27.44" src="https://www.andreagrandi.it/wp-content/uploads/2015/10/Screenshot-2015-10-11-19.27.44.png">{.aligncenter
-.size-full .wp-image-1056 width="463"
-height="380"}</a></p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png" width="60%"></a></p>
 <h2>Final notes</h2>
 <p>At this point encfs is configured to be mounted at startup and to save
 the encrypted files inside Dropbox. Please note: <strong>do not save anything
-directly on \~/Dropbox/Private</strong>, only read and save your files from
-\~/Private</p>
+directly on <code>~/Dropbox/Private</code></strong>, only read and save your files from
+<code>~/Private</code></p>
 <h2>References</h2>
 <ul>
 <li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>

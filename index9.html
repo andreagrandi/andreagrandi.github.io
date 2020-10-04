@@ -90,9 +90,7 @@ Because I like to listen to the music while I commute and in the London
 Underground it's nearly impossible to have signal.</p>
 <p>So I was thinking: it would be nice to have <strong>a Spotify playlist with
 Soma.fm tracks</strong>. Wait a moment.... <strong>I can do it!</strong></p>
-<p><a href="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/wp-content/uploads/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg">{.aligncenter
-.size-full .wp-image-981 width="542"
-height="422"}</a></p>
+<p><a href="https://www.andreagrandi.it/images/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/images/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg" width="60%"></a></p>
 <p>Soma.fm publishes the tracks history with all the tracks streamed during
 the last hour <a href="http://somafm.com/indiepop/songhistory.html">http://somafm.com/indiepop/songhistory.html</a> so I just
 needed something to parse this list for me and return me a well
@@ -134,59 +132,59 @@ accounts.</p>
 <a href="https://bitbucket.org/ymotongpoo/goenv"><strong>Goenv</strong></a> is, I will assume
 you have previously worked with <strong>Python</strong>. Basically it's what
 <strong>Virtualenv</strong> is for Python. Goenv (and it's wrapper <strong>goof</strong>) creates
-a folder for a new project and set the <strong>\$GOPATH</strong> env variable to that
+a folder for a new project and set the <code>$GOPATH</code> env variable to that
 folder path. At this point every time you do <strong>go get</strong>, the libraries
-will be installed in that specific <strong>\$GOPATH</strong>.</p>
-<p>It's very important to use separate \$GOPATH for each project, because
+will be installed in that specific <code>$GOPATH</code>.</p>
+<p>It's very important to use separate <code>$GOPATH</code> for each project, because
 this allow us to use different library versions for each project and
 <strong>avoid version conflicts</strong>.</p>
-<h1>Installation</h1>
-<p>``` {.toolbar:2 .lang:zsh .highlight:0 .decode:true}
-$ git clone https://bitbucket.org/ymotongpoo/goenv
-$ cd goenv
-$ go build -o goenv *.go
-$ chmod +x goenv
-$ sudo cp goenv /usr/bin</p>
-<div class="highlight"><pre><span></span><span class="n">Goenv</span> <span class="k">is</span> <span class="n">now</span> <span class="n">installed</span><span class="p">,</span> <span class="n">we</span> <span class="n">will</span> <span class="n">now</span> <span class="n">install</span> <span class="n">its</span> <span class="n">wrapper</span> <span class="o">**</span><span class="n">goof</span><span class="o">**</span><span class="p">:</span>
-
-<span class="o">```</span> <span class="err">{</span><span class="p">.</span><span class="n">toolbar</span><span class="p">:</span><span class="mi">2</span> <span class="p">.</span><span class="n">lang</span><span class="p">:</span><span class="n">zsh</span> <span class="p">.</span><span class="n">highlight</span><span class="p">:</span><span class="mi">0</span> <span class="p">.</span><span class="n">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span>
-<span class="err">$</span> <span class="n">sudo</span> <span class="n">cp</span> <span class="n">shellscripts</span><span class="o">/</span><span class="n">goenvwrapper</span><span class="p">.</span><span class="n">sh</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span>
+<h2>Installation</h2>
+<div class="highlight"><pre><span></span>git clone https://bitbucket.org/ymotongpoo/goenv
+<span class="nb">cd</span> goenv
+go build -o goenv *.go
+chmod +x goenv
+sudo cp goenv /usr/bin
 </pre></div>
 
 
-<p>Edit <strong>.bashrc</strong> (or <strong>.zshrc</strong> if you use zsh) and append these lines:</p>
-<p>``` {.toolbar:2 .lang:zsh .decode:true}
-export GOENVHOME=$HOME/goenvs
-source /usr/bin/goenvwrapper.sh</p>
-<div class="highlight"><pre><span></span><span class="gh">How to use it</span>
-<span class="gh">=============</span>
+<p>Goenv is now installed, we will now install its wrapper <strong>goof</strong>:</p>
+<div class="highlight"><pre><span></span>sudo cp shellscripts/goenvwrapper.sh /usr/bin
+</pre></div>
 
-To <span class="gs">**create**</span> a new go environment use <span class="gs">**make**</span>:
 
-<span class="s">``` {.toolbar:2 .lang:default .highlight:0 .decode:true}</span>
-<span class="s">➜  ~  goof make go-test</span>
-<span class="s">Do you want to create all parental directory of &#39;/Users/andrea/goenvs/go-test&#39;? [y/N]: y</span>
-<span class="s">Environment /Users/andrea/goenvs/go-test created!</span>
-<span class="s">(go:go-test) ➜  go-test</span>
+<p>Edit <code>.bashrc</code> (or <code>.zshrc</code> if you use zsh) and append these lines:</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">GOENVHOME</span><span class="o">=</span><span class="nv">$HOME</span>/goenvs
+<span class="nb">source</span> /usr/bin/goenvwrapper.sh
+</pre></div>
+
+
+<h2>How to use it</h2>
+<p>To <strong>create</strong> a new go environment use <strong>make</strong>:</p>
+<div class="highlight"><pre><span></span>goof make go-test
+Do you want to create all parental directory of <span class="s1">&#39;/Users/andrea/goenvs/go-test&#39;</span>? <span class="o">[</span>y/N<span class="o">]</span>: y
+Environment /Users/andrea/goenvs/go-test created!
+<span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test
 </pre></div>
 
 
 <p>To exit the go environment use <strong>deactivate</strong>:</p>
-<p>``` {.toolbar:2 .lang:default .highlight:0 .decode:true}
-(go:go-test) ➜  go-test  deactivate
-➜  go-test</p>
-<div class="highlight"><pre><span></span><span class="k">To</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">environment</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="o">**</span><span class="n">workon</span><span class="o">**</span><span class="err">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test  deactivate
+go-test
+</pre></div>
 
-<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">toolbar</span><span class="p">:</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">default</span><span class="w"> </span><span class="p">.</span><span class="nl">highlight</span><span class="p">:</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
-<span class="err">➜</span><span class="w">  </span><span class="k">go</span><span class="o">-</span><span class="n">test</span><span class="w">  </span><span class="n">goof</span><span class="w"> </span><span class="n">workon</span><span class="w"> </span><span class="k">go</span><span class="o">-</span><span class="n">test</span><span class="w"></span>
-<span class="p">(</span><span class="k">go</span><span class="err">:</span><span class="k">go</span><span class="o">-</span><span class="n">test</span><span class="p">)</span><span class="w"> </span><span class="err">➜</span><span class="w">  </span><span class="k">go</span><span class="o">-</span><span class="n">test</span><span class="w"></span>
+
+<p>To use an environment use <strong>workon</strong>:</p>
+<div class="highlight"><pre><span></span>go-test  goof workon go-test
+<span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test
 </pre></div>
 
 
 <p>To show available environments use <strong>show</strong>:</p>
-<p><code>{.toolbar:2 .lang:default .highlight:0 .decode:true}
-(go:go-test) ➜  go-test  goof show
-* go-test</code></p>
+<div class="highlight"><pre><span></span><span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test  goof show
+go-test
+</pre></div>
+
+
 <p>Goenv itself is not enough to manage Go packages. It would be like using
 <strong>Virtualenv</strong> only and not using <strong>pip</strong> and <strong>requirements</strong>. In a
 future post I will explain how to use
@@ -213,25 +211,26 @@ it's quite easy to use.</p>
 <p>In my case for example I needed something that could contain a Timer
 object, a string and a method that could start the timer and call a
 method at the end of the Timer execution. I implemented it in this way:</p>
-<p>``` {.toolbar:2 .lang:go .decode:true}
-type DeviceTimer struct {
-    DeviceID    string
-    DeviceTimer *time.Timer
-}</p>
-<p>func (timer DeviceTimer) startTimer() {
-    &lt;-timer.DeviceTimer.C
-    notifyDeviceTimerExpired(timer.DeviceID)
-}</p>
-<div class="highlight"><pre><span></span><span class="n">The</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">**</span><span class="k">row</span><span class="w"> </span><span class="mi">6</span><span class="o">**</span><span class="w"> </span><span class="ss">&quot;*func (timer DeviceTimer) startTimer() { ...</span>
-<span class="ss">}*&quot;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="o">**</span><span class="n">startTimer</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">timer</span><span class="w"></span>
-<span class="o">**</span><span class="n">DeviceTimer</span><span class="o">**</span><span class="w"> </span><span class="n">inside</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="n">definition</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">basically</span><span class="w"> </span><span class="ss">&quot;extends&quot;</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="n">struct</span><span class="w"> </span><span class="n">DeviceTimer</span><span class="w"> </span><span class="n">adding</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">call</span><span class="w"></span>
-<span class="n">that</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nl">way</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">DeviceID</span>    <span class="kt">string</span>
+    <span class="nx">DeviceTimer</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span>
+<span class="p">}</span>
 
-<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">toolbar</span><span class="p">:</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">go</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
-<span class="n">timer</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">NewTimer</span><span class="p">(</span><span class="nc">time</span><span class="p">.</span><span class="n">Millisecond</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">300</span><span class="p">)</span><span class="w"></span>
-<span class="n">device_timer</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">DeviceTimer</span><span class="err">{</span><span class="ss">&quot;abc123&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">timer</span><span class="err">}</span><span class="w"></span>
-<span class="k">go</span><span class="w"> </span><span class="n">device_timer</span><span class="p">.</span><span class="n">startTimer</span><span class="p">()</span><span class="w"></span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">timer</span> <span class="nx">DeviceTimer</span><span class="p">)</span> <span class="nx">startTimer</span><span class="p">()</span> <span class="p">{</span>
+    <span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span>
+    <span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
+where I defined a method called <code>startTimer</code> and I specify timer
+<code>DeviceTimer</code> inside the func definition. This basically "extends" the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:</p>
+<div class="highlight"><pre><span></span><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
+<span class="nx">device_timer</span> <span class="o">:=</span> <span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span> <span class="nx">timer</span><span class="p">}</span>
+<span class="k">go</span> <span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span>
 </pre></div>
 
 

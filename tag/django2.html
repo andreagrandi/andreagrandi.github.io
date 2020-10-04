@@ -46,27 +46,27 @@
 <span>| tags: <a href="https://www.andreagrandi.it/tag/django.html">Django</a><a href="https://www.andreagrandi.it/tag/getattr.html">getattr</a><a href="https://www.andreagrandi.it/tag/python.html">Python</a><a href="https://www.andreagrandi.it/tag/settings.html">settings</a></span>
 </footer><!-- /.post-info -->                <p>Working on <strong>Django</strong> projects I find very often that many developers
 access the values that are defined in <strong>settings</strong> in this way</p>
-<p>``` {.lang:python .decode:true}
-from django.conf import settings</p>
-<p>my_value = settings.MY_SETTING</p>
-<div class="highlight"><pre><span></span><span class="n">What</span> <span class="n">happens</span> <span class="k">if</span> <span class="o">**</span><span class="n">MY</span>\<span class="n">_SETTING</span><span class="o">**</span> <span class="n">has</span> <span class="ow">not</span> <span class="n">been</span> <span class="n">defined</span> <span class="ow">in</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">py</span><span class="o">**</span><span class="err">?</span>
-<span class="n">The</span> <span class="n">code</span> <span class="n">will</span> <span class="k">raise</span> <span class="n">an</span> <span class="n">error</span> <span class="ow">and</span> <span class="n">crash</span><span class="p">,</span> <span class="n">of</span> <span class="n">course</span><span class="o">.</span> <span class="n">How</span> <span class="n">can</span> <span class="n">we</span> <span class="n">make</span> <span class="n">the</span>
-<span class="n">code</span> <span class="n">more</span> <span class="n">reliable</span><span class="err">?</span> <span class="n">We</span> <span class="n">could</span> <span class="o">*</span><span class="k">try</span><span class="o">/</span><span class="k">except</span><span class="o">*</span> <span class="n">the</span> <span class="n">code</span> <span class="n">block</span> <span class="n">that</span> <span class="n">tries</span> <span class="n">to</span>
-<span class="n">read</span> <span class="n">the</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">maybe</span> <span class="nb">set</span> <span class="n">a</span> <span class="n">value</span> <span class="k">if</span> <span class="n">we</span> <span class="n">get</span> <span class="n">an</span> <span class="n">exception</span><span class="p">,</span> <span class="n">but</span> <span class="n">this</span>
-<span class="n">would</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">a</span> <span class="n">clean</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span> <span class="n">job</span><span class="o">.</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
-<span class="n">A</span> <span class="n">cleaner</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">use</span> <span class="o">**</span><span class="nb">getattr</span><span class="o">**</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">way</span><span class="p">:</span>
+<span class="n">my_value</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MY_SETTING</span>
+</pre></div>
 
-<span class="sb">``</span><span class="err">`</span> <span class="p">{</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span><span class="n">python</span> <span class="o">.</span><span class="n">decode</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<p>What happens if <code>MY_SETTING</code> has not been defined in <strong>settings.py</strong>?
+The code will raise an error and crash, of course. How can we make the
+code more reliable? We could <em>try/except</em> the code block that tries to
+read the value and maybe set a value if we get an exception, but this
+would not be a clean way to do this job.</p>
+<p>A cleaner way to do it is to use <strong>getattr</strong> in this way:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
 </pre></div>
 
 
-<p><strong>getattr</strong> will try to read <strong>MY_SETTING</strong> value from <strong>settings.py</strong>,
-if the value doesn't exist <strong>my_value</strong> will be assigned with
-<strong>my-default-value</strong>.</p>
+<p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
+if the value doesn't exist <code>my_value</code> will be assigned with
+<code>'my-default-value'</code></p>
                 <a class="readmore" href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">read more</a>
 <p><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -89,21 +89,21 @@ composed by a <strong>request</strong> and a <strong>response</strong>. A middle
 that stays in the middle. Let's give a look to the next diagram, taken
 from official Django documentation:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h3>Important things to know</h3>
+<h2>Important things to know</h2>
 <p>There are four important things to know about middlewares:</p>
 <ul>
 <li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
 <li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-    important: middlewares are processed from top to bottom during a
-    request and from bottom to top during a response.</li>
+important: middlewares are processed from top to bottom during a
+request and from bottom to top during a response.</li>
 <li>You don't need to implement all the available methods of a
-    middleware. For example you can just implement <strong>process_request</strong>
-    and <strong>process_template_response</strong></li>
-<li>If you implement <strong>process_request</strong> and you decide to return an
-    <strong>HttpResponse</strong>, all the other middlewares, views etc... will be
-    ignored and only your response will be returned</li>
+middleware. For example you can just implement <code>process_request</code>
+and <code>process_template_response</code></li>
+<li>If you implement <code>process_request</code> and you decide to return an
+<code>HttpResponse</code>, all the other middlewares, views etc... will be
+ignored and only your response will be returned</li>
 </ul>
-<h3>Writing a middleware</h3>
+<h2>Writing a middleware</h2>
 <p>In my example I wanted to implement a feature that saves the time when a
 request is made and the time when a request has been processed, then
 calculates the time delta and exposes this value in the context so that
@@ -129,7 +129,7 @@ how to implement a simple middleware.</p>
 <p>If you want to see a <strong>complete example</strong> of a project that includes and
 uses this middleware, here you can find the complete source
 code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
-<h3>References</h3>
+<h2>References</h2>
 <ul>
 <li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
 <li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>

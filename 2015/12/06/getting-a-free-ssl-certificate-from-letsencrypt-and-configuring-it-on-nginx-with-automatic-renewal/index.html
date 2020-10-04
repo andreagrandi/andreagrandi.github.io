@@ -62,22 +62,20 @@ utility. Unless it has already been packaged for your distribution, for
 the moment it's much easier to get it from git as they explain in their
 <a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
 instructions</a>:</p>
-<p>``` {.lang:sh .decode:true}
-git clone https://github.com/letsencrypt/letsencrypt
-cd letsencrypt
-./letsencrypt-auto</p>
-<div class="highlight"><pre><span></span><span class="gh">Getting the SSL certificate</span>
-<span class="gh">---------------------------</span>
+<div class="highlight"><pre><span></span>git clone https://github.com/letsencrypt/letsencrypt
+<span class="nb">cd</span> letsencrypt
+./letsencrypt-auto
+</pre></div>
 
-There are a few different options available to request a certificate,
-but the easiest one is to use the <span class="gs">**--webroot**</span> option, specifying the
+
+<h2>Getting the SSL certificate</h2>
+<p>There are a few different options available to request a certificate,
+but the easiest one is to use the <strong>--webroot</strong> option, specifying the
 document root of your website so that the client will be able to put
 there a verification (temporary) file that will be served to the remote
 service and used as verification method. In my case I only needed this
-command:
-
-<span class="s">``` {.lang:sh .decode:true}</span>
-<span class="s">./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos</span>
+command:</p>
+<div class="highlight"><pre><span></span>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
 </pre></div>
 
 
@@ -92,26 +90,23 @@ files here are symbolic links to the current certificate). If you are
 using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
 <strong>privkey.pem</strong> and you can set them in your Nginx configuration using
 these two parameters:</p>
-<p>``` {.lang:default .decode:true}
-ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem;</p>
-<div class="highlight"><pre><span></span><span class="ow">In</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">my</span><span class="w"> </span><span class="k">full</span><span class="w"> </span><span class="n">Nginx</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
-<span class="n">reference</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="n">it</span><span class="w"></span>
-<span class="n">here</span><span class="w"> </span><span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">gist</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">andreagrandi</span><span class="o">/</span><span class="mi">8</span><span class="n">b194c99cd3e77fdb5a8</span><span class="o">&gt;</span><span class="w"></span>
+<div class="highlight"><pre><span></span>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
+ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem<span class="p">;</span>
+</pre></div>
 
-<span class="n">Automatic</span><span class="w"> </span><span class="n">renewal</span><span class="w"></span>
-<span class="c1">-----------------</span>
 
-<span class="n">The</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">thing</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">configured</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">crontab</span><span class="w"> </span><span class="k">rule</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">call</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">script</span><span class="w"></span>
-<span class="k">every</span><span class="p">...</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="p">.</span><span class="w"> </span><span class="n">Why</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="vm">?</span><span class="w"> </span><span class="n">Letsencrypt</span><span class="w"> </span><span class="n">SSL</span><span class="w"> </span><span class="o">**</span><span class="n">certificates</span><span class="w"> </span><span class="n">expire</span><span class="w"></span>
-<span class="ow">in</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">months</span><span class="o">**</span><span class="p">.</span><span class="w"> </span><span class="n">Usually</span><span class="w"> </span><span class="n">SSL</span><span class="w"> </span><span class="n">certificates</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">least</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="nf">year</span><span class="p">,</span><span class="w"></span>
-<span class="n">but</span><span class="w"> </span><span class="n">Letsencrypt</span><span class="w"> </span><span class="n">decided</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">months</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">incentivate</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="n">automation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">renewal</span><span class="p">.</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">months</span><span class="p">,</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">anything</span><span class="w"> </span><span class="n">goes</span><span class="w"></span>
-<span class="n">wrong</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">still</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">plenty</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">time</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">manually</span><span class="p">.</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="n">edit</span><span class="w"> </span><span class="n">crontab</span><span class="w"> </span><span class="k">for</span><span class="w"></span>
-<span class="n">root</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">execute</span><span class="w"> </span><span class="o">**</span><span class="n">crontab</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nl">line</span><span class="p">:</span><span class="w"></span>
-
-<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">default</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
-<span class="mi">0</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*/</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">-</span><span class="n">auto</span><span class="w"> </span><span class="n">certonly</span><span class="w"> </span><span class="c1">--webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &amp;&amp; service nginx reload</span>
+<p>In case you want to have a look at my full Nginx configuration file, as
+reference, you can find it
+here <a href="https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8">https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8</a></p>
+<h2>Automatic renewal</h2>
+<p>The last thing to be configured is a crontab rule to call the script
+every... 2 months. Why 2 months? Letsencrypt SSL <strong>certificates expire
+in 3 months</strong>. Usually SSL certificates are valid at least for 1 year,
+but Letsencrypt decided to make it 3 months to incentivate the
+automation of the renewal. I set it to 2 months, so if anything goes
+wrong I still have plenty of time to do it manually. To edit crontab for
+root user execute <strong>crontab -e</strong> and add this line:</p>
+<div class="highlight"><pre><span></span><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
 </pre></div>
 
 

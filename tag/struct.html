@@ -45,25 +45,26 @@ it's quite easy to use.</p>
 <p>In my case for example I needed something that could contain a Timer
 object, a string and a method that could start the timer and call a
 method at the end of the Timer execution. I implemented it in this way:</p>
-<p>``` {.toolbar:2 .lang:go .decode:true}
-type DeviceTimer struct {
-    DeviceID    string
-    DeviceTimer *time.Timer
-}</p>
-<p>func (timer DeviceTimer) startTimer() {
-    &lt;-timer.DeviceTimer.C
-    notifyDeviceTimerExpired(timer.DeviceID)
-}</p>
-<div class="highlight"><pre><span></span><span class="n">The</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">**</span><span class="k">row</span><span class="w"> </span><span class="mi">6</span><span class="o">**</span><span class="w"> </span><span class="ss">&quot;*func (timer DeviceTimer) startTimer() { ...</span>
-<span class="ss">}*&quot;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="o">**</span><span class="n">startTimer</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">timer</span><span class="w"></span>
-<span class="o">**</span><span class="n">DeviceTimer</span><span class="o">**</span><span class="w"> </span><span class="n">inside</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="n">definition</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">basically</span><span class="w"> </span><span class="ss">&quot;extends&quot;</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="n">struct</span><span class="w"> </span><span class="n">DeviceTimer</span><span class="w"> </span><span class="n">adding</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">call</span><span class="w"></span>
-<span class="n">that</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nl">way</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">DeviceID</span>    <span class="kt">string</span>
+    <span class="nx">DeviceTimer</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span>
+<span class="p">}</span>
 
-<span class="err">```</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="nl">toolbar</span><span class="p">:</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nl">lang</span><span class="p">:</span><span class="k">go</span><span class="w"> </span><span class="p">.</span><span class="nl">decode</span><span class="p">:</span><span class="k">true</span><span class="err">}</span><span class="w"></span>
-<span class="n">timer</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">NewTimer</span><span class="p">(</span><span class="nc">time</span><span class="p">.</span><span class="n">Millisecond</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">300</span><span class="p">)</span><span class="w"></span>
-<span class="n">device_timer</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">DeviceTimer</span><span class="err">{</span><span class="ss">&quot;abc123&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">timer</span><span class="err">}</span><span class="w"></span>
-<span class="k">go</span><span class="w"> </span><span class="n">device_timer</span><span class="p">.</span><span class="n">startTimer</span><span class="p">()</span><span class="w"></span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">timer</span> <span class="nx">DeviceTimer</span><span class="p">)</span> <span class="nx">startTimer</span><span class="p">()</span> <span class="p">{</span>
+    <span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span>
+    <span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
+where I defined a method called <code>startTimer</code> and I specify timer
+<code>DeviceTimer</code> inside the func definition. This basically "extends" the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:</p>
+<div class="highlight"><pre><span></span><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
+<span class="nx">device_timer</span> <span class="o">:=</span> <span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span> <span class="nx">timer</span><span class="p">}</span>
+<span class="k">go</span> <span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span>
 </pre></div>
 
 
