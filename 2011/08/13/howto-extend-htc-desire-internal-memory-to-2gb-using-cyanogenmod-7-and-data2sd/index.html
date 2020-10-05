@@ -1,49 +1,177 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-        <meta charset="utf-8" />
-        <title>HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</title>
-        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
-        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
-        <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
+
+
+  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
+
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+  <!-- <script src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.min.js"></script> -->
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+
+  <script src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
+
+
+
+  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
+    title="Andrea Grandi RSS">
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2140684-3', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Andrea Grandi" />
+<meta name="description" content="Introduction Even if it&#39;s not a new model, the HTC Desire is still a very good Android device, thanks to its 1Ghz CPU and 512 Mb RAM, but one of the biggest problems of this phone is that it comes with only 148Mb available in the ROM. Once the operating system is installed (ROM I mean), after installing few useful applications you&#39;ll end the available space very soon. There are many apps available, like App2SD that move your applications to the SD card, but it&#39;s not enough because only the application is moved, not the data. To move the data to the SD card, there is a very nice utility called Data2SD. Please note that this procedure requires you to reflash your device and partition your SD card, so please do a complete backup before proceding. What you need a rooted HTC Desire (you need to have a rooted phone with a recovery already installed) a 4Gb (or bigger) microSD, at least class 4 (class 6 is even better while class 10 is reported not working with this phone) a microSD card reader CyanogenMod 7: http://download.cyanogenmod.com/get/update-cm-7.0.3-Desire-signed.zip Data2SD: Data2SDInstallerX1.zip and Data2SDReInstallerX1.zip Google Apps: http://wiki.cyanogenmod.com/wiki/Latest_Version#Google_Apps GParted: you can use the version available on Ubuntu Linux or you can download a live Linux image with GParted installed: http://gparted.sourceforge.net/livecd.php Backup your data Before following these instructions, please do a complete backup of your microSD, of your original ROM (using Nandroid or similar) ecc... Prepare the microSD card Open GParted on your Ubuntu Linux or use the GParted Live CD/USB. Delete all partitions on this microSD Create the first one using FAT32 filesystem, leaving 2Gb (2047Mb) available at the end. Create a second partition using ext4 filesystem. Confirm your changes Copy CyanogenMod7 rom, Data2SD installers and Google Apps on FAT32 partition CyanogenMod 7 installation Reboot your phone into Recovery (turn it off then press volume down + power) WIPE all data (userdata, cache ecc...) Choose &#34;Install from SD card&#34; and select CyanogenMod7 installation zip when finished reboot your phone Enter your Wifi settings, language ecc.... DO NOT enter your Google account settings. reboot your phone Data2SD installation Boot into Recovery again Choose &#34;Install from SD card&#34; and select Data2SDInstallerX1.zip (please note, you may have to turn off the signature verification in Other-&gt;Turn off ecc...) when finished reboot your phone now you should see 1,97Gb if you go in Settings-&gt;Storage-&gt;Internal Storage-&gt;Total space Google Apps installation Reboot your phone into Recovery Choose &#34;Install from SD card&#34; and select the Google Apps zip file reboot your phone Conclusion You now have 1,97Gb total space available instead of 148Mb. Enjoy your HTC Desire! Update Aug 1, 2012: since December 2011 I don&#39;t have an HTC Desire anymore. These informations could be still valid but in any other case I don&#39;t have the possibility to help you more." />
+<meta name="keywords" content="Android, Google, Linux, howto, cyanogenmod">
+
+
+<meta property="og:site_name" content="Andrea Grandi"/>
+<meta property="og:title" content="HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD"/>
+<meta property="og:description" content="Introduction Even if it&#39;s not a new model, the HTC Desire is still a very good Android device, thanks to its 1Ghz CPU and 512 Mb RAM, but one of the biggest problems of this phone is that it comes with only 148Mb available in the ROM. Once the operating system is installed (ROM I mean), after installing few useful applications you&#39;ll end the available space very soon. There are many apps available, like App2SD that move your applications to the SD card, but it&#39;s not enough because only the application is moved, not the data. To move the data to the SD card, there is a very nice utility called Data2SD. Please note that this procedure requires you to reflash your device and partition your SD card, so please do a complete backup before proceding. What you need a rooted HTC Desire (you need to have a rooted phone with a recovery already installed) a 4Gb (or bigger) microSD, at least class 4 (class 6 is even better while class 10 is reported not working with this phone) a microSD card reader CyanogenMod 7: http://download.cyanogenmod.com/get/update-cm-7.0.3-Desire-signed.zip Data2SD: Data2SDInstallerX1.zip and Data2SDReInstallerX1.zip Google Apps: http://wiki.cyanogenmod.com/wiki/Latest_Version#Google_Apps GParted: you can use the version available on Ubuntu Linux or you can download a live Linux image with GParted installed: http://gparted.sourceforge.net/livecd.php Backup your data Before following these instructions, please do a complete backup of your microSD, of your original ROM (using Nandroid or similar) ecc... Prepare the microSD card Open GParted on your Ubuntu Linux or use the GParted Live CD/USB. Delete all partitions on this microSD Create the first one using FAT32 filesystem, leaving 2Gb (2047Mb) available at the end. Create a second partition using ext4 filesystem. Confirm your changes Copy CyanogenMod7 rom, Data2SD installers and Google Apps on FAT32 partition CyanogenMod 7 installation Reboot your phone into Recovery (turn it off then press volume down + power) WIPE all data (userdata, cache ecc...) Choose &#34;Install from SD card&#34; and select CyanogenMod7 installation zip when finished reboot your phone Enter your Wifi settings, language ecc.... DO NOT enter your Google account settings. reboot your phone Data2SD installation Boot into Recovery again Choose &#34;Install from SD card&#34; and select Data2SDInstallerX1.zip (please note, you may have to turn off the signature verification in Other-&gt;Turn off ecc...) when finished reboot your phone now you should see 1,97Gb if you go in Settings-&gt;Storage-&gt;Internal Storage-&gt;Total space Google Apps installation Reboot your phone into Recovery Choose &#34;Install from SD card&#34; and select the Google Apps zip file reboot your phone Conclusion You now have 1,97Gb total space available instead of 148Mb. Enjoy your HTC Desire! Update Aug 1, 2012: since December 2011 I don&#39;t have an HTC Desire anymore. These informations could be still valid but in any other case I don&#39;t have the possibility to help you more."/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://www.andreagrandi.it/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-08-13 22:08:00+02:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
+<meta property="article:section" content="HowTo"/>
+<meta property="article:tag" content="Android"/>
+<meta property="article:tag" content="Google"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="howto"/>
+<meta property="article:tag" content="cyanogenmod"/>
+<meta property="og:image" content="/images/me_pycon_2019_2.jpg">
+
+  <title>Andrea Grandi &ndash; HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</title>
+
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi </a></h1>
-                <nav><ul>
-    
-                        <li><a href="https://www.andreagrandi.it/about/">About</a></li>
-    
-                        <li><a href="https://www.andreagrandi.it/curriculum/">Curriculum</a></li>
-    
-                        <li><a href="https://www.andreagrandi.it/pgp-key/">PGP Key</a></li>
-                </ul>
-<form id="search" action="https://www.andreagrandi.it/search.html" onsubmit="return validateForm(this.elements['q'].value);">
-                        <input type="text" class="search-query" placeholder="" name="q" id="tipue_search_input">
-                    </form>
-                </nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="https://www.andreagrandi.it/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/" rel="bookmark"
-           title="Permalink to HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD">HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</a></h1>
-    </header>
+<body class="light-theme"
+>
+  <aside>
+    <div>
+      <a href="https://www.andreagrandi.it">
+        <img src="/images/me_pycon_2019_2.jpg" alt="Andrea Grandi" title="Andrea Grandi">
+      </a>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 13 August 2011</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a></span>
-<span>| tags: <a href="https://www.andreagrandi.it/tag/android.html">Android</a><a href="https://www.andreagrandi.it/tag/google.html">Google</a><a href="https://www.andreagrandi.it/tag/linux.html">Linux</a><a href="https://www.andreagrandi.it/tag/howto.html">howto</a><a href="https://www.andreagrandi.it/tag/cyanogenmod.html">cyanogenmod</a></span>
-</footer><!-- /.post-info -->      <p><a href="https://www.andreagrandi.it/images/2011/08/htc-desire-300x260.jpg"><img alt="htc-desire" src="https://www.andreagrandi.it/images/2011/08/htc-desire-300x260.jpg" width="60%"></a></p>
+      <h1>
+        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
+      </h1>
+
+<p>Software Developer</p>
+      <form class="navbar-search" action="/search.html" role="search">
+        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
+      </form>
+
+      <nav>
+        <ul class="list">
+
+
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/about/#about">
+              About
+            </a>
+          </li>
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/curriculum/#curriculum">
+              Curriculum
+            </a>
+          </li>
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/pgp-key/#pgp-key">
+              PGP Key
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li>
+          <a  class="sc-twitter" href="https://twitter.com/andreagrandi" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        </li>
+        <li>
+          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+        <li>
+          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+            <i class="fab fa-linkedin"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://www.andreagrandi.it">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+
+      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd">HowTo extend HTC Desire internal memory to 2Gb using CyanogenMod 7 and Data2SD</h1>
+    <p>
+      Posted on Sat 13 August 2011 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p><a href="https://www.andreagrandi.it/images/2011/08/htc-desire-300x260.jpg"><img alt="htc-desire" src="https://www.andreagrandi.it/images/2011/08/htc-desire-300x260.jpg" width="60%"></a></p>
 <h3>Introduction</h3>
 <p>Even if it's not a new model, the <strong>HTC Desire</strong> is still a very good
 Android device, thanks to its <strong>1Ghz</strong> CPU and <strong>512 Mb RAM</strong>, but one
@@ -120,63 +248,77 @@ your microSD, of your original ROM (using Nandroid or similar) ecc...</p>
 <p>You now have <strong>1,97Gb total space available</strong> instead of 148Mb. Enjoy
 your HTC Desire!</p>
 <h3><strong>Update Aug 1, 2012: since December 2011 I don't have an HTC Desire anymore. These informations could be still valid but in any other case I don't have the possibility to help you more.</strong></h3>
-    </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments !</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_identifier = "2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/";
-        var disqus_url = "https://www.andreagrandi.it/2011/08/13/howto-extend-htc-desire-internal-memory-to-2gb-using-cyanogenmod-7-and-data2sd/";
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//andrea-grandi-it.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-    </div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://www.andreagrandi.it/tag/android.html">Android</a>
+      <a href="https://www.andreagrandi.it/tag/google.html">Google</a>
+      <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
+      <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>
+      <a href="https://www.andreagrandi.it/tag/cyanogenmod.html">cyanogenmod</a>
+    </p>
+  </div>
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">rss feed</a></li>
 
-                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
-                            <li><a href="https://github.com/andreagrandi">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
 
-        <footer id="contentinfo" class="body">
-                <p>
-                    Powered by <a href="http://getpelican.com/">Pelican</a> and Python -
-                    Source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a>
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
-                        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
-                    </a>
-                </p>
-        </footer><!-- /#contentinfo -->
 
-    <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-2140684-3']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'andrea-grandi-it';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+  Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Andrea Grandi ",
+  "url" : "https://www.andreagrandi.it",
+  "image": "/images/me_pycon_2019_2.jpg",
+  "description": ""
+}
+</script>
+
+  <script>
+    $(document).ready(function () {
+      $('#tipue_search_input').tipuesearch();
+    });
+  </script>
+
 </body>
+
 </html>

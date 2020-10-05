@@ -1,49 +1,172 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-        <meta charset="utf-8" />
-        <title>Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</title>
-        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/css/main.css" />
-        <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/css/tipuesearch.css">
-        <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Andrea Grandi RSS Feed" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
+
+
+  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
+
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+  <!-- <script src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.min.js"></script> -->
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+
+  <script src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
+
+
+
+  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
+    title="Andrea Grandi RSS">
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2140684-3', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="admin" />
+<meta name="description" content="Developing a large web application or before deploying some code is very important to verify the quality of the code itself, check if we have introduced any regression or bug and have something that tell us if we are increasing or decreasing the quality of the code. Suppose we are in an organization or a company where the basic rule is: master branch is always ready/stable to be deployed. In a team usually people work on personal branches, then when the code is stable it&#39;s merged with master. How do we check if the code is stable and ready to be merged? First of all we need to cover all our code with proper tests (I won&#39;t go in details about unit testing here, I assume that the reader knows what I&#39;m talking about), then we need to actually run them, possibly in an isolated environment that is similar to the production one, and check if they all pass. If they do, we are quite safe to merge our code with master branch. How can we ensure that all the developers remember to run tests when they push some new code? To make things a bit more real, let&#39;s take the example of a Python/Django product (or even a library) that currently supports Python 2.6, 2.7, 3.3 and Django 1.4.x, 1.5.x, 1.6.x. The whole matrix consists of 9 possible combinations. Do we have to manually run tests on 9 configurations? No, we don&#39;t. Travis-ci.org Travis is a continuous integration tool that, once configured, takes care of these tasks and let us save lot of time (that we can use to actually write code). Travis-ci.org is an online service that works with GitHub (it requires we use GitHub as repository for our code), and once we have connected the two accounts and configured a very simple file in our projects, it&#39;s automatically triggered when we push on our GitHub repository. The configuration consists of adding a file named .travis.yml in the root of our project. A working example is available here https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml (all the env variables I set are not required normally, but that&#39;s where I save the values of my configuration, so they need to be initialized before I can run tests). The service supports most of the languages that are commonly used and even a good number of PAAS, making it very easy to automatically deploy our code. If it should not be enough for your needs, they also expose a public API. I suggest you to give a look at the official documentation that will explain everything in details http://docs.travis-ci.com Once everything is configured, we will have something like this on our console https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128 {.aligncenter .wp-image-832 width=&#34;614&#34; height=&#34;326&#34;} If something goes wrong (if tests don&#39;t pass for example) we receive a notification with all the informations about the failing build, and if we had configured an automatic deployment of course the code would not be deployed in case of a failing build. Travis-ci.org is completly free for opensource projects and has also a paid version for private repositories. Coveralls.io There is a nice tool available for Python called coverage. Basically it runs tests and checks the percentage of the source code that is covered by tests, producing a nice report that shows us the percentage for every single file/module and even the lines of code that have been tested. Thanks to Coveralls.io and the use of Travis, even these tasks are completly automatized and the results are available online like in this example https://coveralls.io/builds/560853 The configuration is quite easy. We need to connect our Coveralls.io profile with GitHub, like we did for Travis-ci.org and then enable the repository. To trigger Coveralls after a successful Travis build, we need to have these lines at the end of our .travis.yml file after_success: - coveralls {.aligncenter .wp-image-836 width=&#34;614&#34; height=&#34;460&#34;} Even Coveralls.io is completly free for opensource projects and offers a paid version for private repositories. Heroku I use Heroku to host and run my web application. Normally to deploy on Heroku you so something like this: git push heroku master Adding these settings to the .travis.yaml file, I can automatically deploy the application on Heroku, if the build was successful: deploy: provider: heroku api_key: secure: R4LFkVu1/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/FeUk0Yl+I= app: workshopvenues on: repo: andreagrandi/workshopvenues run: - &#34;python workshopvenues/manage.py syncdb&#34; - &#34;python workshopvenues/manage.py migrate&#34; Not only the code is deployed, after deployment the South migrations are executed. Conclusion These two tools are saving me lot of time and are ensuring that the code I release for a project I&#39;m working on (WorkshopVenues) is always tested when I push it on my repository." />
+<meta name="keywords" content="">
+
+
+<meta property="og:site_name" content="Andrea Grandi"/>
+<meta property="og:title" content="Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy"/>
+<meta property="og:description" content="Developing a large web application or before deploying some code is very important to verify the quality of the code itself, check if we have introduced any regression or bug and have something that tell us if we are increasing or decreasing the quality of the code. Suppose we are in an organization or a company where the basic rule is: master branch is always ready/stable to be deployed. In a team usually people work on personal branches, then when the code is stable it&#39;s merged with master. How do we check if the code is stable and ready to be merged? First of all we need to cover all our code with proper tests (I won&#39;t go in details about unit testing here, I assume that the reader knows what I&#39;m talking about), then we need to actually run them, possibly in an isolated environment that is similar to the production one, and check if they all pass. If they do, we are quite safe to merge our code with master branch. How can we ensure that all the developers remember to run tests when they push some new code? To make things a bit more real, let&#39;s take the example of a Python/Django product (or even a library) that currently supports Python 2.6, 2.7, 3.3 and Django 1.4.x, 1.5.x, 1.6.x. The whole matrix consists of 9 possible combinations. Do we have to manually run tests on 9 configurations? No, we don&#39;t. Travis-ci.org Travis is a continuous integration tool that, once configured, takes care of these tasks and let us save lot of time (that we can use to actually write code). Travis-ci.org is an online service that works with GitHub (it requires we use GitHub as repository for our code), and once we have connected the two accounts and configured a very simple file in our projects, it&#39;s automatically triggered when we push on our GitHub repository. The configuration consists of adding a file named .travis.yml in the root of our project. A working example is available here https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml (all the env variables I set are not required normally, but that&#39;s where I save the values of my configuration, so they need to be initialized before I can run tests). The service supports most of the languages that are commonly used and even a good number of PAAS, making it very easy to automatically deploy our code. If it should not be enough for your needs, they also expose a public API. I suggest you to give a look at the official documentation that will explain everything in details http://docs.travis-ci.com Once everything is configured, we will have something like this on our console https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128 {.aligncenter .wp-image-832 width=&#34;614&#34; height=&#34;326&#34;} If something goes wrong (if tests don&#39;t pass for example) we receive a notification with all the informations about the failing build, and if we had configured an automatic deployment of course the code would not be deployed in case of a failing build. Travis-ci.org is completly free for opensource projects and has also a paid version for private repositories. Coveralls.io There is a nice tool available for Python called coverage. Basically it runs tests and checks the percentage of the source code that is covered by tests, producing a nice report that shows us the percentage for every single file/module and even the lines of code that have been tested. Thanks to Coveralls.io and the use of Travis, even these tasks are completly automatized and the results are available online like in this example https://coveralls.io/builds/560853 The configuration is quite easy. We need to connect our Coveralls.io profile with GitHub, like we did for Travis-ci.org and then enable the repository. To trigger Coveralls after a successful Travis build, we need to have these lines at the end of our .travis.yml file after_success: - coveralls {.aligncenter .wp-image-836 width=&#34;614&#34; height=&#34;460&#34;} Even Coveralls.io is completly free for opensource projects and offers a paid version for private repositories. Heroku I use Heroku to host and run my web application. Normally to deploy on Heroku you so something like this: git push heroku master Adding these settings to the .travis.yaml file, I can automatically deploy the application on Heroku, if the build was successful: deploy: provider: heroku api_key: secure: R4LFkVu1/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/FeUk0Yl+I= app: workshopvenues on: repo: andreagrandi/workshopvenues run: - &#34;python workshopvenues/manage.py syncdb&#34; - &#34;python workshopvenues/manage.py migrate&#34; Not only the code is deployed, after deployment the South migrations are executed. Conclusion These two tools are saving me lot of time and are ensuring that the code I release for a project I&#39;m working on (WorkshopVenues) is always tested when I push it on my repository."/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2014-03-02 13:44:00+01:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://www.andreagrandi.it/author/admin.html">
+<meta property="article:section" content="Linux, Programmazione, Python"/>
+<meta property="og:image" content="/images/me_pycon_2019_2.jpg">
+
+  <title>Andrea Grandi &ndash; Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</title>
+
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://www.andreagrandi.it/">Andrea Grandi </a></h1>
-                <nav><ul>
-    
-                        <li><a href="https://www.andreagrandi.it/about/">About</a></li>
-    
-                        <li><a href="https://www.andreagrandi.it/curriculum/">Curriculum</a></li>
-    
-                        <li><a href="https://www.andreagrandi.it/pgp-key/">PGP Key</a></li>
-                </ul>
-<form id="search" action="https://www.andreagrandi.it/search.html" onsubmit="return validateForm(this.elements['q'].value);">
-                        <input type="text" class="search-query" placeholder="" name="q" id="tipue_search_input">
-                    </form>
-                </nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/" rel="bookmark"
-           title="Permalink to Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h1>
-    </header>
+<body class="light-theme"
+>
+  <aside>
+    <div>
+      <a href="https://www.andreagrandi.it">
+        <img src="/images/me_pycon_2019_2.jpg" alt="Andrea Grandi" title="Andrea Grandi">
+      </a>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 02 March 2014</span>
-	        <span>| in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a></span>
+      <h1>
+        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
+      </h1>
 
-</footer><!-- /.post-info -->      <p>Developing a large web application or before deploying some code is very
+<p>Software Developer</p>
+      <form class="navbar-search" action="/search.html" role="search">
+        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
+      </form>
+
+      <nav>
+        <ul class="list">
+
+
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/about/#about">
+              About
+            </a>
+          </li>
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/curriculum/#curriculum">
+              Curriculum
+            </a>
+          </li>
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/pgp-key/#pgp-key">
+              PGP Key
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li>
+          <a  class="sc-twitter" href="https://twitter.com/andreagrandi" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        </li>
+        <li>
+          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+        <li>
+          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+            <i class="fab fa-linkedin"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://www.andreagrandi.it">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+
+      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="travis-ci-org-and-coveralls-io-qa-made-easy">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</h1>
+    <p>
+      Posted on Sun 02 March 2014 in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>Developing a large web application or before deploying some code is very
 important to verify the quality of the code itself, check if we have
 introduced any regression or bug and have something that tell us if we
 are increasing or decreasing the quality of the code.</p>
@@ -146,63 +269,72 @@ are executed.</p>
 I release for a project I'm working on
 (<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
 is always tested when I push it on my repository.</p>
-    </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments !</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_identifier = "2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/";
-        var disqus_url = "https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/";
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//andrea-grandi-it.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-    </div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">rss feed</a></li>
 
-                            <li><a href="https://twitter.com/andreagrandi">twitter</a></li>
-                            <li><a href="https://github.com/andreagrandi">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
 
-        <footer id="contentinfo" class="body">
-                <p>
-                    Powered by <a href="http://getpelican.com/">Pelican</a> and Python -
-                    Source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a>
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
-                        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
-                    </a>
-                </p>
-        </footer><!-- /#contentinfo -->
 
-    <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-2140684-3']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'andrea-grandi-it';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+  Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Andrea Grandi ",
+  "url" : "https://www.andreagrandi.it",
+  "image": "/images/me_pycon_2019_2.jpg",
+  "description": ""
+}
+</script>
+
+  <script>
+    $(document).ready(function () {
+      $('#tipue_search_input').tipuesearch();
+    });
+  </script>
+
 </body>
+
 </html>
