@@ -188,19 +188,19 @@ related event around <strong>London</strong>, if anyone is interested.</p>
   <div>
       <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
 broken. First of all you have to fix a problem with a library header:</p>
-<div class="highlight"><pre><span></span><span class="err">sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h</span>
+<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
 </pre></div>
 
 
 <p>then you can install encfs using this remote brew recipe:</p>
-<div class="highlight"><pre><span></span><span class="err">brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb</span>
+<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
 </pre></div>
 
 
 <p>It's also possible that you have to fix fuse4x installation before being
 able to use encfs (I had to do it):</p>
-<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cp</span> <span class="o">-</span><span class="n">rfX</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">fuse4x</span><span class="o">-</span><span class="n">kext</span><span class="o">/</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">2</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Extensions</span><span class="o">/</span><span class="n">fuse4x</span><span class="o">.</span><span class="n">kext</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Extensions</span>
-<span class="n">sudo</span> <span class="n">chmod</span> <span class="o">+</span><span class="n">s</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Extensions</span><span class="o">/</span><span class="n">fuse4x</span><span class="o">.</span><span class="n">kext</span><span class="o">/</span><span class="n">Support</span><span class="o">/</span><span class="n">load_fuse4x</span>
+<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
 </pre></div>
 
 
@@ -230,7 +230,7 @@ this nice guide <a href="http://www.maketecheasier.com/install-encfs-mac/">http:
       <p>Using the same computer with Windows 8 and Ubuntu I noticed that the
 sound was worse in Ubuntu and I discovered why soon: <strong>subwoofer</strong>
 doesn't work out of the box!</p>
-<h3>How to fix it</h3>
+<h2>How to fix it</h2>
 <p>The fix is quite easy to apply (but it was not easy to find the right
 one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
 the end:</p>
@@ -238,11 +238,11 @@ the end:</p>
 </pre></div>
 
 
-<p>then edit <strong>/etc/pulse/daemon.conf</strong>, modify the line
-"enable-lfe-remixing: no" to "<strong>enable-lfe-remixing: yes</strong>", then
+<p>then edit <strong><code>/etc/pulse/daemon.conf</code></strong>, modify the line
+<code>enable-lfe-remixing: no</code> to <strong><code>enable-lfe-remixing: yes</code></strong>, then
 uncomment it (remove the semicolon in front of it). Reboot your PC and
 enjoy the subwoofer!</p>
-<h3>References</h3>
+<h2>References</h2>
 <ul>
 <li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
 <li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>

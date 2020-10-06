@@ -162,19 +162,19 @@
       <p>The <strong>pip</strong> utility distributed with Debian 6.0 has a bug once you
 upgrade it with <strong>pip install -U pip</strong>. You will easily get this error
 when you try to install a new package with it:</p>
-<div class="highlight"><pre><span></span><span class="n">root</span><span class="nd">@worker2</span><span class="p">:</span><span class="o">~</span><span class="c1"># pip install setproctitle</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-<span class="n">File</span> <span class="s2">&quot;/usr/bin/pip&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">8</span><span class="p">,</span> <span class="ow">in</span> 
-<span class="kn">from</span> <span class="nn">pip.baseparser</span> <span class="kn">import</span> <span class="n">parser</span>
-<span class="ne">ImportError</span><span class="p">:</span> <span class="n">cannot</span> <span class="kn">import</span> <span class="nn">name</span> <span class="nn">parser</span>
+<div class="highlight"><pre><span></span>root@worker2:~# pip install setproctitle
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+File <span class="s2">&quot;/usr/bin/pip&quot;</span>, line <span class="m">8</span>, in 
+from pip.baseparser import parser
+ImportError: cannot import name parser
 </pre></div>
 
 
 <p>Luckly there is a very easy workaround:</p>
-<div class="highlight"><pre><span></span><span class="err">easy_install pip</span>
-<span class="err">rm /usr/bin/pip</span>
-<span class="err">ln -sv /usr/local/bin/pip-2.6 /usr/bin/pip</span>
-<span class="err">pip install pip --upgrade</span>
+<div class="highlight"><pre><span></span>easy_install pip
+rm /usr/bin/pip
+ln -sv /usr/local/bin/pip-2.6 /usr/bin/pip
+pip install pip --upgrade
 </pre></div>
 
 
@@ -202,10 +202,9 @@ environment is not what you need in some cases. Thanks to
 create a self contained Python environment with all the specific
 libraries you may need. Using virtualenv is very easy:</p>
 <ul>
-<li>Creating the virtual environment: <strong>virtualenv
-    myenv --no-site-packages</strong></li>
-<li>Entering the virtual environment: <strong>source myenv/bin/activate</strong></li>
-<li>Deactivating the virtual environment: <strong>deactivate</strong></li>
+<li>Creating the virtual environment: <strong><code>virtualenvmyenv --no-site-packages</code></strong></li>
+<li>Entering the virtual environment: <strong><code>source myenv/bin/activate</code></strong></li>
+<li>Deactivating the virtual environment: <strong><code>deactivate</code></strong></li>
 </ul>
 <p>That's it! Once you're inside the virtual environment you will be using
 the Python libraries inside it. I suggest you to install all the Python
@@ -224,8 +223,7 @@ libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip<
     </p>
   </header>
   <div>
-      <p>When last week <a href="http://fridge.ubuntu.com/2013/02/26/ubuntu-developer-summits-now-online-and-every-three-months/">Canonical
-announced</a>
+      <p>When last week <a href="http://fridge.ubuntu.com/2013/02/26/ubuntu-developer-summits-now-online-and-every-three-months/">Canonical announced</a>
 the usual UDS was not going to happen I was a bit shocked and
 disappointed: starting from the next UDS (that is going to happen
 tomorrow!) the event will be <strong>online only</strong> and <strong>every 3 months</strong>.
@@ -313,12 +311,12 @@ but I haven't tried it). This tutorial is based on another tutorial I
 found, but it was not very updated and it had a more complicated way to
 install Bootstrap, so I decided to write a new one basing it on the
 original <a href="http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0">http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0</a></p>
-<h3>Preparing the environment</h3>
+<h2>Preparing the environment</h2>
 <p>I will assume that you're running any Linux distribution (in my case I'm
 using Ubuntu 12.10, but feel free to use your own distribution). Be sure
 to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
 (I'm using Node.js 0.8.20 and npm 1.2.11).</p>
-<h3>Create a project folder and install the required dependencies</h3>
+<h2>Create a project folder and install the required dependencies</h2>
 <div class="highlight"><pre><span></span>mkdir node-bootstrap
 <span class="nb">cd</span> node-bootstrap
 npm install express
@@ -326,7 +324,7 @@ npm install jade
 </pre></div>
 
 
-<h3>Create the basic project structure with Express</h3>
+<h2>Create the basic project structure with Express</h2>
 <div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
 
 create : nodebootstrap
@@ -354,11 +352,11 @@ $ node app
 
 <p>You should already have installed all the needed dependencies, even
 without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
-<h3>Download and install Bootstrap</h3>
+<h2>Download and install Bootstrap</h2>
 <p>Download Twitter Boostrap from the official
 website <a href="http://twitter.github.com/bootstrap/assets/bootstrap.zip">http://twitter.github.com/bootstrap/assets/bootstrap.zip</a> and
 unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
-<h3>Bootstrap integration with Jade template system</h3>
+<h2>Bootstrap integration with Jade template system</h2>
 <p>At this point you need to edit the <strong>views/layout.jade</strong> file and
 include the references to Bootsrap</p>
 <div class="highlight"><pre><span></span><span class="nt">html</span>
@@ -374,7 +372,7 @@ include the references to Bootsrap</p>
 </pre></div>
 
 
-<h3>Test the Bootstrap integration</h3>
+<h2>Test the Bootstrap integration</h2>
 <p>At this point we will modify <strong>views/index.jade</strong> that is the default
 template used to render the index</p>
 <div class="highlight"><pre><span></span><span class="nt">extends</span> layout
