@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - graphic</title><link>https://www.andreagrandi.it/</link><description>Software Developer</description><lastBuildDate>Fri, 27 Apr 2012 20:18:00 +0200</lastBuildDate><item><title>Ubuntu 12.04, Nvidia 8800 GS and Nouveau drivers</title><link>https://www.andreagrandi.it/2012/04/27/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/</link><description>&lt;p&gt;&lt;a href="http://www.andreagrandi.it/wp-content/uploads/2012/04/logo_nvidia_linux.jpg"&gt;&lt;img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/04/logo_nvidia_linux.jpg" title="logo_nvidia_linux"&gt;{.alignleft
-.wp-image-678 width="216"
-height="174"}&lt;/a&gt;&lt;/p&gt;
+<rss version="2.0"><channel><title>Andrea Grandi - graphic</title><link>https://www.andreagrandi.it/</link><description>Software Developer</description><lastBuildDate>Fri, 27 Apr 2012 20:18:00 +0200</lastBuildDate><item><title>Ubuntu 12.04, Nvidia 8800 GS and Nouveau drivers</title><link>https://www.andreagrandi.it/2012/04/27/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/</link><description>&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2012/04/logo_nvidia_linux.jpg"&gt;&lt;img alt="" src="https://www.andreagrandi.it/images/2012/04/logo_nvidia_linux.jpg" title="logo_nvidia_linux"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;After upgrading my desktop PC to &lt;strong&gt;Ubuntu 12.04&lt;/strong&gt; (actually my main
 machine) I started experimenting many &lt;strong&gt;Xorg crashes&lt;/strong&gt; and instability
 issues. I &lt;a href="https://bugs.launchpad.net/ubuntu/+source/nvidia-graphics-drivers/+bug/986445"&gt;reported the
@@ -15,34 +13,35 @@ experiencing the same problems. I then decided to give the
 desktop is very stable and Nouveau drivers are pretty fast: I can watch
 a 1080p video on Youtube in full screen without having any problem. The
 only problem with my machine is that I'm using a VGA Switcher to share
-my monitor wit Xbox (see &lt;a href="http://www.andreagrandi.it/2012/02/26/sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher/"&gt;this old
+my monitor wit Xbox (see &lt;a href="https://www.andreagrandi.it/2012/02/26/sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher/"&gt;this old
 post&lt;/a&gt;),
 so my monitor capabilities cannot be detected automatically and I had to
 do some manually tuning of the Xorg configuration.&lt;/p&gt;
 &lt;p&gt;First of all I had to resolve a very annoying problem: the screen was
 blinking every 10 seconds and this really hurted my eyes. To fix this I
 had to add a kernel parameter: &lt;strong&gt;drm_kms_helper.poll=0&lt;br&gt;
-&lt;/strong&gt;you need to add this string in &lt;strong&gt;/etc/default/grub&lt;/strong&gt; to
-the &lt;strong&gt;GRUB_CMDLINE_LINUX_DEFAULT&lt;/strong&gt; parameter. After this your line
-should look like this one: &lt;strong&gt;GRUB_CMDLINE_LINUX_DEFAULT="quiet splash
-drm_kms_helper.poll=0"&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Don't forget to execute: &lt;strong&gt;sudo update-grub&lt;/strong&gt; from the command line.&lt;/p&gt;
+&lt;/strong&gt;you need to add this string in &lt;strong&gt;&lt;code&gt;/etc/default/grub&lt;/code&gt;&lt;/strong&gt; to
+the &lt;strong&gt;&lt;code&gt;GRUB_CMDLINE_LINUX_DEFAULT&lt;/code&gt;&lt;/strong&gt; parameter. After this your line
+should look like this one: &lt;strong&gt;&lt;code&gt;GRUB_CMDLINE_LINUX_DEFAULT="quiet splash drm_kms_helper.poll=0"&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Don't forget to execute: &lt;strong&gt;&lt;code&gt;sudo update-grub&lt;/code&gt;&lt;/strong&gt; from the command line.&lt;/p&gt;
 &lt;p&gt;Then I had to create a proper &lt;strong&gt;xorg.conf&lt;/strong&gt; setting my resolution
 (1680x1050) manually:&lt;/p&gt;
-&lt;p&gt;[sourcecode lang="text"]&lt;br&gt;
-Section "Monitor"&lt;br&gt;
-Identifier "DVI-I-1"&lt;br&gt;
-VendorName "Asus"&lt;br&gt;
-ModelName "Ancor Communications Inc VW222"&lt;br&gt;
-Modeline "1680x1050R" 119.00 1680 1728 1760 1840 1050 1053 1059 1080
-+hsync -vsync&lt;br&gt;
-Option "PreferredMode" "1680x1050R"&lt;br&gt;
-EndSection&lt;/p&gt;
-&lt;p&gt;Section "Screen"&lt;br&gt;
-Identifier "Screen0"&lt;br&gt;
-Monitor "DVI-I-1"&lt;br&gt;
-EndSection&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Section &lt;span class="s2"&gt;&amp;quot;Monitor&amp;quot;&lt;/span&gt;  
+Identifier &lt;span class="s2"&gt;&amp;quot;DVI-I-1&amp;quot;&lt;/span&gt;  
+VendorName &lt;span class="s2"&gt;&amp;quot;Asus&amp;quot;&lt;/span&gt;  
+ModelName &lt;span class="s2"&gt;&amp;quot;Ancor Communications Inc VW222&amp;quot;&lt;/span&gt;  
+Modeline &lt;span class="s2"&gt;&amp;quot;1680x1050R&amp;quot;&lt;/span&gt; &lt;span class="m"&gt;119&lt;/span&gt;.00 &lt;span class="m"&gt;1680&lt;/span&gt; &lt;span class="m"&gt;1728&lt;/span&gt; &lt;span class="m"&gt;1760&lt;/span&gt; &lt;span class="m"&gt;1840&lt;/span&gt; &lt;span class="m"&gt;1050&lt;/span&gt; &lt;span class="m"&gt;1053&lt;/span&gt; &lt;span class="m"&gt;1059&lt;/span&gt; &lt;span class="m"&gt;1080&lt;/span&gt;
++hsync -vsync  
+Option &lt;span class="s2"&gt;&amp;quot;PreferredMode&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;1680x1050R&amp;quot;&lt;/span&gt;  
+EndSection
+
+Section &lt;span class="s2"&gt;&amp;quot;Screen&amp;quot;&lt;/span&gt;  
+Identifier &lt;span class="s2"&gt;&amp;quot;Screen0&amp;quot;&lt;/span&gt;  
+Monitor &lt;span class="s2"&gt;&amp;quot;DVI-I-1&amp;quot;&lt;/span&gt;  
+EndSection
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;How do you generate the &lt;strong&gt;Modeline&lt;/strong&gt; line? It's very simple. Just
 execute: "&lt;strong&gt;cvt -r 1680 1050&lt;/strong&gt;" in the command line and you'll get a
 line similar to the one I added (of course substitute those numbers with

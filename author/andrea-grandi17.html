@@ -160,9 +160,7 @@
     </p>
   </header>
   <div>
-      <p><a href="http://www.andreagrandi.it/wp-content/uploads/2012/04/logo_nvidia_linux.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/04/logo_nvidia_linux.jpg" title="logo_nvidia_linux">{.alignleft
-.wp-image-678 width="216"
-height="174"}</a></p>
+      <p><a href="https://www.andreagrandi.it/images/2012/04/logo_nvidia_linux.jpg"><img alt="" src="https://www.andreagrandi.it/images/2012/04/logo_nvidia_linux.jpg" title="logo_nvidia_linux"></a></p>
 <p>After upgrading my desktop PC to <strong>Ubuntu 12.04</strong> (actually my main
 machine) I started experimenting many <strong>Xorg crashes</strong> and instability
 issues. I <a href="https://bugs.launchpad.net/ubuntu/+source/nvidia-graphics-drivers/+bug/986445">reported the
@@ -176,34 +174,35 @@ experiencing the same problems. I then decided to give the
 desktop is very stable and Nouveau drivers are pretty fast: I can watch
 a 1080p video on Youtube in full screen without having any problem. The
 only problem with my machine is that I'm using a VGA Switcher to share
-my monitor wit Xbox (see <a href="http://www.andreagrandi.it/2012/02/26/sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher/">this old
+my monitor wit Xbox (see <a href="https://www.andreagrandi.it/2012/02/26/sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher/">this old
 post</a>),
 so my monitor capabilities cannot be detected automatically and I had to
 do some manually tuning of the Xorg configuration.</p>
 <p>First of all I had to resolve a very annoying problem: the screen was
 blinking every 10 seconds and this really hurted my eyes. To fix this I
 had to add a kernel parameter: <strong>drm_kms_helper.poll=0<br>
-</strong>you need to add this string in <strong>/etc/default/grub</strong> to
-the <strong>GRUB_CMDLINE_LINUX_DEFAULT</strong> parameter. After this your line
-should look like this one: <strong>GRUB_CMDLINE_LINUX_DEFAULT="quiet splash
-drm_kms_helper.poll=0"</strong></p>
-<p>Don't forget to execute: <strong>sudo update-grub</strong> from the command line.</p>
+</strong>you need to add this string in <strong><code>/etc/default/grub</code></strong> to
+the <strong><code>GRUB_CMDLINE_LINUX_DEFAULT</code></strong> parameter. After this your line
+should look like this one: <strong><code>GRUB_CMDLINE_LINUX_DEFAULT="quiet splash drm_kms_helper.poll=0"</code></strong></p>
+<p>Don't forget to execute: <strong><code>sudo update-grub</code></strong> from the command line.</p>
 <p>Then I had to create a proper <strong>xorg.conf</strong> setting my resolution
 (1680x1050) manually:</p>
-<p>[sourcecode lang="text"]<br>
-Section "Monitor"<br>
-Identifier "DVI-I-1"<br>
-VendorName "Asus"<br>
-ModelName "Ancor Communications Inc VW222"<br>
-Modeline "1680x1050R" 119.00 1680 1728 1760 1840 1050 1053 1059 1080
-+hsync -vsync<br>
-Option "PreferredMode" "1680x1050R"<br>
-EndSection</p>
-<p>Section "Screen"<br>
-Identifier "Screen0"<br>
-Monitor "DVI-I-1"<br>
-EndSection<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span>Section <span class="s2">&quot;Monitor&quot;</span>  
+Identifier <span class="s2">&quot;DVI-I-1&quot;</span>  
+VendorName <span class="s2">&quot;Asus&quot;</span>  
+ModelName <span class="s2">&quot;Ancor Communications Inc VW222&quot;</span>  
+Modeline <span class="s2">&quot;1680x1050R&quot;</span> <span class="m">119</span>.00 <span class="m">1680</span> <span class="m">1728</span> <span class="m">1760</span> <span class="m">1840</span> <span class="m">1050</span> <span class="m">1053</span> <span class="m">1059</span> <span class="m">1080</span>
++hsync -vsync  
+Option <span class="s2">&quot;PreferredMode&quot;</span> <span class="s2">&quot;1680x1050R&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;Screen&quot;</span>  
+Identifier <span class="s2">&quot;Screen0&quot;</span>  
+Monitor <span class="s2">&quot;DVI-I-1&quot;</span>  
+EndSection
+</pre></div>
+
+
 <p>How do you generate the <strong>Modeline</strong> line? It's very simple. Just
 execute: "<strong>cvt -r 1680 1050</strong>" in the command line and you'll get a
 line similar to the one I added (of course substitute those numbers with
@@ -237,27 +236,30 @@ applications. The problem is that QML components are not available yet
 use Symbian qt-components to develop your application UI. This should
 also make the porting of an existing Symbian Qt application easier.</p>
 <p>We suppose you have already built and installed <strong>QtQNX</strong> under this
-directory: <strong>\~/QtQNX/ARM/</strong> (please change it matching the folder where
+directory: <strong><code>~/QtQNX/ARM/</code></strong> (please change it matching the folder where
 you installed it).<br>
 At this point you have to get qt-components sources using this command:</p>
-<p>[sourcecode lang="text"]<br>
-git clone git://gitorious.org/qt-components/qt-components.git
-qt-components<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span>git clone git://gitorious.org/qt-components/qt-components.git
+qt-components
+</pre></div>
+
+
 <p>Now enter the directory you just checked and compile the components:</p>
-<p>[sourcecode lang="text"]<br>
-cd qt-components<br>
-QTDIR=\~/QtQNX/ARM/<br>
-./configure -symbian<br>
-make<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> qt-components  
+<span class="nv">QTDIR</span><span class="o">=</span><span class="se">\~</span>/QtQNX/ARM/  
+./configure -symbian  
+make
+</pre></div>
+
+
 <p>Whend you complete all the previous operations, you'll have two
 directories inside <strong>qt-components/imports</strong>, please copy them inside
 the QtQNX installation directory:</p>
-<p>[sourcecode lang="text"]<br>
-cp -R imports/Qt \~/QtQNX/ARM/imports/<br>
-cp -R imports/com \~/QtQNX/ARM/imports/<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span>cp -R imports/Qt <span class="se">\~</span>/QtQNX/ARM/imports/  
+cp -R imports/com <span class="se">\~</span>/QtQNX/ARM/imports/
+</pre></div>
+
+
 <p>That's all for now. In the next posts I'll show you how to use these
 components, providing a small code example. In the mean time you can
 find more informations
@@ -289,9 +291,7 @@ here: <a href="https://wiki.ubuntu.com/Unity/QA/Autopilot">https://wiki.ubuntu.
 like to ask people to register to Launchpad and sign the Code of Conduct
 <strong>before</strong> attending the global jam. We wasted a lot of time with this
 task.</p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2012/03/UGJ-Pistoia-2012.jpg"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/03/UGJ-Pistoia-2012.jpg" title="UGJ-Pistoia-2012">{.aligncenter
-.wp-image-639 width="403"
-height="302"}</a></p>
+<p><a href="https://www.andreagrandi.it/images/2012/03/UGJ-Pistoia-2012.jpg"><img alt="" src="https://www.andreagrandi.it/images/2012/03/UGJ-Pistoia-2012.jpg" title="UGJ-Pistoia-2012"></a></p>
 <p>At the end of the day me and the other people from Pistoia, took the
 other people for a quick tour around the city where we had the
 possibility to eat some tasty food. It was a very amazing day and people
@@ -329,70 +329,76 @@ card impossible to detect the correct resolution.</p>
 it to a file, so during the next boot even if Ubuntu won't be able to
 detect the proper resolution for your monitor, it will simply apply the
 configuration found in <strong>xorg.conf</strong></p>
-<p><a href="http://www.andreagrandi.it/wp-content/uploads/2012/02/nvidia-settings.png"><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2012/02/nvidia-settings.png" title="nvidia-settings">{.aligncenter
-.wp-image-633 width="439"
-height="409"}</a></p>
+<p><a href="https://www.andreagrandi.it/images/2012/02/nvidia-settings.png"><img alt="" src="https://www.andreagrandi.it/images/2012/02/nvidia-settings.png" title="nvidia-settings"></a></p>
 <p>Please remember to also set the refresh rate of the monitor (I was
 having a very bad resolution until I didn't choose 60 Hz in the settings
 window). If you don't have a Nvidia graphic card (and the proper tool)
 to generate a xorg.conf file or if you just want to give a look at my
 configuration here you have a copy:</p>
-<p>[sourcecode lang="text"]<br>
-# nvidia-settings: X configuration file generated by nvidia-settings<br>
-# nvidia-settings: version 280.13 (buildd@rothera) Thu Aug 11 17:28:49
-UTC 2011</p>
-<p>Section "ServerLayout"<br>
-Identifier "Layout0"<br>
-Screen 0 "Screen0" 0 0<br>
-InputDevice "Keyboard0" "CoreKeyboard"<br>
-InputDevice "Mouse0" "CorePointer"<br>
-Option "Xinerama" "0"<br>
-EndSection</p>
-<p>Section "Files"<br>
-EndSection</p>
-<p>Section "InputDevice"<br>
-# generated from default<br>
-Identifier "Mouse0"<br>
-Driver "mouse"<br>
-Option "Protocol" "auto"<br>
-Option "Device" "/dev/psaux"<br>
-Option "Emulate3Buttons" "no"<br>
-Option "ZAxisMapping" "4 5"<br>
-EndSection</p>
-<p>Section "InputDevice"<br>
-# generated from default<br>
-Identifier "Keyboard0"<br>
-Driver "kbd"<br>
-EndSection</p>
-<p>Section "Monitor"<br>
-# HorizSync source: edid, VertRefresh source: edid<br>
-Identifier "Monitor0"<br>
-VendorName "Unknown"<br>
-ModelName "Ancor Communications Inc VW222"<br>
-HorizSync 31.0 - 81.0<br>
-VertRefresh 56.0 - 75.0<br>
-Option "DPMS"<br>
-EndSection</p>
-<p>Section "Device"<br>
-Identifier "Device0"<br>
-Driver "nvidia"<br>
-VendorName "NVIDIA Corporation"<br>
-BoardName "GeForce 8800 GS"<br>
-EndSection</p>
-<p>Section "Screen"<br>
-Identifier "Screen0"<br>
-Device "Device0"<br>
-Monitor "Monitor0"<br>
-DefaultDepth 24<br>
-Option "TwinView" "0"<br>
-Option "TwinViewXineramaInfoOrder" "CRT-0"<br>
-Option "metamodes" "1680x1050_60 +0+0; nvidia-auto-select +0+0"<br>
-SubSection "Display"<br>
-Depth 24<br>
-EndSubSection<br>
-EndSection<br>
-[/sourcecode]</p>
-<p>Remember to save the file in <strong>/etc/X11/xorg.conf</strong> and on next boot you
+<div class="highlight"><pre><span></span><span class="c1"># nvidia-settings: X configuration file generated by nvidia-settings  </span>
+<span class="c1"># nvidia-settings: version 280.13 (buildd@rothera) Thu Aug 11 17:28:49</span>
+UTC <span class="m">2011</span>
+
+Section <span class="s2">&quot;ServerLayout&quot;</span>  
+Identifier <span class="s2">&quot;Layout0&quot;</span>  
+Screen <span class="m">0</span> <span class="s2">&quot;Screen0&quot;</span> <span class="m">0</span> <span class="m">0</span>  
+InputDevice <span class="s2">&quot;Keyboard0&quot;</span> <span class="s2">&quot;CoreKeyboard&quot;</span>  
+InputDevice <span class="s2">&quot;Mouse0&quot;</span> <span class="s2">&quot;CorePointer&quot;</span>  
+Option <span class="s2">&quot;Xinerama&quot;</span> <span class="s2">&quot;0&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;Files&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;InputDevice&quot;</span>  
+<span class="c1"># generated from default  </span>
+Identifier <span class="s2">&quot;Mouse0&quot;</span>  
+Driver <span class="s2">&quot;mouse&quot;</span>  
+Option <span class="s2">&quot;Protocol&quot;</span> <span class="s2">&quot;auto&quot;</span>  
+Option <span class="s2">&quot;Device&quot;</span> <span class="s2">&quot;/dev/psaux&quot;</span>  
+Option <span class="s2">&quot;Emulate3Buttons&quot;</span> <span class="s2">&quot;no&quot;</span>  
+Option <span class="s2">&quot;ZAxisMapping&quot;</span> <span class="s2">&quot;4 5&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;InputDevice&quot;</span>  
+<span class="c1"># generated from default  </span>
+Identifier <span class="s2">&quot;Keyboard0&quot;</span>  
+Driver <span class="s2">&quot;kbd&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;Monitor&quot;</span>  
+<span class="c1"># HorizSync source: edid, VertRefresh source: edid  </span>
+Identifier <span class="s2">&quot;Monitor0&quot;</span>  
+VendorName <span class="s2">&quot;Unknown&quot;</span>  
+ModelName <span class="s2">&quot;Ancor Communications Inc VW222&quot;</span>  
+HorizSync <span class="m">31</span>.0 - <span class="m">81</span>.0  
+VertRefresh <span class="m">56</span>.0 - <span class="m">75</span>.0  
+Option <span class="s2">&quot;DPMS&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;Device&quot;</span>  
+Identifier <span class="s2">&quot;Device0&quot;</span>  
+Driver <span class="s2">&quot;nvidia&quot;</span>  
+VendorName <span class="s2">&quot;NVIDIA Corporation&quot;</span>  
+BoardName <span class="s2">&quot;GeForce 8800 GS&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;Screen&quot;</span>  
+Identifier <span class="s2">&quot;Screen0&quot;</span>  
+Device <span class="s2">&quot;Device0&quot;</span>  
+Monitor <span class="s2">&quot;Monitor0&quot;</span>  
+DefaultDepth <span class="m">24</span>  
+Option <span class="s2">&quot;TwinView&quot;</span> <span class="s2">&quot;0&quot;</span>  
+Option <span class="s2">&quot;TwinViewXineramaInfoOrder&quot;</span> <span class="s2">&quot;CRT-0&quot;</span>  
+Option <span class="s2">&quot;metamodes&quot;</span> <span class="s2">&quot;1680x1050\_60 +0+0; nvidia-auto-select +0+0&quot;</span>  
+SubSection <span class="s2">&quot;Display&quot;</span>  
+Depth <span class="m">24</span>  
+EndSubSection  
+EndSection
+</pre></div>
+
+
+<p>Remember to save the file in <strong><code>/etc/X11/xorg.conf</code></strong> and on next boot you
 will have the right resolution even with your VGA Switcher in use.</p>
   </div>
 </article>
