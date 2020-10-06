@@ -234,117 +234,151 @@ other examples.</p>
 </article>
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#reversing-a-list-in-python">Reversing a List in Python</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/#using-python-pypy-in-a-virtual-environment">Using Python PyPy in a virtual environment</a></h2>
     <p>
-      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+      Posted on Fri 18 December 2015 in <a href="https://www.andreagrandi.it/category/howto-python.html">HowTo, Python</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/lists.html">lists</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a>
+              <a href="https://www.andreagrandi.it/tag/pypy.html">pypy</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
     </p>
   </header>
   <div>
-      <p>Sometimes we need to reverse the order of the elements in a Python list.
-While there can be many different ways of implementing this task, I
-found three in particular that I appreciate for different reasons. Let's
-define first a list of integers that we will reverse later.</p>
-<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+      <p>Sometimes we need to test if our code also works with
+<strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
+have already installed it in your system, first find out where it is
+installed:</p>
+<div class="highlight"><pre><span></span>which pypy
+/usr/local/bin/pypy
 </pre></div>
 
 
-<h3>List slicing</h3>
-<p>This method can be a bit obscure at first read, but basically it slices
-the whole list proceding in the reverse order:</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<p>then you need <strong>mkvirtualenv</strong> to create a virtual environment that will
+use this runtime:</p>
+<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/pypy pypy-test
+Running virtualenv with interpreter /usr/local/bin/pypy
+New pypy executable in pypy-test/bin/pypy
+Installing setuptools, pip, wheel...done.
+<span class="o">(</span>pypy-test<span class="o">)</span>➜  ~  python
+Python <span class="m">2</span>.7.10 <span class="o">(</span>f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559, Sep <span class="m">01</span> <span class="m">2015</span>, <span class="m">06</span>:26:30<span class="o">)</span>
+<span class="o">[</span>PyPy <span class="m">2</span>.6.1 with GCC <span class="m">4</span>.2.1 Compatible Apple LLVM <span class="m">6</span>.1.0 <span class="o">(</span>clang-602.0.53<span class="o">)]</span> on darwin
+Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.
+&gt;&gt;&gt;&gt;
 </pre></div>
 
 
-<h3>Reversed method</h3>
-<p>We use the
-<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
-that returns an iterable object and a list comprehension to generate the
-new list</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-
-<h3>Swapping values in place</h3>
-<p>This last method is more verbose and it basically divides the list in
-two parts and swaps the first with sixth, the second with fifth, etc...</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
-    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="nb">print</span> <span class="n">l</span>
-
-<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
+<p>That's it! You can now use this virtual environment to run your Python
+application using PyPy environment.</p>
   </div>
   <hr />
 </article>
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#how-to-write-a-custom-django-middleware">How to write a custom Django Middleware</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/12/10/getting-started-with-bbc-microbit-and-python/#getting-started-with-bbc-microbit-and-python">Getting started with BBC MicroBit and Python</a></h2>
     <p>
-      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+      Posted on Thu 10 December 2015 in <a href="https://www.andreagrandi.it/category/howto-microbit-python.html">HowTo, Microbit, Python</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+              <a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a>,              <a href="https://www.andreagrandi.it/tag/psf.html">psf</a>
     </p>
   </header>
   <div>
-      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h2>Important things to know</h2>
-<p>There are four important things to know about middlewares:</p>
-<ul>
-<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
-<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-important: middlewares are processed from top to bottom during a
-request and from bottom to top during a response.</li>
-<li>You don't need to implement all the available methods of a
-middleware. For example you can just implement <code>process_request</code>
-and <code>process_template_response</code></li>
-<li>If you implement <code>process_request</code> and you decide to return an
-<code>HttpResponse</code>, all the other middlewares, views etc... will be
-ignored and only your response will be returned</li>
-</ul>
-<h2>Writing a middleware</h2>
-<p>In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-
-<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span>
+      <p>A few days ago I had the great opportunity to attend an event organised
+in collaboration with <strong><a href="https://www.python.org/">Python Software
+Foundation</a></strong>, a few <strong>primary school
+teachers</strong> and hosted by <strong><a href="http://www.computingatschool.org.uk/">Computing at
+School</a></strong>, in <strong>London</strong>. The
+meeting was organised by <strong>Yvonne Walker</strong> (from CAS) and <strong>Nicholas
+Tollervey</strong> (PSF). The aim of the meeting was for teachers and
+developers to meet and discuss the opportunities offered
+by <strong><a href="https://micropython.org/">MicroPython</a></strong> on the <strong><a href="https://www.microbit.co.uk/">BBC
+micro:bit</a></strong>. During the event a
+<strong>BBC</strong> <strong>micro:bit</strong> board was loaned to each person for the purpose of
+developing Python scripts, MicroPython itself or educational resources
+for the <strong>BBC micro:bit</strong>. Nicholas made it very clear that there is an
+<strong>NDA</strong> in place until the device is delivered to the kids and explained
+what we could or couldn't do.</p>
+<p><a href="https://www.andreagrandi.it/images/2015/12/computing_at_school_microbit_reduced.jpg"><img alt="" src="https://www.andreagrandi.it/images/2015/12/computing_at_school_microbit_reduced.jpg" width="100%"></a></p>
+<h2>The Board</h2>
+<p><a href="https://www.andreagrandi.it/images/2015/12/bbcfullbleed.jpg"><img alt="" src="https://www.andreagrandi.it/images/2015/12/bbcfullbleed.jpg" width="100%"></a></p>
+<p>The board is a 4 x 5 cm device with an <strong>ARM Cortex-M0</strong> processor,
+<strong>accelerometer</strong> and magnetometer sensors, <strong>Bluetooth</strong> and <strong>USB
+connectivity</strong>, a <strong>display</strong> consisting of 25 LEDs, <strong>two programmable
+buttons</strong>, and can be powered by either USB or an external battery pack
+(source: <a href="https://en.wikipedia.org/wiki/Micro_Bit">https://en.wikipedia.org/wiki/Micro_Bit</a> ).</p>
+<h2>Flashing the firmware</h2>
+<p>Once you get a new board, it probably doesn't have a proper firmware and
+application flashed. I suggest you to download the <strong>Python MicroBit
+REPL</strong> from this repository: <a href="https://github.com/ntoll/microrepl">https://github.com/ntoll/microrepl</a><br>
+All you need to do is to connect the board to your computer, using a
+<strong>micro-USB cable</strong>. The device will be mounted as a volume. At this
+point, drag &amp; drop the file called
+<strong><a href="https://github.com/ntoll/microrepl/blob/master/firmware.hex">firmware.hex</a></strong>
+into the mounted volume. The firmware will be flashed and during the
+operation you will see a yellow led flashing.</p>
+<h2>Using MicroPython micro:bit REPL</h2>
+<p>To start writing some Python code on micro:bit you first need to clone
+this <a href="https://github.com/ntoll/microrepl">repository</a></p>
+<div class="highlight"><pre><span></span>git clone git@github.com:ntoll/microrepl.git
 </pre></div>
 
 
-<p>Please don't care about how I calculated the time. I'm aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.</p>
-<p>If you want to see a <strong>complete example</strong> of a project that includes and
-uses this middleware, here you can find the complete source
-code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<p>once you have cloned the repository, you need to install the Python
+dependencies (I suggest you to do it from inside a <strong>virtualenv</strong>)</p>
+<div class="highlight"><pre><span></span>pip install -r requirements.txt
+</pre></div>
+
+
+<p>start the MicroPython REPL</p>
+<div class="highlight"><pre><span></span>python microrepl.py
+</pre></div>
+
+
+<p>and the Python shell will open, so you can start writing commands, like
+this one</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>microbit<span class="o">)</span>➜  microrepl git:<span class="o">(</span>master<span class="o">)</span> python microrepl.py
+Quit: Ctrl+<span class="o">]</span> <span class="p">|</span> Stop program: Ctrl+C <span class="p">|</span> Reset: Ctrl+D
+Type <span class="s1">&#39;help()&#39;</span> <span class="o">(</span>without the quotes<span class="o">)</span> <span class="k">then</span> press ENTER.
+
+&gt;&gt;&gt; import this
+The Zen of MicroPython, by Nicholas H.Tollervey
+
+Code,
+Hack it,
+Less is more,
+Keep it simple,
+Small is beautiful,
+
+Be brave! Break things! Learn and have fun!
+Express yourself with MicroPython.
+
+Happy hacking! :-<span class="o">)</span>
+&gt;&gt;&gt;
+</pre></div>
+
+
+<h2>BBC micro:bit MicroPython Editor</h2>
+<p>Typing all the Python commands directly into the shell can be a bit
+difficult. You can use a very nice and dedicated editor to write code
+and produce the compiled application for the micro:bit. All you need to
+do is clone this <a href="https://github.com/ntoll/upyed">repository</a></p>
+<div class="highlight"><pre><span></span>git clone git@github.com:ntoll/upyed.git
+</pre></div>
+
+
+<p>Open the file named <strong>editor.html</strong> with your browser and start writing
+your code. When your code is done, you can generate the <strong>.hex</strong> file
+clicking on <strong>Download</strong> button. To load the compiled application you
+just need to drag &amp; drop the .hex file to the mounted device, exactly
+like you did the first time to flash it. If you need a reference for all
+the methods and libraries available, you can consult the official
+documentation
+here <a href="http://microbit-micropython.readthedocs.org/en/latest/index.html">http://microbit-micropython.readthedocs.org/en/latest/index.html</a></p>
 <h2>References</h2>
 <ul>
-<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
-<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
-<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+<li><a href="https://github.com/ntoll/microrepl">https://github.com/ntoll/microrepl</a></li>
+<li><a href="https://github.com/ntoll/upyed">https://github.com/ntoll/upyed</a></li>
+<li><a href="https://www.microbit.co.uk/">https://www.microbit.co.uk/</a></li>
+<li><a href="http://microbit-micropython.readthedocs.org/en/latest/index.html">http://microbit-micropython.readthedocs.org/en/latest/index.html</a></li>
 </ul>
   </div>
 </article>

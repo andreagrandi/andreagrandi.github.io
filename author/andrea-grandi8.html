@@ -151,312 +151,303 @@
 
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/#getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/#understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation">Understanding Python decorators optimizing a recursive Fibonacci implementation</a></h2>
     <p>
-      Posted on Sun 31 August 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+      Posted on Mon 31 August 2015 in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/dns.html">dns</a>,              <a href="https://www.andreagrandi.it/tag/postfix.html">postfix</a>,              <a href="https://www.andreagrandi.it/tag/vps.html">vps</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/digitalocean.html">digitalocean</a>,              <a href="https://www.andreagrandi.it/tag/email.html">email</a>
+              <a href="https://www.andreagrandi.it/tag/decorators.html">decorators</a>,              <a href="https://www.andreagrandi.it/tag/fibonacci.html">fibonacci</a>,              <a href="https://www.andreagrandi.it/tag/memoization.html">memoization</a>,              <a href="https://www.andreagrandi.it/tag/memoize.html">memoize</a>,              <a href="https://www.andreagrandi.it/tag/optimization.html">optimization</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
     </p>
   </header>
   <div>
-      <p>I have recently migrated my website from a shared hosting to a dedicated
-VPS on Digital Ocean. Having a VPS surely gives you unlimited
-possibilities, compared to a shared hosting, but of course you have to
-manage some services by yourself.</p>
-<p>In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL
-+ PHP) to serve my WordPress blog and Postfix to use email forwarding
-from my aliases to my personal email.</p>
-<h3>Configuring DNS on Digital Ocean</h3>
-<p>Understanding how to properly configure the DNS entries in the panel
-could be a bit tricky if it's not your daily bread. In particular there
-is a Digital Ocean configuration that assumes certain things about your
-droplet, so it's better to configure it properly.</p>
-<p>For example the droplet name should not be casual, but it should match
-your domain name: I initially called my host "andreagrandi" and I had to
-rename it to "andreagrandi.it" to have the proper PTR values.</p>
-<p>You will need to create at least a "mail" record, pointing to your IP
-and an "MX" record pointing to mail.yourdomain.com. (please note the dot
-at the end of the domain name). Here is the configuration of my own
-droplet (you will notice also a CNAME record. You need it if you want
-www.yourdomain.com to correctly point to your ip.</p>
-<p><a href="https://www.andreagrandi.it/images/2014/08/dns_config_digitalocean.jpg"><img alt="dns_config_digitalocean" src="https://www.andreagrandi.it/images/2014/08/dns_config_digitalocean.jpg" width="100%"></a></p>
-<h3>Configuring Postfix</h3>
-<p>In my case I only needed some aliases that I use to forward emails to my
-GMail account, so the configuration is quite easy. First you need to
-install Postfix:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install postfix
+      <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
+an argument and returns a function as a <em>value</em>. Here is an example of
+decorator definition:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="c1"># make a new function</span>
+    <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
+        <span class="c1"># some code</span>
+
+    <span class="k">return</span> <span class="n">new_function</span>
 </pre></div>
 
 
-<p>Then you need to edit<strong> /etc/postfix/main.cf</strong> customizing myhostname
-with your domain name and add <strong>virtual_alias_maps</strong> and
-<strong>virtual_alias_domains</strong> parameters. Please also check that
-<strong>mynetworks</strong> is configured exactly as I did, or you will make your
-mail server vulnerable to spam bots. You can see my complete
-configuration here:</p>
-<p>
-<script src="https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js"></script>
-</p>
-
-<h3>Add your email aliases</h3>
-<p>Edit <strong>/etc/postfix/virtual</strong> file and add your aliases, one per line,
-like in this example:</p>
-<div class="highlight"><pre><span></span>info@yourdomain.com youremail@gmail.com
-sales@yourdomain.com youremail@gmail.com
+<p>To apply a decorator to an existing function, you just need to put
+<strong>@*decorator_name</strong>* in the line before its definition, like this
+example:</p>
+<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
 </pre></div>
 
 
-<p>At this point update the alias map and reload Postfix configuration:</p>
-<div class="highlight"><pre><span></span>sudo postmap /etc/postfix/virtual
-sudo /etc/init.d/postfix reload
+<p>This decorator doesn't do anything, so let's think about a more concrete
+problem we could solve using decorators.</p>
+<h2>Fibonacci sequence</h2>
+<p>By definition, the first two numbers in the
+<strong><a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci</a></strong> sequence
+are either 1 and 1 or 0 and 1. All the other numbers are the sum of the
+previous two numbers of the sequence. Example:</p>
+<ol>
+<li>0, 1: the third number is 1</li>
+<li>0, 1, 1: the fourth number is 2</li>
+<li>0, 1, 1, 2: the fifth number is 3</li>
+<li>0, 1, 1, 2, 3: the sixth number is 5</li>
+<li>etc...</li>
+</ol>
+<p>If we wanted to give a <strong>math definition</strong> of the sequence, we could
+describe it in this way:</p>
+<ul>
+<li><strong>F(0): 0</strong></li>
+<li><strong>F(1): 1</strong></li>
+<li><strong>F(n): F(n-1) + F(n-2)</strong></li>
+</ul>
+<p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
+one:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
 
-<h3>Conclusion</h3>
-<p>As you can see, configuring Postfix is quite easy, you just need to be
-careful when you configure the DNS records in the control panel. Are you
-curious to try how Digital Ocean VPS works? Fancy <strong>10\$ credit</strong>
-(enough for 2 months if you choose the basic droplet) for <strong>free</strong>? Use
-this link and enjoy it
-<a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
+<p>What's the problem with this implementation? The code works as expected,
+but it's very <strong>inefficient</strong>. The next picture will explain what
+happens when we will try, for example, to calculate the 5th number of
+the sequence:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/fibo.png"><img alt="fibo" src="https://www.andreagrandi.it/images/2015/08/fibo.png" width="60%"></a></p>
+<p>Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and...
+the picture just tell us that we have calculated Fib(3) 2 times, Fib(2)
+3 times, Fib(1) 5 times! Why are we repeating the same operation every
+time if we already calculated the result?</p>
+<h2>Memoization</h2>
+<blockquote>
+<p>In computing, <strong>memoization</strong> is an optimization technique used
+primarily to speed up computer programs by storing the results of
+expensive function calls and returning the cached result when the same
+inputs occur again.</p>
+</blockquote>
+<p>We need to store values of the sequence we have already calculated and
+get them later when we need them. Let's implement a simple memoization
+decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">return</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">decorated_function</span>
+</pre></div>
+
+
+<p>The decorator defines a dict at the beginning that is used as a cache.
+When we want to find the n number of the sequence, it first checks if
+the value was already calculated and that value is returned instead of
+being calculated again. If the value is not found, then the original
+function is being called and then the value is store in the cache, then
+returned to the caller.</p>
+<h2>Using the memoize decorator</h2>
+<p>How much this decorator can speed up our fib method? Let's try to
+benchmark the execution using Python
+<strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
+<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The required time to calculate the 35th number of the Fibonacci sequence
+on my laptop is: <strong>4.73480010033</strong></p>
+<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
+                            <span class="c1"># in a module named memoize.py</span>
+
+<span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The required time to calculate the 35th number of the Fibonacci sequence
+on my laptop is: <strong>0.000133037567139</strong></p>
+<p>Quite faster, don't you think? I will let you try how long does it take
+to calculate the 60th number of the sequence with and without using the
+decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
   </div>
   <hr />
 </article>
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/#how-to-make-subwoofer-work-in-ubuntu">How to make subwoofer work in Ubuntu</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/#django-notes-read-values-from-settings-in-a-safe-way">Django Notes: read values from settings in a safe way</a></h2>
     <p>
-      Posted on Sat 22 June 2013 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+      Posted on Sat 29 August 2015 in <a href="https://www.andreagrandi.it/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/sound.html">sound</a>,              <a href="https://www.andreagrandi.it/tag/subwoofer.html">subwoofer</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/getattr.html">getattr</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/settings.html">settings</a>
     </p>
   </header>
   <div>
-      <p>Using the same computer with Windows 8 and Ubuntu I noticed that the
-sound was worse in Ubuntu and I discovered why soon: <strong>subwoofer</strong>
-doesn't work out of the box!</p>
-<h3>How to fix it</h3>
-<p>The fix is quite easy to apply (but it was not easy to find the right
-one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
-the end:</p>
-<div class="highlight"><pre><span></span>load-module module-combine <span class="nv">channels</span><span class="o">=</span><span class="m">6</span> <span class="nv">channel_map</span><span class="o">=</span>front-left,front-right,rear-left,rear-right,front-center,lfe
+      <p>Working on <strong>Django</strong> projects I find very often that many developers
+access the values that are defined in <strong>settings</strong> in this way</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">my_value</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MY_SETTING</span>
 </pre></div>
 
 
-<p>then edit <strong>/etc/pulse/daemon.conf</strong>, modify the line
-"enable-lfe-remixing: no" to "<strong>enable-lfe-remixing: yes</strong>", then
-uncomment it (remove the semicolon in front of it). Reboot your PC and
-enjoy the subwoofer!</p>
-<h3>References</h3>
+<p>What happens if <code>MY_SETTING</code> has not been defined in <strong>settings.py</strong>?
+The code will raise an error and crash, of course. How can we make the
+code more reliable? We could <em>try/except</em> the code block that tries to
+read the value and maybe set a value if we get an exception, but this
+would not be a clean way to do this job.</p>
+<p>A cleaner way to do it is to use <strong>getattr</strong> in this way:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
+if the value doesn't exist <code>my_value</code> will be assigned with
+<code>'my-default-value'</code></p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/#how-to-write-a-custom-django-middleware">How to write a custom Django Middleware</a></h2>
+    <p>
+      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
 <ul>
-<li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
-<li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+important: middlewares are processed from top to bottom during a
+request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+middleware. For example you can just implement <code>process_request</code>
+and <code>process_template_response</code></li>
+<li>If you implement <code>process_request</code> and you decide to return an
+<code>HttpResponse</code>, all the other middlewares, views etc... will be
+ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+
+
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
 </ul>
   </div>
   <hr />
 </article>
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/#using-twitter-bootstrap-with-node-js-express-and-jade">Using Twitter Bootstrap with Node.js, Express and Jade</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/#why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same">Why I completely switched this website to HTTPS (and why you should do the same)</a></h2>
     <p>
-      Posted on Sun 24 February 2013 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+      Posted on Sat 22 August 2015 in <a href="https://www.andreagrandi.it/category/sicurezza.html">Sicurezza</a>
 
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/bootstrap.html">Bootstrap</a>,              <a href="https://www.andreagrandi.it/tag/css.html">css</a>,              <a href="https://www.andreagrandi.it/tag/express.html">Express</a>,              <a href="https://www.andreagrandi.it/tag/jade.html">Jade</a>,              <a href="https://www.andreagrandi.it/tag/javascript.html">Javascript</a>,              <a href="https://www.andreagrandi.it/tag/nodejs.html">NodeJs</a>,              <a href="https://www.andreagrandi.it/tag/npm.html">npm</a>,              <a href="https://www.andreagrandi.it/tag/twitter.html">twitter</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
+
     </p>
   </header>
   <div>
-      <p>I've decided to write this post as a note to myself. I'm still learning
-Node.js and digging into Express/Jade, but I've read many people using
-the nice <a href="http://twitter.github.com/bootstrap/"><strong>Twitter Bootstrap</strong></a>
-and I was wondering if there was a way to integrate all these
-technologies. The short answer is: yes, we can!</p>
-<p><strong>Note:</strong> once again, I'm not a Node.js expert and surely there are
-other ways to achieve this task (for example there is a Node.js module
-called
-<a href="https://npmjs.org/package/twitter-bootstrap"><strong>twitter-bootstrap</strong></a>,
-but I haven't tried it). This tutorial is based on another tutorial I
-found, but it was not very updated and it had a more complicated way to
-install Bootstrap, so I decided to write a new one basing it on the
-original <a href="http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0">http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0</a></p>
-<h3>Preparing the environment</h3>
-<p>I will assume that you're running any Linux distribution (in my case I'm
-using Ubuntu 12.10, but feel free to use your own distribution). Be sure
-to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
-(I'm using Node.js 0.8.20 and npm 1.2.11).</p>
-<h3>Create a project folder and install the required dependencies</h3>
-<div class="highlight"><pre><span></span>mkdir node-bootstrap
-<span class="nb">cd</span> node-bootstrap
-npm install express
-npm install jade
-</pre></div>
-
-
-<h3>Create the basic project structure with Express</h3>
-<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
-
-create : nodebootstrap
-create : nodebootstrap/package.json
-create : nodebootstrap/app.js
-create : nodebootstrap/public
-create : nodebootstrap/public/javascripts
-create : nodebootstrap/public/images
-create : nodebootstrap/public/stylesheets
-create : nodebootstrap/public/stylesheets/style.css
-create : nodebootstrap/routes
-create : nodebootstrap/routes/index.js
-create : nodebootstrap/routes/user.js
-create : nodebootstrap/views
-create : nodebootstrap/views/layout.jade
-create : nodebootstrap/views/index.jade
-
-install dependencies:
-$ <span class="nb">cd</span> nodebootstrap <span class="o">&amp;&amp;</span> npm install
-
-run the app:
-$ node app
-</pre></div>
-
-
-<p>You should already have installed all the needed dependencies, even
-without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
-<h3>Download and install Bootstrap</h3>
-<p>Download Twitter Boostrap from the official
-website <a href="http://twitter.github.com/bootstrap/assets/bootstrap.zip">http://twitter.github.com/bootstrap/assets/bootstrap.zip</a> and
-unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
-<h3>Bootstrap integration with Jade template system</h3>
-<p>At this point you need to edit the <strong>views/layout.jade</strong> file and
-include the references to Bootsrap</p>
-<div class="highlight"><pre><span></span><span class="nt">html</span>
-  <span class="nt">head</span>
-    <span class="nt">title</span><span class="p">=</span> <span class="n">title</span>
-    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap.min.css&#39;</span>)
-    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap-responsive.min.css&#39;</span>)
-    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/stylesheets/style.css&#39;</span>)
-    <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js&#39;</span>)
-    <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;/bootstrap/js/bootstrap.min.js&#39;</span>)
-  <span class="nt">body</span>
-    <span class="nt">block</span> content
-</pre></div>
-
-
-<h3>Test the Bootstrap integration</h3>
-<p>At this point we will modify <strong>views/index.jade</strong> that is the default
-template used to render the index</p>
-<div class="highlight"><pre><span></span><span class="nt">extends</span> layout
-
-    <span class="nt">block</span> content
-      <span class="nt">div</span><span class="nc">.top</span>
-        <span class="nt">form</span><span class="nc">.form-horizontal</span>(<span class="na">method=</span><span class="s">&quot;post&quot;</span><span class="err">,</span> <span class="na">id=</span><span class="s">&quot;loginForm&quot;</span>)
-          <span class="nt">label</span> Username
-          <span class="nt">input</span><span class="nc">.span3</span>(<span class="na">id=</span><span class="s">&quot;username&quot;</span><span class="err">,</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span><span class="err">,</span> <span class="na">name=</span><span class="s">&quot;User&quot;</span><span class="err">,</span> <span class="na">placeholder=</span><span class="s">&quot;Enter your username&quot;</span>)
-          <span class="nt">label</span> Password
-          <span class="nt">input</span><span class="nc">.span3</span>(<span class="na">id=</span><span class="s">&quot;password&quot;</span><span class="err">,</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span><span class="err">,</span> <span class="na">name=</span><span class="s">&quot;Password&quot;</span>)
-          <span class="nt">input</span><span class="nc">.btn</span>(<span class="na">type=</span><span class="s">&quot;submit&quot;</span><span class="err">,</span> <span class="na">value=</span><span class="s">&quot;Log In&quot;</span>)
-      <span class="nt">div</span><span class="nc">.container</span>
-        <span class="nt">div</span><span class="nc">.content</span>
-          <span class="nt">table</span><span class="nc">.table.table-striped</span>
-            <span class="nt">thead</span>
-              <span class="nt">tr</span>
-                <span class="nt">th</span> Table
-                <span class="nt">th</span> Heading
-            <span class="nt">tbody</span>
-              <span class="nt">tr</span>
-                <span class="nt">td</span> Blah
-                <span class="nt">td</span> Test
-              <span class="nt">tr</span>
-                <span class="nt">td</span> Hello
-                <span class="nt">td</span> World
-
-      <span class="nt">div</span><span class="nc">.footer</span>
-</pre></div>
-
-
-<p>Now go back to the terminal and execute the app:</p>
-<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
-Express server listening on port <span class="m">3000</span>
-</pre></div>
-
-
-<p>Open your favourite browse and visit <a href="http://localhost:3000">http://localhost:3000</a> to see your
-first Bootstrap + Node.js application app and running.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/#using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device">Using QtCreator to deploy and run a Qt application to a remote Linux device</a></h2>
-    <p>
-      Posted on Thu 17 January 2013 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/deploy.html">deploy</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>,              <a href="https://www.andreagrandi.it/tag/qt.html">Qt</a>,              <a href="https://www.andreagrandi.it/tag/qtcreator.html">QtCreator</a>,              <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
-    </p>
-  </header>
-  <div>
-      <p>QtCreator is a very flexible IDE and can really be adapted for a lot of
-things. I usually use it to develop mobile applications for Nokia N9 and
-BlackBerry 10, but it can be used for more generic tasks. In my case I
-wanted to be able to develop a Qt application using my desktop PC,
-deploy it and run on a remote (actually it's on the same desk) Linux
-machine running Xubuntu.</p>
-<p>Doing this is quite easy and you don't need any specific plugin on
-QtCreator, but be sure to have at least version 2.6.x. Other than
-QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
-development machine and Xubuntu 12.10 for the remote netbook) and an SSH
-account on the remote PC.</p>
-<h3>Add the remote device to QtCreator</h3>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png"><img alt="QtCreatorDevice" src="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png" width="100%"></a></p>
-<p>To add the remote Linux device on QtCreator, use the
-<strong>Tools-&gt;Options</strong> menu and click on "<strong>Devices</strong>" item. At this
-point click on "<strong>Add</strong>" button and fill the fields using values similar
-to the screenshot. In particular specify a <strong>name</strong> for the device, the
-<strong>IP</strong> of the remote machine and a <strong>username</strong> and <strong>password</strong> that
-must already exist (I just created the user "andrea" on the Xubuntu
-machine and used the same password). I also had to set the <strong>timeout</strong>
-to 20 seconds, because I had some connection problems and the connection
-kept dropping after 10 seconds trying. To verify if everything is
-working fine, just click on <strong>Test</strong> button.</p>
-<h3>Add a specific Qt version</h3>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png"><img alt="QtCreatorQtVersion" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png" width="100%"></a></p>
-<p>To write your application you may need a specific Qt version that is
-different from the one distributed by your Linux distribution. There's
-no problem, QtCreator let you add different Qt versions without any
-conflict. In my case I installed the Qt5 version distributed by
-<strong>Canonical Qt5 Edgers
-Team</strong>: <a href="https://launchpad.net/~canonical-qt5-edgers">https://launchpad.net/~canonical-qt5-edgers</a><br>
-Once it's installed, just click on "<strong>Add</strong>" button and select the qmake
-specific to the version you want to add (in my case it was in
-<strong>/opt/qt5/bin/qmake</strong> ).</p>
-<h3>Add a Qt Kit</h3>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png"><img alt="QtCreatorQtKits" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png" width="100%"></a></p>
-<p>QtCreator permits to add new <strong>Kit</strong> (development configurations) and
-these kits are used during project creation to specify what you want to
-target. In my example I added a new kit choosing an appropriate <strong>name</strong>
-"Qt5 Ubuntu", the <strong>device type</strong>, the actual <strong>device</strong> previously
-configured and finally the <strong>Qt version</strong> that we added before. With a
-kit I have a complete "toolchain" that allow me to write applications
-for a particular device, with a specific Qt version.</p>
-<h3>Putting the pieces together</h3>
-<p>At this point you just have to create a new "<strong>Qt Quick 2</strong>"
-application, and select the new kit you just created instead of the
-"Desktop" one. <strong>Please note</strong> that there is a little problem that I
-haven't fixed yet (but I'm working on it): if you create, for example, a
-project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
-on the remote machine. By default your user doesn't have read+write
-permissions for that folder so I manualy created the folder and I gave a
-chmod 777 on it, just for testing. There are two possible ways to fix
-this: you could create a specific user that has read+write permissions
-on /opt/ or you could modify the deployment configuration to have the
-app deployed to the user /home (I will investigate on this possibility
-and I will write something in one of the next posts).</p>
-<h3>Final thoughts</h3>
-<p>What all of this could be useful for? Well, do 2+2 and you'll easily
-guess ;) In the next weeks I will post more specific informations and I
-will update everyone with my progresses. Any comment is welcome! If you
-want to contribute to this you're welcome too of course.</p>
+      <p>I must admit it, there was a time when I was not using <strong>HTTPS</strong>, not
+even to protect the admin section of the website. This means that anyone
+could have intercepted the password and published (or deleted) things in
+my name. Since a couple of years ago I started protecting my admin
+sectio using an SSL certificate.  I haven't done it before for a couple
+of reason: my hosting was on a provider that required a lot of money
+(something like 100\$/year) to enable SSL support, plus an SSL
+certificated costed at least 100-120\$/year.</p>
+<p>When I migrated my website on my own <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">VPS on
+DigitalOcean</a> I
+finally discovered that <strong><a href="https://www.startssl.com">StartSSL</a></strong> was
+giving <strong>free class 1 certificates</strong> and I immediately got one. I made
+the mistake to just serve the admin pages using HTTPS, not all the
+website. I regretted about this decision after readin a
+<a href="http://dannyman.toldme.com/2010/12/23/swa-yahoo-being-evil/">couple</a> of
+<a href="http://opensource.com/business/15/8/interview-daniel-roesler-utilityapi">articles</a>
+that were explaining how some internet providers where changing served
+HTTP pages injecting their own ads or banner. That was unacceptable to
+me and I swicthed the whole website to HTTPS.</p>
+<p>Basically, if you don't serve even your personal website using HTTPS,
+someone could change the page while it's being transfered to the
+requester. Imagine if you have (like me) a page on your blog that let
+people download your public PGP key. Users could be served with a
+different key, so someone else would be able to decrypt a message
+intended for you only. Scary, isn't it?</p>
+<p>If you need more informations about how to request a StartSSL
+certificate and how to install it on Nginx/Apache, I can suggest this
+nice tutorial: <a href="https://konklone.com/post/switch-to-https-now-for-free">https://konklone.com/post/switch-to-https-now-for-free</a></p>
+<p>If you need to serve a WordPress website, that configuration is not
+enough. In that case you may want to have a look at my own Nginx
+configuration, available at this
+address: <a href="https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c">https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c</a></p>
+<p>p.s: if you are you curious to try how Digital Ocean VPS works and fancy
+<strong>10\$ credit</strong> (enough for 2 months if you choose the basic droplet)
+for <strong>free, u</strong>se this link and enjoy
+it <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
   </div>
 </article>
 

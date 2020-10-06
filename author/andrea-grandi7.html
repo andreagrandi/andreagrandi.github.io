@@ -151,392 +151,269 @@
 
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/#how-to-create-a-docker-image-for-postgresql-and-persist-data">How to create a Docker image for PostgreSQL and persist data</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/#fix-encfs-under-osx-after-upgrading-to-10-11-2">Fix encfs under OSX after upgrading to 10.11.2</a></h2>
     <p>
-      Posted on Sat 21 February 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+      Posted on Wed 09 December 2015 in <a href="https://www.andreagrandi.it/category/howto-osx.html">HowTo, OSX</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/containers.html">containers</a>,              <a href="https://www.andreagrandi.it/tag/devops.html">devops</a>,              <a href="https://www.andreagrandi.it/tag/docker.html">docker</a>,              <a href="https://www.andreagrandi.it/tag/fig.html">fig</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>,              <a href="https://www.andreagrandi.it/tag/osx.html">OSX</a>,              <a href="https://www.andreagrandi.it/tag/postgresql.html">postgresql</a>
+              <a href="https://www.andreagrandi.it/tag/bug.html">bug</a>,              <a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a>,              <a href="https://www.andreagrandi.it/tag/security.html">security</a>
     </p>
   </header>
   <div>
-      <p>Before I start, let me confirm to you that official
-<a href="https://www.docker.com/"><strong>Docker</strong></a> images for
-<a href="http://www.postgresql.org/"><strong>PostgreSQL</strong></a> already exist and are
-available here: <a href="https://registry.hub.docker.com/_/postgres/">https://registry.hub.docker.com/_/postgres/</a> so this
-howto wants to be a guide to explain how to create these images and talk
-about some of the Docker features.</p>
-<p>I will assume that you have already installed Docker on your machine. I
-have tested these instructions both on <strong>Ubuntu Linux</strong> and <strong>OSX</strong> (OSX
-users will need to install <a href="http://boot2docker.io/">boot2docker</a>,
-instructions are not available in this guide).</p>
-<h2>Dockerfile</h2>
-<p>To create a Docker image we need to create a text file named
-<strong>Dockerfile</strong> and use the available commands and syntax to declare how
-the image will be built. At the beginning of the file we need to specify
-the base image we are going to use and our contact informations:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">ubuntu:14.04</span>
-<span class="k">MAINTAINER</span><span class="s"> Andrea Grandi &lt;nospamthanks@gmail.com&gt;</span>
+      <p>After having upgraded <strong>OSX</strong> to <strong>10.11.2</strong> on my MacBook, I noticed
+that my <strong>encfs</strong> volume didn't mount after reboot. I tried to run the
+script manually and all I got was this error:</p>
+<div class="highlight"><pre><span></span>dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
+  Referenced from: /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
+  Expected in: /usr/local/lib/libboost_serialization-mt.dylib
+in /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
 </pre></div>
 
 
-<p>In our case we are using <strong>Ubuntu 14.04</strong> as base image. After these
-instructions we need to add PostgreSQL package repository and GnuPG
-public key:</p>
-<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span> &gt; /etc/apt/sources.list.d/pgdg.list
+<p>I quickly found that was a common problem caused by a new version of
+<strong>Boost</strong> being
+installed: <a href="https://github.com/Homebrew/homebrew/issues/46254">https://github.com/Homebrew/homebrew/issues/46254</a></p>
+<p>To fix it, you just need to <strong>reinstall encfs</strong> using this command</p>
+<div class="highlight"><pre><span></span>brew reinstall -s encfs
+</pre></div>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/#getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal">Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal</a></h2>
+    <p>
+      Posted on Sun 06 December 2015 in <a href="https://www.andreagrandi.it/category/devops-howto-linux.html">DevOps, HowTo, Linux</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a>,              <a href="https://www.andreagrandi.it/tag/letsencrypt.html">letsencrypt</a>,              <a href="https://www.andreagrandi.it/tag/security.html">security</a>,              <a href="https://www.andreagrandi.it/tag/ssl.html">ssl</a>
+    </p>
+  </header>
+  <div>
+      <p>Finally <strong><a href="https://letsencrypt.org/">Letsencrypt</a></strong> went to <strong>public
+beta</strong> and I really couldn't wait to use it on my VPS (where this blog
+is hosted). Until few days ago I was using a <strong>free SSL</strong> certificate
+from <a href="https://www.startssl.com/">StartSSL</a>. The service is nice and I'm
+grateful to them for this important resource they are providing for
+free, but it must be said that their renewal procedure isn't one of the
+most user friendly.</p>
+<p>For people who don't know the service yet, <strong>Letsencrypt</strong> not only
+gives <strong>free SSL certificates</strong>, they also provide a command line tool
+that people can use to request a new certificate or to renew an existing
+one. This means that you don't have to worry anymore if/when your
+certificate expires, you can set a crontab command and have the
+certificate <strong>automatically renewed</strong> for you.</p>
+<h2>Client installation</h2>
+<p>To request a SSL certificate you need to install their command line
+utility. Unless it has already been packaged for your distribution, for
+the moment it's much easier to get it from git as they explain in their
+<a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
+instructions</a>:</p>
+<div class="highlight"><pre><span></span>git clone https://github.com/letsencrypt/letsencrypt
+<span class="nb">cd</span> letsencrypt
+./letsencrypt-auto
 </pre></div>
 
 
-<p>then we need to update the packages available in Ubuntu and install
-PostgreSQL:</p>
-<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
-  <span class="o">&amp;&amp;</span> apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-</pre></div>
-
-
-<p>We are installing version 9.3 of PostgreSQL, instructions would be very
-similar for any other version of the database.</p>
-<p><strong>Note:</strong> it's important to have <strong>apt-get update</strong> and <strong>apt-get
-install</strong> commands in the same <strong>RUN</strong> line, else they would be
-considered two different layers by Docker and in case an updated package
-is available it won't be installed when the image is rebuilt.</p>
-<p>At this point we switch to <strong>postgres</strong> user to execute the next
-commands:</p>
-<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> postgres</span>
-<span class="k">RUN</span> /etc/init.d/postgresql start   
-  <span class="o">&amp;&amp;</span> psql --command <span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span>   
-  <span class="o">&amp;&amp;</span> createdb -O pguser pgdb
-</pre></div>
-
-
-<p>We switch to <strong>root</strong> user and we complete the configuration:</p>
-<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> root</span>
-<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
-<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
-</pre></div>
-
-
-<p>We expose the port where PostgreSQL will listen to:</p>
-<div class="highlight"><pre><span></span><span class="k">EXPOSE</span><span class="s"> 5432</span>
-</pre></div>
-
-
-<p>We setup the data and shared folders that we will use later:</p>
-<div class="highlight"><pre><span></span><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
-<span class="k">VOLUME</span>  <span class="p">[</span><span class="s2">&quot;/etc/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/log/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql&quot;</span><span class="p">]</span>
-</pre></div>
-
-
-<p>Finally we switch again to the <strong>postgres</strong> user and we define the entry
-command for this image:</p>
-<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> postgres</span>
-<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;</span><span class="p">,</span> <span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql/9.3/main&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;</span><span class="p">]</span>
-</pre></div>
-
-
-<p>The full <strong>Dockerfile</strong> is available
-here <a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile">https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile</a></p>
-<h3>Building Docker image</h3>
-<p>Once the Dockerfile is ready, we need to build the image before running
-it in a container. Please customize the tag name using your own
-docker.io hub account (or you won't be able to push it to the hub):</p>
-<div class="highlight"><pre><span></span>docker build --rm<span class="o">=</span><span class="nb">true</span> -t andreagrandi/postgresql:9.3 .
-</pre></div>
-
-
-<h3>Running the PostgreSQL Docker container</h3>
-<p>To run the container, once the image is built, you just need to use this
+<h2>Getting the SSL certificate</h2>
+<p>There are a few different options available to request a certificate,
+but the easiest one is to use the <strong>--webroot</strong> option, specifying the
+document root of your website so that the client will be able to put
+there a verification (temporary) file that will be served to the remote
+service and used as verification method. In my case I only needed this
 command:</p>
-<div class="highlight"><pre><span></span>docker run -i -t -p <span class="m">5432</span>:5432 andreagrandi/postgresql:9.3
+<div class="highlight"><pre><span></span>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
 </pre></div>
 
 
-<h3>Testing the running PostgreSQL</h3>
-<p>To test the running container we can use any client, even the
-commandline one:</p>
-<div class="highlight"><pre><span></span>psql -h localhost -p <span class="m">5432</span> -U pguser -W pgdb
+<p>Please note that I had to specify both www.andreagrandi.it and
+andreagrandi.it as domains, otherwise it would have been invalid when
+requesting just andreagrandi.it resources.</p>
+<h2>Configuration files and certificates installation</h2>
+<p>The command above will save all the configuration under
+<strong>/etc/letsencrypt/</strong> and all the generated certificates under
+<strong>/etc/letsencrypt/live/www.andreagrandi.it/*.pem</strong> (all the *.pem
+files here are symbolic links to the current certificate). If you are
+using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
+<strong>privkey.pem</strong> and you can set them in your Nginx configuration using
+these two parameters:</p>
+<div class="highlight"><pre><span></span>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
+ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem<span class="p">;</span>
 </pre></div>
 
 
-<p>When you are prompted for password, type: <strong>pguser</strong><br>
-Please note that <strong>localhost</strong> is only valid if you are running Docker
-on Ubuntu. If you are an OSX user, you need to discover the correct ip
-using: <strong>boot2docker ip</strong></p>
-<h3>Persisting data</h3>
-<p>You may have noticed that once you stop the container, if you previously
-wrote some data on the DB, that data is lost. This is because by default
-Docker containers are not persistent. We can resolve this problem using
-a data container. My only suggestion is not to do it manually and use a
-tool like <a href="http://www.fig.sh/"><strong>fig</strong></a> to orchestrate this. Fig is a
-tool to orchestrate containers and its features are being rewritten in
-Go language and integrated into Docker itself. So if you prepare a
-<strong>fig.yml</strong> configuration file now, you will be able, hopefully, to
-reuse it once this feature will be integrated into Docker. Please refer
-to fig website for the instructions to install it (briefly: under Ubuntu
-you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
-fig</strong>).</p>
-<div class="highlight"><pre><span></span><span class="nt">dbdata</span><span class="p">:</span>
-  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
-  <span class="nt">volumes</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span>
-  <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-
-<span class="nt">db</span><span class="p">:</span>
-  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
-  <span class="nt">volumes_from</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dbdata</span>
-  <span class="nt">ports</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;5432:5432&quot;</span>
+<p>In case you want to have a look at my full Nginx configuration file, as
+reference, you can find it
+here <a href="https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8">https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8</a></p>
+<h2>Automatic renewal</h2>
+<p>The last thing to be configured is a crontab rule to call the script
+every... 2 months. Why 2 months? Letsencrypt SSL <strong>certificates expire
+in 3 months</strong>. Usually SSL certificates are valid at least for 1 year,
+but Letsencrypt decided to make it 3 months to incentivate the
+automation of the renewal. I set it to 2 months, so if anything goes
+wrong I still have plenty of time to do it manually. To edit crontab for
+root user execute <strong>crontab -e</strong> and add this line:</p>
+<div class="highlight"><pre><span></span><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
 </pre></div>
 
 
-<p>Save this file as <strong>fig.yml</strong> in the same folder of the Dockerfile and
-spin up the container using this command: <strong>fig up</strong></p>
-<div class="highlight"><pre><span></span>andreas-air:postgresql-docker andrea <span class="o">[</span>master<span class="o">]</span> $ fig up
-Recreating postgresqldocker_dbdata_1...
-Recreating postgresqldocker_db_1...
-Attaching to postgresqldocker_db_1
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-1<span class="o">]</span> LOG:  database system was interrupted<span class="p">;</span> last known up at <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10 UTC
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-2<span class="o">]</span> LOG:  database system was not properly shut down<span class="p">;</span> automatic recovery in progress
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-3<span class="o">]</span> LOG:  redo starts at <span class="m">0</span>/1782F68
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-4<span class="o">]</span> LOG:  record with zero length at <span class="m">0</span>/1782FA8
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-5<span class="o">]</span> LOG:  redo <span class="k">done</span> at <span class="m">0</span>/1782F68
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-6<span class="o">]</span> LOG:  last completed transaction was at log <span class="nb">time</span> <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10.61746+00
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">1</span>-1<span class="o">]</span> LOG:  database system is ready to accept connections
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">10</span>-1<span class="o">]</span> LOG:  autovacuum launcher started
-</pre></div>
-
-
-<p>If you try to write some data on the database and then you stop (CTRL+C)
-the running containers and spin up them again, you will see that your
-data is still there.</p>
-<h2>Conclusion</h2>
-<p>This is just an example of how to prepare a Docker container for a
-specific service. The difficoult part is when you have to spin up
-multiple services (for example a Django web application using
-PostgreSQL, RabbitMQ, MongoDB etc...), connect them all together and
-orchestrate the solution. I will maybe talk about this in one of the
-next posts. You can find the full source code of my PostgreSQL Docker
-image, including the fig.yml file in this
-repository <a href="https://github.com/andreagrandi/postgresql-docker">https://github.com/andreagrandi/postgresql-docker</a></p>
+<p>Just a final note. You may have noticed that this website presents an
+SSL certificate issued by COMODO. That's because I have
+<strong><a href="https://www.cloudflare.com/">CloudFlare</a></strong> in front of my website and
+that's how their SSL strict option works (at least for free plans).</p>
   </div>
   <hr />
 </article>
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/#automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller">Automatically pull updated Docker images and restart containers with docker-puller</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/#reversing-a-list-in-python">Reversing a List in Python</a></h2>
     <p>
-      Posted on Sat 25 October 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/containers.html">containers</a>,              <a href="https://www.andreagrandi.it/tag/docker.html">docker</a>,              <a href="https://www.andreagrandi.it/tag/dockerio.html">docker.io</a>,              <a href="https://www.andreagrandi.it/tag/flask.html">Flask</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
+              <a href="https://www.andreagrandi.it/tag/lists.html">lists</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a>
     </p>
   </header>
   <div>
-      <p>If you use <a href="https://docker.io">docker.io</a> (or any similar service) to
-build your <strong>Docker</strong> containers, it may be possible that, once the new
-image is generated, you want your Docker host to automatically pull it
-and restart the container.</p>
-<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
-successful build. Basically it does a POST on a defined URL and send
-some informations in JSON format.</p>
-<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
-listens to these web hooks and can be configured to run a particular
-script, given a specific hook. It's a very simple service I wrote using
-Python/Flask. It's also my first Flask application, so if you want to
-improve it, feel free to send me a pull request on GitHub.</p>
-<p><strong>Note:</strong> this is not the only existing service that is able to do this
-task. I took inspiration from this
-article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
-and I really tried to
-customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
-my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
-not ready to be used as is (you have to customize it) and I'm not very
-good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
-why I rewrote the service in Python (that is my daily language). I want
-to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
-the people in <strong>#docker @ FreeNode</strong> for the support.</p>
-<h3>How to use docker-puller</h3>
-<p>Setting up the service should be quite easy. After you clone the
-repository from https://github.com/glowdigitalmedia/docker-puller there
-is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
-<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
-    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+      <p>Sometimes we need to reverse the order of the elements in a Python list.
+While there can be many different ways of implementing this task, I
+found three in particular that I appreciate for different reasons. Let's
+define first a list of integers that we will reverse later.</p>
+<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 </pre></div>
 
 
-<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
-it under script folder and write the instructions to be executed to pull
-the new image and restart the container (example):</p>
-<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
-docker stop <span class="nb">test</span>
-docker rm <span class="nb">test</span>
-docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
+<h3>List slicing</h3>
+<p>This method can be a bit obscure at first read, but basically it slices
+the whole list proceding in the reverse order:</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 </pre></div>
 
 
-<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
-not covered here) that for example redirect
-<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
-enable SSL too, or people could be able to sniff your token). The
-service can be started with: "<strong>python app.py</strong>" (or you can setup a
-Supervisor script).</p>
-<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
-automatic build settings and setup a webhook like this:
-<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
-<p>Every time docker.io finishes building and pushing your image to the
-docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
-the POST, check for a valid token, get the hook name and will execute
-the relative script.</p>
-<p>That's all! I hope this very simple service can be useful to other
-people and once again, if you want to improve it, I will be glad to
-accept your pull requests on GitHub.</p>
+<h3>Reversed method</h3>
+<p>We use the
+<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
+that returns an iterable object and a list comprehension to generate the
+new list</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>Swapping values in place</h3>
+<p>This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span> <span class="n">l</span>
+
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
   </div>
   <hr />
 </article>
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2014/09/02/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/#how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/#how-to-configure-encfs-on-osx-10-10-yosemite">How to configure EncFS on OSX 10.10 (Yosemite)</a></h2>
     <p>
-      Posted on Tue 02 September 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>,              <a href="https://www.andreagrandi.it/tag/raspberrypi.html">RaspberryPI</a>,              <a href="https://www.andreagrandi.it/tag/wifi.html">WIFI</a>,              <a href="https://www.andreagrandi.it/tag/networking.html">networking</a>,              <a href="https://www.andreagrandi.it/tag/debian.html">Debian</a>
+              <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a>,              <a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a>,              <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a>,              <a href="https://www.andreagrandi.it/tag/osx.html">OSX</a>,              <a href="https://www.andreagrandi.it/tag/security.html">security</a>
     </p>
   </header>
   <div>
-      <p>If you want to connect your <strong>RaspberryPi</strong> to your home network and you
-want to avoid cables, I suggest you to use the <strong>Edimax wifi adapter</strong>.
-This device is quite cheap (around £8 on
-<a href="http://www.amazon.co.uk/Edimax-EW-7811UN-150Mbps-Wireless-Adapter/dp/B003MTTJOY/">Amazon</a>)
-and it's very easy to configure on Raspbian (I assume you are using a
-recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
-<p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
-<h3>Configure the wifi adapter</h3>
-<p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
-<div class="highlight"><pre><span></span>auto lo
-iface lo inet loopback
-iface eth0 inet dhcp
-
-allow-hotplug wlan0
-auto wlan0
-
-iface wlan0 inet dhcp
-wpa-ssid YOURESSID
-wpa-psk YOURWPAPASSWORD
+      <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc...), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It's
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.</p>
+<h2>Installing EncFS</h2>
+<p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
+manager installed on OSX you can install it using this command:</p>
+<div class="highlight"><pre><span></span>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
 </pre></div>
 
 
-<h3>Power management issue</h3>
-<p>There is a known "issue" with this adapter default configuration that
-makes it to turn off if the wlan interface is not in use for some
-minutes. To avoid this you have to customize the parameters used to load
-the kernel module. First check that your adapter is using <strong>8192cu</strong>
-module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
-8192cu <span class="m">551136</span> <span class="m">0</span>
+<p>After brew, you need to install <strong>OSXFuse</strong> from this
+website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
+<p>Finally you can install <strong>encfs</strong> using this command:</p>
+<div class="highlight"><pre><span></span>brew install homebrew/fuse/encfs
 </pre></div>
 
 
-<p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
-lines inside:</p>
-<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
-options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
+<h2>Configuring the encrypted folder</h2>
+<p>Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:</p>
+<div class="highlight"><pre><span></span>encfs ~/Dropbox/Private ~/Private
 </pre></div>
 
 
-<p>I also suggest to create a little entry in crontab to make the
-RaspberryPi ping your router every minute. This will ensure that your
-wifi connection will stay alive. To edit crontab just type (from pi
-user, you don't need to be root):</p>
-<div class="highlight"><pre><span></span>crontab -e
+<p>If you are mounting an existing encrypted volume, you will be prompted
+for the password. If you are creating a new encrypted volume you will be
+asked some questions about EncFS parameters.</p>
+<p><strong>Note:</strong> if it's important for you to keep compatibility with
+<strong><a href="https://www.boxcryptor.com/en/classic">BoxCryptor Classic</a></strong> (in case
+you want to use the same volume under Windows), please refer to this
+other article I
+wrote: <a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</a></p>
+<h2>Mount the encrypted volume on startup</h2>
+<p>First of all you need to save the volume's password inside the OSX
+keychain. Open the app <strong>Keychain Access</strong> and create a new entry with
+name <strong>encfs</strong> and account value <strong>encfs</strong>, then write your <strong>password</strong>
+and click <strong>Add</strong>:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
+<p>Once the password is saved, <strong>open a text editor</strong> and paste this script
+and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
+
+<span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
+<span class="nv">TARGET</span><span class="o">=</span>~/Private
+<span class="nv">VOLUME_TITLE</span><span class="o">=</span>Private
+<span class="nv">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="s1">&#39;encfs&#39;</span>
+<span class="nv">ENCFS</span><span class="o">=</span>/usr/local/bin/encfs
+
+mount <span class="p">|</span> grep <span class="nv">$TARGET</span> &gt;/dev/null
+<span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$?</span><span class="s2">&quot;</span> -eq <span class="s2">&quot;0&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> /usr/sbin/diskutil unmount <span class="nv">$TARGET</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$TARGET</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="nb">echo</span> <span class="s2">&quot;Create new mountpoint </span><span class="nv">$TARGET</span><span class="s2">&quot;</span>
+mkdir <span class="nv">$TARGET</span>
+chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
+<span class="k">fi</span>
+
+<span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
 </pre></div>
 
 
-<p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
+<p>Make it <strong>executable</strong>:</p>
+<div class="highlight"><pre><span></span>chmod +x ~/encfs_mount.sh
 </pre></div>
 
 
-<p>where 192.168.0.1 is the IP of your router (of course substitute this
-value with the ip of your router).</p>
-<h3>Keep Alive Script</h3>
-<p>I created a further script to keep my WIFI alive. This script will ping
-the router (change the IP using the one of your router) every 5 minutes
-and if the ping fails it brings down the wlan0 interface, the kernel
-module for the wifi and bring them up again.</p>
-<p>
-<script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
-</p>
-
-<p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
-<strong>root</strong> user:</p>
-<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
-crontab -e
+<p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
+app in the \$HOME folder:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
+<div class="highlight"><pre><span></span><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
 </pre></div>
 
 
-<p>Insert this line inside the crontab editor:</p>
-<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
-</pre></div>
-
-
-<h3>Conclusion</h3>
-<p>The configuration is done. Just reboot your RaspberryPi and enjoy your
-wifi connection.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/#configuring-ddclient-to-update-your-dynamic-dns-at-noip-com">Configuring ddclient to update your dynamic DNS at noip.com</a></h2>
-    <p>
-      Posted on Tue 02 September 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">linux</a>,              <a href="https://www.andreagrandi.it/tag/dns.html">dns</a>
-    </p>
-  </header>
-  <div>
-      <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
-services that are reliable to use. If you have, like in my situation, a
-RaspberryPi connected to your home DSL and you want it to be always
-reachable without knowing the current IP address (the IP could change if
-you have a normal DSL service at home), you need a dynamic DNS service.</p>
-<p>To update the noip.com one you just need <strong>ddclient</strong> a tool that is
-available in Raspbian/Debian repository. You can install it with this
-command:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install ddclient
-</pre></div>
-
-
-<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
-<div class="highlight"><pre><span></span><span class="nv">protocol</span><span class="o">=</span>dyndns2
-<span class="nv">use</span><span class="o">=</span>web, <span class="nv">web</span><span class="o">=</span>checkip.dyndns.com/, web-skip<span class="o">=</span><span class="s1">&#39;IP Address&#39;</span>
-<span class="nv">server</span><span class="o">=</span>dynupdate.no-ip.com
-<span class="nv">login</span><span class="o">=</span>yourusername
-<span class="nv">password</span><span class="o">=</span>yourpassword
-yourhostname.no-ip.org
-</pre></div>
-
-
-<p>and restart the client:</p>
-<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
-</pre></div>
-
-
-<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
-<strong>limitation</strong>: they need to be confirmed every 30 days (you will
-receive an email and you need to click on the link contained to update
-your DNS).</p>
+<p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
+add the previously saved application.</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png" width="60%"></a></p>
+<h2>Final notes</h2>
+<p>At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: <strong>do not save anything
+directly on <code>~/Dropbox/Private</code></strong>, only read and save your files from
+<code>~/Private</code></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>
+<li><a href="http://ninjatips.com/encrypt-dropbox-using-encfs/">http://ninjatips.com/encrypt-dropbox-using-encfs/</a></li>
+</ul>
   </div>
 </article>
 

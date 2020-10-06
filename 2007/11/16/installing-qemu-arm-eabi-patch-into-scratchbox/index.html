@@ -57,7 +57,7 @@
   <!-- Microsoft EDGE -->
   <meta name="msapplication-TileColor" content="#333333">
 
-<meta name="author" content="admin" />
+<meta name="author" content="Andrea Grandi" />
 <meta name="description" content="Using Scratchbox and in particular the Maemo SDK with ARMEL target, very often when we try to execute some application we can get into this kind of errors (for example): sem_post: Function not implemented This happens because not all the functions have been implemented in the emulated environment.[ Lauro Venâncio]{style=&#34;font-weight: bold;&#34;} has created a patched version of qemu-arm called [qemu-arm-eabi]{style=&#34;font-weight: bold;&#34;}. Thanks to [Marcelo Lira]{style=&#34;font-weight: bold;&#34;}, we have a simple howto to install the patch into the Scratchbox environment. [Note:]{style=&#34;font-weight: bold;&#34;} you have to execute these commands from outside the Scratchbox environment and you should not be logged into the environment at the same time. [1.]{style=&#34;font-weight: bold;&#34;} You need gcc 3.4, SDL dev library and Zlib dev:[ ]{style=&#34;font-size: 78%;&#34;} sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev [2.]{style=&#34;font-weight: bold;&#34;} Get the patched qemu-arm. Notice that the patches are already applied, everything is here, and you don&#39;t need to get the qemu sources. svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make [3.]{style=&#34;font-weight: bold;&#34;} Copy qemu to the cputransp dir on scratchbox[ ]{style=&#34;font-size: 78%;&#34;} sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 [4.]{style=&#34;font-weight: bold;&#34;} Add it to the list of cputransp methods. Open the file[ ]{style=&#34;font-size: 78%;&#34;} sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods and add this line: qemu-arm-eabi-sb2 [5.]{style=&#34;font-weight: bold;&#34;} Configure the target to use the patched qemu as transparency method. Edit the file:[ ]{style=&#34;font-size: 78%; font-family: courier new;&#34;} vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config and change this line: SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 That&#39;s all! You&#39;re now ready to log again into your Scratchbox environment." />
 <meta name="keywords" content="maemo, qemu, scratchbox, SDK">
 
@@ -70,7 +70,7 @@
 <meta property="og:type" content="article"/>
 <meta property="article:published_time" content="2007-11-16 15:49:00+01:00"/>
 <meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/admin.html">
+<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
 <meta property="article:section" content="HowTo, Linux, Maemo (EN), Programmazione"/>
 <meta property="article:tag" content="maemo"/>
 <meta property="article:tag" content="qemu"/>
