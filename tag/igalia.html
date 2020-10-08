@@ -151,7 +151,7 @@
 
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/#writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/#writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h2>
     <p>
       Posted on Thu 06 August 2009 in <a href="https://www.andreagrandi.it/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a>
 
@@ -167,34 +167,43 @@ included in Python to sum two integer values and we want to do it in C
 and then call the add method from a python script. I'll write the
 complete source code first and then I'll explain all the parts of it.</p>
 <h2>Source Code</h2>
-<p>[sourcecode language="C"]<br>
-#include &lt;Python.h&gt;</p>
-<p>static PyObject *foo_add(PyObject *self, PyObject *args)<br>
-{<br>
-int a;<br>
-int b;</p>
-<p>if (!PyArg_ParseTuple(args, "ii", &amp;a, &amp;b))<br>
-{<br>
-return NULL;<br>
-}</p>
-<p>return Py_BuildValue("i", a + b);<br>
-}</p>
-<p>static PyMethodDef foo_methods[] = {<br>
-{ "add", (PyCFunction)foo_add, METH_VARARGS, NULL },<br>
-{ NULL, NULL, 0, NULL }<br>
-};</p>
-<p>PyMODINIT_FUNC initfoo()<br>
-{<br>
-Py_InitModule3("foo", foo_methods, "My first extension module.");<br>
-}<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;Python.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">foo_add</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>  
+<span class="p">{</span>  
+    <span class="kt">int</span> <span class="n">a</span><span class="p">;</span>  
+    <span class="kt">int</span> <span class="n">b</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;ii&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">))</span>  
+    <span class="p">{</span>  
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>  
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">);</span>  
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="n">PyMethodDef</span> <span class="n">foo_methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>  
+    <span class="p">{</span> <span class="s">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">},</span>  
+    <span class="p">{</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">}</span>  
+<span class="p">};</span>
+
+<span class="n">PyMODINIT_FUNC</span> <span class="nf">initfoo</span><span class="p">()</span>
+<span class="p">{</span>  
+    <span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="n">foo_methods</span><span class="p">,</span> <span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span>  
+<span class="p">}</span>
+</pre></div>
+
+
 <h2>How it works</h2>
 <p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
 us to write an extension for Python language. To be able to include this
 header, we must have the python development packages installed in our
 system. For example in Debian based distributions we can install them
 with this command:</p>
-<p><code>sudo apt-get install python2.5-dev</code></p>
+<div class="highlight"><pre><span></span>sudo apt-get install python2.5-dev
+</pre></div>
+
+
 <p>Every module has at least three parts. In the first part we write
 methods we want to call from the final python module: in this case we
 have a method called <strong>foo_add</strong> where "<em>foo</em>" is the name of the
@@ -206,14 +215,20 @@ adding the two passed numbers and returning the result.</p>
 static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
 name of the module). For each method we want to expose in our python
 module, we have to add something like this:</p>
-<p><code>{"add", (PyCFunction)foo_add, METH_VARARGS, NULL}</code></p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
+</pre></div>
+
+
 <p>where "<em>add</em>" is the name of the method we want to be visible in our
 module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
 implemented in the C module, METH_VARARGS means that we want to pass
 some parameters to the function and the last one would be the
 description of the method (we can leave it NULL if we want).</p>
 <p>Third part allows us to register the defined method/s and the module:</p>
-<p><code>Py_InitModule3("foo", foo_methods, "My first extension module.");</code></p>
+<div class="highlight"><pre><span></span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="n">foo_methods</span><span class="p">,</span> <span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span>
+</pre></div>
+
+
 <h3>Parsing Parameters</h3>
 <p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
 <strong>PyObject</strong> passed as parameter to the current method and follows
@@ -223,36 +238,30 @@ for two integers). You can fin the complete reference here:
 <h2>Building and installing</h2>
 <p>To build the module, we have to be in the source directory and execute
 this command:</p>
-<p><code>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so</code></p>
+<div class="highlight"><pre><span></span>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
+</pre></div>
+
+
 <p>then we've to copy the generated module to the python's modules
 directory:</p>
-<p><code>cp foo.so /usr/lib/python2.5/site-packages/</code></p>
+<div class="highlight"><pre><span></span>cp foo.so /usr/lib/python2.5/site-packages/
+</pre></div>
+
+
 <h2>Testing our module</h2>
 <p>Testing the module is really easy. We've to start a python shell or
 create a python script with the following source code:</p>
-<p>[sourcecode language="python"]<br>
-import foo<br>
-print foo.add(2, 3)<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">foo</span>
+<span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+
 <p>if all is working fine, the printed result should be <strong>5</strong></p>
 <h2>References</h2>
 <ul>
 <li><a href="http://docs.python.org/extending/extending.html">http://docs.python.org/extending/extending.html</a></li>
 <li><a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html">http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html</a></li>
 </ul>
-<div id="_mcePaste"
-style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;">
-
-python2.5-dev
-
-</div>
-
-<div id="_mcePaste"
-style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;">
-
-python2.5-dev
-
-</div>
   </div>
   <hr />
 </article>
@@ -277,11 +286,11 @@ almost C code) and <strong>Python</strong> (it's a good practice to write unitte
 all implemented methods) it's a good way to improve my knowledges in
 both languages and since I wasn't able to find much documentation about
 these kind of things, I'm going to share my own experiences.</p>
-<p><strong>What is a Binding?</strong></p>
+<h2>What is a Binding?</h2>
 <p>A binding is a Python module, written in C language, that allows Python
 developers to call functions from existing C libraries from their python
 applications. It's just like a "<em>bridge</em>" from C world to Python one.</p>
-<p><strong>Why writing bindings?</strong></p>
+<h2>Why writing bindings?</h2>
 <p>There are a couple of reasons to write python bindings instead of
 writing a library in python language from scratch.</p>
 <p>First of all I don't think is good duplicating code, so if a library
@@ -292,7 +301,7 @@ all we have to do is to create a bridge with python world.</p>
 is the fact that python code is slower than C code for some tasks (for
 example multimedia codecs). In these cases is good to implement the core
 library in C language and then create a python binding for it.</p>
-<p><strong>Coming next</strong></p>
+<h2>Coming next</h2>
 <p>As the title of this post says, this is only an introduction to the
 subjects I'm going to write about. If you have any particular request
 about any argument you would like to read, please feel free to leave me

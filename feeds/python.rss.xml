@@ -1924,7 +1924,7 @@ project, I would be glad to lead it. So, I'm looking for Python
 developers, Qt developers, UI designers and whoever want to contribute
 to this project. I still have to find a good name and logo for this
 application.&lt;/p&gt;
-&lt;p&gt;Who want to help me?&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 22 Feb 2010 17:16:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2010-02-22:/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/</guid><category>Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</category><category>maemo</category><category>MeeGo</category><category>N900</category><category>nokia</category><category>Python</category><category>Qt</category><category>twitter</category></item><item><title>Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</title><link>https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</link><description>&lt;p&gt;In the last post of this series, we saw how to write a simple binding
+&lt;p&gt;Who want to help me?&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 22 Feb 2010 17:16:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2010-02-22:/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/</guid><category>Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</category><category>maemo</category><category>MeeGo</category><category>N900</category><category>nokia</category><category>Python</category><category>Qt</category><category>twitter</category></item><item><title>Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</title><link>https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-building-and-installing-with-distutils/</link><description>&lt;p&gt;In the last post of this series, we saw how to write a simple binding
 and we finished to build and install it manually. This is of course not
 a good way to manage the building/installation procedure.&lt;/p&gt;
 &lt;p&gt;In Python we can use a library called &lt;strong&gt;distutils&lt;/strong&gt; that let us to
@@ -1932,14 +1932,19 @@ automatize the building and installing process. I'll use the &lt;strong&gt;foo&l
 source code to create the package, so it will be easier to understand.&lt;/p&gt;
 &lt;h2&gt;Using distutils&lt;/h2&gt;
 &lt;p&gt;All we have to do is to write a &lt;strong&gt;setup.py&lt;/strong&gt; file similar to this one:&lt;/p&gt;
-&lt;p&gt;[sourcecode lang="python"]&lt;br&gt;
-from distutils.core import setup, Extension&lt;/p&gt;
-&lt;p&gt;foomodule = Extension('foo', sources = ['foo.c'])&lt;/p&gt;
-&lt;p&gt;setup (name = 'Foo',&lt;br&gt;
-version = '1.0',&lt;br&gt;
-description = 'This is a package for Foo',&lt;br&gt;
-ext_modules = [foomodule])&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;distutils.core&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;setup&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt;
+
+&lt;span class="n"&gt;foomodule&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sources&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;foo.c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;setup&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;1.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  
+    &lt;span class="n"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;This is a package for Foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  
+    &lt;span class="n"&gt;ext_modules&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;foomodule&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;As you can see, we have to first import needed modules with: &lt;strong&gt;from
 distutils.core import setup, Extension&lt;/strong&gt;&lt;br&gt;
 then we create an entry for each module we have (in this case just one,
@@ -1947,14 +1952,19 @@ then we create an entry for each module we have (in this case just one,
 parameters and our &lt;strong&gt;setup.py&lt;/strong&gt; is complete.&lt;/p&gt;
 &lt;h2&gt;Building and installing&lt;/h2&gt;
 &lt;p&gt;To test it we can try to build the package in this way:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;python2.5 setup.py build&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python2.5 setup.py build
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;if we want to install the module in our system:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;python2.5 setup.py install&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python2.5 setup.py install
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;Official Python documentation:
-    &lt;a href="http://docs.python.org/extending/building.html"&gt;http://docs.python.org/extending/building.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 13 Aug 2009 10:39:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-13:/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</guid><category>HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>binding</category><category>distutils</category><category>library</category><category>maemo</category><category>Python</category><category>setup</category></item><item><title>PyMaemo (Python for Maemo) second beta release for Fremantle</title><link>https://www.andreagrandi.it/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/</link><description>&lt;p&gt;The &lt;strong&gt;PyMaemo&lt;/strong&gt; team is pleased to announce the second beta release of
+&lt;li&gt;Official Python documentation: &lt;a href="http://docs.python.org/extending/building.html"&gt;http://docs.python.org/extending/building.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 13 Aug 2009 10:39:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-13:/2009/08/13/writing-python-bindings-of-existing-c-libraries-building-and-installing-with-distutils/</guid><category>HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>binding</category><category>distutils</category><category>library</category><category>maemo</category><category>Python</category><category>setup</category></item><item><title>PyMaemo (Python for Maemo) second beta release for Fremantle</title><link>https://www.andreagrandi.it/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/</link><description>&lt;p&gt;The &lt;strong&gt;PyMaemo&lt;/strong&gt; team is pleased to announce the second beta release of
 PyMaemo for &lt;strong&gt;Fremantle&lt;/strong&gt;!&lt;/p&gt;
 &lt;p&gt;This new release is available through the &lt;strong&gt;extras-devel&lt;/strong&gt; repository,
 see installation instructions in&lt;br&gt;
@@ -2027,20 +2037,15 @@ applications, this is why we choose Python for Maemo.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Bugs fixed:&lt;/strong&gt; MB#4530 [3], MB#4450 [4], MB#4629 [5], MB#4628
-[6],&lt;br&gt;
-MB#4647 [7], MB#4632 [8],  MB#4646 [9],  MB#4750 [10],
- MB#4749 [11],&lt;br&gt;
+&lt;p&gt;&lt;strong&gt;Bugs fixed:&lt;/strong&gt; MB#4530 [3], MB#4450 [4], MB#4629 [5], MB#4628 [6],&lt;br&gt;
+MB#4647 [7], MB#4632 [8],  MB#4646 [9],  MB#4750 [10], MB#4749 [11],&lt;br&gt;
 MB#4791 [12]&lt;/p&gt;
 &lt;h2&gt;Known issues&lt;/h2&gt;
 &lt;p&gt;MB#4782 [13]: osso.Context causes segmentation fault&lt;br&gt;
-MB#4821 [14]: Cannot create HildonTouchSelector with single text
-column&lt;br&gt;
+MB#4821 [14]: Cannot create HildonTouchSelector with single text column&lt;br&gt;
 MB#4824 [15]: python-mafw: source_browsing.py example does not work&lt;br&gt;
-MB#4839 [16]: python-mafw: mafw.Registry lacks list_plugins()
-method&lt;br&gt;
-MB#4849 [17]: python-mafw: MafwPluginDescriptorPublic structure is
-missing&lt;/p&gt;
+MB#4839 [16]: python-mafw: mafw.Registry lacks list_plugins() method&lt;br&gt;
+MB#4849 [17]: python-mafw: MafwPluginDescriptorPublic structure is missing&lt;/p&gt;
 &lt;p&gt;We will not migrate to python2.6 in fremantle due to a (unresolved) bug
 (MB#4734 [18]), where a core SDK package explicitly conflicts with
 python &amp;gt;= 2.6, preventing any further upgrades from the 2.5.x series.&lt;/p&gt;
@@ -2074,41 +2079,50 @@ feel free to report it on the pymaemo-developers mailing list [19].&lt;/p&gt;
 [20] &lt;a href="https://bugs.maemo.org/enter_bug.cgi?product=PyMaemo"&gt;https://bugs.maemo.org/enter_bug.cgi?product=PyMaemo&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Credits&lt;/h2&gt;
 &lt;p&gt;This post was possible thanks to &lt;strong&gt;Anderson Lizardo&lt;/strong&gt;, from PyMaemo
-team, who posted these informations on pymaemo-developers mailing list.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 10 Aug 2009 09:20:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-10:/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/</guid><category>Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>bindings</category><category>fremantle</category><category>maemo</category><category>nokia</category><category>pymaemo</category><category>Python</category><category>tablet</category></item><item><title>Writing Python bindings of existing C libraries – (2) – A simple example of binding</title><link>https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/</link><description>&lt;h2&gt;Introduction&lt;/h2&gt;
+team, who posted these informations on pymaemo-developers mailing list.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 10 Aug 2009 09:20:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-10:/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/</guid><category>Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>bindings</category><category>fremantle</category><category>maemo</category><category>nokia</category><category>pymaemo</category><category>Python</category><category>tablet</category></item><item><title>Writing Python bindings of existing C libraries – (2) – A simple example of binding</title><link>https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/</link><description>&lt;h2&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;As I promised in the preceding post, I'll provide a very easy example of
 a python binding. Let's suppose we don't want to use the methods
 included in Python to sum two integer values and we want to do it in C
 and then call the add method from a python script. I'll write the
 complete source code first and then I'll explain all the parts of it.&lt;/p&gt;
 &lt;h2&gt;Source Code&lt;/h2&gt;
-&lt;p&gt;[sourcecode language="C"]&lt;br&gt;
-#include &amp;lt;Python.h&amp;gt;&lt;/p&gt;
-&lt;p&gt;static PyObject *foo_add(PyObject *self, PyObject *args)&lt;br&gt;
-{&lt;br&gt;
-int a;&lt;br&gt;
-int b;&lt;/p&gt;
-&lt;p&gt;if (!PyArg_ParseTuple(args, "ii", &amp;amp;a, &amp;amp;b))&lt;br&gt;
-{&lt;br&gt;
-return NULL;&lt;br&gt;
-}&lt;/p&gt;
-&lt;p&gt;return Py_BuildValue("i", a + b);&lt;br&gt;
-}&lt;/p&gt;
-&lt;p&gt;static PyMethodDef foo_methods[] = {&lt;br&gt;
-{ "add", (PyCFunction)foo_add, METH_VARARGS, NULL },&lt;br&gt;
-{ NULL, NULL, 0, NULL }&lt;br&gt;
-};&lt;/p&gt;
-&lt;p&gt;PyMODINIT_FUNC initfoo()&lt;br&gt;
-{&lt;br&gt;
-Py_InitModule3("foo", foo_methods, "My first extension module.");&lt;br&gt;
-}&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;Python.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;foo_add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+&lt;span class="p"&gt;{&lt;/span&gt;  
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;PyArg_ParseTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;ii&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;  
+    &lt;span class="p"&gt;{&lt;/span&gt;  
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Py_BuildValue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;i&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyMethodDef&lt;/span&gt; &lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;  
+    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;add&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyCFunction&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;foo_add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;METH_VARARGS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;  
+    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;  
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="n"&gt;PyMODINIT_FUNC&lt;/span&gt; &lt;span class="nf"&gt;initfoo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;  
+    &lt;span class="n"&gt;Py_InitModule3&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;foo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;My first extension module.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;How it works&lt;/h2&gt;
 &lt;p&gt;First of all we have to include &lt;strong&gt;Python.h&lt;/strong&gt; in our C file. This allows
 us to write an extension for Python language. To be able to include this
 header, we must have the python development packages installed in our
 system. For example in Debian based distributions we can install them
 with this command:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;sudo apt-get install python2.5-dev&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python2.5-dev
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Every module has at least three parts. In the first part we write
 methods we want to call from the final python module: in this case we
 have a method called &lt;strong&gt;foo_add&lt;/strong&gt; where "&lt;em&gt;foo&lt;/em&gt;" is the name of the
@@ -2120,14 +2134,20 @@ adding the two passed numbers and returning the result.&lt;/p&gt;
 static &lt;strong&gt;PyMethodDef&lt;/strong&gt; and called foo_methods (where "foo" again is the
 name of the module). For each method we want to expose in our python
 module, we have to add something like this:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;{"add", (PyCFunction)foo_add, METH_VARARGS, NULL}&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;add&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyCFunction&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;foo_add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;METH_VARARGS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;where "&lt;em&gt;add&lt;/em&gt;" is the name of the method we want to be visible in our
 module, &lt;em&gt;(PyCFunction)foo_add&lt;/em&gt; is a pointer to our foo_add method,
 implemented in the C module, METH_VARARGS means that we want to pass
 some parameters to the function and the last one would be the
 description of the method (we can leave it NULL if we want).&lt;/p&gt;
 &lt;p&gt;Third part allows us to register the defined method/s and the module:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Py_InitModule3("foo", foo_methods, "My first extension module.");&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Py_InitModule3&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;foo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;My first extension module.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Parsing Parameters&lt;/h3&gt;
 &lt;p&gt;The &lt;strong&gt;PyArg_ParseTuple&lt;/strong&gt; function extracts arguments from the
 &lt;strong&gt;PyObject&lt;/strong&gt; passed as parameter to the current method and follows
@@ -2137,36 +2157,30 @@ for two integers). You can fin the complete reference here:
 &lt;h2&gt;Building and installing&lt;/h2&gt;
 &lt;p&gt;To build the module, we have to be in the source directory and execute
 this command:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;gcc -shared -I/usr/include/python2.5 foo.c -o foo.so&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;then we've to copy the generated module to the python's modules
 directory:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;cp foo.so /usr/lib/python2.5/site-packages/&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cp foo.so /usr/lib/python2.5/site-packages/
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;Testing our module&lt;/h2&gt;
 &lt;p&gt;Testing the module is really easy. We've to start a python shell or
 create a python script with the following source code:&lt;/p&gt;
-&lt;p&gt;[sourcecode language="python"]&lt;br&gt;
-import foo&lt;br&gt;
-print foo.add(2, 3)&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;foo&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="n"&gt;foo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;if all is working fine, the printed result should be &lt;strong&gt;5&lt;/strong&gt;&lt;/p&gt;
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://docs.python.org/extending/extending.html"&gt;http://docs.python.org/extending/extending.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html"&gt;http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id="_mcePaste"
-style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;"&gt;
-
-python2.5-dev
-
-&lt;/div&gt;
-
-&lt;div id="_mcePaste"
-style="overflow: hidden; position: absolute; left: -10000px; top: 399px; width: 1px; height: 1px;"&gt;
-
-python2.5-dev
-
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 06 Aug 2009 15:44:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-06:/2009/08/06/writing-python-bindings-of-existing-c-libraries-%e2%80%93-2-%e2%80%93-a-simple-example-of-binding/</guid><category>HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>binding</category><category>Igalia</category><category>maemo</category><category>Python</category></item><item><title>MAFW and Python: asking for developers feedback</title><link>https://www.andreagrandi.it/2009/08/05/mafw-and-python-asking-for-developers-feedback/</link><description>&lt;p&gt;MAFW is a new multimedia framework that will be used in Fremantle.&lt;/p&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 06 Aug 2009 15:44:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-06:/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/</guid><category>HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>binding</category><category>Igalia</category><category>maemo</category><category>Python</category></item><item><title>MAFW and Python: asking for developers feedback</title><link>https://www.andreagrandi.it/2009/08/05/mafw-and-python-asking-for-developers-feedback/</link><description>&lt;p&gt;MAFW is a new multimedia framework that will be used in Fremantle.&lt;/p&gt;
 &lt;p&gt;The PyMaemo team is currently working on writing bindings for Python&lt;br&gt;
 language for this library and at the moment we've released a 0.1&lt;br&gt;
 version of python-mafw that you can install directly from Scratchbox&lt;br&gt;
@@ -2198,11 +2212,11 @@ almost C code) and &lt;strong&gt;Python&lt;/strong&gt; (it's a good practice to 
 all implemented methods) it's a good way to improve my knowledges in
 both languages and since I wasn't able to find much documentation about
 these kind of things, I'm going to share my own experiences.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What is a Binding?&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;What is a Binding?&lt;/h2&gt;
 &lt;p&gt;A binding is a Python module, written in C language, that allows Python
 developers to call functions from existing C libraries from their python
 applications. It's just like a "&lt;em&gt;bridge&lt;/em&gt;" from C world to Python one.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Why writing bindings?&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;Why writing bindings?&lt;/h2&gt;
 &lt;p&gt;There are a couple of reasons to write python bindings instead of
 writing a library in python language from scratch.&lt;/p&gt;
 &lt;p&gt;First of all I don't think is good duplicating code, so if a library
@@ -2213,7 +2227,7 @@ all we have to do is to create a bridge with python world.&lt;/p&gt;
 is the fact that python code is slower than C code for some tasks (for
 example multimedia codecs). In these cases is good to implement the core
 library in C language and then create a python binding for it.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Coming next&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;Coming next&lt;/h2&gt;
 &lt;p&gt;As the title of this post says, this is only an introduction to the
 subjects I'm going to write about. If you have any particular request
 about any argument you would like to read, please feel free to leave me
@@ -2251,21 +2265,15 @@ GPS-aware application for the Nokia N810, using the Maemo SDK, Eclipse
 and PluThon plugin.&lt;/p&gt;
 &lt;p&gt;Here is the complete serie:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia1/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 1:
-    Development
-    environment:&lt;/a&gt;
+&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia1/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 1: Development environment:&lt;/a&gt;
     Learn how to configure a development environment targeted at the
     Nokia N810 Internet Tablet, including setting up Eclipse on a target
     development machine for the Python language.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 2:
-    Consider your
-    options:&lt;/a&gt;
+&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 2: Consider your options:&lt;/a&gt;
     Discover the details of code design, library selection, unit
     testing, and user interface choices that make the most sense for
     you.&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia3/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 3: Finish
-    the
-    job&lt;/a&gt;:
+&lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia3/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 3: Finish the job&lt;/a&gt;:
     In this last of three installments, you'll put the final touches to
     the GPS trip tracker and get it ready for release.&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 24 Feb 2009 15:51:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-24:/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/</guid><category>HowTo, Linux, Maemo (EN), Programmazione, Python</category><category>eclipse</category><category>gps</category><category>Python</category><category>SDK</category></item><item><title>Skype SMS su Linux: grazie a Skype4Py si puo'!</title><link>https://www.andreagrandi.it/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/</link><description>&lt;p&gt;&lt;img alt="Skype

@@ -21,7 +21,7 @@ people to contribute to the code. The library has been tested with &lt;strong&g
 other versions/platforms.&lt;/p&gt;
 &lt;p&gt;For more informations about getting started with the library, I suggest
 you to give a look at this
-page &lt;a href="https://projects.developer.nokia.com/socialconnect/wiki/GettingStarted"&gt;https://projects.developer.nokia.com/socialconnect/wiki/GettingStarted&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 13 Aug 2012 09:04:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-08-13:/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/</guid><category>Maemo (EN), MeeGo, Programmazione, Qt, Ubuntu (EN)</category><category>library</category><category>Mobile</category><category>nokia</category><category>QML</category><category>Qt</category><category>Social</category></item><item><title>Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</title><link>https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</link><description>&lt;p&gt;In the last post of this series, we saw how to write a simple binding
+page &lt;a href="https://projects.developer.nokia.com/socialconnect/wiki/GettingStarted"&gt;https://projects.developer.nokia.com/socialconnect/wiki/GettingStarted&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 13 Aug 2012 09:04:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-08-13:/2012/08/13/social-connect-qml-plugin-access-facebook-twitter-from-your-qtqml-applications/</guid><category>Maemo (EN), MeeGo, Programmazione, Qt, Ubuntu (EN)</category><category>library</category><category>Mobile</category><category>nokia</category><category>QML</category><category>Qt</category><category>Social</category></item><item><title>Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</title><link>https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-building-and-installing-with-distutils/</link><description>&lt;p&gt;In the last post of this series, we saw how to write a simple binding
 and we finished to build and install it manually. This is of course not
 a good way to manage the building/installation procedure.&lt;/p&gt;
 &lt;p&gt;In Python we can use a library called &lt;strong&gt;distutils&lt;/strong&gt; that let us to
@@ -29,14 +29,19 @@ automatize the building and installing process. I'll use the &lt;strong&gt;foo&l
 source code to create the package, so it will be easier to understand.&lt;/p&gt;
 &lt;h2&gt;Using distutils&lt;/h2&gt;
 &lt;p&gt;All we have to do is to write a &lt;strong&gt;setup.py&lt;/strong&gt; file similar to this one:&lt;/p&gt;
-&lt;p&gt;[sourcecode lang="python"]&lt;br&gt;
-from distutils.core import setup, Extension&lt;/p&gt;
-&lt;p&gt;foomodule = Extension('foo', sources = ['foo.c'])&lt;/p&gt;
-&lt;p&gt;setup (name = 'Foo',&lt;br&gt;
-version = '1.0',&lt;br&gt;
-description = 'This is a package for Foo',&lt;br&gt;
-ext_modules = [foomodule])&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;distutils.core&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;setup&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt;
+
+&lt;span class="n"&gt;foomodule&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sources&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;foo.c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;setup&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;1.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  
+    &lt;span class="n"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;This is a package for Foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  
+    &lt;span class="n"&gt;ext_modules&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;foomodule&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;As you can see, we have to first import needed modules with: &lt;strong&gt;from
 distutils.core import setup, Extension&lt;/strong&gt;&lt;br&gt;
 then we create an entry for each module we have (in this case just one,
@@ -44,14 +49,19 @@ then we create an entry for each module we have (in this case just one,
 parameters and our &lt;strong&gt;setup.py&lt;/strong&gt; is complete.&lt;/p&gt;
 &lt;h2&gt;Building and installing&lt;/h2&gt;
 &lt;p&gt;To test it we can try to build the package in this way:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;python2.5 setup.py build&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python2.5 setup.py build
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;if we want to install the module in our system:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;python2.5 setup.py install&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python2.5 setup.py install
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;Official Python documentation:
-    &lt;a href="http://docs.python.org/extending/building.html"&gt;http://docs.python.org/extending/building.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 13 Aug 2009 10:39:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-13:/2009/08/13/writing-python-bindings-of-existing-c-libraries-%e2%80%93-3-%e2%80%93-building-and-installing-with-distutils/</guid><category>HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>binding</category><category>distutils</category><category>library</category><category>maemo</category><category>Python</category><category>setup</category></item><item><title>Writing Python bindings of existing C libraries - (1) - Introduction</title><link>https://www.andreagrandi.it/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/</link><description>&lt;p&gt;This summer I'm having the pleasure of working in
+&lt;li&gt;Official Python documentation: &lt;a href="http://docs.python.org/extending/building.html"&gt;http://docs.python.org/extending/building.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 13 Aug 2009 10:39:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-08-13:/2009/08/13/writing-python-bindings-of-existing-c-libraries-building-and-installing-with-distutils/</guid><category>HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</category><category>binding</category><category>distutils</category><category>library</category><category>maemo</category><category>Python</category><category>setup</category></item><item><title>Writing Python bindings of existing C libraries - (1) - Introduction</title><link>https://www.andreagrandi.it/2009/08/03/writing-python-bindings-of-existing-c-libraries-1-introduction/</link><description>&lt;p&gt;This summer I'm having the pleasure of working in
 &lt;a href="http://www.igalia.com"&gt;&lt;strong&gt;Igalia&lt;/strong&gt;&lt;/a&gt; (a spanish free software company)
 for a couple of months and they assigned me to an interesting project:
 developing &lt;strong&gt;Python bindings&lt;/strong&gt; for &lt;strong&gt;MAFW&lt;/strong&gt; library (a &lt;strong&gt;Maemo&lt;/strong&gt;
@@ -61,11 +71,11 @@ almost C code) and &lt;strong&gt;Python&lt;/strong&gt; (it's a good practice to 
 all implemented methods) it's a good way to improve my knowledges in
 both languages and since I wasn't able to find much documentation about
 these kind of things, I'm going to share my own experiences.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What is a Binding?&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;What is a Binding?&lt;/h2&gt;
 &lt;p&gt;A binding is a Python module, written in C language, that allows Python
 developers to call functions from existing C libraries from their python
 applications. It's just like a "&lt;em&gt;bridge&lt;/em&gt;" from C world to Python one.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Why writing bindings?&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;Why writing bindings?&lt;/h2&gt;
 &lt;p&gt;There are a couple of reasons to write python bindings instead of
 writing a library in python language from scratch.&lt;/p&gt;
 &lt;p&gt;First of all I don't think is good duplicating code, so if a library
@@ -76,7 +86,7 @@ all we have to do is to create a bridge with python world.&lt;/p&gt;
 is the fact that python code is slower than C code for some tasks (for
 example multimedia codecs). In these cases is good to implement the core
 library in C language and then create a python binding for it.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Coming next&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;Coming next&lt;/h2&gt;
 &lt;p&gt;As the title of this post says, this is only an introduction to the
 subjects I'm going to write about. If you have any particular request
 about any argument you would like to read, please feel free to leave me

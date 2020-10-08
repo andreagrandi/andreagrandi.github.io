@@ -167,21 +167,23 @@ about me and about my motivations in the rest of this post.</p>
 <em><a href="http://maemo.org/">maemo.org</a>:</em> <strong>Andy80</strong> -
 <a href="http://maemo.org/profile/view/andy80/">http://maemo.org/profile/view/andy80/</a><br>
 <em>Corporate affiliation:</em> none</p>
-<p><strong>Introduction:</strong> My name is Andrea Grandi, I'm 28 and I live in Pistoia
+<h2>Introduction</h2>
+<p>My name is Andrea Grandi, I'm 28 and I live in Pistoia
 (Tuscany, ITALY). I'm a programmer, in particular very interested in
 Linux and opensource. I've been working for some years as computer
 programmer, then I decided to begin studing at university, and currently
 I'm attending at "Università degli studi di Firenze" to get the Computer
 Science degree. I spend lot of my time to manage the Pistoia Linux User
 Group I founded in 2001.</p>
-<p><strong>My life in the community:</strong> I'm part of the community since I bought
-my first Nokia 770. I started contributing to the mailing lists, I wrote
+<h2>My life in the community</h2>
+<p>I'm part of the community since I bought my first Nokia 770. I started contributing to the mailing lists, I wrote
 some tutorials (in italian language, then I translated them to english)
 and I ported SPIM (a MIPS emulator) to Nokia 770. Later I had the
 possibility to buy a N810 and I was able to experiment more with the
 Maemo SDK. I was at the Maemo Summit in Berlin, doing a light talk about
 Maemo development using Eclipse, PluThon and EsBox plugins.</p>
-<p><strong>Motivations:</strong> I really would like to be able to do more for the
+<h2>Motivations</h2>
+<p>I really would like to be able to do more for the
 community and one of the best way could be to be part of the council, to
 help both users/developers to explain their requests to Nokia and Nokia
 to understand the requests from the community. There are a lot of
@@ -208,21 +210,15 @@ GPS-aware application for the Nokia N810, using the Maemo SDK, Eclipse
 and PluThon plugin.</p>
 <p>Here is the complete serie:</p>
 <ul>
-<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia1/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 1:
-    Development
-    environment:</a>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia1/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 1: Development environment:</a>
     Learn how to configure a development environment targeted at the
     Nokia N810 Internet Tablet, including setting up Eclipse on a target
     development machine for the Python language.</li>
-<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 2:
-    Consider your
-    options:</a>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 2: Consider your options:</a>
     Discover the details of code design, library selection, unit
     testing, and user interface choices that make the most sense for
     you.<a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia2/index.html?S_TACT=105AGX03&amp;S_CMP=EDU"></a></li>
-<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia3/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 3: Finish
-    the
-    job</a>:
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia3/index.html?S_TACT=105AGX03&amp;S_CMP=EDU">Develop a GPS-aware application for the Nokia N810, Part 3: Finish the job</a>:
     In this last of three installments, you'll put the final touches to
     the GPS trip tracker and get it ready for release.</li>
 </ul>
@@ -247,25 +243,32 @@ convertire tutti i file che si trovano all'interno di una certa
 directory.</p>
 <p>Creiamo un file chiamato <strong>wma2mp3.sh</strong> con all'interno il seguente
 script:</p>
-<p><code>#!/bin/bash</code></p>
-<p>current_directory=\$( pwd )</p>
-<p>#remove spaces<br>
-for i in *.wma; do mv "\$i" `echo \$i | tr ' ' '_'`; done</p>
-<p>#remove uppercase<br>
-for i in *.[Ww][Mm][Aa]; do mv "\$i" `echo \$i | tr '[A-Z]'
-'[a-z]'`; done</p>
-<p>#Rip with Mplayer / encode with LAME<br>
-for i in *.wma ; do mplayer -vo null -vc dummy -af resample=44100 -ao
-pcm:waveheader \$i &amp;&amp; lame -m s audiodump.wav -o \$i; done</p>
-<p>#convert file names<br>
-for i in *.wma; do mv "\$i" "`basename "\$i" .wma`.mp3"; done</p>
-<p>rm audiodump.wav<br>
-</code></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nv">current_directory</span><span class="o">=</span><span class="k">$(</span> <span class="nb">pwd</span> <span class="k">)</span>
+
+<span class="c1">#remove spaces  </span>
+<span class="k">for</span> i in *.wma<span class="p">;</span> <span class="k">do</span> mv <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$i</span> <span class="p">|</span> tr <span class="s1">&#39; &#39;</span> <span class="s1">&#39;_&#39;</span><span class="sb">`</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c1">#remove uppercase  </span>
+<span class="k">for</span> i in *.<span class="o">[</span>Ww<span class="o">][</span>Mm<span class="o">][</span>Aa<span class="o">]</span><span class="p">;</span> <span class="k">do</span> mv <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$i</span> <span class="p">|</span> tr <span class="s1">&#39;[A-Z]&#39;</span>
+<span class="s1">&#39;[a-z]&#39;</span><span class="sb">`</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c1">#Rip with Mplayer / encode with LAME  </span>
+<span class="k">for</span> i in *.wma <span class="p">;</span> <span class="k">do</span> mplayer -vo null -vc dummy -af <span class="nv">resample</span><span class="o">=</span><span class="m">44100</span> -ao
+pcm:waveheader <span class="nv">$i</span> <span class="o">&amp;&amp;</span> lame -m s audiodump.wav -o <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c1">#convert file names</span>
+<span class="k">for</span> i in *.wma<span class="p">;</span> <span class="k">do</span> mv <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> <span class="s2">&quot;`basename &quot;</span><span class="nv">$i</span><span class="s2">&quot; .wma`.mp3&quot;</span><span class="p">;</span> <span class="k">done</span>
+
+rm audiodump.wav
+</pre></div>
+
+
 <p>a questo punto basta mettere lo script nella cartella dove ci sono i
 file .wma, dare i permessi di esecuzione a tale file (<strong>chmod +x
-wma2mp3.sh</strong>) ed eseguirlo con <strong>./wma2mp3.sh</strong></p>
-<p><em>Fonte:
-<a href="http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3">http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3</a></em></p>
+wma2mp3.sh</strong>) ed eseguirlo con <strong><code>./wma2mp3.sh</code></strong></p>
+<h3>Fonte: <a href="http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3">http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3</a>*</h3>
   </div>
   <hr />
 </article>
@@ -280,9 +283,8 @@ wma2mp3.sh</strong>) ed eseguirlo con <strong>./wma2mp3.sh</strong></p>
     </p>
   </header>
   <div>
-      <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/wordpress-logo.jpg" title="wordpress_logo">{.alignright
-.size-full .wp-image-19 width="134" height="134"}Il precedente post che
-ho fatto mi aveva fatto veramente disperare. Come potete leggere dai
+      <p><a href=""><img alt="" src="https://www.andreagrandi.it/images/2008/02/wordpress-logo.jpg" title="wordpress_logo"></a></p>
+<p>Il precedente post che ho fatto mi aveva fatto veramente disperare. Come potete leggere dai
 comandi, è necessario passare alcuni parametri utilizzando il doppio
 trattino.</p>
 <p><strong>Wordpress trasformava automaticamente il doppio trattino in un
@@ -295,9 +297,8 @@ utilissimo post</a>. In pratica si piega
 all'interno dei blocchi di codice.</p>
 <p>E' sufficiente modificare il file <strong>functions.php</strong> del tema Wordpress
 che stiamo utilizzando ed aggiungere questa riga in fondo al file:</p>
-<p>[sourcecode language='php']<br>
-&lt;?php remove_filter('the_content', "wptexturize" ); ?&gt;<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span> <span class="nx">remove_filter</span><span class="p">(</span><span class="s1">&#39;the_content&#39;</span><span class="p">,</span> <span class="s2">&quot;wptexturize&quot;</span> <span class="p">);</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
   </div>
 </article>
 
