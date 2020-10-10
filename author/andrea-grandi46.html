@@ -151,6 +151,80 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/#utilizzare-ssh-senza-password-chiavi-ssh">Utilizzare SSH senza password: chiavi SSH</a></h2>
+    <p>
+      Posted on Fri 29 February 2008 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/chiavi.html">chiavi</a>,              <a href="https://www.andreagrandi.it/tag/connessione.html">connessione</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>,              <a href="https://www.andreagrandi.it/tag/openssh.html">openssh</a>,              <a href="https://www.andreagrandi.it/tag/password.html">password</a>,              <a href="https://www.andreagrandi.it/tag/sicurezza.html">Sicurezza</a>,              <a href="https://www.andreagrandi.it/tag/ssh.html">ssh</a>,              <a href="https://www.andreagrandi.it/tag/ssh2.html">ssh2</a>
+    </p>
+  </header>
+  <div>
+      <p><a href="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png"><img alt="openssh_logo" src="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png" width="40%"></a></p>
+<p>Quando vogliamo connetterci ad un server <strong>SSH</strong>, solitamente utilizziamo un
+comando simile al seguente:</p>
+<div class="highlight"><pre><span></span>ssh user@remotehost.com
+</pre></div>
+
+
+<p>Una volta connessi ci viene richiesta la password di accesso e subito
+dopo siamo connessi. Digitare ogni volta la password puo' essere
+scomodo, ed in alcuni casi questo potrebbe addirittura impedirci di
+creare uno script di automazione per velocizzare alcuni compiti.</p>
+<p>Ci vengono in aiuto le <strong>chiavi SSH</strong>. Generando una coppia di chiavi
+<strong>pubblica/privata</strong> di SSH sulla propria macchina, ed esportando la
+chiave pubblica sul server remoto, possiamo fare in modo di autorizzare
+la nostra chiave remota, facendo si che le connessioni successive
+avvengano senza la richiesta di alcuna password.</p>
+<p>Supponiamo (a scopo dimostrativo) che il server remoto si trovi
+all'indirizzo IP <strong>192.168.0.2</strong> e supponiamo inoltre di avere un
+account chiamato <strong>user</strong> sulla macchina remota.</p>
+<p>Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
+macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
+verrebbe richiesta comunque al primo login di ogni sessione):</p>
+<div class="highlight"><pre><span></span>andy80@noteboontu:~$ ssh-keygen -t dsa  
+Generating public/private dsa key pair.  
+Enter file in which to save the key <span class="o">(</span>/home/andy80/.ssh/id_dsa<span class="o">)</span>:  
+Enter passphrase <span class="o">(</span>empty <span class="k">for</span> no passphrase<span class="o">)</span>:  
+Enter same passphrase again:  
+Your identification has been saved in /home/andy80/.ssh/id_dsa.  
+Your public key has been saved in /home/andy80/.ssh/id_dsa.pub.  
+The key fingerprint is:  
+<span class="m">22</span>:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu
+</pre></div>
+
+
+<p>A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
+server remoto:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> ~/.ssh/  
+scp id_dsa.pub user@192.168.0.2:./id_dsa.pub
+</pre></div>
+
+
+<p>Ci verrà chiesta la nostra password remota, per poter effettuare la
+copia del file. A questo punto dobbiamo connetterci via SSH al server
+remoto:</p>
+<div class="highlight"><pre><span></span>ssh user@192.168.0.2
+</pre></div>
+
+
+<p>Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
+i seguenti comandi:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> .ssh  
+touch authorized_keys2  
+chmod <span class="m">600</span> authorized_keys2  
+cat ../id_dsa.pub &gt;&gt; authorized_keys2  
+rm ../id_dsa.pub
+</pre></div>
+
+
+<p>Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
+il server remoto, avverranno senza la richiesta di alcuna password.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2008/02/29/full-circle-magazine-10/#full-circle-magazine-10">Full Circle Magazine #10</a></h2>
     <p>
       Posted on Fri 29 February 2008 in <a href="https://www.andreagrandi.it/category/linux-ubuntu-it.html">Linux, Ubuntu (IT)</a>
@@ -286,62 +360,6 @@ directly with Internet Tablet.</p>
 <li><strong>ESbox:</strong> <a href="http://esbox.garage.maemo.org/">http://esbox.garage.maemo.org/</a>  </li>
 <li><strong>PluThon:</strong> <a href="http://pluthon.garage.maemo.org/">http://pluthon.garage.maemo.org/</a></li>
 </ul>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2008/02/15/apc-back-ups-500-usb-e-ubuntu-server/#apc-back-ups-500-usb-e-ubuntu-server">APC Back-UPS 500 USB e Ubuntu Server</a></h2>
-    <p>
-      Posted on Fri 15 February 2008 in <a href="https://www.andreagrandi.it/category/linux-ubuntu-it.html">Linux, Ubuntu (IT)</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/alimentazione.html">alimentazione</a>,              <a href="https://www.andreagrandi.it/tag/apc.html">apc</a>,              <a href="https://www.andreagrandi.it/tag/apcupsd.html">apcupsd</a>,              <a href="https://www.andreagrandi.it/tag/back-ups.html">back-ups</a>,              <a href="https://www.andreagrandi.it/tag/energetico.html">energetico</a>,              <a href="https://www.andreagrandi.it/tag/risparmio.html">risparmio</a>,              <a href="https://www.andreagrandi.it/tag/server.html">server</a>,              <a href="https://www.andreagrandi.it/tag/shutdown.html">shutdown</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu-en.html">Ubuntu (EN)</a>,              <a href="https://www.andreagrandi.it/tag/usb.html">usb</a>
-    </p>
-  </header>
-  <div>
-      <p><a href=""><img alt="apc_ups_500" src="https://www.andreagrandi.it/images/2008/02/apc500.thumbnail.jpg"></a></p>
-<p>L'utilizzo di una unità UPS è certamente una delle cose piu' consigliate quando
-vogliamo proteggere l'integrità di un computer da sbalzi di corrente o
-interruzioni dell'alimentazione.</p>
-<p>Cosa succede però quando la batteria dell'UPS si esaurisce? In casi
-normali è molto semplice: la corrente viene a mancare del tutto ed il
-nostro PC verrà spento bruscamente.</p>
-<p>Alla mancanza di corrente non c'è modo di porre un rimedio definitivo,
-però possiamo almeno fare in modo che il nostro computer venga spento in
-maniera corretta, prima che la batteria dell'UPS si esaurisca del tutto.</p>
-<p>Nel caso di una macchina Linux, ci viene in aiuto una utility chiamata
-<strong>apcupsd</strong>. Installarla su Ubuntu è molto semplice:</p>
-<div class="highlight"><pre><span></span>apt-get install apcupsd
-</pre></div>
-
-
-<p>A questo punto, dando per scontato che abbiate già connesso l'UPS al
-PC/server, collegate il cavo USB a corredo in modo da far riconoscere
-l'UPS a Linux, in modo da poter proseguire con la configurazione. Il
-primo file da modificare è <strong><code>/etc/apcupsd/apcupsd.conf</code></strong> ed impostare i
-seguenti parametri come segue:</p>
-<div class="highlight"><pre><span></span>UPSCABLE usb
-UPSTYPE usb
-DEVICE
-</pre></div>
-
-
-<p>A questo punto non ci resta che modificare il file
-<strong><code>/etc/default/apcupsd</code></strong> in modo da rendere effettive le modifiche:</p>
-<div class="highlight"><pre><span></span><span class="nv">ISCONFIGURED</span><span class="o">=</span>yes
-</pre></div>
-
-
-<p>Infine dobbiamo soltanto avviare il demone ed il gioco è fatto:</p>
-<div class="highlight"><pre><span></span>/etc/init.d/apcupsd start
-</pre></div>
-
-
-<p>Per default <strong>apcupsd</strong> effettuerà lo <strong>shutdown</strong> nel PC quando la
-batteria sarà arrivata al <strong>5%</strong> della sua capacità, consentendo così
-uno shutdown controllato del sistema, ed evitando quindi possibili
-perdite di dati.</p>
   </div>
 </article>
 

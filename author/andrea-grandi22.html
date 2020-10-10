@@ -151,6 +151,106 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2010/11/11/utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux/#utilizzare-la-carta-sanitaria-europea-su-ubuntu-linux">Utilizzare la Carta Sanitaria Europea su Ubuntu Linux</a></h2>
+    <p>
+      Posted on Thu 11 November 2010 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/cse.html">CSE</a>,              <a href="https://www.andreagrandi.it/tag/firefox.html">Firefox</a>,              <a href="https://www.andreagrandi.it/tag/regione-toscana.html">Regione Toscana</a>,              <a href="https://www.andreagrandi.it/tag/smartcard.html">SmartCard</a>
+    </p>
+  </header>
+  <div>
+      <p><a href="https://www.andreagrandi.it/images/2010/11/jpg_2056020.jpg"><img alt="CSE_Toscana" src="https://www.andreagrandi.it/images/2010/11/jpg_2056020.jpg" width="60%"></a></p>
+<p>In questo periodo le regioni stanno inviando a casa di ogni cittadino la nuova versione della
+<strong>Carta Sanitaria Europea</strong>, simile a quella che potete vedere nella
+foto. Questa nuova carta, oltre a conservare gli stessi utilizzi di
+quella vecchia, comprende anche un micro chip che permette di
+utilizzarla con i comuni lettori di smartcard.</p>
+<p>Ma a cosa serve poter utilizzare la CSE con un lettore di smartcard? Ad
+esempio ad accedere al proprio <strong>fascicolo sanitario</strong> tramite il sito
+della regione, che ci permetterà di vedere alcuni nostri dati come ad
+esempio: medicine prese, esenzioni, ricoveri in ospedale, ricoveri al
+pronto soccorso, risultati delle analisi ecc...</p>
+<p>Per accedere all'area riservata non viene utilizzato il classico metodo
+di username/password, ma bensì l'autenticazione tramite smartcard.</p>
+<h2>Installazione del lettore di smartcard</h2>
+<p><a href="https://www.andreagrandi.it/images/2010/11/miniLectorBox.jpg"><img alt="miniLectorBox" src="https://www.andreagrandi.it/images/2010/11/miniLectorBox.jpg" width="60%"></a></p>
+<p>Prima di utilizzare la carta su <strong>Ubuntu Linux</strong> è necessario intanto
+procurarsi un lettore di smartcard (<strong>vi consiglio di acquistare il
+kit</strong> che vendono dove siete andati ad attivare la vostra CSE, poichè
+viene venduto ad un prezzo vantaggioso di <strong>4,20€</strong> mentre se provate a
+comprare il lettore altrove non lo troverete a meno di 15-20€) e poi
+installare sul proprio sistema alcuni pacchetti necessari al suo
+funzionamento.</p>
+<p>Il lettore, una volta inserito nel proprio PC dovrebbe essere
+identificabile tramite la seguente stringa:</p>
+<div class="highlight"><pre><span></span>andrea@centurion:<span class="se">\~\$</span> lsusb
+Bus <span class="m">002</span> Device <span class="m">004</span>: ID 072f:90cc Advanced Card Systems, Ltd ACR38
+SmartCard Reader
+</pre></div>
+
+
+<p>Per installare il software necessario, occorre eseguire il seguente
+comando da terminale:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install pcsc-tools pcscd libccid
+</pre></div>
+
+
+<p>dopo di che dovrete procurarvi il driver del lettore, che potete trovare
+a <a href="http://www.regione.toscana.it/Carta_sanitaria/software/linux/Installazione_lettore_LINUX/lettore/soft_lettore.zip">questo
+indirizzo</a>
+ed installarlo con il seguente comando (dopo aver scompattato l'archivio
+in una cartella a piacimento):</p>
+<div class="highlight"><pre><span></span>sudo dpkg -i libminilector38u-bit4id.deb
+</pre></div>
+
+
+<p>Se tutto è stato eseguito correttamente, utilizzando il programma
+<strong><code>pcsc_scan</code></strong> da terminale, dovreste ottenere un output simile a
+questo:</p>
+<div class="highlight"><pre><span></span>andrea@centurion:<span class="se">\~\$</span> pcsc_scan  
+PC/SC device scanner  
+V <span class="m">1</span>.4.16 <span class="o">(</span>c<span class="o">)</span> <span class="m">2001</span>-2009, Ludovic Rousseau
+&lt;ludovic.rousseau@free.fr&gt;  
+Compiled with PC/SC lite version: <span class="m">1</span>.5.3  
+Scanning present readers...  
+<span class="m">0</span>: ACS ACR 38U-CCID <span class="m">00</span> <span class="m">00</span>
+
+Thu Nov <span class="m">11</span> <span class="m">14</span>:08:37 <span class="m">2010</span>  
+Reader <span class="m">0</span>: ACS ACR 38U-CCID <span class="m">00</span> <span class="m">00</span>  
+Card state: Card inserted,  
+ATR: 3B DF <span class="m">18</span> <span class="m">00</span> <span class="m">81</span> <span class="m">31</span> FE 7D <span class="m">00</span> 6B <span class="m">15</span> 0C <span class="m">01</span> <span class="m">81</span> <span class="m">01</span> <span class="m">11</span> <span class="m">01</span> <span class="m">43</span> 4E <span class="m">53</span> <span class="m">10</span> <span class="m">31</span> <span class="m">80</span> E8
+</pre></div>
+
+
+<h2>Configurazione di Firefox</h2>
+<p>Prima di poter configurare Firefox è necessario installare un'ultima
+libreria che permetterà al browser di poter interagire con il lettore di
+smartcard. Dobbiamo scaricare l'archivio presente a <a href="http://www.regione.toscana.it/Carta_sanitaria/software/linux/Installazione_CSE_LINUX/Software/smart_card.zip">questo
+indirizzo</a>,
+scompattarlo e poi copiare uno dei due file presenti (a seconda che si
+utilizzi un sistema a 32 o 64 bit) all'interno della cartella
+<strong>/usr/lib</strong> ed infine digitare il comando <strong>sudo ldconfig</strong> per
+aggiornare l'elenco delle librerie.</p>
+<p>A questo punto bisogna aprire <strong>Firefox</strong> ed andare su
+<strong>Modifica--&gt;Preferenze--&gt;Avanzate--&gt;Cifratura--&gt;Dispositivi
+di Sicurezza</strong> cliccare su <strong>Carica</strong> e specificare come descrizione
+<strong>"CSE"</strong> e come percorso quello dove avete copiato la libreria
+installata nel passo precedente (che ad esempio potrà trovarsi in
+<strong>/usr/lib/libaseCnsP11.so</strong> ).</p>
+<p>Per verificare che tutto funzioni correttamente è sufficiente fare click
+su <strong>Accedi</strong> e se ci verrà chiesto di inserire la "password" (che nel
+nostro caso sarà il <strong>PIN</strong> della smartcard) vorrà dire che tutto sta
+funzionando nel modo corretto.</p>
+<p>Per avere maggiori informazioni sulla <strong>Carta Sanitaria Europea</strong> e per
+conoscere tutti i servizi disponibili, vi consiglio di visitare la
+seguente pagina presente sul sito della <strong>Regione Toscana</strong>:
+<a href="http://www.regione.toscana.it/cartasanitaria/cse/cose/index.html">http://www.regione.toscana.it/cartasanitaria/cse/cose/index.html</a></p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2010/09/05/meego-conference-2010-early-bird-events/#meego-conference-2010-early-bird-events">MeeGo Conference 2010 / Early Bird Events</a></h2>
     <p>
       Posted on Sun 05 September 2010 in <a href="https://www.andreagrandi.it/category/linux-maemo-en-meego-programmazione.html">Linux, Maemo (EN), MeeGo, Programmazione</a>
@@ -326,46 +426,6 @@ polls:</p>
 two applications: <a href="http://maemo.org/packages/view/lastgo/"><strong>LastGo</strong></a>
 and <a href="http://maemo.org/packages/view/msoma/"><strong>mSoma</strong></a>. Please at least
 test them and let me know what do you think about!</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2010/07/16/announcing-lastgo-maemomeego-client-for-last-fm/#announcing-lastgo-maemomeego-client-for-last-fm">Announcing LastGo: Maemo/MeeGo client for Last.fm</a></h2>
-    <p>
-      Posted on Fri 16 July 2010 in <a href="https://www.andreagrandi.it/category/linux-maemo-en-meego-programmazione-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Qt</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/client.html">client</a>,              <a href="https://www.andreagrandi.it/tag/lastfm.html">last.fm</a>,              <a href="https://www.andreagrandi.it/tag/music.html">music</a>,              <a href="https://www.andreagrandi.it/tag/n900.html">N900</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>
-    </p>
-  </header>
-  <div>
-      <p>While I'm still working to
-<a href="https://www.andreagrandi.it/2010/07/03/announcing-msoma-maemomeego-client-for-somafm/">mSoma</a>
-with Lorenzo Bettini, I decided to start writing another application. I
-needed to write something from scratch to learn better how to use
-<strong>C++</strong> and <strong>Qt</strong> libraries, so I decided to write a client for
-<a href="http://www.lastfm.com">Last.fm</a> service. The application is still in
-full development, but you can already taste it if you have
-<strong>extras-devel</strong> repository enabled on your <strong>N900</strong>. At the moment it
-only supports basic radio features: tuning user's radio, playing a song,
-skipping a song and displaying song informations.</p>
-<p><a href="https://www.andreagrandi.it/images/2010/07/Screenshot-20100716-222755.png"><img alt="lastgo" src="https://www.andreagrandi.it/images/2010/07/Screenshot-20100716-222755.png"></a></p>
-<p>Other basic Last.fm features like scrobbling, marking a song as loved or
-banned ecc.. are not supported yet, but of course they're planned for
-the stable release. Please not that the application is still a bit
-unstable even if it works for normal tasks.</p>
-<p>If you are a <a href="http://www.lastfm.com"><strong>Last.fm</strong></a> subscriber and you
-want to test it, please install it from <strong>extras-devel</strong> repository and
-send me your feedback.</p>
-<p><strong>Note:</strong> since it's not allowed to use Last.fm API from a mobile phone
-(due to API license restrictions) I cannot distribute a valid api key
-with the application. I'm writing this software mainly to learn C++ and
-Qt and for the future tablets and netbooks that will be based on MeeGo.
-If you feel to assume the responsability, you can <a href="http://gitorious.org/lastgo/lastgo/blobs/raw/master/LastGo/apikey.xml">download the api key
-file</a>
-and import it using "Import Api Key" that you can find in the
-application menu.</p>
   </div>
 </article>
 

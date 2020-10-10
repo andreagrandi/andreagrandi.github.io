@@ -151,6 +151,34 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2018/10/16/using-ipdb-with-python-37-breakpoint/#using-ipdb-with-python-37-breakpoint">Using ipdb with Python 3.7.x breakpoint</a></h2>
+    <p>
+      Posted on Tue 16 October 2018 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/python.html">python</a>,              <a href="https://www.andreagrandi.it/tag/debugging.html">debugging</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/software.html">software</a>,              <a href="https://www.andreagrandi.it/tag/development.html">development</a>
+    </p>
+  </header>
+  <div>
+      <p>Python 3.7.x introduced a <a href="https://docs.python.org/3/whatsnew/3.7.html#pep-553-built-in-breakpoint">new method to insert a breakpoint</a> in the code.
+Before Python 3.7.x to insert a debugging point we had to write <code>import pdb; pdb.set_trace()</code> which honestly I could never remember (and I also created a snippet on VS Code to auto complete it).</p>
+<p>Now you can just write <code>breakpoint()</code> that's it!</p>
+<p>Now... the only problem is that by default that command will use <strong>pdb</strong> which is not exactly the best debugger you can have. I usually use <strong>ipdb</strong> but there wasn't an intuitive way of using it... and no, just installing it in your virtual environment, it won't be used by default.</p>
+<p>How to use it then? It's very simple. The new debugging command will read an environment variable named <strong>PYTHONBREAKPOINT</strong>. If you set it properly, you will be able to use ipdb instead of pdb.</p>
+<div class="highlight"><pre><span></span>export PYTHONBREAKPOINT=ipdb.set_trace
+</pre></div>
+
+
+<p>At this point, any time you use <code>breakpoint()</code> in your code, <strong>ipdb</strong> will be used instead of <strong>pdb</strong>.</p>
+<h4>References</h4>
+<ul>
+<li><a href="https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c">https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c</a></li>
+</ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2018/04/14/machine-learning-pima-indians-diabetes/#machine-learning-pima-indians-diabetes">Machine Learning: Pima Indians Diabetes</a></h2>
     <p>
       Posted on Sat 14 April 2018 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -897,109 +925,6 @@ and your <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y
 on any of the YubiKey links and decide to buy it, I will get a little commission from it.
 I've never tried this before and I've no idea if it works or not. I'm writing this here just for the
 sake of transparency.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/#getting-latest-ubuntu-ami-with-terraform">Getting latest Ubuntu AMI with Terraform</a></h2>
-    <p>
-      Posted on Fri 25 August 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/aws.html">AWS</a>,              <a href="https://www.andreagrandi.it/tag/terraform.html">Terraform</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>,              <a href="https://www.andreagrandi.it/tag/devops.html">devops</a>
-    </p>
-  </header>
-  <div>
-      <p>When we need to create an EC2 resource on AWS using Terraform, we need to specify the AMI id to get the correct image.
-The id is not easy to memorise and it changes depending on the zone we are working one. On every new release the id changes again.
-So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
-<h3>Getting latest Ubuntu AMI id</h3>
-<p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
-<div class="highlight"><pre><span></span><span class="na">variable &quot;aws_region&quot; { default</span> <span class="o">=</span> <span class="s2">&quot;eu-west-2&quot;</span> <span class=" -Punctuation">}</span><span class="c1"> # London</span>
-
-<span class="kr">provider</span> <span class="s">&quot;aws&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
-<span class="na">    access_key</span> <span class="o">=</span> <span class="s2">&quot;youraccesskey&quot;</span>
-<span class="na">    secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
-<span class=" -Punctuation">}</span>
-
-<span class="kr">data</span> <span class="s">&quot;aws_ami&quot; &quot;ubuntu&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    most_recent</span> <span class="o">=</span> <span class="kt">true</span>
-
-    <span class="err">filter</span> <span class=" -Punctuation">{</span>
-<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
-<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span>
-    <span class=" -Punctuation">}</span>
-
-    <span class="err">filter</span> <span class=" -Punctuation">{</span>
-<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;virtualization-type&quot;</span>
-<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span>
-    <span class=" -Punctuation">}</span>
-
-<span class="na">    owners</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
-<span class=" -Punctuation">}</span>
-
-<span class="kr">resource</span> <span class="s">&quot;aws_instance&quot; &quot;web&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
-<span class="na">    instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
-
-    <span class="kd">tags</span> <span class=" -Punctuation">{</span>
-<span class="na">        Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
-    <span class=" -Punctuation">}</span>
-<span class=" -Punctuation">}</span>
-
-<span class="kr">output</span> <span class="s">&quot;image_id&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
-<span class=" -Punctuation">}</span>
-</pre></div>
-
-
-<p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
-<div class="highlight"><pre><span></span><span class="err">➜</span>  <span class="n">example1$</span><span class="p">:</span> <span class="n">terraform</span> <span class="n">apply</span>
-<span class="k">data</span><span class="p">.</span><span class="n">aws_ami</span><span class="p">.</span><span class="n">ubuntu</span><span class="p">:</span> <span class="n">Refreshing</span> <span class="k">state</span><span class="p">...</span>
-<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Creating</span><span class="p">...</span>
-    <span class="n">ami</span><span class="p">:</span>                          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;ami-03998867&quot;</span>
-    <span class="n">associate_public_ip_address</span><span class="p">:</span>  <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">availability_zone</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">ebs_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>           <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">ephemeral_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">instance_state</span><span class="p">:</span>               <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">instance_type</span><span class="p">:</span>                <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;t2.micro&quot;</span>
-    <span class="n">ipv6_address_count</span><span class="p">:</span>           <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">ipv6_addresses</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>             <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">key_name</span><span class="p">:</span>                     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">network_interface</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">network_interface_id</span><span class="p">:</span>         <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">placement_group</span><span class="p">:</span>              <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">primary_network_interface_id</span><span class="p">:</span> <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">private_dns</span><span class="p">:</span>                  <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">private_ip</span><span class="p">:</span>                   <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">public_dns</span><span class="p">:</span>                   <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">public_ip</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">root_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">security_groups</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">source_dest_check</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;true&quot;</span>
-    <span class="n">subnet_id</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">tags</span><span class="p">.</span><span class="o">%</span><span class="p">:</span>                       <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;1&quot;</span>
-    <span class="n">tags</span><span class="p">.</span><span class="n">Name</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;HelloUbuntu&quot;</span>
-    <span class="n">tenancy</span><span class="p">:</span>                      <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">volume_tags</span><span class="p">.</span><span class="o">%</span><span class="p">:</span>                <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-    <span class="n">vpc_security_group_ids</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
-<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">10</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
-<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">20</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
-<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">30</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
-<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Creation</span> <span class="n">complete</span> <span class="p">(</span><span class="n">ID</span><span class="p">:</span> <span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="n">f58f8bd55b3a7e38</span><span class="p">)</span>
-
-<span class="n">Apply</span> <span class="n">complete</span><span class="o">!</span> <span class="n">Resources</span><span class="p">:</span> <span class="mi">1</span> <span class="n">added</span><span class="p">,</span> <span class="mi">0</span> <span class="n">changed</span><span class="p">,</span> <span class="mi">0</span> <span class="n">destroyed</span><span class="p">.</span>
-
-<span class="n">Outputs</span><span class="p">:</span>
-
-<span class="n">image_id</span> <span class="o">=</span> <span class="n">ami</span><span class="o">-</span><span class="mi">03998867</span>
-</pre></div>
-
-
-<p>That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.</p>
   </div>
 </article>
 
