@@ -222,29 +222,37 @@ progetto</a> Android.</p>
     </p>
   </header>
   <div>
-      <p>Reading the <a href="http://wxwidgets.blogspot.com/2007/11/hildonizing-wxgtk.html">official WxWidget
-blog</a>, I
+      <p>Reading the <a href="http://wxwidgets.blogspot.com/2007/11/hildonizing-wxgtk.html">official WxWidget blog</a>, I
 discovered that one of their developer was working to hildonize
 [WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
 just a test or if this library could work in Maemo, so I followed his
 suggestion and I grabbed the latest SVN sources:</p>
-<p><code>svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets</code></p>
+<div class="highlight"><pre><span></span>svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
+</pre></div>
+
+
 <p>and I compiled it in this way:</p>
-<p><code>cd wxWidgets ./configure --with-hildon make make install</code></p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> wxWidgets ./configure --with-hildon make make install
+</pre></div>
+
+
 <p>then I grabbed a simple "HelloWorld" from the official documentation.
-You can find the complete source code
-<a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt">here</a>.</p>
+You can find the complete source code <a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt">here</a>.</p>
 <p>I compiled the source code in this way:</p>
-<p><code>g++ hworld.cpp `wx-config --libs` `wx-config --cxxflags` -o hworld</code></p>
+<div class="highlight"><pre><span></span>g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
+</pre></div>
+
+
 <p>then I ran it in the usual way:</p>
-<p><code>run-standalone.sh ./hworld</code></p>
+<div class="highlight"><pre><span></span>run-standalone.sh ./hworld
+</pre></div>
+
+
 <p>The result? I think that a screenshoot is better than thousand words :)</p>
-<p><a href="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s1600-h/wxWindowsHildon.jpg"><img alt="" id="BLOGGER_PHOTO_ID_5144273397928476850" src="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s400/wxWindowsHildon.jpg"></a><br>
-[N.b:]{style="font-weight: bold;"} I tested this inside Scratchbox,
-using [CHINOOK_x86]{style="font-weight: bold;"} target, so I think it
-will work fine on Os2008. This could be a good thing to help other
-developers porting some interesting applications (uhm... aMule for
-example ;) ) to Maemo.</p>
+<p><a href="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s1600-h/wxWindowsHildon.jpg"><img alt="" src="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s400/wxWindowsHildon.jpg"></a></p>
+<p><strong>Note:</strong> I tested this inside Scratchbox,
+using <strong>CHINOOK_x86</strong> target, so I think it will work fine on Os2008. This could be a good thing to help other
+developers porting some interesting applications (uhm... aMule for example ;) ) to Maemo.</p>
   </div>
   <hr />
 </article>
@@ -262,40 +270,58 @@ example ;) ) to Maemo.</p>
       <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
-<p><code>sem_post: Function not implemented</code></p>
+<div class="highlight"><pre><span></span>sem_post: Function not implemented
+</pre></div>
+
+
 <p>This happens because not all the functions have been implemented in the
 emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
 created a <a href="http://sourceforge.net/projects/qemu-arm-eabi/">patched</a>
-version of qemu-arm called [qemu-arm-eabi]{style="font-weight: bold;"}.</p>
-<p>Thanks to [Marcelo Lira]{style="font-weight: bold;"}, we have a simple
-howto to install the patch into the Scratchbox environment.
-[Note:]{style="font-weight: bold;"} you have to execute these commands
+version of qemu-arm called [qemu-arm-eabi].</p>
+<p>Thanks to <strong>Marcelo Lira</strong>, we have a simple
+howto to install the patch into the Scratchbox environment.</p>
+<p><strong>Note:</strong> you have to execute these commands
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.</p>
-<p>[1.]{style="font-weight: bold;"} You need gcc 3.4, SDL dev library and
-Zlib dev:[<br>
-]{style="font-size: 78%;"}</p>
-<p><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev</code></p>
-<p>[2.]{style="font-weight: bold;"} Get the patched qemu-arm. Notice that
+<p>You need gcc 3.4, SDL dev library andZlib dev:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+</pre></div>
+
+
+<p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
-<p><code>svn co  https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make</code></p>
-<p>[3.]{style="font-weight: bold;"} Copy qemu to the cputransp dir on
-scratchbox[<br>
-]{style="font-size: 78%;"}</p>
-<p><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2</code></p>
-<p>[4.]{style="font-weight: bold;"} Add it to the list of cputransp
-methods. Open the file[<br>
-]{style="font-size: 78%;"}</p>
-<p><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods</code></p>
+<div class="highlight"><pre><span></span>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
+<span class="nb">cd</span> qemu-arm-eabi 
+./configure --target-list<span class="o">=</span>arm-linux-user --static make
+</pre></div>
+
+
+<p>Copy qemu to the cputransp dir on scratchbox:</p>
+<div class="highlight"><pre><span></span>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+</pre></div>
+
+
+<p>Add it to the list of cputransp methods. Open the file:</p>
+<div class="highlight"><pre><span></span>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+</pre></div>
+
+
 <p>and add this line:</p>
-<p><code>qemu-arm-eabi-sb2</code></p>
-<p>[5.]{style="font-weight: bold;"} Configure the target to use the patched
-qemu as transparency method. Edit the file:[<br>
-]{style="font-size: 78%; font-family: courier new;"}</p>
-<p><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config</code></p>
+<div class="highlight"><pre><span></span>qemu-arm-eabi-sb2
+</pre></div>
+
+
+<p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
+<div class="highlight"><pre><span></span>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+</pre></div>
+
+
 <p>and change this line:</p>
-<p><code>SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2</code></p>
+<div class="highlight"><pre><span></span><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+</pre></div>
+
+
 <p>That's all! You're now ready to log again into your Scratchbox
 environment.</p>
   </div>
