@@ -160,9 +160,8 @@
     </p>
   </header>
   <div>
-      <p><img alt="" src="http://www.andreagrandi.it/wp-content/uploads/2008/08/maemoupdate.jpg" title="maemoupdate">{.alignright
-.size-full .wp-image-88 width="230" height="136"}A new update for
-<strong>Nokia Os 2008</strong> is available for <strong>Nokia N810</strong> (and I suppose N800
+      <p><a href=""><img alt="" src="https://www.andreagrandi.it/images/2008/08/maemoupdate.jpg"></a></p>
+<p>A new update for <strong>Nokia Os 2008</strong> is available for <strong>Nokia N810</strong> (and I suppose N800
 too).</p>
 <p>All you have to do is connect to Internet, refresh package list and
 install the updates.</p>
@@ -189,10 +188,26 @@ upgrade will fail.</p>
   <div>
       <p>Prendendo spunto da alcuni post apparsi sulla versione inglese di Planet
 Ubuntu, ho deciso di provare questo comando:</p>
-<p><code>history | awk '{a[$2]++ } END{for(i in a){print a[i] " " i}}' | sort -rn | head</code></p>
+<div class="highlight"><pre><span></span><span class="nb">history</span> <span class="p">|</span> awk <span class="s1">&#39;{a[$2]++ } END{for(i in a){print a[i] &quot; &quot; i}}&#39;</span> <span class="p">|</span> sort -rn <span class="p">|</span> head
+</pre></div>
+
+
 <p>che dovrebbe stampare la lista dei comandi piu' digitati nella bash
 della vostra macchina Linux. Il risultato è stato il seguente:</p>
-<p><code>andy80@noteboontu:~$ history | awk '{a[$2]++ } END{for(i in a){print a[i] " " i}}' | sort -rn | head 89 vim 70 cd 50 ruby 41 ls 29 sudo 25 su 20 rails 16 mc 14 cat 11 telnet</code></p>
+<div class="highlight"><pre><span></span><span class="nb">history</span> <span class="p">|</span> awk <span class="s1">&#39;{a[$2]++ } END{for(i in a){print a[i] &quot; &quot; i}}&#39;</span> <span class="p">|</span> sort -rn <span class="p">|</span> head 
+<span class="m">4884</span> git
+<span class="m">1023</span> <span class="nb">eval</span>
+<span class="m">382</span> isort
+<span class="m">381</span> docker-compose
+<span class="m">379</span> nox
+<span class="m">318</span> <span class="nb">cd</span>
+<span class="m">305</span> ls
+<span class="m">228</span> docker
+<span class="m">224</span> pip
+<span class="m">151</span> workon
+</pre></div>
+
+
 <p>interessante, non trovate?!</p>
   </div>
   <hr />
@@ -208,19 +223,23 @@ della vostra macchina Linux. Il risultato è stato il seguente:</p>
     </p>
   </header>
   <div>
-      <p><img alt="Creative" src="http://www.andreagrandi.it/wp-content/uploads/2008/06/creative_live_cam_trasparente1.png">Finalmente
-sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
-Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech
-Quickcam for
-Notebook</a></strong>
+      <p><a href=""><img alt="Creative" src="https://www.andreagrandi.it/images/2008/06/creative_live_cam_trasparente1.png"></a></p>
+<p>Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
+Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech Quickcam for Notebook</a></strong>
 mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo
-con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam
-Notebook</strong></a>.</p>
+con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam Notebook</strong></a>.</p>
 <p>Prima di proseguire nella lettura di questa guida, vi consiglio di
 verificare che il modello di "Creative Live Cam" che state cercando di
 installare, sia lo stesso che ho testato io. Potete verificarlo
-scrivendo in un terminale il comando <strong>lsusb</strong>:<br>
-<code>andy80@noteboontu:~$ lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000</code></p>
+scrivendo in un terminale il comando <strong>lsusb</strong>:  </p>
+<div class="highlight"><pre><span></span>lsusb 
+Bus <span class="m">003</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
+Bus <span class="m">002</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
+Bus <span class="m">001</span> Device <span class="m">018</span>: ID 041e:4068 Creative Technology, Ltd 
+Bus <span class="m">001</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000<span class="sb">`</span>
+</pre></div>
+
+
 <p>Ovvero dovrete verificare che l'identificativo del vostro modello sia
 esattamente <strong>041e:4068</strong></p>
 <p>Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio
@@ -236,23 +255,42 @@ che invece supportano il mio modello di webcam.</p>
 installato sulla nostra macchina tutto il necessario per poter
 ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:</p>
-<p><code>apt-get install build-essential linux-headers-$(uname -r)</code></p>
+<div class="highlight"><pre><span></span>apt-get install build-essential linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
+</pre></div>
+
+
 <p>A questo punto dovrete scaricare i sorgenti del driver, da questo
-indirizzo: 
-<a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
-<p><code>root@noteboontu:~# wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</code></p>
+indirizzo: <a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
+<div class="highlight"><pre><span></span>wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
+</pre></div>
+
+
 <p>Dobbiamo poi scompattarli con il seguente comando:</p>
-<p><code>root@noteboontu:~# tar xfvz ov51x-jpeg-1.5.7.tar.gz</code></p>
+<div class="highlight"><pre><span></span>tar xfvz ov51x-jpeg-1.5.7.tar.gz
+</pre></div>
+
+
 <p>Infine dobbiamo compilare il modulo ed installarlo:</p>
-<p><code>root@noteboontu:~# cd ov51x-jpeg-1.5.7 root@noteboontu:~/ov51x-jpeg-1.5.7# make root@noteboontu:~/ov51x-jpeg-1.5.7# make install</code></p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> ov51x-jpeg-1.5.7 
+make
+make install
+</pre></div>
+
+
 <p>Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:</p>
-<p><code>root@noteboontu:~/ov51x-jpeg-1.5.7# modprobe ov51x-jpeg</code><br>
-Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
+<div class="highlight"><pre><span></span>modprobe ov51x-jpeg
+</pre></div>
+
+
+<p>Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
-modificare il file /etc/modprobe.d/options ed aggiungere la seguente
-riga:<br>
-<code>options ov51x-jpeg forceblock=1</code></p>
+modificare il file <code>/etc/modprobe.d/options</code> ed aggiungere la seguente
+riga:</p>
+<div class="highlight"><pre><span></span>options ov51x-jpeg <span class="nv">forceblock</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+
+
 <p>ovviamente prima di caricare il modulo. A questo punto l'installazione
 dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
 scrivere lasciando un commento a questo post, in modo che anche altri
@@ -271,17 +309,15 @@ possano poi leggere la domanda/risposta.</p>
     </p>
   </header>
   <div>
-      <p><img alt="Skype
-Logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/skype_logo.thumbnail.jpg">Il
-client di <strong>Skype</strong> per Linux <strong>non supporta</strong> al momento l'<strong>invio
+      <p><a href=""><img alt="SkypeLogo" src="https://www.andreagrandi.it/images/2008/05/skype_logo.thumbnail.jpg"></a></p>
+<p>Il client di <strong>Skype</strong> per Linux <strong>non supporta</strong> al momento l'<strong>invio
 degli SMS</strong>. Questa puo' essere per molti una grossa limitazione, visto
 che è molto conveniente come metodo per inviare gli sms (costano 10
 centesimi) rispetto a molte tariffe in circolazione al momento, con i
 principali gestori italiani.La mancanza di questa funzionalità è però
 soltanto apparente! Infatti è stata già implementata a livello di
 librerie di Skype ed è già disponibile tramite le API.</p>
-<p>Grazie alla libreria
-<a href="https://developer.skype.com/wiki/Skype4Py"><strong>Skype4Py</strong></a>, ufficialmente
+<p>Grazie alla libreria <a href="https://developer.skype.com/wiki/Skype4Py"><strong>Skype4Py</strong></a>, ufficialmente
 supportata da <strong>Skype</strong> e sviluppata da <strong>Arkadiusz Wahlig</strong> (che ha
 tenuto un talk proprio su questo argomento nella giornata di ieri del
 <a href="http://www.pycon.it">PyCon</a> Due), è possibile scrivere applicazioni
@@ -292,17 +328,22 @@ avviare il client Skype.</p>
 di Skype, sono moltissime. In questo caso particolare farò vedere un
 piccolo script Python che invia un SMS utilizzando il client (ed il
 credito) dell'istanza di Skype che sta girando sulla vostra macchina:</p>
-<p>[sourcecode language='python']<br>
-import Skype4Py</p>
-<p>number = '+393*********'<br>
-text= 'Messaggio di prova da PySms4Skype!'</p>
-<p>skype = Skype4Py.Skype()<br>
-skype.FriendlyName = 'PySms4Skype'</p>
-<p>skype.Attach()</p>
-<p>sms = skype.CreateSms(Skype4Py.smsMessageTypeOutgoing, number)<br>
-sms.Body = text<br>
-sms.Send()<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Skype4Py</span>
+
+<span class="n">number</span> <span class="o">=</span> <span class="s1">&#39;+393*******&#39;</span>
+<span class="n">text</span><span class="o">=</span> <span class="s1">&#39;Messaggio di prova da PySms4Skype!&#39;</span>
+
+<span class="n">skype</span> <span class="o">=</span> <span class="n">Skype4Py</span><span class="o">.</span><span class="n">Skype</span><span class="p">()</span>  
+<span class="n">skype</span><span class="o">.</span><span class="n">FriendlyName</span> <span class="o">=</span> <span class="s1">&#39;PySms4Skype&#39;</span>
+
+<span class="n">skype</span><span class="o">.</span><span class="n">Attach</span><span class="p">()</span>
+
+<span class="n">sms</span> <span class="o">=</span> <span class="n">skype</span><span class="o">.</span><span class="n">CreateSms</span><span class="p">(</span><span class="n">Skype4Py</span><span class="o">.</span><span class="n">smsMessageTypeOutgoing</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>  
+<span class="n">sms</span><span class="o">.</span><span class="n">Body</span> <span class="o">=</span> <span class="n">text</span>  
+<span class="n">sms</span><span class="o">.</span><span class="n">Send</span><span class="p">()</span>
+</pre></div>
+
+
 <p>Quando eseguite questo script, Skype vi chiedera' la <strong>conferma</strong> per
 autorizzare la vostra applicazione ad utilizzare le API, basterà quindi
 dare conferma per continuare. Nello script ovviamente dovrete sostituire

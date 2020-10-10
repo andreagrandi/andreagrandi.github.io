@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Andrea Grandi - alimentazione</title><link>https://www.andreagrandi.it/</link><description>Software Developer</description><lastBuildDate>Fri, 15 Feb 2008 10:59:00 +0100</lastBuildDate><item><title>APC Back-UPS 500 USB e Ubuntu Server</title><link>https://www.andreagrandi.it/2008/02/15/apc-back-ups-500-usb-e-ubuntu-server/</link><description>&lt;p&gt;&lt;img alt="apc_ups_500" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/apc500.thumbnail.jpg"&gt;L'utilizzo
-di una unità UPS è certamente una delle cose piu' consigliate quando
+<rss version="2.0"><channel><title>Andrea Grandi - alimentazione</title><link>https://www.andreagrandi.it/</link><description>Software Developer</description><lastBuildDate>Fri, 15 Feb 2008 10:59:00 +0100</lastBuildDate><item><title>APC Back-UPS 500 USB e Ubuntu Server</title><link>https://www.andreagrandi.it/2008/02/15/apc-back-ups-500-usb-e-ubuntu-server/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="apc_ups_500" src="https://www.andreagrandi.it/images/2008/02/apc500.thumbnail.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;L'utilizzo di una unità UPS è certamente una delle cose piu' consigliate quando
 vogliamo proteggere l'integrità di un computer da sbalzi di corrente o
 interruzioni dell'alimentazione.&lt;/p&gt;
 &lt;p&gt;Cosa succede però quando la batteria dell'UPS si esaurisce? In casi
@@ -11,28 +11,32 @@ però possiamo almeno fare in modo che il nostro computer venga spento in
 maniera corretta, prima che la batteria dell'UPS si esaurisca del tutto.&lt;/p&gt;
 &lt;p&gt;Nel caso di una macchina Linux, ci viene in aiuto una utility chiamata
 &lt;strong&gt;apcupsd&lt;/strong&gt;. Installarla su Ubuntu è molto semplice:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-apt-get install apcupsd&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install apcupsd
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;A questo punto, dando per scontato che abbiate già connesso l'UPS al
 PC/server, collegate il cavo USB a corredo in modo da far riconoscere
 l'UPS a Linux, in modo da poter proseguire con la configurazione. Il
-primo file da modificare è &lt;strong&gt;/etc/apcupsd/apcupsd.conf&lt;/strong&gt; ed impostare i
+primo file da modificare è &lt;strong&gt;&lt;code&gt;/etc/apcupsd/apcupsd.conf&lt;/code&gt;&lt;/strong&gt; ed impostare i
 seguenti parametri come segue:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-UPSCABLE usb&lt;br&gt;
-UPSTYPE usb&lt;br&gt;
-DEVICE&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;UPSCABLE usb
+UPSTYPE usb
+DEVICE
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;A questo punto non ci resta che modificare il file
-&lt;strong&gt;/etc/default/apcupsd&lt;/strong&gt; in modo da rendere effettive le modifiche:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-ISCONFIGURED=yes&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;strong&gt;&lt;code&gt;/etc/default/apcupsd&lt;/code&gt;&lt;/strong&gt; in modo da rendere effettive le modifiche:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ISCONFIGURED&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yes
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Infine dobbiamo soltanto avviare il demone ed il gioco è fatto:&lt;/p&gt;
-&lt;p&gt;[code lang="bash"]&lt;br&gt;
-/etc/init.d/apcupsd start&lt;br&gt;
-[/code]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc/init.d/apcupsd start
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Per default &lt;strong&gt;apcupsd&lt;/strong&gt; effettuerà lo &lt;strong&gt;shutdown&lt;/strong&gt; nel PC quando la
 batteria sarà arrivata al &lt;strong&gt;5%&lt;/strong&gt; della sua capacità, consentendo così
 uno shutdown controllato del sistema, ed evitando quindi possibili

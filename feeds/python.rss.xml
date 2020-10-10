@@ -2276,17 +2276,15 @@ and PluThon plugin.&lt;/p&gt;
 &lt;li&gt;&lt;a href="http://www.ibm.com/developerworks/linux/library/l-gps-nokia3/index.html?S_TACT=105AGX03&amp;amp;S_CMP=EDU"&gt;Develop a GPS-aware application for the Nokia N810, Part 3: Finish the job&lt;/a&gt;:
     In this last of three installments, you'll put the final touches to
     the GPS trip tracker and get it ready for release.&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 24 Feb 2009 15:51:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-24:/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/</guid><category>HowTo, Linux, Maemo (EN), Programmazione, Python</category><category>eclipse</category><category>gps</category><category>Python</category><category>SDK</category></item><item><title>Skype SMS su Linux: grazie a Skype4Py si puo'!</title><link>https://www.andreagrandi.it/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/</link><description>&lt;p&gt;&lt;img alt="Skype
-Logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/skype_logo.thumbnail.jpg"&gt;Il
-client di &lt;strong&gt;Skype&lt;/strong&gt; per Linux &lt;strong&gt;non supporta&lt;/strong&gt; al momento l'&lt;strong&gt;invio
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 24 Feb 2009 15:51:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-24:/2009/02/24/develop-a-gps-aware-application-for-the-nokia-n810/</guid><category>HowTo, Linux, Maemo (EN), Programmazione, Python</category><category>eclipse</category><category>gps</category><category>Python</category><category>SDK</category></item><item><title>Skype SMS su Linux: grazie a Skype4Py si puo'!</title><link>https://www.andreagrandi.it/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="SkypeLogo" src="https://www.andreagrandi.it/images/2008/05/skype_logo.thumbnail.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Il client di &lt;strong&gt;Skype&lt;/strong&gt; per Linux &lt;strong&gt;non supporta&lt;/strong&gt; al momento l'&lt;strong&gt;invio
 degli SMS&lt;/strong&gt;. Questa puo' essere per molti una grossa limitazione, visto
 che è molto conveniente come metodo per inviare gli sms (costano 10
 centesimi) rispetto a molte tariffe in circolazione al momento, con i
 principali gestori italiani.La mancanza di questa funzionalità è però
 soltanto apparente! Infatti è stata già implementata a livello di
 librerie di Skype ed è già disponibile tramite le API.&lt;/p&gt;
-&lt;p&gt;Grazie alla libreria
-&lt;a href="https://developer.skype.com/wiki/Skype4Py"&gt;&lt;strong&gt;Skype4Py&lt;/strong&gt;&lt;/a&gt;, ufficialmente
+&lt;p&gt;Grazie alla libreria &lt;a href="https://developer.skype.com/wiki/Skype4Py"&gt;&lt;strong&gt;Skype4Py&lt;/strong&gt;&lt;/a&gt;, ufficialmente
 supportata da &lt;strong&gt;Skype&lt;/strong&gt; e sviluppata da &lt;strong&gt;Arkadiusz Wahlig&lt;/strong&gt; (che ha
 tenuto un talk proprio su questo argomento nella giornata di ieri del
 &lt;a href="http://www.pycon.it"&gt;PyCon&lt;/a&gt; Due), è possibile scrivere applicazioni
@@ -2297,17 +2295,22 @@ avviare il client Skype.&lt;/p&gt;
 di Skype, sono moltissime. In questo caso particolare farò vedere un
 piccolo script Python che invia un SMS utilizzando il client (ed il
 credito) dell'istanza di Skype che sta girando sulla vostra macchina:&lt;/p&gt;
-&lt;p&gt;[sourcecode language='python']&lt;br&gt;
-import Skype4Py&lt;/p&gt;
-&lt;p&gt;number = '+393*********'&lt;br&gt;
-text= 'Messaggio di prova da PySms4Skype!'&lt;/p&gt;
-&lt;p&gt;skype = Skype4Py.Skype()&lt;br&gt;
-skype.FriendlyName = 'PySms4Skype'&lt;/p&gt;
-&lt;p&gt;skype.Attach()&lt;/p&gt;
-&lt;p&gt;sms = skype.CreateSms(Skype4Py.smsMessageTypeOutgoing, number)&lt;br&gt;
-sms.Body = text&lt;br&gt;
-sms.Send()&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;Skype4Py&lt;/span&gt;
+
+&lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;+393*******&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Messaggio di prova da PySms4Skype!&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;skype&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Skype4Py&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Skype&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  
+&lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;FriendlyName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;PySms4Skype&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Attach&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;sms&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CreateSms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Skype4Py&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsMessageTypeOutgoing&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+&lt;span class="n"&gt;sms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;  
+&lt;span class="n"&gt;sms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Quando eseguite questo script, Skype vi chiedera' la &lt;strong&gt;conferma&lt;/strong&gt; per
 autorizzare la vostra applicazione ad utilizzare le API, basterà quindi
 dare conferma per continuare. Nello script ovviamente dovrete sostituire
@@ -2316,101 +2319,102 @@ use &lt;strong&gt;GtkIconView&lt;/strong&gt;, but the only thing I was able to f
 example in PHP-Gtk. So I decided to translate it in &lt;strong&gt;Python&lt;/strong&gt; language,
 thinking it would be useful for other people trying to use that Gtk
 control. You can find the code here:&lt;/p&gt;
-&lt;p&gt;[sourcecode language='python']&lt;br&gt;
-import gtk&lt;br&gt;
-import gobject&lt;/p&gt;
-&lt;p&gt;DEFAULT_IMAGE_WIDTH = 100&lt;/p&gt;
-&lt;p&gt;# Main Window setup&lt;br&gt;
-window = gtk.Window(gtk.WINDOW_TOPLEVEL)&lt;br&gt;
-window.set_size_request(400, 240)&lt;br&gt;
-window.connect("destroy", gtk.main_quit)&lt;br&gt;
-window.set_title("Python GtkIconView Test")&lt;/p&gt;
-&lt;p&gt;# Add a VBox&lt;br&gt;
-vbox = gtk.VBox()&lt;br&gt;
-window.add(vbox)&lt;/p&gt;
-&lt;p&gt;# Setup Scrolled Window&lt;br&gt;
-scrolled_win = gtk.ScrolledWindow()&lt;br&gt;
-scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)&lt;/p&gt;
-&lt;p&gt;# Setup ListStore to contain images and description&lt;br&gt;
-model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)&lt;/p&gt;
-&lt;p&gt;# Create a tuple with image files&lt;br&gt;
-immagini = ("BD786-TFR.jpg", "guido_sottozero.jpg", "IMG_0056.JPG",
-"movies_card.jpg")&lt;/p&gt;
-&lt;p&gt;for im in immagini:&lt;br&gt;
-try:&lt;br&gt;
-pixbuf = gtk.gdk.pixbuf_new_from_file(im)&lt;br&gt;
-pix_w = pixbuf.get_width()&lt;br&gt;
-pix_h = pixbuf.get_height()&lt;br&gt;
-new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the
-scaled height before resizing image&lt;br&gt;
-scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h,
-gtk.gdk.INTERP_TILES)&lt;br&gt;
-model.append((scaled_pix, im))&lt;br&gt;
-except:&lt;br&gt;
-pass&lt;/p&gt;
-&lt;p&gt;# Setup GtkIconView&lt;br&gt;
-view = gtk.IconView(model) # Pass the model stored in a ListStore to
-the GtkIconView&lt;br&gt;
-view.set_pixbuf_column(0)&lt;br&gt;
-view.set_text_column(1)&lt;br&gt;
-view.set_selection_mode(gtk.SELECTION_MULTIPLE)&lt;br&gt;
-view.set_columns(0)&lt;br&gt;
-view.set_item_width(150)&lt;/p&gt;
-&lt;p&gt;# Pack objects and show them all&lt;br&gt;
-scrolled_win.add(view)&lt;br&gt;
-vbox.pack_start(scrolled_win)&lt;br&gt;
-window.show_all()&lt;/p&gt;
-&lt;p&gt;gtk.main()&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;gtk&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;gobject&lt;/span&gt;
+
+&lt;span class="n"&gt;DEFAULT_IMAGE_WIDTH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Main Window setup  &lt;/span&gt;
+&lt;span class="n"&gt;window&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Window&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WINDOW_TOPLEVEL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_size_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;destroy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_quit&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Python GtkIconView Test&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add a VBox  &lt;/span&gt;
+&lt;span class="n"&gt;vbox&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;VBox&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  
+&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vbox&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Setup Scrolled Window  &lt;/span&gt;
+&lt;span class="n"&gt;scrolled_win&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ScrolledWindow&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;scrolled_win&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_policy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POLICY_AUTOMATIC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POLICY_AUTOMATIC&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Setup ListStore to contain images and description  &lt;/span&gt;
+&lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ListStore&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Pixbuf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gobject&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TYPE_STRING&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Create a tuple with image files&lt;/span&gt;
+&lt;span class="n"&gt;immagini&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;BD786-TFR.jpg&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;guido_sottozero.jpg&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;IMG_0056.JPG&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;movies_card.jpg&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;im&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;immagini&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;  
+        &lt;span class="n"&gt;pixbuf&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pixbuf_new_from_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;im&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;pix_w&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pixbuf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_width&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;pix_h&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pixbuf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_height&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;new_h&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pix_h&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;DEFAULT_IMAGE_WIDTH&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;pix_w&lt;/span&gt; &lt;span class="c1"&gt;# Calculate the scaled height before resizing image&lt;/span&gt;
+        &lt;span class="n"&gt;scaled_pix&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pixbuf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scale_simple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="n"&gt;DEFAULT_IMAGE_WIDTH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new_h&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;INTERP_TILES&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;scaled_pix&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;im&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Setup GtkIconView  &lt;/span&gt;
+&lt;span class="n"&gt;view&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IconView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# Pass the model stored in a ListStore to the GtkIconView&lt;/span&gt;
+&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_pixbuf_column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_text_column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_selection_mode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SELECTION_MULTIPLE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_columns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_item_width&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;150&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Pack objects and show them all  &lt;/span&gt;
+&lt;span class="n"&gt;scrolled_win&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+&lt;span class="n"&gt;vbox&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pack_start&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scrolled_win&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;The important thing to notice is that you have to store all the images
 in a &lt;strong&gt;GtkListStore&lt;/strong&gt; and pass it to the &lt;strong&gt;GtkIconView&lt;/strong&gt; as &lt;em&gt;"model"&lt;/em&gt;
 parameter. I hope this example is clear. If you have any question,
 please comment this post and I'll try to answer.&lt;/p&gt;
 &lt;p&gt;This is a screenshot of this example:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="gtkiconview" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/gtkiconview_sample.png"&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 15 Apr 2008 15:24:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-15:/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/</guid><category>Linux, Programmazione, Python</category><category>gtk</category><category>gtkiconview</category><category>gtkliststore</category><category>HowTo</category><category>programming</category><category>Python</category><category>tutorial</category></item><item><title>PyMaemo Talk on May 10th in Florence at PyCon2 Conference</title><link>https://www.andreagrandi.it/2008/04/09/pymaemo-talk-on-may-10th-in-florence-at-pycon2-conference/</link><description>&lt;p&gt;[PyCon2]{style="font-weight: bold;"} is the second edition of the
-&lt;a href="http://www.pycon.it/"&gt;[Italian Python
-Conference]{style="font-weight: bold;"}&lt;/a&gt; and will
-take place on [May 9/10/11]{style="font-weight: bold;"}, 2008 in
-[Florence]{style="font-weight: bold;"}.&lt;/p&gt;
-&lt;p&gt;The conference is organized by [Python
-Italia]{style="font-weight: bold;"} and more than
-[300]{style="font-weight: bold;"} developers, students and researchers
+&lt;p&gt;&lt;a href=""&gt;&lt;img alt="gtkiconview" src="https://www.andreagrandi.it/images/2008/04/gtkiconview_sample.png"&gt;&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 15 Apr 2008 15:24:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-15:/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/</guid><category>Linux, Programmazione, Python</category><category>gtk</category><category>gtkiconview</category><category>gtkliststore</category><category>HowTo</category><category>programming</category><category>Python</category><category>tutorial</category></item><item><title>PyMaemo Talk on May 10th in Florence at PyCon2 Conference</title><link>https://www.andreagrandi.it/2008/04/09/pymaemo-talk-on-may-10th-in-florence-at-pycon2-conference/</link><description>&lt;p&gt;&lt;strong&gt;PyCon2&lt;/strong&gt; is the second edition of the &lt;a href="http://www.pycon.it/"&gt;Italian Python Conference&lt;/a&gt; and will
+take place on &lt;strong&gt;May 9/10/11&lt;/strong&gt;, 2008 in &lt;strong&gt;Florence&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The conference is organized by &lt;strong&gt;Python Italia&lt;/strong&gt; and more than
+&lt;strong&gt;300&lt;/strong&gt; developers, students and researchers
 will be present for three days of tutorials and other important events.&lt;/p&gt;
-&lt;p&gt;PyCon 2008 edition will be opened by [Richard
-Stallman]{style="font-weight: bold;"} with a keynote on [Free
-Software]{style="font-style: italic;"} and [Free
-Ethics]{style="font-style: italic;"}. Other famous developers will be
-presento too: [Alex Martelli]{style="font-weight: bold;"}, [Samuele
-Pedroni]{style="font-weight: bold;"}, [Brian
-Fitzpatrick]{style="font-weight: bold;"} and many other.&lt;/p&gt;
-&lt;p&gt;I'll partecipate at the conference as speaker on May 10, with a talk on
-"[PyMaemo: Python for Nokia Internet
-Tablets]{style="font-weight: bold;"}". In particular I'll talk about
-Maemo platform, Maemo SDK (how to install and configure it) and I'll
-explain how to use the two Eclipse plugins
-&lt;a href="http://esbox.garage.maemo.org/"&gt;ESBox&lt;/a&gt; and
-&lt;a href="http://pluthon.garage.maemo.org/"&gt;Pluthon&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;PyCon 2008 edition will be opened by &lt;strong&gt;Richard Stallman&lt;/strong&gt; with a keynote on &lt;strong&gt;Free Software&lt;/strong&gt; and &lt;strong&gt;Free Ethics&lt;/strong&gt;. 
+Other famous developers will be presento too: &lt;strong&gt;Alex Martelli&lt;/strong&gt;, &lt;strong&gt;Samuele Pedroni&lt;/strong&gt;, &lt;strong&gt;Brian Fitzpatrick&lt;/strong&gt; and many other.&lt;/p&gt;
+&lt;p&gt;I'll partecipate at the conference as speaker on May 10, with a talk on &lt;strong&gt;PyMaemo: Python for Nokia Internet Tablets&lt;/strong&gt;.
+In particular I'll talk about Maemo platform, Maemo SDK (how to install and configure it) and I'll explain how to use the two Eclipse plugins
+&lt;a href="http://esbox.garage.maemo.org/"&gt;ESBox&lt;/a&gt; and &lt;a href="http://pluthon.garage.maemo.org/"&gt;Pluthon&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If you want to give me any suggestion or idea for this talk, please
-leave me a comment on this post, so I'll integrate it with my slides.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 09 Apr 2008 14:42:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-09:/2008/04/09/pymaemo-talk-on-may-10th-in-florence-at-pycon2-conference/</guid><category>Linux, Maemo (EN), Python</category><category>conference</category><category>maemo</category><category>nokia</category><category>pycon</category><category>Python</category></item><item><title>PyCon2: conferenza italiana dedicata al linguaggio Python</title><link>https://www.andreagrandi.it/2008/04/06/pycon2-conferenza-italiana-dedicata-al-linguaggio-python/</link><description>&lt;p&gt;&lt;img alt="Python" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/python-powered-h-140x182.thumbnail.jpg"&gt;&lt;strong&gt;PyCon
-Due&lt;/strong&gt; è la seconda conferenza italiana dedicata al linguaggio di
+leave me a comment on this post, so I'll integrate it with my slides.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 09 Apr 2008 14:42:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-09:/2008/04/09/pymaemo-talk-on-may-10th-in-florence-at-pycon2-conference/</guid><category>Linux, Maemo (EN), Python</category><category>conference</category><category>maemo</category><category>nokia</category><category>pycon</category><category>Python</category></item><item><title>PyCon2: conferenza italiana dedicata al linguaggio Python</title><link>https://www.andreagrandi.it/2008/04/06/pycon2-conferenza-italiana-dedicata-al-linguaggio-python/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="Python" src="https://www.andreagrandi.it/images/2008/04/python-powered-h-140x182.thumbnail.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;PyCon Due&lt;/h2&gt;
+&lt;p&gt;è la seconda conferenza italiana dedicata al linguaggio di
 programmazione &lt;strong&gt;Python&lt;/strong&gt;. La conferenza è organizzata da un gruppo di
 appassionati e senza finalità di lucro; si prefigge la divulgazione di
 Python, e di dare visibilità agli sviluppatori professionisti, studenti,
 aziende e semplici interessati al linguaggio.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Dove e quando:&lt;/strong&gt; La conferenza si tiene a &lt;strong&gt;Firenze&lt;/strong&gt; nelle giornate
+&lt;h2&gt;Dove e quando&lt;/h2&gt;
+&lt;p&gt;La conferenza si tiene a &lt;strong&gt;Firenze&lt;/strong&gt; nelle giornate
 di &lt;strong&gt;Venerdì 9&lt;/strong&gt;, &lt;strong&gt;Sabato 10&lt;/strong&gt; e &lt;strong&gt;Domenica 11 Maggio&lt;/strong&gt;. L'evento di
 apertura si terrà a &lt;strong&gt;Palazzo Vecchio&lt;/strong&gt; nel pomeriggio di Venerdì,
 durante il quale terrà un keynote &lt;strong&gt;Richard Stallman&lt;/strong&gt;. Sabato e
 Domenica, al &lt;a href="http://www.florence-hotels-laurus.com/"&gt;&lt;strong&gt;Viva Hotel
 Laurus&lt;/strong&gt;&lt;/a&gt; (Via Cerretani 54/r),
 nei pressi del Duomo, si svolgeranno 3 track parallele di conferenze.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Gli Interventi:&lt;/strong&gt; durante la conferenza si terranno due tipi di
-interventi: i &lt;strong&gt;keynote&lt;/strong&gt; ed i &lt;strong&gt;talk&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2&gt;Gli Interventi&lt;/h2&gt;
+&lt;p&gt;Durante la conferenza si terranno due tipi di interventi: i &lt;strong&gt;keynote&lt;/strong&gt; ed i &lt;strong&gt;talk&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;I &lt;strong&gt;keynote&lt;/strong&gt; sono interventi di ampio respiro che trattano temi di
 attualità del mondo dell'informatica; hanno una durata indicativa di 90'
 e verranno tenuti in occasione dell'evento di apertura di venerdì 9 ed
 alla chiusura delle due giornate successive.&lt;/p&gt;
-&lt;p&gt;I &lt;strong&gt;talk&lt;/strong&gt; sono invece interventi focalizzati su un particolare
+&lt;h2&gt;I talk&lt;/h2&gt;
+&lt;p&gt;sono invece interventi focalizzati su un particolare
 argomento; hanno una durata indicativa di 45', comprensivi del tempo per
 le domande del pubblico. I talk di PyCon Due si tengono durante le
 giornate di sabato 10 e domenica 11, e si dividono in tre track:
@@ -2427,22 +2431,21 @@ giornate di sabato 10 e domenica 11, e si dividono in tre track:
     dell'argomento insieme al relatore, proponendo scenari e commentando
     le soluzioni proposte.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Registrazione:&lt;/strong&gt; per partecipare all'evento occorre registrarsi. La
-registrazione puo' essere fatta direttamente sul &lt;a href="http://www.pycon.it"&gt;sito ufficiale del
-PyCon2&lt;/a&gt;. Sempre sul sito ufficiale, potrete trovare
+&lt;h2&gt;Registrazione&lt;/h2&gt;
+&lt;p&gt;per partecipare all'evento occorre registrarsi. La
+registrazione puo' essere fatta direttamente sul &lt;a href="http://www.pycon.it"&gt;sito ufficiale del PyCon2&lt;/a&gt;. Sempre sul sito ufficiale, potrete trovare
 a breve l'elenco delle conferenze che verranno fatte, non appena si
 concluderanno le votazioni per il Call For Paper che sono in corso in
 questi giorni.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sun, 06 Apr 2008 14:53:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-06:/2008/04/06/pycon2-conferenza-italiana-dedicata-al-linguaggio-python/</guid><category>Linux, Programmazione, Python</category><category>conferenza</category><category>firenze</category><category>italiana</category><category>linguaggio</category><category>Programmazione</category><category>pycon</category><category>pycon2</category><category>Python</category><category>sviluppatori</category></item><item><title>Il crivello di Eratostene</title><link>https://www.andreagrandi.it/2008/01/30/il-crivello-di-eratostene/</link><description>&lt;p&gt;Questo codice Python di esempio, genera una lista di numeri primi che
 vanno da 2 fino al numero passato come parametro.&lt;/p&gt;
-&lt;p&gt;[sourcecode language='python']&lt;br&gt;
-def eratostene(x):&lt;br&gt;
-primi = range(3, x + 1, 2)&lt;br&gt;
-for i in primi:&lt;br&gt;
-if(pow(i, 2) &amp;gt; x):&lt;br&gt;
-break&lt;br&gt;
-for j in primi:&lt;br&gt;
-if(i != j) and (j % i == 0):&lt;br&gt;
-primi.remove(j)&lt;br&gt;
-primi.insert(0, 2)&lt;br&gt;
-return primi&lt;br&gt;
-[/sourcecode]&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 30 Jan 2008 17:56:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-01-30:/2008/01/30/il-crivello-di-eratostene/</guid><category>Python</category><category>crivello</category><category>eratostene</category><category>numeri primi</category><category>Python</category></item></channel></rss>
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;eratostene&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;  
+    &lt;span class="n"&gt;primi&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;primi&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;  
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;pow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;  
+            &lt;span class="k"&gt;break&lt;/span&gt;  
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;primi&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;  
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;  
+                &lt;span class="n"&gt;primi&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+                &lt;span class="n"&gt;primi&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;insert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;primi&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 30 Jan 2008 17:56:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-01-30:/2008/01/30/il-crivello-di-eratostene/</guid><category>Python</category><category>crivello</category><category>eratostene</category><category>numeri primi</category><category>Python</category></item></channel></rss>

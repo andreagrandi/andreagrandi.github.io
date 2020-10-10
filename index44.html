@@ -160,12 +160,10 @@
     </p>
   </header>
   <div>
-      <p>I've updated my previous howto that explain how to install [Maemo SDK 4
-(Chinook)]{style="font-weight: bold;"}. The other howto was written when
-Maemo SDK 4 Beta was out, now it's updated to
-[4.0.1]{style="font-weight: bold;"} version of the SDK.</p>
-<p>You can find it, as usual, on this wiki:
-<a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4">http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4</a></p>
+      <p>I've updated my previous howto that explain how to install <strong>Maemo SDK 4 (Chinook)</strong>.
+The other howto was written when Maemo SDK 4 Beta was out, now it's updated to
+<strong>4.0.1</strong> version of the SDK.</p>
+<p>You can find it, as usual, on this wiki: <a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4">http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4</a></p>
 <p>If you have any suggestion or if you want to give me any idea to improve
 this howto, please leave me a comment.</p>
   </div>
@@ -187,58 +185,69 @@ use <strong>GtkIconView</strong>, but the only thing I was able to find was an
 example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
 thinking it would be useful for other people trying to use that Gtk
 control. You can find the code here:</p>
-<p>[sourcecode language='python']<br>
-import gtk<br>
-import gobject</p>
-<p>DEFAULT_IMAGE_WIDTH = 100</p>
-<p># Main Window setup<br>
-window = gtk.Window(gtk.WINDOW_TOPLEVEL)<br>
-window.set_size_request(400, 240)<br>
-window.connect("destroy", gtk.main_quit)<br>
-window.set_title("Python GtkIconView Test")</p>
-<p># Add a VBox<br>
-vbox = gtk.VBox()<br>
-window.add(vbox)</p>
-<p># Setup Scrolled Window<br>
-scrolled_win = gtk.ScrolledWindow()<br>
-scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)</p>
-<p># Setup ListStore to contain images and description<br>
-model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)</p>
-<p># Create a tuple with image files<br>
-immagini = ("BD786-TFR.jpg", "guido_sottozero.jpg", "IMG_0056.JPG",
-"movies_card.jpg")</p>
-<p>for im in immagini:<br>
-try:<br>
-pixbuf = gtk.gdk.pixbuf_new_from_file(im)<br>
-pix_w = pixbuf.get_width()<br>
-pix_h = pixbuf.get_height()<br>
-new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the
-scaled height before resizing image<br>
-scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h,
-gtk.gdk.INTERP_TILES)<br>
-model.append((scaled_pix, im))<br>
-except:<br>
-pass</p>
-<p># Setup GtkIconView<br>
-view = gtk.IconView(model) # Pass the model stored in a ListStore to
-the GtkIconView<br>
-view.set_pixbuf_column(0)<br>
-view.set_text_column(1)<br>
-view.set_selection_mode(gtk.SELECTION_MULTIPLE)<br>
-view.set_columns(0)<br>
-view.set_item_width(150)</p>
-<p># Pack objects and show them all<br>
-scrolled_win.add(view)<br>
-vbox.pack_start(scrolled_win)<br>
-window.show_all()</p>
-<p>gtk.main()<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gtk</span>
+<span class="kn">import</span> <span class="nn">gobject</span>
+
+<span class="n">DEFAULT_IMAGE_WIDTH</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># Main Window setup  </span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">WINDOW_TOPLEVEL</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_size_request</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;destroy&quot;</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Python GtkIconView Test&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a VBox  </span>
+<span class="n">vbox</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>  
+<span class="n">window</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vbox</span><span class="p">)</span>
+
+<span class="c1"># Setup Scrolled Window  </span>
+<span class="n">scrolled_win</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">ScrolledWindow</span><span class="p">()</span>
+<span class="n">scrolled_win</span><span class="o">.</span><span class="n">set_policy</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">POLICY_AUTOMATIC</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">POLICY_AUTOMATIC</span><span class="p">)</span>
+
+<span class="c1"># Setup ListStore to contain images and description  </span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">ListStore</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">Pixbuf</span><span class="p">,</span> <span class="n">gobject</span><span class="o">.</span><span class="n">TYPE_STRING</span><span class="p">)</span>
+
+<span class="c1"># Create a tuple with image files</span>
+<span class="n">immagini</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;BD786-TFR.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;guido_sottozero.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;IMG_0056.JPG&quot;</span><span class="p">,</span> <span class="s2">&quot;movies_card.jpg&quot;</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">im</span> <span class="ow">in</span> <span class="n">immagini</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>  
+        <span class="n">pixbuf</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">pixbuf_new_from_file</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">pix_w</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+        <span class="n">pix_h</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">new_h</span> <span class="o">=</span> <span class="p">(</span><span class="n">pix_h</span> <span class="o">*</span> <span class="n">DEFAULT_IMAGE_WIDTH</span><span class="p">)</span> <span class="o">/</span> <span class="n">pix_w</span> <span class="c1"># Calculate the scaled height before resizing image</span>
+        <span class="n">scaled_pix</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">scale_simple</span><span class="p">(</span>
+            <span class="n">DEFAULT_IMAGE_WIDTH</span><span class="p">,</span> <span class="n">new_h</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">INTERP_TILES</span>
+        <span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scaled_pix</span><span class="p">,</span> <span class="n">im</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Setup GtkIconView  </span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">IconView</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>  <span class="c1"># Pass the model stored in a ListStore to the GtkIconView</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_pixbuf_column</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_text_column</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_selection_mode</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">SELECTION_MULTIPLE</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_columns</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_item_width</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Pack objects and show them all  </span>
+<span class="n">scrolled_win</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>  
+<span class="n">vbox</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">scrolled_win</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+<span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+
 <p>The important thing to notice is that you have to store all the images
 in a <strong>GtkListStore</strong> and pass it to the <strong>GtkIconView</strong> as <em>"model"</em>
 parameter. I hope this example is clear. If you have any question,
 please comment this post and I'll try to answer.</p>
 <p>This is a screenshot of this example:</p>
-<p><img alt="gtkiconview" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/gtkiconview_sample.png"></p>
+<p><a href=""><img alt="gtkiconview" src="https://www.andreagrandi.it/images/2008/04/gtkiconview_sample.png"></a></p>
   </div>
   <hr />
 </article>
@@ -253,29 +262,16 @@ please comment this post and I'll try to answer.</p>
     </p>
   </header>
   <div>
-      <p>[PyCon2]{style="font-weight: bold;"} is the second edition of the
-<a href="http://www.pycon.it/">[Italian Python
-Conference]{style="font-weight: bold;"}</a> and will
-take place on [May 9/10/11]{style="font-weight: bold;"}, 2008 in
-[Florence]{style="font-weight: bold;"}.</p>
-<p>The conference is organized by [Python
-Italia]{style="font-weight: bold;"} and more than
-[300]{style="font-weight: bold;"} developers, students and researchers
+      <p><strong>PyCon2</strong> is the second edition of the <a href="http://www.pycon.it/">Italian Python Conference</a> and will
+take place on <strong>May 9/10/11</strong>, 2008 in <strong>Florence</strong>.</p>
+<p>The conference is organized by <strong>Python Italia</strong> and more than
+<strong>300</strong> developers, students and researchers
 will be present for three days of tutorials and other important events.</p>
-<p>PyCon 2008 edition will be opened by [Richard
-Stallman]{style="font-weight: bold;"} with a keynote on [Free
-Software]{style="font-style: italic;"} and [Free
-Ethics]{style="font-style: italic;"}. Other famous developers will be
-presento too: [Alex Martelli]{style="font-weight: bold;"}, [Samuele
-Pedroni]{style="font-weight: bold;"}, [Brian
-Fitzpatrick]{style="font-weight: bold;"} and many other.</p>
-<p>I'll partecipate at the conference as speaker on May 10, with a talk on
-"[PyMaemo: Python for Nokia Internet
-Tablets]{style="font-weight: bold;"}". In particular I'll talk about
-Maemo platform, Maemo SDK (how to install and configure it) and I'll
-explain how to use the two Eclipse plugins
-<a href="http://esbox.garage.maemo.org/">ESBox</a> and
-<a href="http://pluthon.garage.maemo.org/">Pluthon</a>.</p>
+<p>PyCon 2008 edition will be opened by <strong>Richard Stallman</strong> with a keynote on <strong>Free Software</strong> and <strong>Free Ethics</strong>. 
+Other famous developers will be presento too: <strong>Alex Martelli</strong>, <strong>Samuele Pedroni</strong>, <strong>Brian Fitzpatrick</strong> and many other.</p>
+<p>I'll partecipate at the conference as speaker on May 10, with a talk on <strong>PyMaemo: Python for Nokia Internet Tablets</strong>.
+In particular I'll talk about Maemo platform, Maemo SDK (how to install and configure it) and I'll explain how to use the two Eclipse plugins
+<a href="http://esbox.garage.maemo.org/">ESBox</a> and <a href="http://pluthon.garage.maemo.org/">Pluthon</a>.</p>
 <p>If you want to give me any suggestion or idea for this talk, please
 leave me a comment on this post, so I'll integrate it with my slides.</p>
   </div>
@@ -292,26 +288,29 @@ leave me a comment on this post, so I'll integrate it with my slides.</p>
     </p>
   </header>
   <div>
-      <p><img alt="Python" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/python-powered-h-140x182.thumbnail.jpg"><strong>PyCon
-Due</strong> è la seconda conferenza italiana dedicata al linguaggio di
+      <p><a href=""><img alt="Python" src="https://www.andreagrandi.it/images/2008/04/python-powered-h-140x182.thumbnail.jpg"></a></p>
+<h2>PyCon Due</h2>
+<p>è la seconda conferenza italiana dedicata al linguaggio di
 programmazione <strong>Python</strong>. La conferenza è organizzata da un gruppo di
 appassionati e senza finalità di lucro; si prefigge la divulgazione di
 Python, e di dare visibilità agli sviluppatori professionisti, studenti,
 aziende e semplici interessati al linguaggio.</p>
-<p><strong>Dove e quando:</strong> La conferenza si tiene a <strong>Firenze</strong> nelle giornate
+<h2>Dove e quando</h2>
+<p>La conferenza si tiene a <strong>Firenze</strong> nelle giornate
 di <strong>Venerdì 9</strong>, <strong>Sabato 10</strong> e <strong>Domenica 11 Maggio</strong>. L'evento di
 apertura si terrà a <strong>Palazzo Vecchio</strong> nel pomeriggio di Venerdì,
 durante il quale terrà un keynote <strong>Richard Stallman</strong>. Sabato e
 Domenica, al <a href="http://www.florence-hotels-laurus.com/"><strong>Viva Hotel
 Laurus</strong></a> (Via Cerretani 54/r),
 nei pressi del Duomo, si svolgeranno 3 track parallele di conferenze.</p>
-<p><strong>Gli Interventi:</strong> durante la conferenza si terranno due tipi di
-interventi: i <strong>keynote</strong> ed i <strong>talk</strong>.</p>
+<h2>Gli Interventi</h2>
+<p>Durante la conferenza si terranno due tipi di interventi: i <strong>keynote</strong> ed i <strong>talk</strong>.</p>
 <p>I <strong>keynote</strong> sono interventi di ampio respiro che trattano temi di
 attualità del mondo dell'informatica; hanno una durata indicativa di 90'
 e verranno tenuti in occasione dell'evento di apertura di venerdì 9 ed
 alla chiusura delle due giornate successive.</p>
-<p>I <strong>talk</strong> sono invece interventi focalizzati su un particolare
+<h2>I talk</h2>
+<p>sono invece interventi focalizzati su un particolare
 argomento; hanno una durata indicativa di 45', comprensivi del tempo per
 le domande del pubblico. I talk di PyCon Due si tengono durante le
 giornate di sabato 10 e domenica 11, e si dividono in tre track:
@@ -328,9 +327,9 @@ giornate di sabato 10 e domenica 11, e si dividono in tre track:
     dell'argomento insieme al relatore, proponendo scenari e commentando
     le soluzioni proposte.</li>
 </ul>
-<p><strong>Registrazione:</strong> per partecipare all'evento occorre registrarsi. La
-registrazione puo' essere fatta direttamente sul <a href="http://www.pycon.it">sito ufficiale del
-PyCon2</a>. Sempre sul sito ufficiale, potrete trovare
+<h2>Registrazione</h2>
+<p>per partecipare all'evento occorre registrarsi. La
+registrazione puo' essere fatta direttamente sul <a href="http://www.pycon.it">sito ufficiale del PyCon2</a>. Sempre sul sito ufficiale, potrete trovare
 a breve l'elenco delle conferenze che verranno fatte, non appena si
 concluderanno le votazioni per il Call For Paper che sono in corso in
 questi giorni.</p>

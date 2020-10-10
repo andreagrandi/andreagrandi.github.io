@@ -1173,17 +1173,15 @@ able to add reviews. So, if you feel ready, you can begin to follow the
 &lt;h3&gt;References&lt;/h3&gt;
 &lt;p&gt;Some parts of this tutorial and a few examples have been taken directly
 from the original &lt;a href="http://www.django-rest-framework.org/tutorial/quickstart/"&gt;Django Rest Framework
-tutorial&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 28 Sep 2016 13:47:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2016-09-28:/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/</guid><category>Development</category><category>API</category><category>Django</category><category>framework</category><category>Python</category><category>rest</category><category>tutorial</category></item><item><title>Skype SMS su Linux: grazie a Skype4Py si puo'!</title><link>https://www.andreagrandi.it/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/</link><description>&lt;p&gt;&lt;img alt="Skype
-Logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/skype_logo.thumbnail.jpg"&gt;Il
-client di &lt;strong&gt;Skype&lt;/strong&gt; per Linux &lt;strong&gt;non supporta&lt;/strong&gt; al momento l'&lt;strong&gt;invio
+tutorial&lt;/a&gt;.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 28 Sep 2016 13:47:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2016-09-28:/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/</guid><category>Development</category><category>API</category><category>Django</category><category>framework</category><category>Python</category><category>rest</category><category>tutorial</category></item><item><title>Skype SMS su Linux: grazie a Skype4Py si puo'!</title><link>https://www.andreagrandi.it/2008/05/11/skype-sms-su-linux-grazie-a-skype4py-si-puo/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="SkypeLogo" src="https://www.andreagrandi.it/images/2008/05/skype_logo.thumbnail.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Il client di &lt;strong&gt;Skype&lt;/strong&gt; per Linux &lt;strong&gt;non supporta&lt;/strong&gt; al momento l'&lt;strong&gt;invio
 degli SMS&lt;/strong&gt;. Questa puo' essere per molti una grossa limitazione, visto
 che è molto conveniente come metodo per inviare gli sms (costano 10
 centesimi) rispetto a molte tariffe in circolazione al momento, con i
 principali gestori italiani.La mancanza di questa funzionalità è però
 soltanto apparente! Infatti è stata già implementata a livello di
 librerie di Skype ed è già disponibile tramite le API.&lt;/p&gt;
-&lt;p&gt;Grazie alla libreria
-&lt;a href="https://developer.skype.com/wiki/Skype4Py"&gt;&lt;strong&gt;Skype4Py&lt;/strong&gt;&lt;/a&gt;, ufficialmente
+&lt;p&gt;Grazie alla libreria &lt;a href="https://developer.skype.com/wiki/Skype4Py"&gt;&lt;strong&gt;Skype4Py&lt;/strong&gt;&lt;/a&gt;, ufficialmente
 supportata da &lt;strong&gt;Skype&lt;/strong&gt; e sviluppata da &lt;strong&gt;Arkadiusz Wahlig&lt;/strong&gt; (che ha
 tenuto un talk proprio su questo argomento nella giornata di ieri del
 &lt;a href="http://www.pycon.it"&gt;PyCon&lt;/a&gt; Due), è possibile scrivere applicazioni
@@ -1194,17 +1192,22 @@ avviare il client Skype.&lt;/p&gt;
 di Skype, sono moltissime. In questo caso particolare farò vedere un
 piccolo script Python che invia un SMS utilizzando il client (ed il
 credito) dell'istanza di Skype che sta girando sulla vostra macchina:&lt;/p&gt;
-&lt;p&gt;[sourcecode language='python']&lt;br&gt;
-import Skype4Py&lt;/p&gt;
-&lt;p&gt;number = '+393*********'&lt;br&gt;
-text= 'Messaggio di prova da PySms4Skype!'&lt;/p&gt;
-&lt;p&gt;skype = Skype4Py.Skype()&lt;br&gt;
-skype.FriendlyName = 'PySms4Skype'&lt;/p&gt;
-&lt;p&gt;skype.Attach()&lt;/p&gt;
-&lt;p&gt;sms = skype.CreateSms(Skype4Py.smsMessageTypeOutgoing, number)&lt;br&gt;
-sms.Body = text&lt;br&gt;
-sms.Send()&lt;br&gt;
-[/sourcecode]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;Skype4Py&lt;/span&gt;
+
+&lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;+393*******&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Messaggio di prova da PySms4Skype!&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;skype&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Skype4Py&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Skype&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  
+&lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;FriendlyName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;PySms4Skype&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Attach&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;sms&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CreateSms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Skype4Py&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsMessageTypeOutgoing&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+&lt;span class="n"&gt;sms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;  
+&lt;span class="n"&gt;sms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Quando eseguite questo script, Skype vi chiedera' la &lt;strong&gt;conferma&lt;/strong&gt; per
 autorizzare la vostra applicazione ad utilizzare le API, basterà quindi
 dare conferma per continuare. Nello script ovviamente dovrete sostituire

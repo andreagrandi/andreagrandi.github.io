@@ -160,19 +160,23 @@
     </p>
   </header>
   <div>
-      <p><img alt="Creative" src="http://www.andreagrandi.it/wp-content/uploads/2008/06/creative_live_cam_trasparente1.png">Finalmente
-sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
-Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech
-Quickcam for
-Notebook</a></strong>
+      <p><a href=""><img alt="Creative" src="https://www.andreagrandi.it/images/2008/06/creative_live_cam_trasparente1.png"></a></p>
+<p>Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
+Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech Quickcam for Notebook</a></strong>
 mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo
-con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam
-Notebook</strong></a>.</p>
+con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam Notebook</strong></a>.</p>
 <p>Prima di proseguire nella lettura di questa guida, vi consiglio di
 verificare che il modello di "Creative Live Cam" che state cercando di
 installare, sia lo stesso che ho testato io. Potete verificarlo
-scrivendo in un terminale il comando <strong>lsusb</strong>:<br>
-<code>andy80@noteboontu:~$ lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000</code></p>
+scrivendo in un terminale il comando <strong>lsusb</strong>:  </p>
+<div class="highlight"><pre><span></span>lsusb 
+Bus <span class="m">003</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
+Bus <span class="m">002</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
+Bus <span class="m">001</span> Device <span class="m">018</span>: ID 041e:4068 Creative Technology, Ltd 
+Bus <span class="m">001</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000<span class="sb">`</span>
+</pre></div>
+
+
 <p>Ovvero dovrete verificare che l'identificativo del vostro modello sia
 esattamente <strong>041e:4068</strong></p>
 <p>Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio
@@ -188,23 +192,42 @@ che invece supportano il mio modello di webcam.</p>
 installato sulla nostra macchina tutto il necessario per poter
 ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:</p>
-<p><code>apt-get install build-essential linux-headers-$(uname -r)</code></p>
+<div class="highlight"><pre><span></span>apt-get install build-essential linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
+</pre></div>
+
+
 <p>A questo punto dovrete scaricare i sorgenti del driver, da questo
-indirizzo: 
-<a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
-<p><code>root@noteboontu:~# wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</code></p>
+indirizzo: <a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
+<div class="highlight"><pre><span></span>wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
+</pre></div>
+
+
 <p>Dobbiamo poi scompattarli con il seguente comando:</p>
-<p><code>root@noteboontu:~# tar xfvz ov51x-jpeg-1.5.7.tar.gz</code></p>
+<div class="highlight"><pre><span></span>tar xfvz ov51x-jpeg-1.5.7.tar.gz
+</pre></div>
+
+
 <p>Infine dobbiamo compilare il modulo ed installarlo:</p>
-<p><code>root@noteboontu:~# cd ov51x-jpeg-1.5.7 root@noteboontu:~/ov51x-jpeg-1.5.7# make root@noteboontu:~/ov51x-jpeg-1.5.7# make install</code></p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> ov51x-jpeg-1.5.7 
+make
+make install
+</pre></div>
+
+
 <p>Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:</p>
-<p><code>root@noteboontu:~/ov51x-jpeg-1.5.7# modprobe ov51x-jpeg</code><br>
-Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
+<div class="highlight"><pre><span></span>modprobe ov51x-jpeg
+</pre></div>
+
+
+<p>Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
-modificare il file /etc/modprobe.d/options ed aggiungere la seguente
-riga:<br>
-<code>options ov51x-jpeg forceblock=1</code></p>
+modificare il file <code>/etc/modprobe.d/options</code> ed aggiungere la seguente
+riga:</p>
+<div class="highlight"><pre><span></span>options ov51x-jpeg <span class="nv">forceblock</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+
+
 <p>ovviamente prima di caricare il modulo. A questo punto l'installazione
 dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
 scrivere lasciando un commento a questo post, in modo che anche altri

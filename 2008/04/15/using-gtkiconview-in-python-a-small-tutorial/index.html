@@ -58,13 +58,13 @@
   <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Andrea Grandi" />
-<meta name="description" content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: [sourcecode language=&#39;python&#39;] import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&#34;destroy&#34;, gtk.main_quit) window.set_title(&#34;Python GtkIconView Test&#34;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = (&#34;BD786-TFR.jpg&#34;, &#34;guido_sottozero.jpg&#34;, &#34;IMG_0056.JPG&#34;, &#34;movies_card.jpg&#34;) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() [/sourcecode] The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &#34;model&#34; parameter. I hope this example is clear. If you have any question, please comment this post and I&#39;ll try to answer. This is a screenshot of this example:" />
+<meta name="description" content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&#34;destroy&#34;, gtk.main_quit) window.set_title(&#34;Python GtkIconView Test&#34;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = ( &#34;BD786-TFR.jpg&#34;, &#34;guido_sottozero.jpg&#34;, &#34;IMG_0056.JPG&#34;, &#34;movies_card.jpg&#34; ) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple( DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES ) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &#34;model&#34; parameter. I hope this example is clear. If you have any question, please comment this post and I&#39;ll try to answer. This is a screenshot of this example:" />
 <meta name="keywords" content="gtk, gtkiconview, gtkliststore, HowTo, programming, Python, tutorial">
 
 
 <meta property="og:site_name" content="Andrea Grandi"/>
 <meta property="og:title" content="Using GtkIconView in Python: a small tutorial"/>
-<meta property="og:description" content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: [sourcecode language=&#39;python&#39;] import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&#34;destroy&#34;, gtk.main_quit) window.set_title(&#34;Python GtkIconView Test&#34;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = (&#34;BD786-TFR.jpg&#34;, &#34;guido_sottozero.jpg&#34;, &#34;IMG_0056.JPG&#34;, &#34;movies_card.jpg&#34;) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() [/sourcecode] The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &#34;model&#34; parameter. I hope this example is clear. If you have any question, please comment this post and I&#39;ll try to answer. This is a screenshot of this example:"/>
+<meta property="og:description" content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&#34;destroy&#34;, gtk.main_quit) window.set_title(&#34;Python GtkIconView Test&#34;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = ( &#34;BD786-TFR.jpg&#34;, &#34;guido_sottozero.jpg&#34;, &#34;IMG_0056.JPG&#34;, &#34;movies_card.jpg&#34; ) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple( DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES ) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &#34;model&#34; parameter. I hope this example is clear. If you have any question, please comment this post and I&#39;ll try to answer. This is a screenshot of this example:"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/"/>
 <meta property="og:type" content="article"/>
@@ -178,58 +178,69 @@ use <strong>GtkIconView</strong>, but the only thing I was able to find was an
 example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
 thinking it would be useful for other people trying to use that Gtk
 control. You can find the code here:</p>
-<p>[sourcecode language='python']<br>
-import gtk<br>
-import gobject</p>
-<p>DEFAULT_IMAGE_WIDTH = 100</p>
-<p># Main Window setup<br>
-window = gtk.Window(gtk.WINDOW_TOPLEVEL)<br>
-window.set_size_request(400, 240)<br>
-window.connect("destroy", gtk.main_quit)<br>
-window.set_title("Python GtkIconView Test")</p>
-<p># Add a VBox<br>
-vbox = gtk.VBox()<br>
-window.add(vbox)</p>
-<p># Setup Scrolled Window<br>
-scrolled_win = gtk.ScrolledWindow()<br>
-scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)</p>
-<p># Setup ListStore to contain images and description<br>
-model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING)</p>
-<p># Create a tuple with image files<br>
-immagini = ("BD786-TFR.jpg", "guido_sottozero.jpg", "IMG_0056.JPG",
-"movies_card.jpg")</p>
-<p>for im in immagini:<br>
-try:<br>
-pixbuf = gtk.gdk.pixbuf_new_from_file(im)<br>
-pix_w = pixbuf.get_width()<br>
-pix_h = pixbuf.get_height()<br>
-new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the
-scaled height before resizing image<br>
-scaled_pix = pixbuf.scale_simple(DEFAULT_IMAGE_WIDTH, new_h,
-gtk.gdk.INTERP_TILES)<br>
-model.append((scaled_pix, im))<br>
-except:<br>
-pass</p>
-<p># Setup GtkIconView<br>
-view = gtk.IconView(model) # Pass the model stored in a ListStore to
-the GtkIconView<br>
-view.set_pixbuf_column(0)<br>
-view.set_text_column(1)<br>
-view.set_selection_mode(gtk.SELECTION_MULTIPLE)<br>
-view.set_columns(0)<br>
-view.set_item_width(150)</p>
-<p># Pack objects and show them all<br>
-scrolled_win.add(view)<br>
-vbox.pack_start(scrolled_win)<br>
-window.show_all()</p>
-<p>gtk.main()<br>
-[/sourcecode]</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gtk</span>
+<span class="kn">import</span> <span class="nn">gobject</span>
+
+<span class="n">DEFAULT_IMAGE_WIDTH</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># Main Window setup  </span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">WINDOW_TOPLEVEL</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_size_request</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;destroy&quot;</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Python GtkIconView Test&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a VBox  </span>
+<span class="n">vbox</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>  
+<span class="n">window</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vbox</span><span class="p">)</span>
+
+<span class="c1"># Setup Scrolled Window  </span>
+<span class="n">scrolled_win</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">ScrolledWindow</span><span class="p">()</span>
+<span class="n">scrolled_win</span><span class="o">.</span><span class="n">set_policy</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">POLICY_AUTOMATIC</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">POLICY_AUTOMATIC</span><span class="p">)</span>
+
+<span class="c1"># Setup ListStore to contain images and description  </span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">ListStore</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">Pixbuf</span><span class="p">,</span> <span class="n">gobject</span><span class="o">.</span><span class="n">TYPE_STRING</span><span class="p">)</span>
+
+<span class="c1"># Create a tuple with image files</span>
+<span class="n">immagini</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;BD786-TFR.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;guido_sottozero.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;IMG_0056.JPG&quot;</span><span class="p">,</span> <span class="s2">&quot;movies_card.jpg&quot;</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">im</span> <span class="ow">in</span> <span class="n">immagini</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>  
+        <span class="n">pixbuf</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">pixbuf_new_from_file</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">pix_w</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+        <span class="n">pix_h</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">new_h</span> <span class="o">=</span> <span class="p">(</span><span class="n">pix_h</span> <span class="o">*</span> <span class="n">DEFAULT_IMAGE_WIDTH</span><span class="p">)</span> <span class="o">/</span> <span class="n">pix_w</span> <span class="c1"># Calculate the scaled height before resizing image</span>
+        <span class="n">scaled_pix</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">scale_simple</span><span class="p">(</span>
+            <span class="n">DEFAULT_IMAGE_WIDTH</span><span class="p">,</span> <span class="n">new_h</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">INTERP_TILES</span>
+        <span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scaled_pix</span><span class="p">,</span> <span class="n">im</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Setup GtkIconView  </span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">IconView</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>  <span class="c1"># Pass the model stored in a ListStore to the GtkIconView</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_pixbuf_column</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_text_column</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_selection_mode</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">SELECTION_MULTIPLE</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_columns</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_item_width</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Pack objects and show them all  </span>
+<span class="n">scrolled_win</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>  
+<span class="n">vbox</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">scrolled_win</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+<span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+
 <p>The important thing to notice is that you have to store all the images
 in a <strong>GtkListStore</strong> and pass it to the <strong>GtkIconView</strong> as <em>"model"</em>
 parameter. I hope this example is clear. If you have any question,
 please comment this post and I'll try to answer.</p>
 <p>This is a screenshot of this example:</p>
-<p><img alt="gtkiconview" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/gtkiconview_sample.png"></p>
+<p><a href=""><img alt="gtkiconview" src="https://www.andreagrandi.it/images/2008/04/gtkiconview_sample.png"></a></p>
   </div>
   <div class="tag-cloud">
     <p>

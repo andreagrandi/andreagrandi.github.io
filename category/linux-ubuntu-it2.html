@@ -160,19 +160,23 @@
     </p>
   </header>
   <div>
-      <p><img alt="Creative" src="http://www.andreagrandi.it/wp-content/uploads/2008/06/creative_live_cam_trasparente1.png">Finalmente
-sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
-Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech
-Quickcam for
-Notebook</a></strong>
+      <p><a href=""><img alt="Creative" src="https://www.andreagrandi.it/images/2008/06/creative_live_cam_trasparente1.png"></a></p>
+<p>Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
+Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech Quickcam for Notebook</a></strong>
 mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo
-con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam
-Notebook</strong></a>.</p>
+con la <a href="http://it.europe.creative.com/products/product.asp?category=218&amp;subcategory=219&amp;product=16710"><strong>Creative Live! Cam Notebook</strong></a>.</p>
 <p>Prima di proseguire nella lettura di questa guida, vi consiglio di
 verificare che il modello di "Creative Live Cam" che state cercando di
 installare, sia lo stesso che ho testato io. Potete verificarlo
-scrivendo in un terminale il comando <strong>lsusb</strong>:<br>
-<code>andy80@noteboontu:~$ lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000</code></p>
+scrivendo in un terminale il comando <strong>lsusb</strong>:  </p>
+<div class="highlight"><pre><span></span>lsusb 
+Bus <span class="m">003</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
+Bus <span class="m">002</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
+Bus <span class="m">001</span> Device <span class="m">018</span>: ID 041e:4068 Creative Technology, Ltd 
+Bus <span class="m">001</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000<span class="sb">`</span>
+</pre></div>
+
+
 <p>Ovvero dovrete verificare che l'identificativo del vostro modello sia
 esattamente <strong>041e:4068</strong></p>
 <p>Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio
@@ -188,23 +192,42 @@ che invece supportano il mio modello di webcam.</p>
 installato sulla nostra macchina tutto il necessario per poter
 ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:</p>
-<p><code>apt-get install build-essential linux-headers-$(uname -r)</code></p>
+<div class="highlight"><pre><span></span>apt-get install build-essential linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
+</pre></div>
+
+
 <p>A questo punto dovrete scaricare i sorgenti del driver, da questo
-indirizzo: 
-<a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
-<p><code>root@noteboontu:~# wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</code></p>
+indirizzo: <a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
+<div class="highlight"><pre><span></span>wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
+</pre></div>
+
+
 <p>Dobbiamo poi scompattarli con il seguente comando:</p>
-<p><code>root@noteboontu:~# tar xfvz ov51x-jpeg-1.5.7.tar.gz</code></p>
+<div class="highlight"><pre><span></span>tar xfvz ov51x-jpeg-1.5.7.tar.gz
+</pre></div>
+
+
 <p>Infine dobbiamo compilare il modulo ed installarlo:</p>
-<p><code>root@noteboontu:~# cd ov51x-jpeg-1.5.7 root@noteboontu:~/ov51x-jpeg-1.5.7# make root@noteboontu:~/ov51x-jpeg-1.5.7# make install</code></p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> ov51x-jpeg-1.5.7 
+make
+make install
+</pre></div>
+
+
 <p>Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:</p>
-<p><code>root@noteboontu:~/ov51x-jpeg-1.5.7# modprobe ov51x-jpeg</code><br>
-Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
+<div class="highlight"><pre><span></span>modprobe ov51x-jpeg
+</pre></div>
+
+
+<p>Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
-modificare il file /etc/modprobe.d/options ed aggiungere la seguente
-riga:<br>
-<code>options ov51x-jpeg forceblock=1</code></p>
+modificare il file <code>/etc/modprobe.d/options</code> ed aggiungere la seguente
+riga:</p>
+<div class="highlight"><pre><span></span>options ov51x-jpeg <span class="nv">forceblock</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+
+
 <p>ovviamente prima di caricare il modulo. A questo punto l'installazione
 dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
 scrivere lasciando un commento a questo post, in modo che anche altri
@@ -223,8 +246,8 @@ possano poi leggere la domanda/risposta.</p>
     </p>
   </header>
   <div>
-      <p><img alt="RadioDeejay" src="http://www.andreagrandi.it/wp-content/uploads/2008/05/radio-deejay_logo.thumbnail.jpg">Quante
-volte vi è capitato di voler ascoltare dal vostro PC la vostra radio
+      <p><a href=""><img alt="RadioDeejay" src="https://www.andreagrandi.it/images/2008/05/radio-deejay_logo.thumbnail.jpg"></a></p>
+<p>Quante volte vi è capitato di voler ascoltare dal vostro PC la vostra radio
 preferita e magari il plugin incorporato nel browser non funzionava
 correttamente? Nel caso di <a href="http://www.deejay.it"><strong>Radio Deejay</strong></a> mi è
 capitato molto spesso, a seconda della versione di Firefox che stavo
@@ -234,8 +257,7 @@ utilizzare il browser. Per fare questo è necessario un programma che
 riesce a leggere gli streaming audio/video e nel mio caso ho utilizzato
 <a href="http://www.gnome.org/projects/rhythmbox/"><strong>Rhythmbox</strong></a>.</p>
 <p>Bisogna aprire il programma ed andare su Radio e cliccare su "New
-Internet Radio Station" ed inserire il seguente URL:
-<strong>http://live.mediaserver.kataweb.it/radiodeejay</strong></p>
+Internet Radio Station" ed inserire il seguente URL: <strong>http://live.mediaserver.kataweb.it/radiodeejay</strong></p>
 <p>A questo punto sarà possibile ascoltare la nostra radio preferita senza
 bisogno di utilizzare il browser.</p>
 <p><strong>Nota:</strong> queste istruzioni potrebbero funzionare benissimo anche nel
@@ -255,9 +277,8 @@ testato con <strong>Ubuntu Linux 8.04</strong></p>
     </p>
   </header>
   <div>
-      <p><a href="javascript:void(0)" title="ubuntu_logo"><img alt="ubuntu_logo" src="http://www.andreagrandi.it/wp-content/uploads/2008/02/ubuntu-logo.thumbnail.png" title="ubuntu_logo"></a>{#file-link-14
-.file-link .image}Il 24 aprile è uscita la tanto attesa <strong>Ubuntu Hardy
-8.04</strong>, sicuramente una tra le distribuzioni piu' utilizzate al momento
+      <p><a href=""><img alt="ubuntu_logo" src="https://www.andreagrandi.it/images/2008/02/ubuntu-logo.thumbnail.png"></a></p>
+<p>Il 24 aprile è uscita la tanto attesa <strong>Ubuntu Hardy 8.04</strong>, sicuramente una tra le distribuzioni piu' utilizzate al momento
 dagli utenti Linux.</p>
 <p>Trattandosi di una release LTS (long time support, ovvero supportata per
 ben 3 anni dal rilascio) ci si aspettava che potesse trattarsi di una
@@ -272,46 +293,44 @@ instabili tra tutte quelle che sono state rilasciate fino ad ora.</p>
 <p>Qui di seguito farò una panoramica dei problemi che ho personalmente
 riscontrato, premettendo che si tratta ovviamente di una lista di
 problemi non completa e relativa in particolare ai miei due PC sul quale
-ho avuto modo di testarla:</p>
-<p><strong>Firefox 3:</strong> la versione di Firefox distribuita al momento del
+ho avuto modo di testarla.</p>
+<h2>Firefox 3</h2>
+<p>la versione di Firefox distribuita al momento del
 rilascio della Ubuntu 8.04 è la versione <strong>3.0 beta 5</strong>. Pur trattandosi
 di una versione "abbastanza stabile", non è del tutto esente da alcuni
-fastidiosi bug, in particolare si riscontrano <a href="https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/192888">frequenti crash del
-browser</a>
+fastidiosi bug, in particolare si riscontrano <a href="https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/192888">frequenti crash del browser</a>
 quando si cerca di visualizzare video tramite il <strong>plugin Flash</strong>.</p>
-<p><strong>PulseAudio:</strong> il nuovo sistema di gestione audio adottato da Ubuntu,
+<h2>PulseAudio</h2>
+<p>il nuovo sistema di gestione audio adottato da Ubuntu,
 sebbene abbia sulla carta ottime funzionalità, non è ancora compatibile
 con la maggior parte dei programmi in circolazione. Questo fa si che, ad
 esempio, anche programmi opensource come il client ufficiale di
 <strong>Last.Fm</strong> abbiano problemi nel gestire la periferica audio, dando
 spesso il seguente errore "The Alsa soundsystem is either busy or not
 present".</p>
-<p><strong>Bluetooth:</strong> fino alla versione 7.10 di Ubuntu riuscivo ad inviare
+<h2>Bluetooth</h2>
+<p>fino alla versione 7.10 di Ubuntu riuscivo ad inviare
 correttamente le foto dal mio Nokia N73 al PC. Con la 8.04 non ci riesco
-piu'. Il
-<a href="https://bugs.launchpad.net/ubuntu/+source/bluez-utils/+bug/211252">bug</a>
+piu'. Il <a href="https://bugs.launchpad.net/ubuntu/+source/bluez-utils/+bug/211252">bug</a>
 è già stato segnalato e riguarda anche altre persone oltre a me.</p>
-<p><strong>Clock Applet:</strong> cliccando sull'orologio per visualizzare il
-calendario, va in crash gnome-panel. Anche <a href="https://bugs.launchpad.net/ubuntu/+source/gnome-panel/+bug/203527">questo
-bug</a>
+<h2>Clock Applet</h2>
+<p>cliccando sull'orologio per visualizzare il calendario, va in crash gnome-panel. Anche <a href="https://bugs.launchpad.net/ubuntu/+source/gnome-panel/+bug/203527">questo bug</a>
 è stato già segnalato ed era stato "fixato" prima del rilascio della
 versione definitiva, ma ancora il problema non è risolto.</p>
-<p><strong>Evolution e Google Calendar:</strong> una delle funzioni tanto attese sarebbe
-dovuta essere la possibilità di integrare Calendar di Google nel
-calendario di Evolution. Purtroppo si tratta di un altro
-<a href="https://bugs.launchpad.net/ubuntu/+source/evolution/+bug/220596">bug</a>
+<h2>Evolution e Google Calendar</h2>
+<p>una delle funzioni tanto attese sarebbe dovuta essere la possibilità di integrare Calendar di Google nel
+calendario di Evolution. Purtroppo si tratta di un altro <a href="https://bugs.launchpad.net/ubuntu/+source/evolution/+bug/220596">bug</a>
 ancora non risolto.</p>
-<p><strong>Nvidia ed il driver proprietario:</strong> sia a me che ad altre persone, non
-viene installato correttamente il
-drive<a href="javascript:void(0)" title="ubuntu_logo"> </a>{#file-link-14 .file-link
-.image}r proprietario aggiornato, dopo aver aggiornato ad Ubuntu 8.04.
+<h2>Nvidia ed il driver proprietario</h2>
+<p>sia a me che ad altre persone, non viene installato correttamente il
+driver proprietario aggiornato, dopo aver aggiornato ad Ubuntu 8.04.
 Io ho risolto disattivando il modulo e reinstallandolo da capo. Il
 problema però non è ancora stato risolto.</p>
-<p><strong>Tracker:</strong> il tool di indicizzazione integrato nella Ubuntu, non
+<h2>Tracker</h2>
+<p>il tool di indicizzazione integrato nella Ubuntu, non
 indicizza correttamente il contenuto di alcuni file. Cercando ad esempio
 "Benedetta" vengono fuori anche i documenti che contengono "Benedetto".
-Anche questo
-<a href="https://bugs.launchpad.net/ubuntu/+source/tracker/+bug/222046">bug</a> è
+Anche questo <a href="https://bugs.launchpad.net/ubuntu/+source/tracker/+bug/222046">bug</a> è
 stato segnalato.</p>
 <p>In conclusione, non mi sento proprio di consigliare, almeno per il
 momento, l'aggiornamento alla Ubuntu 8.04 a meno che non si voglia
@@ -333,31 +352,34 @@ principali fix dei bug che sono stati segnalati in questi giorni.</p>
     </p>
   </header>
   <div>
-      <p><img alt="ubuntu_circle_trasparent.png" src="http://www.andreagrandi.it/wp-content/uploads/2008/04/ubuntu_circle_trasparent.png">Vorrei
-segnalarvi un sito web che forse molti di voi conosceranno già:
-<a href="https://launchpad.net/">https://launchpad.net/</a><br>
+      <p><img alt="ubuntu_circle_trasparent.png" src="https://www.andreagrandi.it/images/2008/04/ubuntu_circle_trasparent.png"></p>
+<p>Vorrei segnalarvi un sito web che forse molti di voi conosceranno già: <a href="https://launchpad.net/">https://launchpad.net/</a><br>
 è un sito messo in piedi dalla Canonical (la società che finanzia lo
 sviluppo di Ubuntu) e presenta alcune funzioni molto interessanti:</p>
-<p><strong>Code:</strong> è possibile pubblicare qui una propria patch ad un programma,
+<h2>Code</h2>
+<p>è possibile pubblicare qui una propria patch ad un programma,
 in modo che gli sviluppatori la possano unire al codice ufficiale.</p>
-<p><strong>Bugs:</strong> un modulo per segnalare i bug della Ubuntu e degli altri
+<h2>Bugs</h2>
+<p>un modulo per segnalare i bug della Ubuntu e degli altri
 progetti che sono registrati su launchpad.</p>
-<p><strong>Blueprints:</strong> il posto dove pubblicare le proprie idee, proposte di
+<h2>Blueprints</h2>
+<p>il posto dove pubblicare le proprie idee, proposte di
 miglioramento, suggerimenti sulle future funzionalità ecc.... della
 Ubuntu. Se avete un'idea originale per una funziona che ancora non è
 presente in Ubuntu, potete scriverla qui.</p>
-<p><strong>Translations:</strong> consente di visualizzare le stringhe ed i messaggi non
+<h2>Translations</h2>
+<p>consente di visualizzare le stringhe ed i messaggi non
 ancora tradotti dei programmi di Ubuntu e permette di scrivere la
 propria traduzione, nella lingua desiderata. La traduzione verrà poi
 sottoposta ad approvazione. Un ottimo modo per suddividersi il lavoro di
 traduzione dei vari programmi.</p>
-<p><strong>Answers:</strong> qui è possibile fare domande (come su un forum) e
+<h2>Answers</h2>
+<p>qui è possibile fare domande (come su un forum) e
 rispondere alle domande che ancora sono "open" (cioè senza risposta).</p>
 <p>Tutti i contributi che date in una di queste sezioni, vanno ad aumentare
 il vostro "karma", ovvero la notorietà, la popolarità e l'importanza
 all'interno della community di Ubuntu.</p>
-<p>La mia pagina ad esempio è questa:
-<a href="https://launchpad.net/%7Eandy80">https://launchpad.net/\~andy80</a></p>
+<p>La mia pagina ad esempio è questa: <a href="https://launchpad.net/%7Eandy80">https://launchpad.net/~andy80</a></p>
 <p>Se non vi sentite ancora dei programmatori esperti, ma volete comunque
 far qualcosa per migliorare la Ubuntu (o altri progetti registrati in
 quel sito), quello è il posto giusto nel quale spendere un po' del
