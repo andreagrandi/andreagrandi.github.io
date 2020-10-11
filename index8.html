@@ -151,6 +151,56 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">Reversing a List in Python</a></h2>
+    <p>
+      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/lists.html">lists</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a>
+    </p>
+  </header>
+  <div>
+      <p>Sometimes we need to reverse the order of the elements in a Python list.
+While there can be many different ways of implementing this task, I
+found three in particular that I appreciate for different reasons. Let's
+define first a list of integers that we will reverse later.</p>
+<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>List slicing</h3>
+<p>This method can be a bit obscure at first read, but basically it slices
+the whole list proceding in the reverse order:</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>Reversed method</h3>
+<p>We use the
+<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
+that returns an iterable object and a list comprehension to generate the
+new list</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h3>Swapping values in place</h3>
+<p>This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span> <span class="n">l</span>
+
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">How to configure EncFS on OSX 10.10 (Yosemite)</a></h2>
     <p>
       Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a>
@@ -435,73 +485,6 @@ would not be a clean way to do this job.</p>
 <p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
 if the value doesn't exist <code>my_value</code> will be assigned with
 <code>'my-default-value'</code></p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
-    <p>
-      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h2>Important things to know</h2>
-<p>There are four important things to know about middlewares:</p>
-<ul>
-<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
-<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-important: middlewares are processed from top to bottom during a
-request and from bottom to top during a response.</li>
-<li>You don't need to implement all the available methods of a
-middleware. For example you can just implement <code>process_request</code>
-and <code>process_template_response</code></li>
-<li>If you implement <code>process_request</code> and you decide to return an
-<code>HttpResponse</code>, all the other middlewares, views etc... will be
-ignored and only your response will be returned</li>
-</ul>
-<h2>Writing a middleware</h2>
-<p>In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-
-<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span>
-</pre></div>
-
-
-<p>Please don't care about how I calculated the time. I'm aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.</p>
-<p>If you want to see a <strong>complete example</strong> of a project that includes and
-uses this middleware, here you can find the complete source
-code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
-<h2>References</h2>
-<ul>
-<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
-<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
-<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
-</ul>
   </div>
 </article>
 
