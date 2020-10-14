@@ -152,6 +152,51 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2007/12/17/wxgtk-working-on-maemo/">wxGTK working on Maemo</a></h2>
+    <p>
+      Posted on Mon 17 December 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>,              <a href="https://www.andreagrandi.it/tag/tablet.html">tablet</a>,              <a href="https://www.andreagrandi.it/tag/wx.html">wx</a>
+    </p>
+  </header>
+  <div>
+      <p>Reading the <a href="http://wxwidgets.blogspot.com/2007/11/hildonizing-wxgtk.html">official WxWidget blog</a>, I
+discovered that one of their developer was working to hildonize
+[WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
+just a test or if this library could work in Maemo, so I followed his
+suggestion and I grabbed the latest SVN sources:</p>
+<div class="highlight"><pre><span></span>svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
+</pre></div>
+
+
+<p>and I compiled it in this way:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> wxWidgets ./configure --with-hildon make make install
+</pre></div>
+
+
+<p>then I grabbed a simple "HelloWorld" from the official documentation.
+You can find the complete source code <a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt">here</a>.</p>
+<p>I compiled the source code in this way:</p>
+<div class="highlight"><pre><span></span>g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
+</pre></div>
+
+
+<p>then I ran it in the usual way:</p>
+<div class="highlight"><pre><span></span>run-standalone.sh ./hworld
+</pre></div>
+
+
+<p>The result? I think that a screenshoot is better than thousand words :)</p>
+<p><a href="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s1600-h/wxWindowsHildon.jpg"><img alt="wxWindowsHildon" src="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s400/wxWindowsHildon.jpg"></a></p>
+<p><strong>Note:</strong> I tested this inside Scratchbox,
+using <strong>CHINOOK_x86</strong> target, so I think it will work fine on Os2008. This could be a good thing to help other
+developers porting some interesting applications (uhm... aMule for example ;) ) to Maemo.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2007/12/14/nokia-n810-available-in-italy/">Nokia N810 available in Italy!</a></h2>
     <p>
       Posted on Fri 14 December 2007 in <a href="https://www.andreagrandi.it/category/linux-maemo-en.html">Linux, Maemo (EN)</a>
@@ -221,36 +266,6 @@ in your PC and extract the file named <code>skyhost</code></p>
 </ol>
 <p><code>chown user:users /usr/bin/skyhost</code></p>
 <p>That's all! You can find more information on the <a href="http://www.internettablettalk.com/forums/showthread.php?t=12740">original post</a>.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2007/11/20/alternative-way-to-generate-deb-packages-for-maemo/">Alternative way to generate .deb packages for Maemo</a></h2>
-    <p>
-      Posted on Tue 20 November 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione-ubuntu-en.html">HowTo, Linux, Maemo (EN), Programmazione, Ubuntu (EN)</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/debian.html">debian</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/package.html">package</a>
-    </p>
-  </header>
-  <div>
-      <p>Thanks to <strong>Mohammed Hassan</strong> now I know an alternative (alternative to the <a href="http://maemo.org/development/documentation/how-tos/4-x/creating_a_debian_package.html">official howto</a>)
-way to generate a <strong>.deb</strong> package for Maemo.</p>
-<p>If the package already exist in the Debian repositories, you can get the
-<code>.dsc</code> file (for example in an ftp like this:
-<a href="http://ftp.debian.org/debian/pool/non-free/s/spim/">http://ftp.debian.org/debian/pool/non-free/s/spim/</a> ) and execute the
-following commands:</p>
-<div class="highlight"><pre><span></span>dget -x DSC_FILE_URL
-</pre></div>
-
-
-<p>It will download the package and will unpack it in the current folder.
-You have to enter in the created folder and edit the debian/* files to
-personalize settings, mantainer data, add deps ecc...</p>
-<p>When you're done, you can generate the package with the usual command:</p>
-<div class="highlight"><pre><span></span>dpkg-buildpackage -rfakeroot
-</pre></div>
   </div>
 </article>
 
