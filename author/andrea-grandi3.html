@@ -150,6 +150,44 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/">Skipping tests depending on the Python version</a></h2>
+    <p>
+      Posted on Thu 21 February 2019 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/python.html">python</a>,              <a href="https://www.andreagrandi.it/tag/test.html">test</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/software.html">software</a>,              <a href="https://www.andreagrandi.it/tag/development.html">development</a>,              <a href="https://www.andreagrandi.it/tag/testing.html">testing</a>
+    </p>
+  </header>
+  <div>
+      <p>Sometimes we want to run certain tests only on a specific version of Python.</p>
+<p>Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won't run
+under Python 3.</p>
+<p>Chances are that during the migration you are already using the <a href="https://pythonhosted.org/six/">six</a> library. The <strong>six</strong> libraries have
+two boolean properties which are initialised to <code>True</code> depending on the Python version which is being used: <code>PY2</code> when running under Python 2
+and <code>PY3</code> when running under Python 3.</p>
+<p>This library, combined with the <strong>skipIf</strong> method of <a href="https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures">unittest library</a>
+can be used to easily skip tests when using Python 3:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+
+<span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">PY3</span><span class="p">,</span> <span class="s2">&quot;not compatible with Python 3&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This test won&#39;t run under Python 3</span>
+        <span class="k">pass</span>
+</pre></div>
+
+
+<h2>Credits</h2>
+<p>Thanks to my colleague <strong><a href="https://github.com/valnico">Nicola</a></strong> for giving me the inspiration to write this post.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on OSX</a></h2>
     <p>
       Posted on Wed 19 December 2018 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
@@ -303,26 +341,6 @@ Before Python 3.7.x to insert a debugging point we had to write <code>import pdb
 <ul>
 <li><a href="https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c">https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c</a></li>
 </ul>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2018/04/14/machine-learning-pima-indians-diabetes/">Machine Learning: Pima Indians Diabetes</a></h2>
-    <p>
-      Posted on Sat 14 April 2018 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/machine-learning.html">Machine Learning</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/scikit-learn.html">scikit-learn</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>Solving the Pima Indians Diabetes problem with Machine Learning using Python and scikit-learn</p>
-        <br>
-        <a class="btn"
-           href="https://www.andreagrandi.it/2018/04/14/machine-learning-pima-indians-diabetes/">
-          Continue reading
-        </a>
   </div>
 </article>
 

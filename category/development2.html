@@ -150,6 +150,74 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2020/04/10/covid-api-free-and-open-source-api-service-for-covid19-data/">covid-api - a free and open source API service for COVID-19 data</a></h2>
+    <p>
+      Posted on Fri 10 April 2020 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/covid.html">covid</a>,              <a href="https://www.andreagrandi.it/tag/api.html">api</a>,              <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>,              <a href="https://www.andreagrandi.it/tag/data.html">data</a>,              <a href="https://www.andreagrandi.it/tag/covid-19.html">covid-19</a>,              <a href="https://www.andreagrandi.it/tag/service.html">service</a>,              <a href="https://www.andreagrandi.it/tag/free.html">free</a>,              <a href="https://www.andreagrandi.it/tag/open.html">open</a>,              <a href="https://www.andreagrandi.it/tag/source.html">source</a>
+    </p>
+  </header>
+  <div>
+      <h2>Introduction</h2>
+<p>In this period of COVID-19 emergency, many countries are publishing COVID related data that is being used by many existing projects and researchers.</p>
+<p>The main problem with these data is that they are being released in CSV format on some GitHub repository. While we fully appreciate the opennes of this format, unfortunataly it can introduce an additional work to be done (downloading the data, cleaning it, importing the data into a database, keeping it updated etc...) before someone can consume and analyse the data.</p>
+<h2>covid-api</h2>
+<p>covid-api project is a <strong>free</strong> and <strong>open source</strong> API service which automatically imports the data from various sources (at the moment we support the <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins CSSE</a> data source) and makes it available as a REST API.</p>
+<p>The service is still under development, but an initial version (with regularly updated data) is already available at <a href="https://api.covid19data.cloud">https://api.covid19data.cloud</a>.</p>
+<h2>How to use the data</h2>
+<p>To consume the API you don't need an account nor you need to authenticate in any way. You just need to request the right endpoint using the supported parameters.</p>
+<p>Here is an example for Python language:</p>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.covid19data.cloud/v1/jh/daily-reports?last_update_from=2020-04-01&amp;last_update_to=2020-04-03&amp;country=Italy&#39;</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+<span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">35343</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-01T21:58:34&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">110574</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13155</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">16847</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">37895</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-02T23:25:14&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">115242</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13915</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">18278</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Further API documentation is available at https://api.covid19data.cloud/docs</p>
+<h2>Next steps</h2>
+<p>While we keep polishing the code and <a href="https://github.com/andreagrandi/covid-api/issues/43">improving the existing data import</a> procedure, we are planning to support additional data sources. The next one we are going to support is the <a href="https://github.com/andreagrandi/covid-api/issues/46"><strong>Italian Protezione Civile</strong></a>.</p>
+<p>If you are aware of an additional data source that you would like to see covered, please let us know (creating a new Issue on GitHub) or send us a pull request.</p>
+<h2>Contribute to the project</h2>
+<p>If you are a Python developer and would like to contribute to the project, my advice is to first have a look at the main documentation available in the <a href="https://github.com/andreagrandi/covid-api/blob/master/README.md">README</a>.</p>
+<p>Then I suggest to have a look at the existing <a href="https://github.com/andreagrandi/covid-api/issues">Issues</a> and see where help is needed or in alternative you can open a new Issue or send a pull request with fixes and improvements.</p>
+<p>I also recommend to become familiar with our <a href="https://github.com/andreagrandi/covid-api/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before sending any contribution.</p>
+<h2>Sponsors and Thanks</h2>
+<p>I want to thank <a href="https://www.heroku.com/">Heroku</a> for accepting to sponsor the hosting of this service.</p>
+<p>I also want to thank all the <a href="https://github.com/andreagrandi/covid-api/graphs/contributors">volunteers</a> involved in the project for their help and contributions.</p>
+<h2>Disclaimer</h2>
+<p>We are doing our best to keep the available data updated, clean (removing duplicates), and to provide a reliable service, 
+but we are not in any way responsible for the accuracy of the data nor for the availability of the service itself. 
+Please <strong>use it at your own risk</strong>.</p>
+<p><strong>Abuse notice</strong>: we are currently not requiring any registration or authentication to use this service because 
+we would like to keep it as simple as possible. 
+Please do not abuse the service or you will force us to require a registration (subject to approval) to continue using it.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2018/04/14/machine-learning-pima-indians-diabetes/">Machine Learning: Pima Indians Diabetes</a></h2>
     <p>
       Posted on Sat 14 April 2018 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -438,61 +506,6 @@ if you checkout this version of the code:</p>
 <p>I've only tested the views but it would be nice to test even the permission class, for example.
 Please remember to write your tests first, if possible: implementing the code will be much more natural
 once the tests are already in place.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2017/07/02/migrating-from-wordpress-to-static-generated-website/">Migrating from WordPress to a static generated website</a></h2>
-    <p>
-      Posted on Sun 02 July 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/pelican.html">Pelican</a>,              <a href="https://www.andreagrandi.it/tag/static.html">static</a>,              <a href="https://www.andreagrandi.it/tag/website.html">website</a>,              <a href="https://www.andreagrandi.it/tag/migration.html">migration</a>,              <a href="https://www.andreagrandi.it/tag/cloudflare.html">CloudFlare</a>,              <a href="https://www.andreagrandi.it/tag/github.html">GitHub</a>
-    </p>
-  </header>
-  <div>
-      <p>As you may have noticed, my website looks very different compared to a few days ago.
-It's just a different theme or template, I completely changed how the pages are generated and
-I'm hosting it in a completely different way.</p>
-<h3>A brief history</h3>
-<p>When I started this blog 10 years ago, I was hosting it on a shared hosting service and it was based on <strong>WordPress</strong>.
-I then decided to keep WordPress as backend (I don't like PHP very much but I wasn't even good at front end development at the time,
-so using a tool that allowed me to concentrate on the content rather than on design was a natural choice for me) but to move my website
-to a <strong>VPS</strong> on <strong>DigitalOcean</strong>, where I've self-hosted <strong>Nginx + PHP + MySQL</strong> and even Postfix for email aliases until a few days ago.</p>
-<h3>Why moving to a static website?</h3>
-<p>In these three or four years I've been using a VPS, I must say I've been good enough (or maybe lucky?) at keeping "bad people" out
-of my server, but it's true that <strong>maintaining a VPS can be very time consuming</strong> and you can never be sure that your website is always safe.
-I've heard about static website before, but I was a bit skeptic because I had not spent enough time investigating all the possibilities
-(search and comments are still possible, thanks to external services and plugins).</p>
-<p>Another advantage of a static website is that I can perfectly "run" (preview) on my local computer without publishing it online. Pages can be rendered locally
-and will appear in the browser exactly as they will appear once published online.</p>
-<p>If you use a tool like WordPress, you need to be constantly connected to Internet to write any change. With static pages <strong>I can write my content offline</strong>
-(so I can do it while commuting on the train or while I'm flying somewhere) and publish it once I'm back online.</p>
-<h3>Pelican</h3>
-<p>The tool that I'm using to generate this website is called <a href="https://blog.getpelican.com/">Pelican</a>. 
-There are many <a href="https://www.staticgen.com/">static website generators</a>, the reason why I chose Pelican is because it's written in <strong>Python</strong>,
-so if I need to do any change I can do them and because its templates use Jinja2 which I'm already familiar with. It can also import posts from WordPress
-(and I had over 180 posts to import from my previous website) so if you are migrating from it it's a good choice. Please note that the import script is not perfect
-and that you may have to adjust some formatting here and there.</p>
-<h3>A new deployment pipeline</h3>
-<p>When you use WordPress your website is already online and all you have to do is to login, use the integrated editor, write content and finally publish it.
-A static website doesn't have any admin tool, it's just static pages. How do you publish content then? There are of course multiple solutions available.
-In my case my website source code is hosted in <a href="https://github.com/andreagrandi/andreagrandi.it">a repository on GitHub</a>. When I commit on <strong>master</strong> branch
-there is a webhook that triggers a <a href="https://github.com/andreagrandi/andreagrandi.it/blob/master/.travis.yml">build job</a> on <a href="https://travis-ci.org/">TravisCI</a>.
-TravisCI fetches the latest source code, installs Pelican on the CI and builds the static pages. Once the build is finished, a <a href="https://github.com/andreagrandi/andreagrandi.it/blob/master/deploy.sh">bash script</a> is used to <strong>publish</strong>
-the generated pages on the static website hosting service.</p>
-<h3>Hosting a static website</h3>
-<p>The good thing about hosting a static website is that you don't need a database so you can host it almost anywhere at a cheaper price or even for free.
-In my case I've decided to use <strong>GitHub pages</strong>, mainly for simplicity. Every GitHub user can have a static website hosted at &lt;yourusername>.github.io for free.
-To start using it, you just have to create a repository named &lt;yourusername>.github.io under your GitHub account. In my case the repository is <a href="https://github.com/andreagrandi/andreagrandi.github.io">https://github.com/andreagrandi/andreagrandi.github.io</a>. My deploy script simply takes the generated content
-that is in the output/ folder and <strong>git push</strong> it on this repository. Once the website has been pushed to git, it's immediately available at <strong>https://andreagrandi.github.io</strong></p>
-<h4>CloudFlare</h4>
-<p>GitHub Pages service has a little limitation: you can either have your website served from a URL similar to the one I've just mentioned, including SSL support <em>or</em> you can use your own domain, but <strong>you can't have both things</strong> (SSL + custom domain). To workaround this, you can instruct your domain registrar (in my case is <a href="https://www.gandi.net/">Gandi.net</a>) to let CloudFlare manage your domain and just enabling "Full SSL" support will do the trick. I won't repeat here how to use CloudFlare since they have a very nice tutorial explaining how to configure their service to be used with GitHub Pages: <a href="https://blog.cloudflare.com/secure-and-fast-github-pages-with-cloudflare/">https://blog.cloudflare.com/secure-and-fast-github-pages-with-cloudflare/</a>. Remember to include a <strong>CNAME</strong> file containing your domain name and let your static generetor put it on the root of your website, otherwise GitHub pages won't serve the pages correctly.</p>
-<h4>Why not Amazon S3?</h4>
-<p>While I was looking for instructions about how to host a static websites, I found many examples of websites using Amazon S3. There is nothing wrong with using this service (just keep in mind that it's not free, Amazon charges you for space usage and requests, so keep an eye on the AWS bill) but the way these websites were using it was completely wrong. The most common error I noticed was the fact they were enabling the <strong>flexible SSL</strong> option on CloudFlare: this means that the connection between the visitor and CloudFlare was encrypted (and visitor could see the the SSL enabled) but the connection between CloudFlare and Amazon S3 was being served with <strong>HTTP only</strong>, meaning that potentially the pages could have been modified before being served. Infact Amazon doesn't serve the S3 website buckets with SSL, they use plain HTTP (Why are you doing this Amazon?!). To use the S3 bucket correctly one should also configure Route 53 (to manage DNS) and CloudFront (the Amazon equivalent of CloudFlare service, beware because this is also charged separately depending on usage/traffic), making the whole setup a bit more complicated.</p>
-<h3>Conclusion</h3>
-<p>I finally moved away from my VPS and from now on I will be able to concentrate my time on content only instead of spending part of it to maintain my server. Last but not least, the possibility to write my content offline, will hopefully allow me to write from places (train, airplane) where I've never written from before. If you have any suggestion or if if you notice any error, feel free to leave a comment here below. In alternative, since now this blog is completely open source and on GitHub, you can fork it and make a pull request!</p>
   </div>
 </article>
 
