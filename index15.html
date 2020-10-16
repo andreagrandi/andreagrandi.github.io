@@ -150,6 +150,134 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/">Using Twitter Bootstrap with Node.js, Express and Jade</a></h2>
+    <p>
+      Posted on Sun 24 February 2013 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/bootstrap.html">Bootstrap</a>,              <a href="https://www.andreagrandi.it/tag/css.html">css</a>,              <a href="https://www.andreagrandi.it/tag/express.html">Express</a>,              <a href="https://www.andreagrandi.it/tag/jade.html">Jade</a>,              <a href="https://www.andreagrandi.it/tag/javascript.html">Javascript</a>,              <a href="https://www.andreagrandi.it/tag/nodejs.html">NodeJs</a>,              <a href="https://www.andreagrandi.it/tag/npm.html">npm</a>,              <a href="https://www.andreagrandi.it/tag/twitter.html">twitter</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </header>
+  <div>
+      <p>I've decided to write this post as a note to myself. I'm still learning
+Node.js and digging into Express/Jade, but I've read many people using
+the nice <a href="http://twitter.github.com/bootstrap/"><strong>Twitter Bootstrap</strong></a>
+and I was wondering if there was a way to integrate all these
+technologies. The short answer is: yes, we can!</p>
+<p><strong>Note:</strong> once again, I'm not a Node.js expert and surely there are
+other ways to achieve this task (for example there is a Node.js module
+called
+<a href="https://npmjs.org/package/twitter-bootstrap"><strong>twitter-bootstrap</strong></a>,
+but I haven't tried it). This tutorial is based on another tutorial I
+found, but it was not very updated and it had a more complicated way to
+install Bootstrap, so I decided to write a new one basing it on the
+original <a href="http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0">http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0</a></p>
+<h2>Preparing the environment</h2>
+<p>I will assume that you're running any Linux distribution (in my case I'm
+using Ubuntu 12.10, but feel free to use your own distribution). Be sure
+to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
+(I'm using Node.js 0.8.20 and npm 1.2.11).</p>
+<h2>Create a project folder and install the required dependencies</h2>
+<div class="highlight"><pre><span></span>mkdir node-bootstrap
+<span class="nb">cd</span> node-bootstrap
+npm install express
+npm install jade
+</pre></div>
+
+
+<h2>Create the basic project structure with Express</h2>
+<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+
+create : nodebootstrap
+create : nodebootstrap/package.json
+create : nodebootstrap/app.js
+create : nodebootstrap/public
+create : nodebootstrap/public/javascripts
+create : nodebootstrap/public/images
+create : nodebootstrap/public/stylesheets
+create : nodebootstrap/public/stylesheets/style.css
+create : nodebootstrap/routes
+create : nodebootstrap/routes/index.js
+create : nodebootstrap/routes/user.js
+create : nodebootstrap/views
+create : nodebootstrap/views/layout.jade
+create : nodebootstrap/views/index.jade
+
+install dependencies:
+$ <span class="nb">cd</span> nodebootstrap <span class="o">&amp;&amp;</span> npm install
+
+run the app:
+$ node app
+</pre></div>
+
+
+<p>You should already have installed all the needed dependencies, even
+without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
+<h2>Download and install Bootstrap</h2>
+<p>Download Twitter Boostrap from the official
+website <a href="http://twitter.github.com/bootstrap/assets/bootstrap.zip">http://twitter.github.com/bootstrap/assets/bootstrap.zip</a> and
+unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
+<h2>Bootstrap integration with Jade template system</h2>
+<p>At this point you need to edit the <strong>views/layout.jade</strong> file and
+include the references to Bootsrap</p>
+<div class="highlight"><pre><span></span><span class="nt">html</span>
+  <span class="nt">head</span>
+    <span class="nt">title</span><span class="p">=</span> <span class="n">title</span>
+    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap.min.css&#39;</span>)
+    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap-responsive.min.css&#39;</span>)
+    <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/stylesheets/style.css&#39;</span>)
+    <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js&#39;</span>)
+    <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;/bootstrap/js/bootstrap.min.js&#39;</span>)
+  <span class="nt">body</span>
+    <span class="nt">block</span> content
+</pre></div>
+
+
+<h2>Test the Bootstrap integration</h2>
+<p>At this point we will modify <strong>views/index.jade</strong> that is the default
+template used to render the index</p>
+<div class="highlight"><pre><span></span><span class="nt">extends</span> layout
+
+    <span class="nt">block</span> content
+      <span class="nt">div</span><span class="nc">.top</span>
+        <span class="nt">form</span><span class="nc">.form-horizontal</span>(<span class="na">method=</span><span class="s">&quot;post&quot;</span><span class="err">,</span> <span class="na">id=</span><span class="s">&quot;loginForm&quot;</span>)
+          <span class="nt">label</span> Username
+          <span class="nt">input</span><span class="nc">.span3</span>(<span class="na">id=</span><span class="s">&quot;username&quot;</span><span class="err">,</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span><span class="err">,</span> <span class="na">name=</span><span class="s">&quot;User&quot;</span><span class="err">,</span> <span class="na">placeholder=</span><span class="s">&quot;Enter your username&quot;</span>)
+          <span class="nt">label</span> Password
+          <span class="nt">input</span><span class="nc">.span3</span>(<span class="na">id=</span><span class="s">&quot;password&quot;</span><span class="err">,</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span><span class="err">,</span> <span class="na">name=</span><span class="s">&quot;Password&quot;</span>)
+          <span class="nt">input</span><span class="nc">.btn</span>(<span class="na">type=</span><span class="s">&quot;submit&quot;</span><span class="err">,</span> <span class="na">value=</span><span class="s">&quot;Log In&quot;</span>)
+      <span class="nt">div</span><span class="nc">.container</span>
+        <span class="nt">div</span><span class="nc">.content</span>
+          <span class="nt">table</span><span class="nc">.table.table-striped</span>
+            <span class="nt">thead</span>
+              <span class="nt">tr</span>
+                <span class="nt">th</span> Table
+                <span class="nt">th</span> Heading
+            <span class="nt">tbody</span>
+              <span class="nt">tr</span>
+                <span class="nt">td</span> Blah
+                <span class="nt">td</span> Test
+              <span class="nt">tr</span>
+                <span class="nt">td</span> Hello
+                <span class="nt">td</span> World
+
+      <span class="nt">div</span><span class="nc">.footer</span>
+</pre></div>
+
+
+<p>Now go back to the terminal and execute the app:</p>
+<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+Express server listening on port <span class="m">3000</span>
+</pre></div>
+
+
+<p>Open your favourite browse and visit <a href="http://localhost:3000">http://localhost:3000</a> to see your
+first Bootstrap + Node.js application app and running.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2013/02/10/fundraising-for-cutesoma-soma-fm-mobile-client-development/">Fundraising for CuteSoma (Soma.fm mobile client) development</a></h2>
     <p>
       Posted on Sun 10 February 2013 in <a href="https://www.andreagrandi.it/category/blackberry-maemo-en-meego-programmazione-windows-phone.html">BlackBerry, Maemo (EN), MeeGo, Programmazione, Windows Phone</a>
@@ -267,81 +395,6 @@ page <a href="http://pauliom.com/2012/12/20/the-windows-phone-emulator-wasnt-ab
 Connections</strong>", right click on "<strong>vEthernet (Internal Ethernet Port)
 Windows Phone Emulator</strong>" and <strong>Enable</strong> it.</p>
 <p><a href="https://www.andreagrandi.it/images/2013/02/network_interface_wp8.png"><img alt="network_interface_wp8" src="https://www.andreagrandi.it/images/2013/02/network_interface_wp8.png" width="100%"></a></p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/">Using QtCreator to deploy and run a Qt application to a remote Linux device</a></h2>
-    <p>
-      Posted on Thu 17 January 2013 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/deploy.html">deploy</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>,              <a href="https://www.andreagrandi.it/tag/qt.html">Qt</a>,              <a href="https://www.andreagrandi.it/tag/qtcreator.html">QtCreator</a>,              <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
-    </p>
-  </header>
-  <div>
-      <p>QtCreator is a very flexible IDE and can really be adapted for a lot of
-things. I usually use it to develop mobile applications for Nokia N9 and
-BlackBerry 10, but it can be used for more generic tasks. In my case I
-wanted to be able to develop a Qt application using my desktop PC,
-deploy it and run on a remote (actually it's on the same desk) Linux
-machine running Xubuntu.</p>
-<p>Doing this is quite easy and you don't need any specific plugin on
-QtCreator, but be sure to have at least version 2.6.x. Other than
-QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
-development machine and Xubuntu 12.10 for the remote netbook) and an SSH
-account on the remote PC.</p>
-<h2>Add the remote device to QtCreator</h2>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png"><img alt="QtCreatorDevice" src="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png" width="100%"></a></p>
-<p>To add the remote Linux device on QtCreator, use the
-<strong>Tools-&gt;Options</strong> menu and click on "<strong>Devices</strong>" item. At this
-point click on "<strong>Add</strong>" button and fill the fields using values similar
-to the screenshot. In particular specify a <strong>name</strong> for the device, the
-<strong>IP</strong> of the remote machine and a <strong>username</strong> and <strong>password</strong> that
-must already exist (I just created the user "andrea" on the Xubuntu
-machine and used the same password). I also had to set the <strong>timeout</strong>
-to 20 seconds, because I had some connection problems and the connection
-kept dropping after 10 seconds trying. To verify if everything is
-working fine, just click on <strong>Test</strong> button.</p>
-<h2>Add a specific Qt version</h2>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png"><img alt="QtCreatorQtVersion" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png" width="100%"></a></p>
-<p>To write your application you may need a specific Qt version that is
-different from the one distributed by your Linux distribution. There's
-no problem, QtCreator let you add different Qt versions without any
-conflict. In my case I installed the Qt5 version distributed by
-<strong>Canonical Qt5 Edgers
-Team</strong>: <a href="https://launchpad.net/~canonical-qt5-edgers">https://launchpad.net/~canonical-qt5-edgers</a><br>
-Once it's installed, just click on "<strong>Add</strong>" button and select the qmake
-specific to the version you want to add (in my case it was in
-<strong>/opt/qt5/bin/qmake</strong> ).</p>
-<h2>Add a Qt Kit</h2>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png"><img alt="QtCreatorQtKits" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png" width="100%"></a></p>
-<p>QtCreator permits to add new <strong>Kit</strong> (development configurations) and
-these kits are used during project creation to specify what you want to
-target. In my example I added a new kit choosing an appropriate <strong>name</strong>
-"Qt5 Ubuntu", the <strong>device type</strong>, the actual <strong>device</strong> previously
-configured and finally the <strong>Qt version</strong> that we added before. With a
-kit I have a complete "toolchain" that allow me to write applications
-for a particular device, with a specific Qt version.</p>
-<h2>Putting the pieces together</h2>
-<p>At this point you just have to create a new "<strong>Qt Quick 2</strong>"
-application, and select the new kit you just created instead of the
-"Desktop" one. <strong>Please note</strong> that there is a little problem that I
-haven't fixed yet (but I'm working on it): if you create, for example, a
-project named "QtTest1" it will be deployed to the folder /opt/QtTest1/
-on the remote machine. By default your user doesn't have read+write
-permissions for that folder so I manualy created the folder and I gave a
-chmod 777 on it, just for testing. There are two possible ways to fix
-this: you could create a specific user that has read+write permissions
-on /opt/ or you could modify the deployment configuration to have the
-app deployed to the user /home (I will investigate on this possibility
-and I will write something in one of the next posts).</p>
-<h2>Final thoughts</h2>
-<p>What all of this could be useful for? Well, do 2+2 and you'll easily
-guess ;) In the next weeks I will post more specific informations and I
-will update everyone with my progresses. Any comment is welcome! If you
-want to contribute to this you're welcome too of course.</p>
   </div>
 </article>
 

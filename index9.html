@@ -150,6 +150,109 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">How to configure EncFS on OSX 10.10 (Yosemite)</a></h2>
+    <p>
+      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a>,              <a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a>,              <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a>,              <a href="https://www.andreagrandi.it/tag/osx.html">OSX</a>,              <a href="https://www.andreagrandi.it/tag/security.html">security</a>
+    </p>
+  </header>
+  <div>
+      <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc...), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It's
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.</p>
+<h2>Installing EncFS</h2>
+<p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
+manager installed on OSX you can install it using this command:</p>
+<div class="highlight"><pre><span></span>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+
+
+<p>After brew, you need to install <strong>OSXFuse</strong> from this
+website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
+<p>Finally you can install <strong>encfs</strong> using this command:</p>
+<div class="highlight"><pre><span></span>brew install homebrew/fuse/encfs
+</pre></div>
+
+
+<h2>Configuring the encrypted folder</h2>
+<p>Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:</p>
+<div class="highlight"><pre><span></span>encfs ~/Dropbox/Private ~/Private
+</pre></div>
+
+
+<p>If you are mounting an existing encrypted volume, you will be prompted
+for the password. If you are creating a new encrypted volume you will be
+asked some questions about EncFS parameters.</p>
+<p><strong>Note:</strong> if it's important for you to keep compatibility with
+<strong><a href="https://www.boxcryptor.com/en/classic">BoxCryptor Classic</a></strong> (in case
+you want to use the same volume under Windows), please refer to this
+other article I
+wrote: <a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</a></p>
+<h2>Mount the encrypted volume on startup</h2>
+<p>First of all you need to save the volume's password inside the OSX
+keychain. Open the app <strong>Keychain Access</strong> and create a new entry with
+name <strong>encfs</strong> and account value <strong>encfs</strong>, then write your <strong>password</strong>
+and click <strong>Add</strong>:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
+<p>Once the password is saved, <strong>open a text editor</strong> and paste this script
+and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
+
+<span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
+<span class="nv">TARGET</span><span class="o">=</span>~/Private
+<span class="nv">VOLUME_TITLE</span><span class="o">=</span>Private
+<span class="nv">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="s1">&#39;encfs&#39;</span>
+<span class="nv">ENCFS</span><span class="o">=</span>/usr/local/bin/encfs
+
+mount <span class="p">|</span> grep <span class="nv">$TARGET</span> &gt;/dev/null
+<span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$?</span><span class="s2">&quot;</span> -eq <span class="s2">&quot;0&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> /usr/sbin/diskutil unmount <span class="nv">$TARGET</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$TARGET</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="nb">echo</span> <span class="s2">&quot;Create new mountpoint </span><span class="nv">$TARGET</span><span class="s2">&quot;</span>
+mkdir <span class="nv">$TARGET</span>
+chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
+<span class="k">fi</span>
+
+<span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
+</pre></div>
+
+
+<p>Make it <strong>executable</strong>:</p>
+<div class="highlight"><pre><span></span>chmod +x ~/encfs_mount.sh
+</pre></div>
+
+
+<p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
+app in the \$HOME folder:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
+<div class="highlight"><pre><span></span><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
+</pre></div>
+
+
+<p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
+add the previously saved application.</p>
+<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="system preferences" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png" width="60%"></a></p>
+<h2>Final notes</h2>
+<p>At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: <strong>do not save anything
+directly on <code>~/Dropbox/Private</code></strong>, only read and save your files from
+<code>~/Private</code></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>
+<li><a href="http://ninjatips.com/encrypt-dropbox-using-encfs/">http://ninjatips.com/encrypt-dropbox-using-encfs/</a></li>
+</ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/">Understanding Python decorators optimizing a recursive Fibonacci implementation</a></h2>
     <p>
       Posted on Mon 31 August 2015 in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a>
@@ -398,55 +501,6 @@ code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">ht
 <li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
 <li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
 </ul>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/08/22/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/">Why I completely switched this website to HTTPS (and why you should do the same)</a></h2>
-    <p>
-      Posted on Sat 22 August 2015 in <a href="https://www.andreagrandi.it/category/sicurezza.html">Sicurezza</a>
-
-
-    </p>
-  </header>
-  <div>
-      <p>I must admit it, there was a time when I was not using <strong>HTTPS</strong>, not
-even to protect the admin section of the website. This means that anyone
-could have intercepted the password and published (or deleted) things in
-my name. Since a couple of years ago I started protecting my admin
-sectio using an SSL certificate.  I haven't done it before for a couple
-of reason: my hosting was on a provider that required a lot of money
-(something like 100\$/year) to enable SSL support, plus an SSL
-certificated costed at least 100-120\$/year.</p>
-<p>When I migrated my website on my own <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">VPS on
-DigitalOcean</a> I
-finally discovered that <strong><a href="https://www.startssl.com">StartSSL</a></strong> was
-giving <strong>free class 1 certificates</strong> and I immediately got one. I made
-the mistake to just serve the admin pages using HTTPS, not all the
-website. I regretted about this decision after readin a
-<a href="http://dannyman.toldme.com/2010/12/23/swa-yahoo-being-evil/">couple</a> of
-<a href="http://opensource.com/business/15/8/interview-daniel-roesler-utilityapi">articles</a>
-that were explaining how some internet providers where changing served
-HTTP pages injecting their own ads or banner. That was unacceptable to
-me and I swicthed the whole website to HTTPS.</p>
-<p>Basically, if you don't serve even your personal website using HTTPS,
-someone could change the page while it's being transfered to the
-requester. Imagine if you have (like me) a page on your blog that let
-people download your public PGP key. Users could be served with a
-different key, so someone else would be able to decrypt a message
-intended for you only. Scary, isn't it?</p>
-<p>If you need more informations about how to request a StartSSL
-certificate and how to install it on Nginx/Apache, I can suggest this
-nice tutorial: <a href="https://konklone.com/post/switch-to-https-now-for-free">https://konklone.com/post/switch-to-https-now-for-free</a></p>
-<p>If you need to serve a WordPress website, that configuration is not
-enough. In that case you may want to have a look at my own Nginx
-configuration, available at this
-address: <a href="https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c">https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c</a></p>
-<p>p.s: if you are you curious to try how Digital Ocean VPS works and fancy
-<strong>10\$ credit</strong> (enough for 2 months if you choose the basic droplet)
-for <strong>free, u</strong>se this link and enjoy
-it <a href="https://www.digitalocean.com/?refcode=cc8349e328a5">https://www.digitalocean.com/?refcode=cc8349e328a5</a></p>
   </div>
 </article>
 
