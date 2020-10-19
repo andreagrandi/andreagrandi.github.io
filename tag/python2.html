@@ -150,110 +150,21 @@
 
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on OSX</a></h2>
+    <h2><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on MacOS</a></h2>
     <p>
       Posted on Wed 19 December 2018 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
 
           &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/python.html">python</a>,              <a href="https://www.andreagrandi.it/tag/osx.html">osx</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/software.html">software</a>,              <a href="https://www.andreagrandi.it/tag/development.html">development</a>
+              <a href="https://www.andreagrandi.it/tag/python.html">python</a>,              <a href="https://www.andreagrandi.it/tag/osx.html">osx</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/software.html">software</a>,              <a href="https://www.andreagrandi.it/tag/development.html">development</a>,              <a href="https://www.andreagrandi.it/tag/macos.html">macos</a>,              <a href="https://www.andreagrandi.it/tag/virtualenv.html">virtualenv</a>,              <a href="https://www.andreagrandi.it/tag/venv.html">venv</a>,              <a href="https://www.andreagrandi.it/tag/version.html">version</a>,              <a href="https://www.andreagrandi.it/tag/installing.html">installing</a>,              <a href="https://www.andreagrandi.it/tag/installation.html">installation</a>,              <a href="https://www.andreagrandi.it/tag/brew.html">brew</a>,              <a href="https://www.andreagrandi.it/tag/mkvirtualenv.html">mkvirtualenv</a>,              <a href="https://www.andreagrandi.it/tag/virtualenvwrapper.html">virtualenvwrapper</a>
     </p>
   </header>
   <div>
-      <p>Every time I need to install Python on OSX or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.</p>
-<p>Tired of this, I decided to write down my own notes. Please note that I don't claim this to be the best way of installing Python on OSX. It works fine for me so use it at your own risk.</p>
-<h2>Requirements</h2>
-<p>To follow these instructions you need to at least have installed <strong>brew</strong> on OSX. Please follow the instructions on the official website: <a href="https://brew.sh">https://brew.sh</a></p>
-<h2>Installing Python 3.7.x and Python 2.7.x</h2>
-<p>Even if I strongly suggest to start every new project with Python 3 (since Python 2 will only be supported until the end of 2019), there may be use cases when version 2 is still required, so I will give you the instructions to install both.</p>
-<h3>Installing Python 3.7.x</h3>
-<div class="highlight"><pre><span></span>brew install python
-</pre></div>
-
-
-<p>This will install Python 3 by default.</p>
-<h3>Installing Python 2.7.x</h3>
-<div class="highlight"><pre><span></span>brew install python@2
-</pre></div>
-
-
-<p>This will install version 2 of Python.</p>
-<h3>Add the Python locations to PATH</h3>
-<p>Edit your <code>.bashrc</code> or <code>.zshrc</code> and add this:</p>
-<div class="highlight"><pre><span></span>export PATH=&quot;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&quot;
-</pre></div>
-
-
-<p>You will need to close your terminal and reopen it for the changes to be applied. Once you have done it, you can verify if Python 3 and Python 2 have been installed correctly:</p>
-<div class="highlight"><pre><span></span>python --version
-Python 3.7.1
-</pre></div>
-
-
-<p>and</p>
-<div class="highlight"><pre><span></span>python2 --version
-Python 2.7.15
-</pre></div>
-
-
-<h2>Install virtualenv and virtualenvwrapper</h2>
-<p>When working with Python, it's a good thing not to install packages system wide, but confine them in virtual environments. A good and well tested way of doing that is to use <code>virtualenv</code> (and its companion <code>virtualenvwrapper</code>) which makes the most common operations easier.</p>
-<div class="highlight"><pre><span></span>pip install virtualenv
-pip install virtualenvwrapper
-</pre></div>
-
-
-<p>Those (and only those) two packages will be installed system wide, because we will need them to be available outside of a virtual environment.</p>
-<h3>Configure virtualenv</h3>
-<p>Edit again your <code>.bashrc</code> (or <code>.zshrc</code>) and add these lines:</p>
-<div class="highlight"><pre><span></span>export WORKON_HOME=~/.virtualenvs
-[ -f /usr/local/bin/virtualenvwrapper.sh ] &amp;&amp; source /usr/local/bin/virtualenvwrapper.sh
-</pre></div>
-
-
-<p>This will configure the default location where to store your virtual environments and will run a command every time you open a new terminal, to make sure <code>virtualenvwrapper</code> can work correctly.</p>
-<h2>Test if the installed tools are working</h2>
-<p>To make sure everything has been configured correctly, please close and reopen your terminal and let's try to create a new virtual environment:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv test
-</pre></div>
-
-
-<p>which should output something like this:</p>
-<div class="highlight"><pre><span></span>Using base prefix &#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&#39;
-New python executable in /Users/andrea/.virtualenvs/test/bin/python3.7
-Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
-Installing setuptools, pip, wheel...
-done.
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
-(test) ➜  ~
-</pre></div>
-
-
-<p>If you see something similar, it means that the virtual environment has been created correctly. Please note that by default this command will create an environment base on Python 3. Do you need to create one for Python 2? No problem, you just need to do the following:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/python2 test
-</pre></div>
-
-
-<p>which should output this:</p>
-<div class="highlight"><pre><span></span>Running virtualenv with interpreter /usr/local/bin/python2
-New python executable in /Users/andrea/.virtualenvs/test/bin/python2.7
-Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
-Installing setuptools, pip, wheel...
-done.
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
-virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
-(test) ➜  ~
-</pre></div>
-
-
-<h2>Conclusion</h2>
-<p>That's all you have to do to install and configure Python and virtualenv on OSX. If you have problems, comments or questions, feel free to leave a comment on this post.</p>
+      <p>How to install Python and virtualenv on MacOS</p>
+        <br>
+        <a class="btn"
+           href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">
+          Continue reading
+        </a>
   </div>
   <hr />
 </article>
