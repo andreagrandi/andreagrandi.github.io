@@ -150,6 +150,44 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2016/02/08/using-a-light-sensor-with-bbc-microbit-and-micropython/">Using a light sensor with BBC micro:bit and MicroPython</a></h2>
+    <p>
+      Posted on Mon 08 February 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/bbc.html">bbc</a>,              <a href="https://www.andreagrandi.it/tag/breadboard.html">breadboard</a>,              <a href="https://www.andreagrandi.it/tag/embedded.html">embedded</a>,              <a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a>,              <a href="https://www.andreagrandi.it/tag/micropython.html">micropython</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/python.html">python</a>
+    </p>
+  </header>
+  <div>
+      <p>A <strong><a href="https://en.wikipedia.org/wiki/Photoresistor">light sensor</a></strong> is a
+small component with a particular characteristic: it is basically a
+resistor and its resistance decreases if the light is more intense. To
+use it with micro:bit we need to use one of the <strong>analogic ports</strong>. To
+build this circuit you will need a <strong>breadboard</strong>, <strong>3 jumper wires</strong>, a
+<strong>10k resistance</strong> and possibly a <strong><a href="https://www.kitronik.co.uk/5609-prototyping-system-for-the-bbc-microbit.html">Kitronik breadboard
+kit</a></strong>.</p>
+<h3>The project</h3>
+<p>I wanted to realise a simple project where, depending on the light
+intensity captured by the light sensor, the <strong>micro:bit</strong> shows an image
+of the <strong>Sun</strong> if the light is intense and an image of the <strong>Moon</strong> if
+the light is less intense.</p>
+<p>Here is the complete <strong>circuit scheme</strong>:</p>
+<p><a href="https://www.andreagrandi.it/images/2016/02/microbit_breadboard_schema_light.png"><img alt="microbit_breadboard_schema_light" src="https://www.andreagrandi.it/images/2016/02/microbit_breadboard_schema_light.png" width="40%"></a></p>
+<h6>"Image Copyright © Kitronik"</h6>
+<p>and here is a picture of the <strong>finished project</strong> I created:</p>
+<p><a href="https://www.andreagrandi.it/images/2016/02/microbit_breadboard_example_2.jpg"><img alt="microbit_breadboard_example_2" src="https://www.andreagrandi.it/images/2016/02/microbit_breadboard_example_2.jpg" width="40%"></a></p>
+<p>The <strong>source code</strong> I needed is available here:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/99a09be27c9626b1119d.js"></script>
+</p>
+
+<p>and as a demo I realised this small <strong>video</strong>:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/6vLE_AQc4Bc" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2016/02/07/prototyping-bbc-microbit-projects-with-kitronik-breadboard-kit/">Prototyping BBC micro:bit projects with Kitronik breadboard kit</a></h2>
     <p>
       Posted on Sun 07 February 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -278,73 +316,6 @@ two parts and swaps the first with sixth, the second with fifth, etc...</p>
 
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 </pre></div>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
-    <p>
-      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h2>Important things to know</h2>
-<p>There are four important things to know about middlewares:</p>
-<ul>
-<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
-<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-important: middlewares are processed from top to bottom during a
-request and from bottom to top during a response.</li>
-<li>You don't need to implement all the available methods of a
-middleware. For example you can just implement <code>process_request</code>
-and <code>process_template_response</code></li>
-<li>If you implement <code>process_request</code> and you decide to return an
-<code>HttpResponse</code>, all the other middlewares, views etc... will be
-ignored and only your response will be returned</li>
-</ul>
-<h2>Writing a middleware</h2>
-<p>In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-
-<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span>
-</pre></div>
-
-
-<p>Please don't care about how I calculated the time. I'm aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.</p>
-<p>If you want to see a <strong>complete example</strong> of a project that includes and
-uses this middleware, here you can find the complete source
-code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
-<h2>References</h2>
-<ul>
-<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
-<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
-<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
-</ul>
   </div>
 </article>
 

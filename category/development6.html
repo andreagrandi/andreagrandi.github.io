@@ -150,6 +150,73 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
+    <p>
+      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+important: middlewares are processed from top to bottom during a
+request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+middleware. For example you can just implement <code>process_request</code>
+and <code>process_template_response</code></li>
+<li>If you implement <code>process_request</code> and you decide to return an
+<code>HttpResponse</code>, all the other middlewares, views etc... will be
+ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+
+
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/">How to create a Docker image for PostgreSQL and persist data</a></h2>
     <p>
       Posted on Sat 21 February 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>

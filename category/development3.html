@@ -150,6 +150,109 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/">Getting latest Ubuntu AMI with Terraform</a></h2>
+    <p>
+      Posted on Fri 25 August 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/aws.html">AWS</a>,              <a href="https://www.andreagrandi.it/tag/terraform.html">Terraform</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>,              <a href="https://www.andreagrandi.it/tag/devops.html">devops</a>
+    </p>
+  </header>
+  <div>
+      <p>When we need to create an EC2 resource on AWS using Terraform, we need to specify the AMI id to get the correct image.
+The id is not easy to memorise and it changes depending on the zone we are working one. On every new release the id changes again.
+So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
+<h3>Getting latest Ubuntu AMI id</h3>
+<p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
+<div class="highlight"><pre><span></span><span class="na">variable &quot;aws_region&quot; { default</span> <span class="o">=</span> <span class="s2">&quot;eu-west-2&quot;</span> <span class=" -Punctuation">}</span><span class="c1"> # London</span>
+
+<span class="kr">provider</span> <span class="s">&quot;aws&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
+<span class="na">    access_key</span> <span class="o">=</span> <span class="s2">&quot;youraccesskey&quot;</span>
+<span class="na">    secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
+<span class=" -Punctuation">}</span>
+
+<span class="kr">data</span> <span class="s">&quot;aws_ami&quot; &quot;ubuntu&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    most_recent</span> <span class="o">=</span> <span class="kt">true</span>
+
+    <span class="err">filter</span> <span class=" -Punctuation">{</span>
+<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
+<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span>
+    <span class=" -Punctuation">}</span>
+
+    <span class="err">filter</span> <span class=" -Punctuation">{</span>
+<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;virtualization-type&quot;</span>
+<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span>
+    <span class=" -Punctuation">}</span>
+
+<span class="na">    owners</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
+<span class=" -Punctuation">}</span>
+
+<span class="kr">resource</span> <span class="s">&quot;aws_instance&quot; &quot;web&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
+<span class="na">    instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
+
+    <span class="kd">tags</span> <span class=" -Punctuation">{</span>
+<span class="na">        Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
+    <span class=" -Punctuation">}</span>
+<span class=" -Punctuation">}</span>
+
+<span class="kr">output</span> <span class="s">&quot;image_id&quot;</span> <span class=" -Punctuation">{</span>
+<span class="na">    value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
+<span class=" -Punctuation">}</span>
+</pre></div>
+
+
+<p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
+<div class="highlight"><pre><span></span><span class="err">➜</span>  <span class="n">example1$</span><span class="p">:</span> <span class="n">terraform</span> <span class="n">apply</span>
+<span class="k">data</span><span class="p">.</span><span class="n">aws_ami</span><span class="p">.</span><span class="n">ubuntu</span><span class="p">:</span> <span class="n">Refreshing</span> <span class="k">state</span><span class="p">...</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Creating</span><span class="p">...</span>
+    <span class="n">ami</span><span class="p">:</span>                          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;ami-03998867&quot;</span>
+    <span class="n">associate_public_ip_address</span><span class="p">:</span>  <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">availability_zone</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">ebs_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>           <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">ephemeral_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">instance_state</span><span class="p">:</span>               <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">instance_type</span><span class="p">:</span>                <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;t2.micro&quot;</span>
+    <span class="n">ipv6_address_count</span><span class="p">:</span>           <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">ipv6_addresses</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>             <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">key_name</span><span class="p">:</span>                     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">network_interface</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">network_interface_id</span><span class="p">:</span>         <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">placement_group</span><span class="p">:</span>              <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">primary_network_interface_id</span><span class="p">:</span> <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">private_dns</span><span class="p">:</span>                  <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">private_ip</span><span class="p">:</span>                   <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">public_dns</span><span class="p">:</span>                   <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">public_ip</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">root_block_device</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>          <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">security_groups</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">source_dest_check</span><span class="p">:</span>            <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;true&quot;</span>
+    <span class="n">subnet_id</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">tags</span><span class="p">.</span><span class="o">%</span><span class="p">:</span>                       <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;1&quot;</span>
+    <span class="n">tags</span><span class="p">.</span><span class="n">Name</span><span class="p">:</span>                    <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;HelloUbuntu&quot;</span>
+    <span class="n">tenancy</span><span class="p">:</span>                      <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">volume_tags</span><span class="p">.</span><span class="o">%</span><span class="p">:</span>                <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+    <span class="n">vpc_security_group_ids</span><span class="p">.</span><span class="o">#</span><span class="p">:</span>     <span class="ss">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="ss">&quot;&lt;computed&gt;&quot;</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">10</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">20</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Still</span> <span class="n">creating</span><span class="p">...</span> <span class="p">(</span><span class="mi">30</span><span class="n">s</span> <span class="n">elapsed</span><span class="p">)</span>
+<span class="n">aws_instance</span><span class="p">.</span><span class="n">web</span><span class="p">:</span> <span class="n">Creation</span> <span class="n">complete</span> <span class="p">(</span><span class="n">ID</span><span class="p">:</span> <span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="n">f58f8bd55b3a7e38</span><span class="p">)</span>
+
+<span class="n">Apply</span> <span class="n">complete</span><span class="o">!</span> <span class="n">Resources</span><span class="p">:</span> <span class="mi">1</span> <span class="n">added</span><span class="p">,</span> <span class="mi">0</span> <span class="n">changed</span><span class="p">,</span> <span class="mi">0</span> <span class="n">destroyed</span><span class="p">.</span>
+
+<span class="n">Outputs</span><span class="p">:</span>
+
+<span class="n">image_id</span> <span class="o">=</span> <span class="n">ami</span><span class="o">-</span><span class="mi">03998867</span>
+</pre></div>
+
+
+<p>That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2017/08/17/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/">Creating a production ready API with Python and Django Rest Framework – part 4</a></h2>
     <p>
       Posted on Thu 17 August 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -654,311 +757,6 @@ test the API.</p>
 <h3>Feedback Please</h3>
 <p>If you enjoyed this tutorial, please leave me some feedback!
 I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">Creating a production ready API with Python and Django Rest Framework – part 2</a></h2>
-    <p>
-      Posted on Sat 01 October 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/api.html">API</a>,              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/framework.html">framework</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>In the <a href="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/">first
-part</a>
-of this tutorial we have seen how to create a basic API using <strong>Django
-Rest Framework</strong>. This second part will explain how to implement
-<strong>POST</strong> methods and add different levels of <strong>permissions</strong> and
-<strong>authentication</strong>. If you are starting from part 2, you may want to
-checkout the source code at this exact point:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.4
-</pre></div>
-
-
-<h3>A step back</h3>
-<p>Before showing how easy it is to implement a <strong>POST</strong> method for our
-existing API, I want to do a step back and show you the "manual way",
-using just the
-<a href="http://www.django-rest-framework.org/api-guide/views/"><strong>APIView</strong></a>
-class. Edit the file <strong>catalog/views.py</strong> and change the code in this
-way:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
-<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
-<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
-<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
-
-
-<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-
-
-<p>If we try to use the API again (from the browser of from the http
-client), it will still work in the same way. The difference here is that
-we are using the very basic <strong>APIView</strong> class and we have explicitly
-defined the <strong>GET</strong> method for it.</p>
-<h3>Implementing a POST method with APIView</h3>
-<p>An API is not being used at its full potential if it's read only. We are
-going to implement a POST method for the existing view and testing it
-with <a href="https://httpie.org/"><strong>httpie</strong></a> client again. First of all we
-need to add an import to <strong>catalog/views.py</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
-</pre></div>
-
-
-<p>then we add this method to our <strong>ProductList</strong> class:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Now let's test our <strong>POST</strong> method we just implemented:</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Salamino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Salamino Piccante&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;10.50&quot;</span>
-HTTP/1.0 <span class="m">201</span> Created
-Allow: GET, POST, HEAD, OPTIONS
-Content-Type: application/json
-Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> <span class="m">11</span>:48:48 GMT
-Server: WSGIServer/0.1 Python/2.7.10
-Vary: Accept, Cookie
-X-Frame-Options: SAMEORIGIN
-
-<span class="o">{</span>
-    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Salamino Piccante&quot;</span>,
-    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Salamino&quot;</span>,
-    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;10.50&quot;</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>It works! In case something doesn't work, try to fetch the source code
-at this point:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.7
-</pre></div>
-
-
-<h3>Implementing a POST method with ListCreateAPIView</h3>
-<p>Do you remember when I mentioned at the beginning that there is an easy
-way to do the same thing? I wasn't cheating. Let's change again our old
-code in <strong>catalog/views.py</strong> but this time we will use a different base
-class:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
-<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
-<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
-<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
-
-
-<span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-</pre></div>
-
-
-<p>let's test this again with <strong>httpie</strong>:</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Pecorino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Pecorino Sardo&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;7.00&quot;</span>
-HTTP/1.0 <span class="m">201</span> Created
-Allow: GET, POST, HEAD, OPTIONS
-Content-Type: application/json
-Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> <span class="m">15</span>:21:20 GMT
-Server: WSGIServer/0.1 Python/2.7.10
-Vary: Accept, Cookie
-X-Frame-Options: SAMEORIGIN
-
-<span class="o">{</span>
-    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Pecorino Sardo&quot;</span>,
-    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Pecorino&quot;</span>,
-    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;7.00&quot;</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>We just POSTed some data on the API! How can it work? Well, we have
-changed the base class from <strong>ListAPIView</strong> to
-<a href="http://www.django-rest-framework.org/api-guide/generic-views/#listcreateapiview"><strong>ListCreateAPIView</strong></a>.
-This particular class implements <strong>a generic POST method</strong> that will
-accept and validate all the fields through the specified serializer.</p>
-<h3>Authentication</h3>
-<p>Now our API let us add products to the catalog, amazing! But... is it
-exactly what we want? In a real scenario we don't want any random user
-to be able to add products in our database, so we are going to protect
-the POST method allowing only Admin users.</p>
-<p>Before digging into Django Rest Framework permissions, we need to setup
-an authentication system. For simplicity we will implement
-<a href="http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication"><strong>TokenAuthentication</strong></a>.
-As first step we need to edit <strong>settings.py</strong> and
-insert <strong>rest_framework.authtoken</strong> in the <strong>INSTALLED_APPS</strong>:</p>
-<div class="highlight"><pre><span></span>    <span class="o">...</span>
-    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;rest_framework.authtoken&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<p>after this, we need to add <strong>TokenAuthentication</strong> as default
-authentication class (append this in <strong>settings.py</strong> at the end):</p>
-<div class="highlight"><pre><span></span><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s1">&#39;rest_framework.authentication.TokenAuthentication&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Finally we need to add a particular URL to the project so that clients
-will be able to call an endpoint passing <strong>username</strong> and <strong>password</strong>
-to get a <strong>token</strong> back. Edit <strong>drftutorial/urls.py</strong> and make it's like
-this:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
-<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
-<span class="kn">from</span> <span class="nn">rest_framework.authtoken.views</span> <span class="kn">import</span> <span class="n">obtain_auth_token</span>
-
-<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^api-token-auth/&#39;</span><span class="p">,</span> <span class="n">obtain_auth_token</span><span class="p">),</span>
-<span class="p">]</span>
-</pre></div>
-
-
-<p>Don't forget to re-run the <strong>migrations</strong>, because TokenAuthorization
-needs to change a couple of tables:</p>
-<div class="highlight"><pre><span></span>$ ./manage.py migrate
-Operations to perform:
-    Apply all migrations: admin, auth, authtoken, catalog, contenttypes, sessions
-Running migrations:
-    Applying authtoken.0001_initial... OK
-    Applying authtoken.0002_auto_20160226_1747... OK
-</pre></div>
-
-
-<p>In case you had any problem changing the code up to this point, you can
-always fetch the related git tag:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.9
-</pre></div>
-
-
-<h4>Testing the Authentication</h4>
-<p>Before testing the authentication, make sure you created at least the
-Django <strong>superuser</strong> with:</p>
-<div class="highlight"><pre><span></span>$ ./manage.py createsuperuser
-</pre></div>
-
-
-<p>now let's try to <strong>obtain the token</strong> we will need later for our API
-calls:</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/api-token-auth/ <span class="nv">username</span><span class="o">=</span><span class="s2">&quot;yourusername&quot;</span> <span class="nv">password</span><span class="o">=</span><span class="s2">&quot;yourpassword&quot;</span>
-HTTP/1.0 <span class="m">200</span> OK
-Allow: POST, OPTIONS
-Content-Type: application/json
-Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> <span class="m">08</span>:55:07 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-X-Frame-Options: SAMEORIGIN
-
-<span class="o">{</span>
-    <span class="s2">&quot;token&quot;</span>: <span class="s2">&quot;bc9514f0892368cfd0ea792a977aff55d53e3634&quot;</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>We will need to pass this token in every API call we want to be
-authenticated. The token is being passed through the "Authentication"
-header parameter.</p>
-<h3>API Permissions</h3>
-<p>Authentication is something that identify the user with a particular
-system. Permissions instead are the level of things that are allowed or
-not allowed for a particular user. In our case we said we want to let
-Admin users to be able to POST new products and we want to let even
-anonymous users to GET the product list.</p>
-<p>Django Rest Framework has some built-in classes that we can apply to our
-views to define the level of permissions. We could have used the
-<a href="http://www.django-rest-framework.org/api-guide/permissions/#isadminuser"><strong>IsAdminUser</strong></a>
-class, but it would not allow anonymous users to perform the GET
-request. Or we could have used
-<a href="http://www.django-rest-framework.org/api-guide/permissions/#isauthenticatedorreadonly"><strong>IsAuthenticatedOrReadOnly</strong></a>
-class, but this would allow any registered user to add products (and we
-want to let only admins).</p>
-<p>Or...we can define our own permission class and have exactly what we
-want. Create a new file <strong>catalog/permissions.py</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">BasePermission</span><span class="p">,</span> <span class="n">SAFE_METHODS</span>
-
-
-<span class="k">class</span> <span class="nc">IsAdminOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">has_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span>
-</pre></div>
-
-
-<p>Just as a side note, <strong>SAFE_METHODS</strong> are <strong>GET</strong>, <strong>HEAD</strong> and
-<strong>OPTIONS</strong>. These method are considered "safe" because they don't
-change any existing data. Open <strong>catalog/views.py</strong> again, import this
-at the beginning:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.permissions</span> <span class="kn">import</span> <span class="n">IsAdminOrReadOnly</span>
-</pre></div>
-
-
-<p>and set this as <strong>permission_classes</strong> to <strong>ProductList</strong>:</p>
-<div class="highlight"><pre><span></span><span class="o">...</span>
-<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-<span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
-</pre></div>
-
-
-<p>Let's now try to add a new product using the <strong>token</strong> we got before
-(you will have to use your own token of course, mine only works on my
-local db):</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Lardo&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Lardo di Colonnata&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;8.50&quot;</span> <span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
-HTTP/1.0 <span class="m">201</span> Created
-Allow: GET, POST, HEAD, OPTIONS
-Content-Type: application/json
-Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> <span class="m">13</span>:04:13 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-Vary: Accept
-X-Frame-Options: SAMEORIGIN
-
-<span class="o">{</span>
-    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Lardo di Colonnata&quot;</span>,
-    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Lardo&quot;</span>,
-    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;8.50&quot;</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>It worked! We have now protected our API so that not admin people can't
-create any product. If you have any problem with the code, you can check
-it out with this tag:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.10
-</pre></div>
-
-
-<h3>Wrapping Up</h3>
-<p>We have now implemented the POST method to add new products to our
-catalog. In the <a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">next
-episode</a>
-we will see how to implement endpoints to get a single product, to
-update or delete products and finally we will allow registered users to
-send a review for a specific product.</p>
-<h3>Feedback Please</h3>
-<p>I know, this blog doesn't have any "comment" feature (I was tired of
-dealing with spam), but if you want to provide some feedback you can
-still do it by email. Just visit my
-<a href="https://www.andreagrandi.it/about/"><strong>About</strong></a> page, you will find my
-email there.</p>
   </div>
 </article>
 
