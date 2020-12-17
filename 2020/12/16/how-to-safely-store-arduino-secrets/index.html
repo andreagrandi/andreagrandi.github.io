@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
+
+
+  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
+
+  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
+
+
+
+  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
+    title="Andrea Grandi RSS">
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2140684-3', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Andrea Grandi" />
+<meta name="description" content="Best practices to store Arduno secrets safely" />
+<meta name="keywords" content="arduino, secrets, secret, security, password, passwords, storage, howto, safe, hide, secure">
+
+
+<meta property="og:site_name" content="Andrea Grandi"/>
+<meta property="og:title" content="How to safely store Arduino secrets"/>
+<meta property="og:description" content="Best practices to store Arduno secrets safely"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://www.andreagrandi.it/2020/12/16/how-to-safely-store-arduino-secrets/"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-12-16 18:00:00+01:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
+<meta property="article:section" content="Development"/>
+<meta property="article:tag" content="arduino"/>
+<meta property="article:tag" content="secrets"/>
+<meta property="article:tag" content="secret"/>
+<meta property="article:tag" content="security"/>
+<meta property="article:tag" content="password"/>
+<meta property="article:tag" content="passwords"/>
+<meta property="article:tag" content="storage"/>
+<meta property="article:tag" content="howto"/>
+<meta property="article:tag" content="safe"/>
+<meta property="article:tag" content="hide"/>
+<meta property="article:tag" content="secure"/>
+<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
+
+  <title>Andrea Grandi &ndash; How to safely store Arduino secrets</title>
+
+
+  <link rel="canonical" href="https://www.andreagrandi.it/2020/12/16/how-to-safely-store-arduino-secrets/" />
+</head>
+
+<body class="light-theme"
+>
+  <aside>
+    <div>
+      <a href="https://www.andreagrandi.it">
+        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
+      </a>
+
+      <h1>
+        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
+      </h1>
+
+<p>Software Developer</p>
+      <form class="navbar-search" action="/search.html" role="search">
+        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
+      </form>
+
+      <nav>
+        <ul class="list">
+
+
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/about/">
+              About
+            </a>
+          </li>
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/curriculum/">
+              Curriculum
+            </a>
+          </li>
+          <li>
+            <a target="_self"
+              href="https://www.andreagrandi.it/pgp-key/">
+              PGP Key
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li>
+          <a  class="sc-twitter" href="https://twitter.com/andreagrandi" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        </li>
+        <li>
+          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+        <li>
+          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+            <i class="fab fa-linkedin"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://www.andreagrandi.it">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+
+      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="how-to-safely-store-arduino-secrets">How to safely store Arduino secrets</h1>
+    <p>
+      Posted on Wed 16 December 2020 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>You just got a new Arduino board (maybe a wifi enabled one), you wrote a useful application and you are about to share it on GitHub.</p>
+<p>If your code looks like this:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;WiFi101.h&gt;</span><span class="cp"></span>
+
+<span class="kr">char</span> <span class="n">ssid</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;myessid&quot;</span>
+<span class="kr">char</span> <span class="n">pass</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;mypassword&quot;</span>
+<span class="p">...</span>
+</pre></div>
+
+
+<p>do <strong>not</strong> share it! You would leak your ESSID, password and maybe othere secrets to everyone.</p>
+<h2>Store secrets in an external file</h2>
+<p>Create a separate file named <code>arduino_secrets.h</code>:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define SECRET_SSID = &quot;myessid&quot;</span>
+<span class="cp">#define SECRET_PASS = &quot;mypassword&quot;</span>
+</pre></div>
+
+
+<p>and change the main file in this way:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;WiFi101.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;arduino_secrets.h&gt;</span><span class="cp"></span>
+
+<span class="kr">char</span> <span class="n">ssid</span><span class="p">[]</span> <span class="o">=</span> <span class="n">SECRET_SSID</span>
+<span class="kr">char</span> <span class="n">pass</span><span class="p">[]</span> <span class="o">=</span> <span class="n">SECRET_PASS</span>
+<span class="p">...</span>
+</pre></div>
+
+
+<p><strong>Note:</strong> using the <strong><code>SECRET_...</code></strong> naming convention is also useful if you use the <strong>Arduino Web Editor</strong> <a href="https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0">https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0</a> because these values will be automatically added to a secret tab and will only be visible to you, even if you share your project.</p>
+<h2>Exclude secrets file from git</h2>
+<p>Moving secrets to <code>arduino_secrets.h</code> would be pointless if we pushed this file to GitHub. To avoid this mistake, add <code>arduino_secrets.h</code> to <code>.gitignore</code> (create it in the root of the project if it doesn't exist already).</p>
+<h2>Add an example for secrets file</h2>
+<p>If you simply hide the original <code>arduino_secrets.h</code>, other users who would like to reuse your code may not know what to put inside. Create an example file named <code>arduino_secrets.h.example</code> with dummy values:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define SECRET_SSID = &quot;foo&quot;</span>
+<span class="cp">#define SECRET_PASS = &quot;foo&quot;</span>
+</pre></div>
+
+
+<p>and document that this needs to be renamed to <code>arduino_secrets.h</code></p>
+<h2>What if I need to build my code in a CI?</h2>
+<p>In case you want to build your code in a CI environment, the full source code needs to be there, but at the same time you still don't want to push your secrets to GitHub. What to do then?</p>
+<h3>Store your secrets in environment variables</h3>
+<p>Create an environment variable in your CI (or set it locally on your machine if you want to build it locally) for each secret:</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">WIFI_SSID_NAME</span><span class="o">=</span><span class="s2">&quot;myessid&quot;</span>
+<span class="nb">export</span> <span class="nv">WIFI_PASSWORD</span><span class="o">=</span><span class="s2">&quot;mypassword&quot;</span>
+</pre></div>
+
+
+<h3>Create a Makefile</h3>
+<p>Add a <code>Makefile</code> to your project, similar to this one:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nv">OUTPUT</span> <span class="o">=</span> <span class="s2">&quot;arduino_secrets.h&quot;</span>
+
+arduino_secrets:
+    @echo <span class="s2">&quot;Generating </span><span class="k">$(</span>OUTPUT<span class="k">)</span><span class="s2">&quot;</span>
+    @<span class="o">[</span> -e <span class="k">$(</span>OUTPUT<span class="k">)</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> rm <span class="k">$(</span>OUTPUT<span class="k">)</span>
+    @echo <span class="s2">&quot;#define SECRET_SSID \&quot;</span><span class="k">$(</span>WIFI_SSID_NAME<span class="k">)</span><span class="s2">\&quot;&quot;</span> &gt;&gt; <span class="k">$(</span>OUTPUT<span class="k">)</span>
+    @echo <span class="s2">&quot;#define SECRET_PASS \&quot;</span><span class="k">$(</span>WIFI_PASSWORD<span class="k">)</span><span class="s2">\&quot;&quot;</span> &gt;&gt; <span class="k">$(</span>OUTPUT<span class="k">)</span>
+</pre></div>
+
+
+<p>If you run <code>make</code> you will generate a file named <code>arduino_secrets.h</code> containing the proper values.</p>
+<h2>Conclusion</h2>
+<p>There may be alternative methods to safely store secrets. If you know a better one, you can leave a comment below.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0">https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0</a></li>
+</ul>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://www.andreagrandi.it/tag/arduino.html">arduino</a>
+      <a href="https://www.andreagrandi.it/tag/secrets.html">secrets</a>
+      <a href="https://www.andreagrandi.it/tag/secret.html">secret</a>
+      <a href="https://www.andreagrandi.it/tag/security.html">security</a>
+      <a href="https://www.andreagrandi.it/tag/password.html">password</a>
+      <a href="https://www.andreagrandi.it/tag/passwords.html">passwords</a>
+      <a href="https://www.andreagrandi.it/tag/storage.html">storage</a>
+      <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>
+      <a href="https://www.andreagrandi.it/tag/safe.html">safe</a>
+      <a href="https://www.andreagrandi.it/tag/hide.html">hide</a>
+      <a href="https://www.andreagrandi.it/tag/secure.html">secure</a>
+    </p>
+  </div>
+
+
+
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'andrea-grandi-it';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>
+  &copy; 2020  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+  Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Andrea Grandi ",
+  "url" : "https://www.andreagrandi.it",
+  "image": "/images/me_pycon_2019_2_300x300.jpg",
+  "description": ""
+}
+</script>
+
+  <script>
+    $(document).ready(function () {
+      $('#tipue_search_input').tipuesearch();
+    });
+  </script>
+
+</body>
+
+</html>

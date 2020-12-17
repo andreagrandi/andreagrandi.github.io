@@ -150,6 +150,44 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2008/05/26/applicazioni-ruby-on-rails-che-non-utilizzano-database/">Applicazioni Ruby On Rails che non utilizzano database</a></h2>
+    <p>
+      Posted on Mon 26 May 2008 in <a href="https://www.andreagrandi.it/category/linux-programmazione-ruby-ruby-on-rails.html">Linux, Programmazione, Ruby, Ruby on Rails</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/activerecord.html">activerecord</a>,              <a href="https://www.andreagrandi.it/tag/errore.html">errore</a>,              <a href="https://www.andreagrandi.it/tag/mysql.html">MySQL</a>,              <a href="https://www.andreagrandi.it/tag/ror.html">ror</a>,              <a href="https://www.andreagrandi.it/tag/ruby.html">Ruby</a>,              <a href="https://www.andreagrandi.it/tag/ruby-on-rails.html">Ruby on Rails</a>
+    </p>
+  </header>
+  <div>
+      <p>Se a qualcuno fosse capitato di recente di creare una semplice
+applicazione "<em>Hello World</em>" utilizzando il framework <a href="http://www.rubyonrails.org"><strong>Ruby on
+Rails</strong></a>, avrà notato che in fase di
+esecuzione si ottiene un errore di questo tipo:</p>
+<div class="highlight"><pre><span></span>Can<span class="s1">&#39;t connect to local MySQL server through socket &#39;</span>/var/run/mysqld/mysqld.sock<span class="err">&#39;</span> <span class="o">(</span><span class="m">2</span><span class="o">)</span>
+</pre></div>
+
+
+<p>Perchè un errore relativo a <strong>MySQL</strong> in un'applicazione che stampa
+semplicemente una stringa di testo? Nelle nuove versioni di <strong>RoR</strong>
+vengono caricati per default i moduli <strong>ActiveRecord</strong>,
+<strong>ActiveResource</strong> e <strong>ActionMailer</strong>. ActiveRecord in particolare si
+aspetta di trovare (per le impostazioni di default) un database MySQL
+funzionante.</p>
+<p>Per evitare questo errore è sufficiente decommentare una riga
+all'interno di environment.rb che si trova in
+<strong><code>$PATH_APPLICAZIONE/config/environment.rb</code></strong>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Skip frameworks you&#39;re not going to use (only works if using vendor/rails).  </span>
+<span class="c1"># To use Rails without a database, you must remove the Active Record framework  </span>
+<span class="n">config</span><span class="o">.</span><span class="n">frameworks</span> <span class="o">-=</span> <span class="o">[</span> <span class="ss">:active_record</span><span class="p">,</span> <span class="ss">:active_resource</span><span class="p">,</span> <span class="ss">:action_mailer</span> <span class="o">]</span>
+</pre></div>
+
+
+<p><em>Fonte:</em> <a href="http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html">http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html</a></p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2008/05/21/microsoft-office-2007-sp2-con-supporto-openoffice-odf-e-pdf/">Microsoft Office 2007 SP2 con supporto OpenOffice (ODF) e PDF</a></h2>
     <p>
       Posted on Wed 21 May 2008 in <a href="https://www.andreagrandi.it/category/linux-openoffice-windows.html">Linux, OpenOffice, Windows</a>
@@ -289,44 +327,6 @@ credito) dell'istanza di Skype che sta girando sulla vostra macchina:</p>
 autorizzare la vostra applicazione ad utilizzare le API, basterà quindi
 dare conferma per continuare. Nello script ovviamente dovrete sostituire
 il numero di telefono con uno valido.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2008/05/10/slides-del-talk-su-pymaemo-al-pycon-due/">Slides del talk su PyMaemo al PyCon Due</a></h2>
-    <p>
-      Posted on Sat 10 May 2008 in <a href="https://www.andreagrandi.it/category/linux-maemo-it-programmazione-python.html">Linux, Maemo (IT), Programmazione, Python</a>
-
-
-    </p>
-  </header>
-  <div>
-      <p><a href=""><img alt="Python" src="https://www.andreagrandi.it/images/2008/04/python-powered-h-140x182.thumbnail.jpg" title="Python"></a></p>
-<p>Per chi avesse seguito il mio talk su <strong>PyMaemo</strong> al <a href="http://www.pycon.it"><strong>PyCon Due</strong></a> a Firenze, metto a disposizione le slide che
-ho utilizzato. Potete liberamente scaricarle, modificarle e
-distribuirle.</p>
-<ul>
-<li>Slides ospitate sul sito di <strong>Slideshare</strong>: <a href="http://www.slideshare.net/andy80/conferenza-pymaemo">http://www.slideshare.net/andy80/conferenza-pymaemo</a></li>
-</ul>
-<iframe src="//www.slideshare.net/slideshow/embed_code/key/kSfr4tcPNhbmCe" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
-
-<p><div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/andy80/conferenza-pymaemo" title="Conferenza Pymaemo" target="_blank">Conferenza Pymaemo</a> </strong> from <strong><a href="https://www.slideshare.net/andy80" target="_blank">Andrea Grandi</a></strong> </div></p>
-<p>Inoltre vi riporto un piccolo abstract del talk:</p>
-<blockquote>
-<p><em>Il talk prevede una breve introduzione alla piattaforma Maemo ed ai
-Nokia Internet Tablet, sia dal punto di vista dell'utente comune, sia da
-quello dello sviluppatore.</em></p>
-<p><em>Verrà poi spiegato come configurare ed installare l'ambiente
-Scratchbox, il principale ambiente utilizzato per sviluppare
-applicazioni per Maemo.</em></p>
-<p><em>Infine verranno presentati due plugin per Eclipse: ESbox e PluThon. Il
-primo si interfaccia con Eclipse e Scratchbox, permettendo di sviluppare
-sia applicazione C/C++ che Python e di testarle all'interno
-dell'ambiente Scratchbox. Il secondo è un plugin specifico per Python e
-permette di eseguire e debuggare le applicazioni direttamente sul
-dispositivo.</em></p>
-</blockquote>
   </div>
 </article>
 

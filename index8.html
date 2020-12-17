@@ -150,6 +150,46 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/">Using BBC MicroBit accelerometer with Python</a></h2>
+    <p>
+      Posted on Tue 26 January 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/bbc.html">bbc</a>,              <a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>
+    </p>
+  </header>
+  <div>
+      <p>In these days I'm having a bit of fun with <strong><a href="https://www.microbit.co.uk/">BBC
+MicroBit</a></strong> board and I'm learning how to
+use the different sensors available. The latest one I wanted to try was
+the accelerometer. The board can "sense" if you are moving it in any of
+the 3 dimensional axes: X, Y, Z. According to the
+<a href="https://microbit-micropython.readthedocs.org/en/latest/accelerometer.html">documentation</a>
+there are four methods available that can be used to get these
+values: <code>microbit.accelerometer.get_values()</code> will return you a tuple with all the 3 values, 
+while  <code>microbit.accelerometer.get_x()</code>, <code>microbit.accelerometer.get_y()</code>, <code>microbit.accelerometer.get_z()</code>
+will give you the single values.</p>
+<p>The documentation on the official website doesn't explain much and for
+example I didn't even know what was the range of the values I can get
+back from these methods (by the way it's <strong>between -1024</strong> and
+<strong>1024</strong>), so I decided to play with the code directly and write a very
+simple example. The small example I wrote, shows a smile on the board
+display if you keep it straight and shows a sad face if you bend it.</p>
+<p>This is the result:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/LX8fYBsOxA0" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+<p>and this is all the needed code of the application:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/f4a7c8ee8597dde3070d.js"></script>
+</p>
+
+<p>In the next days I will try to play with more sensors and to publish
+other examples.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/">Using Python PyPy in a virtual environment</a></h2>
     <p>
       Posted on Fri 18 December 2015 in <a href="https://www.andreagrandi.it/category/howto-python.html">HowTo, Python</a>
@@ -326,91 +366,6 @@ installed: <a href="https://github.com/Homebrew/homebrew/issues/46254">https://
 <p>To fix it, you just need to <strong>reinstall encfs</strong> using this command</p>
 <div class="highlight"><pre><span></span>brew reinstall -s encfs
 </pre></div>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/12/06/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/">Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal</a></h2>
-    <p>
-      Posted on Sun 06 December 2015 in <a href="https://www.andreagrandi.it/category/devops-howto-linux.html">DevOps, HowTo, Linux</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a>,              <a href="https://www.andreagrandi.it/tag/letsencrypt.html">letsencrypt</a>,              <a href="https://www.andreagrandi.it/tag/security.html">security</a>,              <a href="https://www.andreagrandi.it/tag/ssl.html">ssl</a>
-    </p>
-  </header>
-  <div>
-      <p>Finally <strong><a href="https://letsencrypt.org/">Letsencrypt</a></strong> went to <strong>public
-beta</strong> and I really couldn't wait to use it on my VPS (where this blog
-is hosted). Until few days ago I was using a <strong>free SSL</strong> certificate
-from <a href="https://www.startssl.com/">StartSSL</a>. The service is nice and I'm
-grateful to them for this important resource they are providing for
-free, but it must be said that their renewal procedure isn't one of the
-most user friendly.</p>
-<p>For people who don't know the service yet, <strong>Letsencrypt</strong> not only
-gives <strong>free SSL certificates</strong>, they also provide a command line tool
-that people can use to request a new certificate or to renew an existing
-one. This means that you don't have to worry anymore if/when your
-certificate expires, you can set a crontab command and have the
-certificate <strong>automatically renewed</strong> for you.</p>
-<h2>Client installation</h2>
-<p>To request a SSL certificate you need to install their command line
-utility. Unless it has already been packaged for your distribution, for
-the moment it's much easier to get it from git as they explain in their
-<a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
-instructions</a>:</p>
-<div class="highlight"><pre><span></span>git clone https://github.com/letsencrypt/letsencrypt
-<span class="nb">cd</span> letsencrypt
-./letsencrypt-auto
-</pre></div>
-
-
-<h2>Getting the SSL certificate</h2>
-<p>There are a few different options available to request a certificate,
-but the easiest one is to use the <strong>--webroot</strong> option, specifying the
-document root of your website so that the client will be able to put
-there a verification (temporary) file that will be served to the remote
-service and used as verification method. In my case I only needed this
-command:</p>
-<div class="highlight"><pre><span></span>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
-</pre></div>
-
-
-<p>Please note that I had to specify both www.andreagrandi.it and
-andreagrandi.it as domains, otherwise it would have been invalid when
-requesting just andreagrandi.it resources.</p>
-<h2>Configuration files and certificates installation</h2>
-<p>The command above will save all the configuration under
-<strong>/etc/letsencrypt/</strong> and all the generated certificates under
-<strong>/etc/letsencrypt/live/www.andreagrandi.it/*.pem</strong> (all the *.pem
-files here are symbolic links to the current certificate). If you are
-using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
-<strong>privkey.pem</strong> and you can set them in your Nginx configuration using
-these two parameters:</p>
-<div class="highlight"><pre><span></span>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
-ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem<span class="p">;</span>
-</pre></div>
-
-
-<p>In case you want to have a look at my full Nginx configuration file, as
-reference, you can find it
-here <a href="https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8">https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8</a></p>
-<h2>Automatic renewal</h2>
-<p>The last thing to be configured is a crontab rule to call the script
-every... 2 months. Why 2 months? Letsencrypt SSL <strong>certificates expire
-in 3 months</strong>. Usually SSL certificates are valid at least for 1 year,
-but Letsencrypt decided to make it 3 months to incentivate the
-automation of the renewal. I set it to 2 months, so if anything goes
-wrong I still have plenty of time to do it manually. To edit crontab for
-root user execute <strong>crontab -e</strong> and add this line:</p>
-<div class="highlight"><pre><span></span><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
-</pre></div>
-
-
-<p>Just a final note. You may have noticed that this website presents an
-SSL certificate issued by COMODO. That's because I have
-<strong><a href="https://www.cloudflare.com/">CloudFlare</a></strong> in front of my website and
-that's how their SSL strict option works (at least for free plans).</p>
   </div>
 </article>
 
