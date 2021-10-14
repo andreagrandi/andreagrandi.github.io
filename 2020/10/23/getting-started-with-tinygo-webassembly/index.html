@@ -202,16 +202,16 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 
 <h2>Implement an add() method in Go</h2>
 <p>Create a new empty project/repository using your favourite IDE (I personally used <strong>VSCode</strong>, but of course you can use anything else) and then create <code>main.go</code> file with this code:</p>
-<div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">main</span>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
 
-<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
 <span class="p">}</span>
 
-<span class="o">//</span> <span class="n">This</span> <span class="n">function</span> <span class="k">is</span> <span class="n">exported</span> <span class="n">to</span> <span class="n">JavaScript</span><span class="p">,</span> <span class="n">so</span> <span class="n">can</span> <span class="n">be</span> <span class="n">called</span> <span class="n">using</span>
-<span class="o">//</span> <span class="n">exports</span><span class="o">.</span><span class="n">add</span><span class="p">()</span> <span class="ow">in</span> <span class="n">JavaScript</span><span class="o">.</span>
-<span class="o">//</span><span class="k">export</span> <span class="n">add</span>
-<span class="k">func</span> <span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="nb nb-Type">int</span><span class="p">)</span> <span class="nb nb-Type">int</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="c1">// This function is exported to JavaScript, so can be called using</span>
+<span class="c1">// exports.add() in JavaScript.</span>
+<span class="c1">//export add</span>
+<span class="kd">func</span> <span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -238,9 +238,9 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 <span class="kd">var</span> <span class="nx">wasm</span><span class="p">;</span>
 
 <span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">const</span> <span class="nx">go</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Go</span><span class="p">();</span>
+    <span class="kd">const</span> <span class="nx">go</span> <span class="o">=</span> <span class="ow">new</span> <span class="nx">Go</span><span class="p">();</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;instantiateStreaming&#39;</span> <span class="k">in</span> <span class="nx">WebAssembly</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;instantiateStreaming&#39;</span> <span class="ow">in</span> <span class="nx">WebAssembly</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">instantiateStreaming</span><span class="p">(</span><span class="nx">fetch</span><span class="p">(</span><span class="nx">WASM_URL</span><span class="p">),</span> <span class="nx">go</span><span class="p">.</span><span class="nx">importObject</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
             <span class="nx">wasm</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">instance</span><span class="p">;</span>
             <span class="nx">go</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">wasm</span><span class="p">);</span>
@@ -291,25 +291,25 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 <p><strong>Please note:</strong> frontend development is really not my daily bread. I'm sure the above code can be written in a better way, but I can assure you that at least it works.</p>
 <h2>Serving the static files</h2>
 <p>The project itself would be complete, but you need something able to serve static pages and set a couple of required headers. We can implement one with a few lines of Go. Create a new file named <code>server.go</code>:</p>
-<div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">main</span>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
-    <span class="s2">&quot;log&quot;</span>
-    <span class="s2">&quot;net/http&quot;</span>
-    <span class="s2">&quot;strings&quot;</span>
+    <span class="s">&quot;log&quot;</span>
+    <span class="s">&quot;net/http&quot;</span>
+    <span class="s">&quot;strings&quot;</span>
 <span class="p">)</span>
 
-<span class="n">const</span> <span class="nb">dir</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
+<span class="kd">const</span> <span class="nx">dir</span> <span class="p">=</span> <span class="s">&quot;./&quot;</span>
 
-<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">fs</span> <span class="o">:=</span> <span class="n">http</span><span class="o">.</span><span class="n">FileServer</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">Dir</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">Print</span><span class="p">(</span><span class="s2">&quot;Serving &quot;</span> <span class="o">+</span> <span class="nb">dir</span> <span class="o">+</span> <span class="s2">&quot; on http://localhost:8080&quot;</span><span class="p">)</span>
-    <span class="n">http</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">(</span><span class="s2">&quot;:8080&quot;</span><span class="p">,</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">resp</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">req</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">resp</span><span class="o">.</span><span class="n">Header</span><span class="p">()</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-cache&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">strings</span><span class="o">.</span><span class="n">HasSuffix</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">URL</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="s2">&quot;.wasm&quot;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">resp</span><span class="o">.</span><span class="n">Header</span><span class="p">()</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="s2">&quot;content-type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/wasm&quot;</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">fs</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">Dir</span><span class="p">(</span><span class="nx">dir</span><span class="p">))</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;Serving &quot;</span> <span class="o">+</span> <span class="nx">dir</span> <span class="o">+</span> <span class="s">&quot; on http://localhost:8080&quot;</span><span class="p">)</span>
+    <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">resp</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="s">&quot;Cache-Control&quot;</span><span class="p">,</span> <span class="s">&quot;no-cache&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">HasSuffix</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span> <span class="s">&quot;.wasm&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;content-type&quot;</span><span class="p">,</span> <span class="s">&quot;application/wasm&quot;</span><span class="p">)</span>
         <span class="p">}</span>
-        <span class="n">fs</span><span class="o">.</span><span class="n">ServeHTTP</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">resp</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
     <span class="p">}))</span>
 <span class="p">}</span>
 </pre></div>

@@ -895,42 +895,42 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
 <h3>Getting latest Ubuntu AMI id</h3>
 <p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
-<div class="highlight"><pre><span></span><span class="na">variable &quot;aws_region&quot; { default</span> <span class="o">=</span> <span class="s2">&quot;eu-west-2&quot;</span> <span class=" -Punctuation">}</span><span class="c1"> # London</span>
+<div class="highlight"><pre><span></span><span class="kr">variable</span> <span class="nv">&quot;aws_region&quot;</span> <span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
 
-<span class="kr">provider</span> <span class="s">&quot;aws&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
-<span class="na">    access_key</span> <span class="o">=</span> <span class="s2">&quot;youraccesskey&quot;</span>
-<span class="na">    secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
-<span class=" -Punctuation">}</span>
+<span class="kr">provider</span> <span class="nv">&quot;aws&quot;</span> <span class="p">{</span>
+    <span class="na">region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
+    <span class="na">access_key</span> <span class="o">=</span> <span class="s2">&quot;youraccesskey&quot;</span>
+    <span class="na">secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
+<span class="p">}</span>
 
-<span class="kr">data</span> <span class="s">&quot;aws_ami&quot; &quot;ubuntu&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    most_recent</span> <span class="o">=</span> <span class="kt">true</span>
+<span class="kr">data</span> <span class="nc">&quot;aws_ami&quot;</span> <span class="nv">&quot;ubuntu&quot;</span> <span class="p">{</span>
+    <span class="na">most_recent</span> <span class="o">=</span> <span class="no">true</span>
 
-    <span class="err">filter</span> <span class=" -Punctuation">{</span>
-<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
-<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span>
-    <span class=" -Punctuation">}</span>
+    <span class="nb">filter</span> <span class="p">{</span>
+        <span class="na">name</span>   <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
+        <span class="na">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
 
-    <span class="err">filter</span> <span class=" -Punctuation">{</span>
-<span class="na">        name</span>   <span class="o">=</span> <span class="s2">&quot;virtualization-type&quot;</span>
-<span class="na">        values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span>
-    <span class=" -Punctuation">}</span>
+    <span class="nb">filter</span> <span class="p">{</span>
+        <span class="na">name</span>   <span class="o">=</span> <span class="s2">&quot;virtualization-type&quot;</span>
+        <span class="na">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
 
-<span class="na">    owners</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
-<span class=" -Punctuation">}</span>
+    <span class="na">owners</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
+<span class="p">}</span>
 
-<span class="kr">resource</span> <span class="s">&quot;aws_instance&quot; &quot;web&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
-<span class="na">    instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
+<span class="kr">resource</span> <span class="nc">&quot;aws_instance&quot;</span> <span class="nv">&quot;web&quot;</span> <span class="p">{</span>
+    <span class="na">ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
+    <span class="na">instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
 
-    <span class="kd">tags</span> <span class=" -Punctuation">{</span>
-<span class="na">        Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
-    <span class=" -Punctuation">}</span>
-<span class=" -Punctuation">}</span>
+    <span class="nb">tags</span> <span class="p">{</span>
+        <span class="na">Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span class="kr">output</span> <span class="s">&quot;image_id&quot;</span> <span class=" -Punctuation">{</span>
-<span class="na">    value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
-<span class=" -Punctuation">}</span>
+<span class="kr">output</span> <span class="nv">&quot;image_id&quot;</span> <span class="p">{</span>
+    <span class="na">value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
+<span class="p">}</span>
 </pre></div>
 
 
