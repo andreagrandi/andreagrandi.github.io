@@ -168,7 +168,7 @@ recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
 <p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
 <h2>Configure the wifi adapter</h2>
 <p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
-<div class="highlight"><pre><span></span>auto lo
+<div class="highlight"><pre><span></span><code>auto lo
 iface lo inet loopback
 iface eth0 inet dhcp
 
@@ -178,8 +178,7 @@ auto wlan0
 iface wlan0 inet dhcp
 wpa-ssid YOURESSID
 wpa-psk YOURWPAPASSWORD
-</pre></div>
-
+</code></pre></div>
 
 <h2>Power management issue</h2>
 <p>There is a known "issue" with this adapter default configuration that
@@ -187,30 +186,26 @@ makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using <strong>8192cu</strong>
 module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
+<div class="highlight"><pre><span></span><code>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
 8192cu <span class="m">551136</span> <span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
 lines inside:</p>
-<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prevent power down of wireless when idle</span>
 options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>I also suggest to create a little entry in crontab to make the
 RaspberryPi ping your router every minute. This will ensure that your
 wifi connection will stay alive. To edit crontab just type (from pi
 user, you don't need to be root):</p>
-<div class="highlight"><pre><span></span>crontab -e
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>crontab -e
+</code></pre></div>
 
 <p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
+</code></pre></div>
 
 <p>where 192.168.0.1 is the IP of your router (of course substitute this
 value with the ip of your router).</p>
@@ -222,18 +217,15 @@ module for the wifi and bring them up again.</p>
 <p>
 <script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
 </p>
-
 <p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
 <strong>root</strong> user:</p>
-<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+<div class="highlight"><pre><span></span><code>chmod +x wifi_recover.sh
 crontab -e
-</pre></div>
-
+</code></pre></div>
 
 <p>Insert this line inside the crontab editor:</p>
-<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/5 * * * * /root/wifi_recover.sh
+</code></pre></div>
 
 <h2>Conclusion</h2>
 <p>The configuration is done. Just reboot your RaspberryPi and enjoy your
@@ -258,16 +250,15 @@ way to generate a <strong>.deb</strong> package for Maemo.</p>
 <code>.dsc</code> file (for example in an ftp like this:
 <a href="http://ftp.debian.org/debian/pool/non-free/s/spim/">http://ftp.debian.org/debian/pool/non-free/s/spim/</a> ) and execute the
 following commands:</p>
-<div class="highlight"><pre><span></span>dget -x DSC_FILE_URL
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>dget -x DSC_FILE_URL
+</code></pre></div>
 
 <p>It will download the package and will unpack it in the current folder.
 You have to enter in the created folder and edit the debian/* files to
 personalize settings, mantainer data, add deps ecc...</p>
 <p>When you're done, you can generate the package with the usual command:</p>
-<div class="highlight"><pre><span></span>dpkg-buildpackage -rfakeroot
-</pre></div>
+<div class="highlight"><pre><span></span><code>dpkg-buildpackage -rfakeroot
+</code></pre></div>
   </div>
 </article>
 

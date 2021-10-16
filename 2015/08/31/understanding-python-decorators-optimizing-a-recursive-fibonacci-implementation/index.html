@@ -56,13 +56,13 @@
   <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Andrea Grandi" />
-<meta name="description" content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @*decorator_name* in the line before its definition, like this example: @foo def hello(): print &#39;Hello World&#39; This decorator doesn&#39;t do anything, so let&#39;s think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What&#39;s the problem with this implementation? The code works as expected, but it&#39;s very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let&#39;s implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let&#39;s try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don&#39;t you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!" />
+<meta name="description" content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @decorator_name in the line before its definition, like this example: @foo def hello(): print &#39;Hello World&#39; This decorator doesn&#39;t do anything, so let&#39;s think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What&#39;s the problem with this implementation? The code works as expected, but it&#39;s very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let&#39;s implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let&#39;s try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don&#39;t you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!" />
 <meta name="keywords" content="decorators, fibonacci, memoization, memoize, optimization, Python">
 
 
 <meta property="og:site_name" content="Andrea Grandi"/>
 <meta property="og:title" content="Understanding Python decorators optimizing a recursive Fibonacci implementation"/>
-<meta property="og:description" content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @*decorator_name* in the line before its definition, like this example: @foo def hello(): print &#39;Hello World&#39; This decorator doesn&#39;t do anything, so let&#39;s think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What&#39;s the problem with this implementation? The code works as expected, but it&#39;s very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let&#39;s implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let&#39;s try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don&#39;t you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!"/>
+<meta property="og:description" content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @decorator_name in the line before its definition, like this example: @foo def hello(): print &#39;Hello World&#39; This decorator doesn&#39;t do anything, so let&#39;s think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What&#39;s the problem with this implementation? The code works as expected, but it&#39;s very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let&#39;s implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let&#39;s try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don&#39;t you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/"/>
 <meta property="og:type" content="article"/>
@@ -175,23 +175,21 @@
     <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
 an argument and returns a function as a <em>value</em>. Here is an example of
 decorator definition:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="c1"># make a new function</span>
     <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
         <span class="c1"># some code</span>
 
     <span class="k">return</span> <span class="n">new_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>To apply a decorator to an existing function, you just need to put
-<strong>@*decorator_name</strong>* in the line before its definition, like this
+<strong>@<em>decorator_name</em></strong> in the line before its definition, like this
 example:</p>
-<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@foo</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
     <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>This decorator doesn't do anything, so let's think about a more concrete
 problem we could solve using decorators.</p>
@@ -216,13 +214,12 @@ describe it in this way:</p>
 </ul>
 <p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
 one:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">n</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>What's the problem with this implementation? The code works as expected,
 but it's very <strong>inefficient</strong>. The next picture will explain what
@@ -243,7 +240,7 @@ inputs occur again.</p>
 <p>We need to store values of the sequence we have already calculated and
 get them later when we need them. Let's implement a simple memoization
 decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -254,8 +251,7 @@ decorator:</p>
             <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
             <span class="k">return</span> <span class="n">val</span>
     <span class="k">return</span> <span class="n">decorated_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The decorator defines a dict at the beginning that is used as a cache.
 When we want to find the n number of the sequence, it first checks if
@@ -267,7 +263,7 @@ returned to the caller.</p>
 <p>How much this decorator can speed up our fib method? Let's try to
 benchmark the execution using Python
 <strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
-<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># First example, not using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 
@@ -279,12 +275,11 @@ benchmark the execution using Python
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>4.73480010033</strong></p>
-<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Second example, using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 <span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
@@ -299,8 +294,7 @@ on my laptop is: <strong>4.73480010033</strong></p>
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>0.000133037567139</strong></p>

@@ -4,7 +4,7 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?&lt;/p&gt;
 &lt;h3&gt;Getting latest Ubuntu AMI id&lt;/h3&gt;
 &lt;p&gt;In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;variable&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws_region&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt; default = &amp;quot;eu-west-2&amp;quot; } # London&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kr"&gt;variable&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws_region&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt; default = &amp;quot;eu-west-2&amp;quot; } # London&lt;/span&gt;
 
 &lt;span class="kr"&gt;provider&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="na"&gt;region&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${var.aws_region}&amp;quot;&lt;/span&gt;
@@ -40,11 +40,10 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 &lt;span class="kr"&gt;output&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;image_id&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="na"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${data.aws_ami.ubuntu.id}&amp;quot;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;After we have initialised our script using &lt;strong&gt;terraform init&lt;/strong&gt; if we run it, we will get the AMI id and the instance will be created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;➜  example1$: terraform apply
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;➜  example1$: terraform apply
 data.aws_ami.ubuntu: Refreshing state...
 aws_instance.web: Creating...
     ami:                          &amp;quot;&amp;quot; =&amp;gt; &amp;quot;ami-03998867&amp;quot;
@@ -84,8 +83,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 Outputs:
 
 image_id = ami-03998867
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 25 Aug 2017 11:00:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2017-08-25:/2017/08/25/getting-latest-ubuntu-ami-with-terraform/</guid><category>Development</category><category>AWS</category><category>Terraform</category><category>Ubuntu</category><category>devops</category></item><item><title>How to make subwoofer work in Ubuntu</title><link>https://www.andreagrandi.it/2013/06/22/how-to-make-subwoofer-work-in-ubuntu/</link><description>&lt;p&gt;Using the same computer with Windows 8 and Ubuntu I noticed that the
 sound was worse in Ubuntu and I discovered why soon: &lt;strong&gt;subwoofer&lt;/strong&gt;
@@ -94,9 +92,8 @@ doesn't work out of the box!&lt;/p&gt;
 &lt;p&gt;The fix is quite easy to apply (but it was not easy to find the right
 one!). First of all edit &lt;strong&gt;/etc/pulse/default.pa&lt;/strong&gt; and add this line at
 the end:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;load-module module-combine &lt;span class="nv"&gt;channels&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="nv"&gt;channel_map&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;front-left,front-right,rear-left,rear-right,front-center,lfe
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;load-module module-combine &lt;span class="nv"&gt;channels&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="nv"&gt;channel_map&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;front-left,front-right,rear-left,rear-right,front-center,lfe
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then edit &lt;strong&gt;&lt;code&gt;/etc/pulse/daemon.conf&lt;/code&gt;&lt;/strong&gt;, modify the line
 &lt;code&gt;enable-lfe-remixing: no&lt;/code&gt; to &lt;strong&gt;&lt;code&gt;enable-lfe-remixing: yes&lt;/code&gt;&lt;/strong&gt;, then
@@ -185,15 +182,14 @@ using Ubuntu 12.10, but feel free to use your own distribution). Be sure
 to have installed a recent version of &lt;strong&gt;nodejs&lt;/strong&gt; and &lt;strong&gt;npm&lt;/strong&gt; packages
 (I'm using Node.js 0.8.20 and npm 1.2.11).&lt;/p&gt;
 &lt;h2&gt;Create a project folder and install the required dependencies&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir node-bootstrap
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir node-bootstrap
 &lt;span class="nb"&gt;cd&lt;/span&gt; node-bootstrap
 npm install express
 npm install jade
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Create the basic project structure with Express&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
 
 create : nodebootstrap
 create : nodebootstrap/package.json
@@ -215,8 +211,7 @@ $ &lt;span class="nb"&gt;cd&lt;/span&gt; nodebootstrap &lt;span class="o"&gt;&am
 
 run the app:
 $ node app
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You should already have installed all the needed dependencies, even
 without executing &lt;strong&gt;npm install&lt;/strong&gt;, anyway executing it won't hurt.&lt;/p&gt;
@@ -227,7 +222,7 @@ unzip it under the &lt;strong&gt;nodebootstrap/public&lt;/strong&gt; folder.&lt
 &lt;h2&gt;Bootstrap integration with Jade template system&lt;/h2&gt;
 &lt;p&gt;At this point you need to edit the &lt;strong&gt;views/layout.jade&lt;/strong&gt; file and
 include the references to Bootsrap&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;html&lt;/span&gt;
   &lt;span class="nt"&gt;head&lt;/span&gt;
     &lt;span class="nt"&gt;title&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;
     &lt;span class="nt"&gt;link&lt;/span&gt;(&lt;span class="na"&gt;rel=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;stylesheet&amp;#39;&lt;/span&gt;&lt;span class="err"&gt;,&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;/bootstrap/css/bootstrap.min.css&amp;#39;&lt;/span&gt;)
@@ -237,13 +232,12 @@ include the references to Bootsrap&lt;/p&gt;
     &lt;span class="nt"&gt;script&lt;/span&gt;(&lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;/bootstrap/js/bootstrap.min.js&amp;#39;&lt;/span&gt;)
   &lt;span class="nt"&gt;body&lt;/span&gt;
     &lt;span class="nt"&gt;block&lt;/span&gt; content
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Test the Bootstrap integration&lt;/h2&gt;
 &lt;p&gt;At this point we will modify &lt;strong&gt;views/index.jade&lt;/strong&gt; that is the default
 template used to render the index&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;extends&lt;/span&gt; layout
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;extends&lt;/span&gt; layout
 
     &lt;span class="nt"&gt;block&lt;/span&gt; content
       &lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="nc"&gt;.top&lt;/span&gt;
@@ -269,14 +263,12 @@ template used to render the index&lt;/p&gt;
                 &lt;span class="nt"&gt;td&lt;/span&gt; World
 
       &lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="nc"&gt;.footer&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now go back to the terminal and execute the app:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
 Express server listening on port &lt;span class="m"&gt;3000&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Open your favourite browse and visit &lt;a href="http://localhost:3000"&gt;http://localhost:3000&lt;/a&gt; to see your
 first Bootstrap + Node.js application app and running.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sun, 24 Feb 2013 21:05:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2013-02-24:/2013/02/24/using-twitter-bootstrap-with-node-js-express-and-jade/</guid><category>HowTo</category><category>Bootstrap</category><category>css</category><category>Express</category><category>Jade</category><category>Javascript</category><category>NodeJs</category><category>npm</category><category>twitter</category><category>Ubuntu</category></item><item><title>Using QtCreator to deploy and run a Qt application to a remote Linux device</title><link>https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</link><description>&lt;p&gt;QtCreator is a very flexible IDE and can really be adapted for a lot of
@@ -390,7 +382,7 @@ should look like this one: &lt;strong&gt;&lt;code&gt;GRUB_CMDLINE_LINUX_DEFAULT
 &lt;p&gt;Don't forget to execute: &lt;strong&gt;&lt;code&gt;sudo update-grub&lt;/code&gt;&lt;/strong&gt; from the command line.&lt;/p&gt;
 &lt;p&gt;Then I had to create a proper &lt;strong&gt;xorg.conf&lt;/strong&gt; setting my resolution
 (1680x1050) manually:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Section &lt;span class="s2"&gt;&amp;quot;Monitor&amp;quot;&lt;/span&gt;  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Section &lt;span class="s2"&gt;&amp;quot;Monitor&amp;quot;&lt;/span&gt;  
 Identifier &lt;span class="s2"&gt;&amp;quot;DVI-I-1&amp;quot;&lt;/span&gt;  
 VendorName &lt;span class="s2"&gt;&amp;quot;Asus&amp;quot;&lt;/span&gt;  
 ModelName &lt;span class="s2"&gt;&amp;quot;Ancor Communications Inc VW222&amp;quot;&lt;/span&gt;  
@@ -403,8 +395,7 @@ Section &lt;span class="s2"&gt;&amp;quot;Screen&amp;quot;&lt;/span&gt;
 Identifier &lt;span class="s2"&gt;&amp;quot;Screen0&amp;quot;&lt;/span&gt;  
 Monitor &lt;span class="s2"&gt;&amp;quot;DVI-I-1&amp;quot;&lt;/span&gt;  
 EndSection
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;How do you generate the &lt;strong&gt;Modeline&lt;/strong&gt; line? It's very simple. Just
 execute: "&lt;strong&gt;cvt -r 1680 1050&lt;/strong&gt;" in the command line and you'll get a
@@ -442,16 +433,14 @@ are having a good Jam as well and I really can't wait for the next
 Ubuntu Global Jam.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sun, 04 Mar 2012 14:24:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-03-04:/2012/03/04/ubuntu-global-jam-italy-pistoia-a-quick-review/</guid><category>Linux, Ubuntu (EN)</category><category>LoCo</category><category>pistoia</category><category>Ubuntu</category><category>UGJ</category></item><item><title>Nokia QtSDK installer crash on Ubuntu: how to fix it</title><link>https://www.andreagrandi.it/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</link><description>&lt;p&gt;If you try to install &lt;strong&gt;Nokia QtSDK&lt;/strong&gt; on Ubuntu using the Nokia
 installer (that provides a newer version than the one distributed in
 Ubuntu Software Center) you could get an error like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;Qt_SDK_Lin32_offline_v1_1_3_en.run:3126&lt;span class="o"&gt;)&lt;/span&gt;: Gtk-CRITICAL **:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;Qt_SDK_Lin32_offline_v1_1_3_en.run:3126&lt;span class="o"&gt;)&lt;/span&gt;: Gtk-CRITICAL **:
 IA__gtk_widget_style_get: assertion &lt;span class="sb"&gt;`&lt;/span&gt;GTK_IS_WIDGET &lt;span class="o"&gt;(&lt;/span&gt;widget&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
 failed
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;to fix it, you need to run the installer with a specific parameter:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./Qt_SDK_Lin32_offline_v1_1_4_en.run -style cleanlooks
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./Qt_SDK_Lin32_offline_v1_1_4_en.run -style cleanlooks
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and everything should work!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Thu, 12 Jan 2012 19:36:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2012-01-12:/2012/01/12/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</guid><category>HowTo, Linux, Programmazione, Qt, Ubuntu (EN)</category><category>11.04</category><category>11.10</category><category>installer</category><category>Natty</category><category>nokia</category><category>Oneiric</category><category>Qt</category><category>SDK</category><category>Ubuntu</category></item><item><title>UDS day-3</title><link>https://www.andreagrandi.it/2011/05/11/uds-day-3/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="uds" src="https://www.andreagrandi.it/images/2011/05/IMG_0260-300x200.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Even this morning I didn't wake up early because I still felt sick (I already

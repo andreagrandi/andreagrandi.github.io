@@ -11,31 +11,27 @@ però possiamo almeno fare in modo che il nostro computer venga spento in
 maniera corretta, prima che la batteria dell'UPS si esaurisca del tutto.&lt;/p&gt;
 &lt;p&gt;Nel caso di una macchina Linux, ci viene in aiuto una utility chiamata
 &lt;strong&gt;apcupsd&lt;/strong&gt;. Installarla su Ubuntu è molto semplice:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install apcupsd
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get install apcupsd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto, dando per scontato che abbiate già connesso l'UPS al
 PC/server, collegate il cavo USB a corredo in modo da far riconoscere
 l'UPS a Linux, in modo da poter proseguire con la configurazione. Il
 primo file da modificare è &lt;strong&gt;&lt;code&gt;/etc/apcupsd/apcupsd.conf&lt;/code&gt;&lt;/strong&gt; ed impostare i
 seguenti parametri come segue:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;UPSCABLE usb
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;UPSCABLE usb
 UPSTYPE usb
 DEVICE
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto non ci resta che modificare il file
 &lt;strong&gt;&lt;code&gt;/etc/default/apcupsd&lt;/code&gt;&lt;/strong&gt; in modo da rendere effettive le modifiche:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ISCONFIGURED&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yes
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;ISCONFIGURED&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Infine dobbiamo soltanto avviare il demone ed il gioco è fatto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc/init.d/apcupsd start
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/apcupsd start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Per default &lt;strong&gt;apcupsd&lt;/strong&gt; effettuerà lo &lt;strong&gt;shutdown&lt;/strong&gt; nel PC quando la
 batteria sarà arrivata al &lt;strong&gt;5%&lt;/strong&gt; della sua capacità, consentendo così

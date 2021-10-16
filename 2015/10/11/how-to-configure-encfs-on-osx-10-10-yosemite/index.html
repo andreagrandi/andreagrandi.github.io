@@ -179,23 +179,20 @@ currently unsupported) even on Windows.</p>
 <h2>Installing EncFS</h2>
 <p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
 manager installed on OSX you can install it using this command:</p>
-<div class="highlight"><pre><span></span>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+</code></pre></div>
 
 <p>After brew, you need to install <strong>OSXFuse</strong> from this
 website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
 <p>Finally you can install <strong>encfs</strong> using this command:</p>
-<div class="highlight"><pre><span></span>brew install homebrew/fuse/encfs
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>brew install homebrew/fuse/encfs
+</code></pre></div>
 
 <h2>Configuring the encrypted folder</h2>
 <p>Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:</p>
-<div class="highlight"><pre><span></span>encfs ~/Dropbox/Private ~/Private
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>encfs ~/Dropbox/Private ~/Private
+</code></pre></div>
 
 <p>If you are mounting an existing encrypted volume, you will be prompted
 for the password. If you are creating a new encrypted volume you will be
@@ -213,7 +210,7 @@ and click <strong>Add</strong>:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
 <p>Once the password is saved, <strong>open a text editor</strong> and paste this script
 and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 <span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
 
 <span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
@@ -232,20 +229,17 @@ chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
 <span class="k">fi</span>
 
 <span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Make it <strong>executable</strong>:</p>
-<div class="highlight"><pre><span></span>chmod +x ~/encfs_mount.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>chmod +x ~/encfs_mount.sh
+</code></pre></div>
 
 <p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
 app in the \$HOME folder:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
-<div class="highlight"><pre><span></span><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
+</code></pre></div>
 
 <p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
 add the previously saved application.</p>

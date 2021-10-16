@@ -33,10 +33,9 @@ Raspbian) and you will type the next commands there and only there.&lt;/p&gt;
 &lt;p&gt;Plug one of the &lt;strong&gt;USB key&lt;/strong&gt; (you can format it with VFAT for simplicity) in the offline computer and wait for the system to mount it.
 At this point it should be mounted in a path like this: &lt;strong&gt;/media/AABB-BAAC&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Now set the GnuPG working directory and create it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ export GNUPGHOME=/media/AABB-BAAC/gnupghome
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ export GNUPGHOME=/media/AABB-BAAC/gnupghome
 user@debian:~$ mkdir $GNUPGHOME
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Second disclaimer&lt;/h4&gt;
 &lt;p&gt;If you think your threat model doesn't include someone can hack your computer from remote,
@@ -55,7 +54,7 @@ is created with all the capabilities (Authentication + Signing + Encryption), wh
 a &lt;strong&gt;2048 bits&lt;/strong&gt; key because it's the maximum size supported. Here you will create a PGP key with &lt;strong&gt;only
 the Authentication capability&lt;/strong&gt;. If your GnuPG version doesn't allow this, choose "sign only", just don't
 create the encryption capability at this time.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --expert --gen-key
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --expert --gen-key
 gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -142,15 +141,14 @@ gpg: next trustdb check due at 2019-09-25
 pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
     Key fingerprint = 7D4C 4090 DB50 1693 4614  F6FC 6206 9DE9 2240 402E
 uid       [ultimate] Andrea Grandi &amp;lt;user@email.com&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; please remember to save your passphrase in a safe place. Choose something you
 can remember because you will need it every time you need to sign, encrypt or decrypt something.&lt;/p&gt;
 &lt;h3&gt;Creating a revocation certificate&lt;/h3&gt;
 &lt;p&gt;It's very important to create a revocation certificate to be used if and when 
 in the future you want to change your master key and revoke the existing one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --gen-revoke 2240402E &amp;gt; 2240402E-revocation-certificate.asc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --gen-revoke 2240402E &amp;gt; 2240402E-revocation-certificate.asc
 
 sec  4096R/2240402E 2017-09-25 Andrea Grandi &amp;lt;user@email.com&amp;gt;
 
@@ -181,14 +179,13 @@ access to this certificate he can use it to make your key unusable.
 It is smart to print this certificate and store it away, just in case
 your media become unreadable.  But have some caution:  The print system of
 your machine might store the data and make it available to others!
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Creating Encryption subkey&lt;/h3&gt;
 &lt;p&gt;To create a subkey we need to edit the existing key (please note that &lt;strong&gt;2240402E&lt;/strong&gt;
 is the last 8 chars from the fingerprint of the previously generated master key)
 and specify we want to create an Encryption only key.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --edit-key 2240402E
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --edit-key 2240402E
 gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -236,16 +233,14 @@ sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
 [ultimate] (1). Andrea Grandi &amp;lt;user@email.com&amp;gt;
 
 gpg&amp;gt; save
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Export a backup of the secret keys&lt;/h3&gt;
 &lt;p&gt;It's very important to export a backup of the secret keys at this point.
 Writing the secret subkey to the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt; is a destructive process: keys are moved
 to the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt;, they are not copied.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --export-secret-key 2240402E &amp;gt; 2240402E-secret.pgp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --export-secret-key 2240402E &amp;gt; 2240402E-secret.pgp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; this backup includes both the secret master key and the secret subkey.
 Please remember to &lt;strong&gt;save a backup of this key&lt;/strong&gt; on a couple of separate USB keys: you will need
@@ -255,7 +250,7 @@ this keys to generate future subkeys and/or to revoke the existing ones.&lt;/p&g
 create the &lt;strong&gt;authentication&lt;/strong&gt; and &lt;strong&gt;signing&lt;/strong&gt; keys directly on the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt; (we don't
 need to have a copy of these keys) and we will move the secret encryption key
 to the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --edit-key 2240402E
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --edit-key 2240402E
 gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -382,13 +377,12 @@ ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
 (1)  Andrea Grandi &amp;lt;user@email.com&amp;gt;
 
 gpg&amp;gt; save
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Check public keys&lt;/h4&gt;
 &lt;p&gt;Just to verify everything has been created correctly, we check the public keys.
 We should see one &lt;strong&gt;pub&lt;/strong&gt; key and three &lt;strong&gt;sub&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg -k
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg -k
 /media/AABB-BAAC/gnupghome/pubring.gpg
 --------------------------------
 pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
@@ -396,14 +390,13 @@ uid       [ultimate] Andrea Grandi &amp;lt;user@email.com&amp;gt;
 sub   4096R/01731555 2017-09-25 [expires: 2019-09-25]
 sub   4096R/771B0554 2017-09-25 [expires: 2019-09-25]
 sub   4096R/A9B5334C 2017-09-25 [expires: 2019-09-25]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Check private keys&lt;/h4&gt;
 &lt;p&gt;When we check the private keys we should see that one key is still local, marked as &lt;strong&gt;sec&lt;/strong&gt; (it's
 the private key of the master key), while three other keys are marked as &lt;strong&gt;ssb&amp;gt;&lt;/strong&gt;
 which means they have been moved to the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg -K
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg -K
 /media/AABB-BAAC/gnupghome/secring.gpg
 --------------------------------
 sec   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
@@ -411,8 +404,7 @@ uid                  Andrea Grandi &amp;lt;user@email.com&amp;gt;
 ssb&amp;gt;  4096R/01731555 2017-09-25
 ssb&amp;gt;  4096R/771B0554 2017-09-25
 ssb&amp;gt;  4096R/A9B5334C 2017-09-25
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Import back secret keys from backup (only for multiple YubiKeys)&lt;/h4&gt;
 &lt;p&gt;As previously said, when we write the encryption subkey to the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt;, the key
@@ -420,26 +412,23 @@ is &lt;strong&gt;moved&lt;/strong&gt; and not just copied, so we need to import 
 the keyring. It's important to have a backup of the subkey too, not because we need it
 in case the key is compromised etc... but because we need it in case we want to write
 multiple YubiKeys with the same encryption key, so that we have a backup key to use.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --import &amp;lt; 2240402E-secret.pgp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --import &amp;lt; 2240402E-secret.pgp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Completely remove secret keys from laptop&lt;/h4&gt;
 &lt;p&gt;Once you have programmed the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt; and you are sure the secret keys are
 backed up on a couple of USB keys, you are ready to remove the secret keys from your laptop.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; you don't need to remove anything if you have conducted the whole setup
 on a spare offline PC (or on a RaspberryPi) because that's not your every day computer.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --delete-secret-key 2240402E
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --delete-secret-key 2240402E
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Exporting the public PGP key&lt;/h3&gt;
 &lt;p&gt;As you know, PGP keys are composed by a secret part and a public one. The public one
 must be distributed publicly and it's the one people will use to encrypt messages directed
 to you.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --armor --export 2240402E &amp;gt; 2240402E.asc
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --armor --export 2240402E &amp;gt; 2240402E.asc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you have a personal blog/website I suggest to upload it there (for example mine
 can be found here &lt;a href="https://www.andreagrandi.it/2240402E.asc"&gt;https://www.andreagrandi.it/2240402E.asc&lt;/a&gt;)&lt;/p&gt;
@@ -454,7 +443,7 @@ certain settings on the &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKe
 &lt;li&gt;admin PIN: 12345678&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;I strongly recommend you to change them following this example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --card-edit
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --card-edit
 
 Reader ...........: Yubico Yubikey 4 OTP U2F CCID
 Application ID ...: D000000000000000000000000000000000
@@ -530,15 +519,13 @@ URL to retrieve public key: https://www.andreagrandi.it/2240402E.asc
 gpg/card&amp;gt; fetch
 
 gpg/card&amp;gt; quit
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; when you want to use your &lt;a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico+4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605"&gt;YubiKey&lt;/a&gt; on any computer (for example your work laptop)
 you need to at least import your public PGP key into the keyring. If the key is not
 read automatically, you may need to give it a refresh using this command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user@debian:~$ gpg --card-status
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;user@debian:~$ gpg --card-status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h4&gt;Careful with PINs&lt;/h4&gt;
 &lt;p&gt;Please remember that you can only digit a wrong user PIN for a maximum of three times.

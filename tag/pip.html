@@ -200,7 +200,7 @@ you register, please specify (if you have one, but I really hope you do)
 the <strong>PGP</strong> id of your public key. Once the accounts are created, you
 need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
 the following configuration:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>distutils<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>distutils<span class="o">]</span>
 index-servers <span class="o">=</span>
 pypi
 pypitest
@@ -214,8 +214,7 @@ pypitest
 <span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
 <span class="nv">username</span><span class="o">=</span>your_username
 <span class="nv">password</span><span class="o">=</span>your_password
-</pre></div>
-
+</code></pre></div>
 
 <p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
 details you sent during the registration.</p>
@@ -226,7 +225,7 @@ specific to PyPI so you should have done it already). If you haven't I
 remember you can give a look at my library
 here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
 <strong>setup.py</strong>:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
 
 <span class="n">setup</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
@@ -245,29 +244,25 @@ here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/
         <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Upload the package to PyPI Test server</h3>
 <p>The first time you upload the package you will need to register it:</p>
-<div class="highlight"><pre><span></span>python setup.py register -r pypitest
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>python setup.py register -r pypitest
+</code></pre></div>
 
 <p>and then you will need to build the package and upload it (please note
 I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
-<div class="highlight"><pre><span></span>python setup.py sdist upload --sign -r pypitest
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>python setup.py sdist upload --sign -r pypitest
+</code></pre></div>
 
 <h3>Upload the package to PyPI production server</h3>
 <p>Once you have verified that you are able to build and upload the package
 to the test server (without getting any errors), you should upload it to
 the production server:</p>
-<div class="highlight"><pre><span></span>python setup.py register -r pypi
+<div class="highlight"><pre><span></span><code>python setup.py register -r pypi
 python setup.py sdist upload --sign -r pypi
-</pre></div>
-
+</code></pre></div>
 
 <p>This is everything you need to do if you want to publish a Python
 package on PyPI. Happy coding!</p>

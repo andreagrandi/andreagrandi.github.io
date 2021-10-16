@@ -162,9 +162,8 @@
       <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
-<div class="highlight"><pre><span></span>sem_post: Function not implemented
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sem_post: Function not implemented
+</code></pre></div>
 
 <p>This happens because not all the functions have been implemented in the
 emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
@@ -176,43 +175,36 @@ howto to install the patch into the Scratchbox environment.</p>
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.</p>
 <p>You need gcc 3.4, SDL dev library andZlib dev:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+</code></pre></div>
 
 <p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
-<div class="highlight"><pre><span></span>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
+<div class="highlight"><pre><span></span><code>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
 <span class="nb">cd</span> qemu-arm-eabi 
 ./configure --target-list<span class="o">=</span>arm-linux-user --static make
-</pre></div>
-
+</code></pre></div>
 
 <p>Copy qemu to the cputransp dir on scratchbox:</p>
-<div class="highlight"><pre><span></span>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+</code></pre></div>
 
 <p>Add it to the list of cputransp methods. Open the file:</p>
-<div class="highlight"><pre><span></span>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+</code></pre></div>
 
 <p>and add this line:</p>
-<div class="highlight"><pre><span></span>qemu-arm-eabi-sb2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>qemu-arm-eabi-sb2
+</code></pre></div>
 
 <p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
-<div class="highlight"><pre><span></span>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+</code></pre></div>
 
 <p>and change this line:</p>
-<div class="highlight"><pre><span></span><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+</code></pre></div>
 
 <p>That's all! You're now ready to log again into your Scratchbox
 environment.</p>

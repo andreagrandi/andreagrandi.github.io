@@ -246,14 +246,13 @@ other examples.</p>
 <strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
 have already installed it in your system, first find out where it is
 installed:</p>
-<div class="highlight"><pre><span></span>which pypy
+<div class="highlight"><pre><span></span><code>which pypy
 /usr/local/bin/pypy
-</pre></div>
-
+</code></pre></div>
 
 <p>then you need <strong>mkvirtualenv</strong> to create a virtual environment that will
 use this runtime:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/pypy pypy-test
+<div class="highlight"><pre><span></span><code>mkvirtualenv -p /usr/local/bin/pypy pypy-test
 Running virtualenv with interpreter /usr/local/bin/pypy
 New pypy executable <span class="k">in</span> pypy-test/bin/pypy
 Installing setuptools, pip, wheel...done.
@@ -262,8 +261,7 @@ Python <span class="m">2</span>.7.10 <span class="o">(</span>f3ad1e1e1d6215e20d3
 <span class="o">[</span>PyPy <span class="m">2</span>.6.1 with GCC <span class="m">4</span>.2.1 Compatible Apple LLVM <span class="m">6</span>.1.0 <span class="o">(</span>clang-602.0.53<span class="o">)]</span> on darwin
 Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.
 &gt;&gt;&gt;&gt;
-</pre></div>
-
+</code></pre></div>
 
 <p>That's it! You can now use this virtual environment to run your Python
 application using PyPy environment.</p>
@@ -285,38 +283,35 @@ application using PyPy environment.</p>
 While there can be many different ways of implementing this task, I
 found three in particular that I appreciate for different reasons. Let's
 define first a list of integers that we will reverse later.</p>
-<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</code></pre></div>
 
 <h3>List slicing</h3>
 <p>This method can be a bit obscure at first read, but basically it slices
 the whole list proceding in the reverse order:</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Reversed method</h3>
 <p>We use the
 <strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
 that returns an iterable object and a list comprehension to generate the
 new list</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Swapping values in place</h3>
 <p>This last method is more verbose and it basically divides the list in
 two parts and swaps the first with sixth, the second with fifth, etc...</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
     <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 <span class="nb">print</span> <span class="n">l</span>
 
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
+</code></pre></div>
   </div>
 </article>
 

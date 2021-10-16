@@ -162,19 +162,18 @@
       <p>After having upgraded <strong>OSX</strong> to <strong>10.11.2</strong> on my MacBook, I noticed
 that my <strong>encfs</strong> volume didn't mount after reboot. I tried to run the
 script manually and all I got was this error:</p>
-<div class="highlight"><pre><span></span>dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
+<div class="highlight"><pre><span></span><code>dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
   Referenced from: /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
   Expected <span class="k">in</span>: /usr/local/lib/libboost_serialization-mt.dylib
 <span class="k">in</span> /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
-</pre></div>
-
+</code></pre></div>
 
 <p>I quickly found that was a common problem caused by a new version of
 <strong>Boost</strong> being
 installed: <a href="https://github.com/Homebrew/homebrew/issues/46254">https://github.com/Homebrew/homebrew/issues/46254</a></p>
 <p>To fix it, you just need to <strong>reinstall encfs</strong> using this command</p>
-<div class="highlight"><pre><span></span>brew reinstall -s encfs
-</pre></div>
+<div class="highlight"><pre><span></span><code>brew reinstall -s encfs
+</code></pre></div>
   </div>
   <hr />
 </article>
@@ -197,23 +196,20 @@ currently unsupported) even on Windows.</p>
 <h2>Installing EncFS</h2>
 <p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
 manager installed on OSX you can install it using this command:</p>
-<div class="highlight"><pre><span></span>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+</code></pre></div>
 
 <p>After brew, you need to install <strong>OSXFuse</strong> from this
 website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
 <p>Finally you can install <strong>encfs</strong> using this command:</p>
-<div class="highlight"><pre><span></span>brew install homebrew/fuse/encfs
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>brew install homebrew/fuse/encfs
+</code></pre></div>
 
 <h2>Configuring the encrypted folder</h2>
 <p>Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:</p>
-<div class="highlight"><pre><span></span>encfs ~/Dropbox/Private ~/Private
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>encfs ~/Dropbox/Private ~/Private
+</code></pre></div>
 
 <p>If you are mounting an existing encrypted volume, you will be prompted
 for the password. If you are creating a new encrypted volume you will be
@@ -231,7 +227,7 @@ and click <strong>Add</strong>:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
 <p>Once the password is saved, <strong>open a text editor</strong> and paste this script
 and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 <span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
 
 <span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
@@ -250,20 +246,17 @@ chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
 <span class="k">fi</span>
 
 <span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Make it <strong>executable</strong>:</p>
-<div class="highlight"><pre><span></span>chmod +x ~/encfs_mount.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>chmod +x ~/encfs_mount.sh
+</code></pre></div>
 
 <p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
 app in the \$HOME folder:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
-<div class="highlight"><pre><span></span><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
+</code></pre></div>
 
 <p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
 add the previously saved application.</p>
@@ -302,29 +295,26 @@ even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
 <p>Suppose you want to create an encrypted volume located at
 <strong><code>$HOME/.TestTmpEncrypted</code></strong> and mounted at <strong><code>$HOME/TestTmp</code></strong> you need
 the following command:</p>
-<div class="highlight"><pre><span></span>encfs ~/.TestTmpEncrypted ~/TestTmp
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>encfs ~/.TestTmpEncrypted ~/TestTmp
+</code></pre></div>
 
 <p>answer "Y" when you are asked if you want to create the folders:</p>
-<div class="highlight"><pre><span></span>The directory <span class="s2">&quot;/home/andrea/.TestTmpEncrypted/&quot;</span> does not exist. Should it be created? <span class="o">(</span>y,n<span class="o">)</span> y
+<div class="highlight"><pre><span></span><code>The directory <span class="s2">&quot;/home/andrea/.TestTmpEncrypted/&quot;</span> does not exist. Should it be created? <span class="o">(</span>y,n<span class="o">)</span> y
 The directory <span class="s2">&quot;/home/andrea/TestTmp&quot;</span> does not exist. Should it be created? <span class="o">(</span>y,n<span class="o">)</span> y
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point you will need to select between default paranoia mode or
 advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
-<div class="highlight"><pre><span></span>Creating new encrypted volume.
+<div class="highlight"><pre><span></span><code>Creating new encrypted volume.
 Please choose from one of the following options:
  enter <span class="s2">&quot;x&quot;</span> <span class="k">for</span> expert configuration mode,
  enter <span class="s2">&quot;p&quot;</span> <span class="k">for</span> pre-configured paranoia mode,
  anything <span class="k">else</span>, or an empty line will <span class="k">select</span> standard mode.
 ?&gt; x
-</pre></div>
-
+</code></pre></div>
 
 <p>Manual configuration mode selected.</p>
-<div class="highlight"><pre><span></span>Select AES as cypher algorithm:
+<div class="highlight"><pre><span></span><code>Select AES as cypher algorithm:
 
 The following cypher algorithms are available:
 <span class="m">1</span>. AES : <span class="m">16</span> byte block cipher
@@ -337,33 +327,30 @@ The following cypher algorithms are available:
 Enter the number corresponding to your choice: <span class="m">1</span>
 
 Selected algorithm <span class="s2">&quot;AES&quot;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Select <strong>256</strong> as key size:</p>
-<div class="highlight"><pre><span></span>Please <span class="k">select</span> a key size <span class="k">in</span> bits. The cypher you have chosen
+<div class="highlight"><pre><span></span><code>Please <span class="k">select</span> a key size <span class="k">in</span> bits. The cypher you have chosen
 supports sizes from <span class="m">128</span> to <span class="m">256</span> bits <span class="k">in</span> increments of <span class="m">64</span> bits.
 For example:
 <span class="m">128</span>, <span class="m">192</span>, <span class="m">256</span>
 Selected key size: <span class="m">256</span>
 
 Using key size of <span class="m">256</span> bits
-</pre></div>
-
+</code></pre></div>
 
 <p>Choose <strong>1024</strong> as block size:</p>
-<div class="highlight"><pre><span></span>Select a block size <span class="k">in</span> bytes. The cypher you have chosen
+<div class="highlight"><pre><span></span><code>Select a block size <span class="k">in</span> bytes. The cypher you have chosen
 supports sizes from <span class="m">64</span> to <span class="m">4096</span> bytes <span class="k">in</span> increments of <span class="m">16</span>.
 Alternatively, just press enter <span class="k">for</span> the default <span class="o">(</span><span class="m">1024</span> bytes<span class="o">)</span>
 
 filesystem block size:
 
 Using filesystem block size of <span class="m">1024</span> bytes
-</pre></div>
-
+</code></pre></div>
 
 <p>Select <strong>Stream</strong> as filename encoding:</p>
-<div class="highlight"><pre><span></span>The following filename encoding algorithms are available:
+<div class="highlight"><pre><span></span><code>The following filename encoding algorithms are available:
 <span class="m">1</span>. Block : Block encoding, hides file name size somewhat
 <span class="m">2</span>. Null : No encryption of filenames
 <span class="m">3</span>. Stream : Stream encoding, keeps filenames as short as possible
@@ -371,30 +358,27 @@ Using filesystem block size of <span class="m">1024</span> bytes
 Enter the number corresponding to your choice: <span class="m">3</span>
 
 Selected algorithm <span class="s2">&quot;Stream&quot;&quot;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
-<div class="highlight"><pre><span></span>Enable filename initialization vector chaining?
+<div class="highlight"><pre><span></span><code>Enable filename initialization vector chaining?
 This makes filename encoding dependent on the <span class="nb">complete</span> path,
 rather <span class="k">then</span> encoding each path element individually.
 The default here is Yes.
 Any response that does not begin with <span class="s1">&#39;n&#39;</span> will mean Yes: no
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
-<div class="highlight"><pre><span></span>Enable per-file initialization vectors?
+<div class="highlight"><pre><span></span><code>Enable per-file initialization vectors?
 This adds about <span class="m">8</span> bytes per file to the storage requirements.
 It should not affect performance except possibly with applications
 which rely on block-aligned file io <span class="k">for</span> performance.
 The default here is Yes.
 Any response that does not begin with <span class="s1">&#39;n&#39;</span> will mean Yes: no
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
-<div class="highlight"><pre><span></span>External chained IV disabled, as both <span class="s1">&#39;IV chaining&#39;</span>
+<div class="highlight"><pre><span></span><code>External chained IV disabled, as both <span class="s1">&#39;IV chaining&#39;</span>
 and <span class="s1">&#39;unique IV&#39;</span> features are required <span class="k">for</span> this option.
 Enable block authentication code headers
 on every block <span class="k">in</span> a file? This adds about <span class="m">12</span> bytes per block
@@ -403,49 +387,44 @@ performance but it also means <span class="o">[</span>almost<span class="o">]</s
 within a block will be caught and will cause a <span class="nb">read</span> error.
 The default here is No.
 Any response that does not begin with <span class="s1">&#39;y&#39;</span> will mean No: no
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
-<div class="highlight"><pre><span></span>Add random bytes to each block header?
+<div class="highlight"><pre><span></span><code>Add random bytes to each block header?
 This adds a performance penalty, but ensures that blocks
 have different authentication codes. Note that you can
 have the same benefits by enabling per-file initialisation
 vectors, which does not come with as great a performance
 penalty.
 Select a number of bytes, from <span class="m">0</span> <span class="o">(</span>no random bytes<span class="o">)</span> to <span class="m">8</span>: <span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Enable <strong>file-hole pass-through</strong>:</p>
-<div class="highlight"><pre><span></span>Enable file-hole pass-through?
+<div class="highlight"><pre><span></span><code>Enable file-hole pass-through?
 This avoids writing encrypted blocks when file holes are created.
 The default here is Yes.
 Any response that does not begin with <span class="s1">&#39;n&#39;</span> will mean Yes: yes
-</pre></div>
-
+</code></pre></div>
 
 <p>Finally you will see:</p>
-<div class="highlight"><pre><span></span>Configuration finished. The filesystem to be created has
+<div class="highlight"><pre><span></span><code>Configuration finished. The filesystem to be created has
 the following properties:
 Filesystem cypher: <span class="s2">&quot;ssl/aes&quot;</span>, version <span class="m">3</span>:0:2
 Filename encoding: <span class="s2">&quot;nameio/stream&quot;</span>, version <span class="m">2</span>:1:2
 Key Size: <span class="m">256</span> bits
 Block Size: <span class="m">1024</span> bytes
 File holes passed through to ciphertext.
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point set a passphrase for your new volume:</p>
-<div class="highlight"><pre><span></span>Now you will need to enter a password <span class="k">for</span> your filesystem.
+<div class="highlight"><pre><span></span><code>Now you will need to enter a password <span class="k">for</span> your filesystem.
 You will need to remember this password, as there is absolutely
 no recovery mechanism. However, the password can be changed
 later using encfsctl.
 
 New Encfs Password:
 Verify Encfs Password:
-</pre></div>
-
+</code></pre></div>
 
 <p>You should be able to mount this volume using BoxCryptor.</p>
   </div>
@@ -464,21 +443,18 @@ Verify Encfs Password:
   <div>
       <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
 broken. First of all you have to fix a problem with a library header:</p>
-<div class="highlight"><pre><span></span>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+</code></pre></div>
 
 <p>then you can install encfs using this remote brew recipe:</p>
-<div class="highlight"><pre><span></span>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+</code></pre></div>
 
 <p>It's also possible that you have to fix fuse4x installation before being
 able to use encfs (I had to do it):</p>
-<div class="highlight"><pre><span></span>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+<div class="highlight"><pre><span></span><code>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
 sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
-</pre></div>
-
+</code></pre></div>
 
 <p>That's it! Please note that this is just a workaround (thanks to
 <strong>Giovanni Bajo</strong> for suggesting me the symlink fix). Please also note

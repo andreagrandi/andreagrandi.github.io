@@ -164,26 +164,22 @@ discovered that one of their developer was working to hildonize
 [WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
 just a test or if this library could work in Maemo, so I followed his
 suggestion and I grabbed the latest SVN sources:</p>
-<div class="highlight"><pre><span></span>svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
+</code></pre></div>
 
 <p>and I compiled it in this way:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> wxWidgets ./configure --with-hildon make make install
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> wxWidgets ./configure --with-hildon make make install
+</code></pre></div>
 
 <p>then I grabbed a simple "HelloWorld" from the official documentation.
 You can find the complete source code <a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt">here</a>.</p>
 <p>I compiled the source code in this way:</p>
-<div class="highlight"><pre><span></span>g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
+</code></pre></div>
 
 <p>then I ran it in the usual way:</p>
-<div class="highlight"><pre><span></span>run-standalone.sh ./hworld
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>run-standalone.sh ./hworld
+</code></pre></div>
 
 <p>The result? I think that a screenshoot is better than thousand words :)</p>
 <p><a href="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s1600-h/wxWindowsHildon.jpg"><img alt="wxWindowsHildon" src="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s400/wxWindowsHildon.jpg"></a></p>
@@ -207,9 +203,8 @@ developers porting some interesting applications (uhm... aMule for example ;) ) 
       <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
-<div class="highlight"><pre><span></span>sem_post: Function not implemented
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sem_post: Function not implemented
+</code></pre></div>
 
 <p>This happens because not all the functions have been implemented in the
 emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
@@ -221,43 +216,36 @@ howto to install the patch into the Scratchbox environment.</p>
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.</p>
 <p>You need gcc 3.4, SDL dev library andZlib dev:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+</code></pre></div>
 
 <p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
-<div class="highlight"><pre><span></span>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
+<div class="highlight"><pre><span></span><code>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
 <span class="nb">cd</span> qemu-arm-eabi 
 ./configure --target-list<span class="o">=</span>arm-linux-user --static make
-</pre></div>
-
+</code></pre></div>
 
 <p>Copy qemu to the cputransp dir on scratchbox:</p>
-<div class="highlight"><pre><span></span>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+</code></pre></div>
 
 <p>Add it to the list of cputransp methods. Open the file:</p>
-<div class="highlight"><pre><span></span>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+</code></pre></div>
 
 <p>and add this line:</p>
-<div class="highlight"><pre><span></span>qemu-arm-eabi-sb2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>qemu-arm-eabi-sb2
+</code></pre></div>
 
 <p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
-<div class="highlight"><pre><span></span>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+</code></pre></div>
 
 <p>and change this line:</p>
-<div class="highlight"><pre><span></span><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+</code></pre></div>
 
 <p>That's all! You're now ready to log again into your Scratchbox
 environment.</p>
@@ -283,10 +271,9 @@ installing it from scratch?!". Luckly one kind person helped me on
 maemo-developer mailing list, and suggested me to do a dist-upgrade from
 inside the Scratchbox environment. So, login into tour Scratchbox
 environment and execute this:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get update 
+<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get update 
 <span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get dist-upgrade
-</pre></div>
-
+</code></pre></div>
 
 <p>That's all! I don't know if this is the official method to do the
 upgrade, but it worked for me. I checked, after the upgrade, if I had
@@ -362,14 +349,12 @@ use the script provided but you could choose also to install it manually
 <p>Before beginning the installation of Scratchbox, you have to become
 <strong><code>root</code></strong>.</p>
 <p>First of all set the permission of the script file:</p>
-<div class="highlight"><pre><span></span>chmod +x maemo-scratchbox-install_4.0beta.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>chmod +x maemo-scratchbox-install_4.0beta.sh
+</code></pre></div>
 
 <p>Then run it with these parameters:</p>
-<div class="highlight"><pre><span></span>./maemo-scratchbox-install_4.0beta.sh -d -u andy80
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>./maemo-scratchbox-install_4.0beta.sh -d -u andy80
+</code></pre></div>
 
 <p>Please note that <strong>-d</strong> tells the installer to install from Debian dpkg
 packages while <strong>-u</strong> specifies your username (in my case is andy80, you
@@ -378,26 +363,24 @@ have to change it using your local username).</p>
 <p>Please note that you'll have to logout and login again to be able to log
 into you new Scratchbox environment. To test it you simply have to start
 Scratchbox from your local user:</p>
-<div class="highlight"><pre><span></span>/scratchbox/login
+<div class="highlight"><pre><span></span><code>/scratchbox/login
 
 Welcome to Scratchbox, the cross-compilation toolkit!
 
 Use <span class="s1">&#39;sb-menu&#39;</span> to change your compilation target.  
 See /scratchbox/doc/ <span class="k">for</span> documentation.
-</pre></div>
-
+</code></pre></div>
 
 <h2>Installing Maemo SDK</h2>
 <p>When Scratchbox is correctly installed on your system, you can install
 the <strong>Maemo SDK</strong>. Please note that you have to do it from <strong>normal
 user</strong> (the user you specified in the installation of Scratchbox).</p>
 <p>Simply run this command and follow instructions:</p>
-<div class="highlight"><pre><span></span>bash maemo-sdk-install_4.0beta.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>bash maemo-sdk-install_4.0beta.sh
+</code></pre></div>
 
 <p>At the end you should get this message:</p>
-<div class="highlight"><pre><span></span>Installation was successful! ----------------------------
+<div class="highlight"><pre><span></span><code>Installation was successful! ----------------------------
 
 IMPORTANT! Please <span class="nb">read</span> this.
 
@@ -411,8 +394,7 @@ If you have any problems with targets<span class="s1">&#39; package databases, y
 This <span class="nb">command</span> will try to fix any problems with the package database.
 
 Happy hacking!
-</pre></div>
-
+</code></pre></div>
 
 <h2>Installing Xephyr</h2>
 <p>Xephyr is an X11 server that provides a device screen for the developer
@@ -420,22 +402,19 @@ so that you can see all the maemo application windows and visuals on
 your computer.</p>
 <p>To install it in a Debian based distribution, simply execute this (from
 root):</p>
-<div class="highlight"><pre><span></span>apt-get install xserver-xephyr
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>apt-get install xserver-xephyr
+</code></pre></div>
 
 <h2>Running Xephyr</h2>
 <p>To see if all works fine, you should start Xephyr and Maemo environment.
 Execute this from outside the Scratchbox environment:</p>
-<div class="highlight"><pre><span></span>Xephyr :2 -host-cursor -screen 800x480x16 -dpi <span class="m">96</span> -ac -extension Composite
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>Xephyr :2 -host-cursor -screen 800x480x16 -dpi <span class="m">96</span> -ac -extension Composite
+</code></pre></div>
 
 <p>Now, from another shell, log into Scratchbox and execute this:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; <span class="nb">export</span> <span class="nv">DISPLAY</span><span class="o">=</span>:2 
+<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; <span class="nb">export</span> <span class="nv">DISPLAY</span><span class="o">=</span>:2 
 <span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; af-sb-init.sh start
-</pre></div>
-
+</code></pre></div>
 
 <p>This should start the Hildon Application Framework inside the Xephyr
 window. That's all!</p>

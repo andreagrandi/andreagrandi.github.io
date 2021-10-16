@@ -190,51 +190,44 @@ will be installed in that specific <code>$GOPATH</code>.</p>
 this allow us to use different library versions for each project and
 <strong>avoid version conflicts</strong>.</p>
 <h2>Installation</h2>
-<div class="highlight"><pre><span></span>git clone https://bitbucket.org/ymotongpoo/goenv
+<div class="highlight"><pre><span></span><code>git clone https://bitbucket.org/ymotongpoo/goenv
 <span class="nb">cd</span> goenv
 go build -o goenv *.go
 chmod +x goenv
 sudo cp goenv /usr/bin
-</pre></div>
-
+</code></pre></div>
 
 <p>Goenv is now installed, we will now install its wrapper <strong>goof</strong>:</p>
-<div class="highlight"><pre><span></span>sudo cp shellscripts/goenvwrapper.sh /usr/bin
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo cp shellscripts/goenvwrapper.sh /usr/bin
+</code></pre></div>
 
 <p>Edit <code>.bashrc</code> (or <code>.zshrc</code> if you use zsh) and append these lines:</p>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">GOENVHOME</span><span class="o">=</span><span class="nv">$HOME</span>/goenvs
+<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">GOENVHOME</span><span class="o">=</span><span class="nv">$HOME</span>/goenvs
 <span class="nb">source</span> /usr/bin/goenvwrapper.sh
-</pre></div>
-
+</code></pre></div>
 
 <h2>How to use it</h2>
 <p>To <strong>create</strong> a new go environment use <strong>make</strong>:</p>
-<div class="highlight"><pre><span></span>goof make go-test
+<div class="highlight"><pre><span></span><code>goof make go-test
 Do you want to create all parental directory of <span class="s1">&#39;/Users/andrea/goenvs/go-test&#39;</span>? <span class="o">[</span>y/N<span class="o">]</span>: y
 Environment /Users/andrea/goenvs/go-test created!
 <span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test
-</pre></div>
-
+</code></pre></div>
 
 <p>To exit the go environment use <strong>deactivate</strong>:</p>
-<div class="highlight"><pre><span></span><span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test  deactivate
+<div class="highlight"><pre><span></span><code><span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test  deactivate
 go-test
-</pre></div>
-
+</code></pre></div>
 
 <p>To use an environment use <strong>workon</strong>:</p>
-<div class="highlight"><pre><span></span>go-test  goof workon go-test
+<div class="highlight"><pre><span></span><code>go-test  goof workon go-test
 <span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test
-</pre></div>
-
+</code></pre></div>
 
 <p>To show available environments use <strong>show</strong>:</p>
-<div class="highlight"><pre><span></span><span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test  goof show
+<div class="highlight"><pre><span></span><code><span class="o">(</span>go:go-test<span class="o">)</span> ➜  go-test  goof show
 go-test
-</pre></div>
-
+</code></pre></div>
 
 <p>Goenv itself is not enough to manage Go packages. It would be like using
 <strong>Virtualenv</strong> only and not using <strong>pip</strong> and <strong>requirements</strong>. In a
@@ -261,7 +254,7 @@ it's quite easy to use.</p>
 <p>In my case for example I needed something that could contain a Timer
 object, a string and a method that could start the timer and call a
 method at the end of the Timer execution. I implemented it in this way:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
     <span class="nx">DeviceID</span>    <span class="kt">string</span>
     <span class="nx">DeviceTimer</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span>
 <span class="p">}</span>
@@ -270,19 +263,17 @@ method at the end of the Timer execution. I implemented it in this way:</p>
     <span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span>
     <span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
 where I defined a method called <code>startTimer</code> and I specify timer
 <code>DeviceTimer</code> inside the func definition. This basically "extends" the
 struct DeviceTimer adding that method to it. This means that I can call
 that method in this way:</p>
-<div class="highlight"><pre><span></span><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
 <span class="nx">device_timer</span> <span class="o">:=</span> <span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span> <span class="nx">timer</span><span class="p">}</span>
 <span class="k">go</span> <span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>This is all you need to do. If you want to read more about this subject,
 I can suggest to read these two articles:</p>

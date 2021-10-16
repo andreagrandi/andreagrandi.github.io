@@ -193,14 +193,13 @@ their instructions and create an account directly on their dashboard.
 You can create up to <strong>5 accounts for free</strong>. If you need more, they
 offer a paid service for that. In my case all I had to do was updating
 my DNS with the following configuration:</p>
-<div class="highlight"><pre><span></span>_xmpp-client._tcp.andreagrandi.it. IN SRV <span class="m">10</span> <span class="m">0</span> <span class="m">5222</span> xmpp1.hosted.im.
+<div class="highlight"><pre><span></span><code>_xmpp-client._tcp.andreagrandi.it. IN SRV <span class="m">10</span> <span class="m">0</span> <span class="m">5222</span> xmpp1.hosted.im.
 _xmpp-client._tcp.andreagrandi.it. IN SRV <span class="m">20</span> <span class="m">0</span> <span class="m">5222</span> xmpp2.hosted.im.
 _xmpp-server._tcp.andreagrandi.it. IN SRV <span class="m">20</span> <span class="m">0</span> <span class="m">5269</span> xmpp2.hosted.im.
 _xmpp-server._tcp.andreagrandi.it. IN SRV <span class="m">10</span> <span class="m">0</span> <span class="m">5269</span> xmpp1.hosted.im.
 _jabber._tcp.andreagrandi.it. IN SRV <span class="m">20</span> <span class="m">0</span> <span class="m">5269</span> xmpp2.hosted.im.
 _jabber._tcp.andreagrandi.it. IN SRV <span class="m">10</span> <span class="m">0</span> <span class="m">5269</span> xmpp1.hosted.im.
-</pre></div>
-
+</code></pre></div>
 
 <h2>Hosting your own Jabber/XMPP service</h2>
 <p>If you have a VPS and some syasdmin skills, why not hosting your own
@@ -263,7 +262,7 @@ the people in <strong>#docker @ FreeNode</strong> for the support.</p>
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
 <strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
     <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
     <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
     <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
@@ -271,18 +270,16 @@ is a <strong>config.json</strong> file where you define the <strong>host</strong
         <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):</p>
-<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+<div class="highlight"><pre><span></span><code>docker pull andreagrandi/test:latest
 docker stop <span class="nb">test</span>
 docker rm <span class="nb">test</span>
 docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
-</pre></div>
-
+</code></pre></div>
 
 <p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
 not covered here) that for example redirect
@@ -324,29 +321,26 @@ even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
 <p>Suppose you want to create an encrypted volume located at
 <strong><code>$HOME/.TestTmpEncrypted</code></strong> and mounted at <strong><code>$HOME/TestTmp</code></strong> you need
 the following command:</p>
-<div class="highlight"><pre><span></span>encfs ~/.TestTmpEncrypted ~/TestTmp
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>encfs ~/.TestTmpEncrypted ~/TestTmp
+</code></pre></div>
 
 <p>answer "Y" when you are asked if you want to create the folders:</p>
-<div class="highlight"><pre><span></span>The directory <span class="s2">&quot;/home/andrea/.TestTmpEncrypted/&quot;</span> does not exist. Should it be created? <span class="o">(</span>y,n<span class="o">)</span> y
+<div class="highlight"><pre><span></span><code>The directory <span class="s2">&quot;/home/andrea/.TestTmpEncrypted/&quot;</span> does not exist. Should it be created? <span class="o">(</span>y,n<span class="o">)</span> y
 The directory <span class="s2">&quot;/home/andrea/TestTmp&quot;</span> does not exist. Should it be created? <span class="o">(</span>y,n<span class="o">)</span> y
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point you will need to select between default paranoia mode or
 advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
-<div class="highlight"><pre><span></span>Creating new encrypted volume.
+<div class="highlight"><pre><span></span><code>Creating new encrypted volume.
 Please choose from one of the following options:
  enter <span class="s2">&quot;x&quot;</span> <span class="k">for</span> expert configuration mode,
  enter <span class="s2">&quot;p&quot;</span> <span class="k">for</span> pre-configured paranoia mode,
  anything <span class="k">else</span>, or an empty line will <span class="k">select</span> standard mode.
 ?&gt; x
-</pre></div>
-
+</code></pre></div>
 
 <p>Manual configuration mode selected.</p>
-<div class="highlight"><pre><span></span>Select AES as cypher algorithm:
+<div class="highlight"><pre><span></span><code>Select AES as cypher algorithm:
 
 The following cypher algorithms are available:
 <span class="m">1</span>. AES : <span class="m">16</span> byte block cipher
@@ -359,33 +353,30 @@ The following cypher algorithms are available:
 Enter the number corresponding to your choice: <span class="m">1</span>
 
 Selected algorithm <span class="s2">&quot;AES&quot;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Select <strong>256</strong> as key size:</p>
-<div class="highlight"><pre><span></span>Please <span class="k">select</span> a key size <span class="k">in</span> bits. The cypher you have chosen
+<div class="highlight"><pre><span></span><code>Please <span class="k">select</span> a key size <span class="k">in</span> bits. The cypher you have chosen
 supports sizes from <span class="m">128</span> to <span class="m">256</span> bits <span class="k">in</span> increments of <span class="m">64</span> bits.
 For example:
 <span class="m">128</span>, <span class="m">192</span>, <span class="m">256</span>
 Selected key size: <span class="m">256</span>
 
 Using key size of <span class="m">256</span> bits
-</pre></div>
-
+</code></pre></div>
 
 <p>Choose <strong>1024</strong> as block size:</p>
-<div class="highlight"><pre><span></span>Select a block size <span class="k">in</span> bytes. The cypher you have chosen
+<div class="highlight"><pre><span></span><code>Select a block size <span class="k">in</span> bytes. The cypher you have chosen
 supports sizes from <span class="m">64</span> to <span class="m">4096</span> bytes <span class="k">in</span> increments of <span class="m">16</span>.
 Alternatively, just press enter <span class="k">for</span> the default <span class="o">(</span><span class="m">1024</span> bytes<span class="o">)</span>
 
 filesystem block size:
 
 Using filesystem block size of <span class="m">1024</span> bytes
-</pre></div>
-
+</code></pre></div>
 
 <p>Select <strong>Stream</strong> as filename encoding:</p>
-<div class="highlight"><pre><span></span>The following filename encoding algorithms are available:
+<div class="highlight"><pre><span></span><code>The following filename encoding algorithms are available:
 <span class="m">1</span>. Block : Block encoding, hides file name size somewhat
 <span class="m">2</span>. Null : No encryption of filenames
 <span class="m">3</span>. Stream : Stream encoding, keeps filenames as short as possible
@@ -393,30 +384,27 @@ Using filesystem block size of <span class="m">1024</span> bytes
 Enter the number corresponding to your choice: <span class="m">3</span>
 
 Selected algorithm <span class="s2">&quot;Stream&quot;&quot;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
-<div class="highlight"><pre><span></span>Enable filename initialization vector chaining?
+<div class="highlight"><pre><span></span><code>Enable filename initialization vector chaining?
 This makes filename encoding dependent on the <span class="nb">complete</span> path,
 rather <span class="k">then</span> encoding each path element individually.
 The default here is Yes.
 Any response that does not begin with <span class="s1">&#39;n&#39;</span> will mean Yes: no
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
-<div class="highlight"><pre><span></span>Enable per-file initialization vectors?
+<div class="highlight"><pre><span></span><code>Enable per-file initialization vectors?
 This adds about <span class="m">8</span> bytes per file to the storage requirements.
 It should not affect performance except possibly with applications
 which rely on block-aligned file io <span class="k">for</span> performance.
 The default here is Yes.
 Any response that does not begin with <span class="s1">&#39;n&#39;</span> will mean Yes: no
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
-<div class="highlight"><pre><span></span>External chained IV disabled, as both <span class="s1">&#39;IV chaining&#39;</span>
+<div class="highlight"><pre><span></span><code>External chained IV disabled, as both <span class="s1">&#39;IV chaining&#39;</span>
 and <span class="s1">&#39;unique IV&#39;</span> features are required <span class="k">for</span> this option.
 Enable block authentication code headers
 on every block <span class="k">in</span> a file? This adds about <span class="m">12</span> bytes per block
@@ -425,49 +413,44 @@ performance but it also means <span class="o">[</span>almost<span class="o">]</s
 within a block will be caught and will cause a <span class="nb">read</span> error.
 The default here is No.
 Any response that does not begin with <span class="s1">&#39;y&#39;</span> will mean No: no
-</pre></div>
-
+</code></pre></div>
 
 <p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
-<div class="highlight"><pre><span></span>Add random bytes to each block header?
+<div class="highlight"><pre><span></span><code>Add random bytes to each block header?
 This adds a performance penalty, but ensures that blocks
 have different authentication codes. Note that you can
 have the same benefits by enabling per-file initialisation
 vectors, which does not come with as great a performance
 penalty.
 Select a number of bytes, from <span class="m">0</span> <span class="o">(</span>no random bytes<span class="o">)</span> to <span class="m">8</span>: <span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Enable <strong>file-hole pass-through</strong>:</p>
-<div class="highlight"><pre><span></span>Enable file-hole pass-through?
+<div class="highlight"><pre><span></span><code>Enable file-hole pass-through?
 This avoids writing encrypted blocks when file holes are created.
 The default here is Yes.
 Any response that does not begin with <span class="s1">&#39;n&#39;</span> will mean Yes: yes
-</pre></div>
-
+</code></pre></div>
 
 <p>Finally you will see:</p>
-<div class="highlight"><pre><span></span>Configuration finished. The filesystem to be created has
+<div class="highlight"><pre><span></span><code>Configuration finished. The filesystem to be created has
 the following properties:
 Filesystem cypher: <span class="s2">&quot;ssl/aes&quot;</span>, version <span class="m">3</span>:0:2
 Filename encoding: <span class="s2">&quot;nameio/stream&quot;</span>, version <span class="m">2</span>:1:2
 Key Size: <span class="m">256</span> bits
 Block Size: <span class="m">1024</span> bytes
 File holes passed through to ciphertext.
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point set a passphrase for your new volume:</p>
-<div class="highlight"><pre><span></span>Now you will need to enter a password <span class="k">for</span> your filesystem.
+<div class="highlight"><pre><span></span><code>Now you will need to enter a password <span class="k">for</span> your filesystem.
 You will need to remember this password, as there is absolutely
 no recovery mechanism. However, the password can be changed
 later using encfsctl.
 
 New Encfs Password:
 Verify Encfs Password:
-</pre></div>
-
+</code></pre></div>
 
 <p>You should be able to mount this volume using BoxCryptor.</p>
   </div>
@@ -493,7 +476,7 @@ recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
 <p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
 <h2>Configure the wifi adapter</h2>
 <p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
-<div class="highlight"><pre><span></span>auto lo
+<div class="highlight"><pre><span></span><code>auto lo
 iface lo inet loopback
 iface eth0 inet dhcp
 
@@ -503,8 +486,7 @@ auto wlan0
 iface wlan0 inet dhcp
 wpa-ssid YOURESSID
 wpa-psk YOURWPAPASSWORD
-</pre></div>
-
+</code></pre></div>
 
 <h2>Power management issue</h2>
 <p>There is a known "issue" with this adapter default configuration that
@@ -512,30 +494,26 @@ makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using <strong>8192cu</strong>
 module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
+<div class="highlight"><pre><span></span><code>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
 8192cu <span class="m">551136</span> <span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
 lines inside:</p>
-<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prevent power down of wireless when idle</span>
 options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>I also suggest to create a little entry in crontab to make the
 RaspberryPi ping your router every minute. This will ensure that your
 wifi connection will stay alive. To edit crontab just type (from pi
 user, you don't need to be root):</p>
-<div class="highlight"><pre><span></span>crontab -e
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>crontab -e
+</code></pre></div>
 
 <p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
+</code></pre></div>
 
 <p>where 192.168.0.1 is the IP of your router (of course substitute this
 value with the ip of your router).</p>
@@ -547,18 +525,15 @@ module for the wifi and bring them up again.</p>
 <p>
 <script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
 </p>
-
 <p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
 <strong>root</strong> user:</p>
-<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+<div class="highlight"><pre><span></span><code>chmod +x wifi_recover.sh
 crontab -e
-</pre></div>
-
+</code></pre></div>
 
 <p>Insert this line inside the crontab editor:</p>
-<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/5 * * * * /root/wifi_recover.sh
+</code></pre></div>
 
 <h2>Conclusion</h2>
 <p>The configuration is done. Just reboot your RaspberryPi and enjoy your

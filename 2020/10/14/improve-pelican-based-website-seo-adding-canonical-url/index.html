@@ -184,23 +184,21 @@ For example: the pages you see on <a href="https://www.andreagrandi.it">https://
 <p>This is a problem for search engines, because the content is the same, but they don't know which one is the website you would like to be found in the search results.</p>
 <h2>Canonical URL</h2>
 <p>To solve this problem, pages needs to include a section like this:</p>
-<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
     ...
     <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;canonical&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://www.andreagrandi.it/2020/10/11/python39-introduces-removeprefix-removesuffix/&quot;</span> <span class="p">/&gt;</span>
 <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>So even if that page is found <a href="https://github.com/andreagrandi/andreagrandi.github.io/blob/master/2020/10/11/python39-introduces-removeprefix-removesuffix/index.html">on GitHub</a> Google will know that the "official" page is located at the <code>canonical</code> url and will use that url in the search results.</p>
 <h2>How to fix your Pelican template</h2>
 <p>Adding the canonical url in Pelican based websites is quite simple. You need to add a section like this to your <code>base.html</code> template file:</p>
-<div class="highlight"><pre><span></span>    ...
+<div class="highlight"><pre><span></span><code>    ...
     {% if article %}
         <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;canonical&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ SITEURL }}/{{ article.url }}&quot;</span> <span class="p">/&gt;</span>
     {% endif%}
 <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point, just rebuild and publish your pages and you are done!</p>
 <h2>References</h2>

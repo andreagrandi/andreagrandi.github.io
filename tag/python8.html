@@ -296,7 +296,7 @@ included in Python to sum two integer values and we want to do it in C
 and then call the add method from a python script. I'll write the
 complete source code first and then I'll explain all the parts of it.</p>
 <h2>Source Code</h2>
-<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Python.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Python.h&gt;</span><span class="cp"></span>
 
 <span class="k">static</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="nf">foo_add</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="w">  </span>
 <span class="p">{</span><span class="w">  </span>
@@ -320,8 +320,7 @@ complete source code first and then I'll explain all the parts of it.</p>
 <span class="p">{</span><span class="w">  </span>
 <span class="w">    </span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w">  </span>
 <span class="p">}</span><span class="w"></span>
-</pre></div>
-
+</code></pre></div>
 
 <h2>How it works</h2>
 <p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
@@ -329,9 +328,8 @@ us to write an extension for Python language. To be able to include this
 header, we must have the python development packages installed in our
 system. For example in Debian based distributions we can install them
 with this command:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install python2.5-dev
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install python2.5-dev
+</code></pre></div>
 
 <p>Every module has at least three parts. In the first part we write
 methods we want to call from the final python module: in this case we
@@ -344,9 +342,8 @@ adding the two passed numbers and returning the result.</p>
 static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
 name of the module). For each method we want to expose in our python
 module, we have to add something like this:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
+</code></pre></div>
 
 <p>where "<em>add</em>" is the name of the method we want to be visible in our
 module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
@@ -354,9 +351,8 @@ implemented in the C module, METH_VARARGS means that we want to pass
 some parameters to the function and the last one would be the
 description of the method (we can leave it NULL if we want).</p>
 <p>Third part allows us to register the defined method/s and the module:</p>
-<div class="highlight"><pre><span></span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w"></span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
 
 <h3>Parsing Parameters</h3>
 <p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
@@ -367,23 +363,20 @@ for two integers). You can fin the complete reference here:
 <h2>Building and installing</h2>
 <p>To build the module, we have to be in the source directory and execute
 this command:</p>
-<div class="highlight"><pre><span></span>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
+</code></pre></div>
 
 <p>then we've to copy the generated module to the python's modules
 directory:</p>
-<div class="highlight"><pre><span></span>cp foo.so /usr/lib/python2.5/site-packages/
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>cp foo.so /usr/lib/python2.5/site-packages/
+</code></pre></div>
 
 <h2>Testing our module</h2>
 <p>Testing the module is really easy. We've to start a python shell or
 create a python script with the following source code:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">foo</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">foo</span>
 <span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>if all is working fine, the printed result should be <strong>5</strong></p>
 <h2>References</h2>

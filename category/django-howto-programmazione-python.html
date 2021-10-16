@@ -161,11 +161,10 @@
   <div>
       <p>Working on <strong>Django</strong> projects I find very often that many developers
 access the values that are defined in <strong>settings</strong> in this way</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">my_value</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MY_SETTING</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>What happens if <code>MY_SETTING</code> has not been defined in <strong>settings.py</strong>?
 The code will raise an error and crash, of course. How can we make the
@@ -173,11 +172,10 @@ code more reliable? We could <em>try/except</em> the code block that tries to
 read the value and maybe set a value if we get an exception, but this
 would not be a clean way to do this job.</p>
 <p>A cleaner way to do it is to use <strong>getattr</strong> in this way:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
 if the value doesn't exist <code>my_value</code> will be assigned with

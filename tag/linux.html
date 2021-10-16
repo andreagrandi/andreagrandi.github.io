@@ -174,25 +174,22 @@ instructions are not available in this guide).</p>
 <strong>Dockerfile</strong> and use the available commands and syntax to declare how
 the image will be built. At the beginning of the file we need to specify
 the base image we are going to use and our contact informations:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">ubuntu:14.04</span>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span> <span class="s">ubuntu:14.04</span>
 <span class="k">MAINTAINER</span><span class="s"> Andrea Grandi &lt;nospamthanks@gmail.com&gt;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>In our case we are using <strong>Ubuntu 14.04</strong> as base image. After these
 instructions we need to add PostgreSQL package repository and GnuPG
 public key:</p>
-<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 <span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span> &gt; /etc/apt/sources.list.d/pgdg.list
-</pre></div>
-
+</code></pre></div>
 
 <p>then we need to update the packages available in Ubuntu and install
 PostgreSQL:</p>
-<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
   <span class="o">&amp;&amp;</span> apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-</pre></div>
-
+</code></pre></div>
 
 <p>We are installing version 9.3 of PostgreSQL, instructions would be very
 similar for any other version of the database.</p>
@@ -202,37 +199,32 @@ considered two different layers by Docker and in case an updated package
 is available it won't be installed when the image is rebuilt.</p>
 <p>At this point we switch to <strong>postgres</strong> user to execute the next
 commands:</p>
-<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> postgres</span>
+<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="s"> postgres</span>
 <span class="k">RUN</span> /etc/init.d/postgresql start   
   <span class="o">&amp;&amp;</span> psql --command <span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span>   
   <span class="o">&amp;&amp;</span> createdb -O pguser pgdb
-</pre></div>
-
+</code></pre></div>
 
 <p>We switch to <strong>root</strong> user and we complete the configuration:</p>
-<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> root</span>
+<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="s"> root</span>
 <span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
 <span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
-</pre></div>
-
+</code></pre></div>
 
 <p>We expose the port where PostgreSQL will listen to:</p>
-<div class="highlight"><pre><span></span><span class="k">EXPOSE</span><span class="s"> 5432</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="k">EXPOSE</span><span class="s"> 5432</span>
+</code></pre></div>
 
 <p>We setup the data and shared folders that we will use later:</p>
-<div class="highlight"><pre><span></span><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
 <span class="k">VOLUME</span>  <span class="p">[</span><span class="s2">&quot;/etc/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/log/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql&quot;</span><span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Finally we switch again to the <strong>postgres</strong> user and we define the entry
 command for this image:</p>
-<div class="highlight"><pre><span></span><span class="k">USER</span><span class="s"> postgres</span>
+<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="s"> postgres</span>
 <span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;</span><span class="p">,</span> <span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql/9.3/main&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;</span><span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The full <strong>Dockerfile</strong> is available
 here <a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile">https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile</a></p>
@@ -240,23 +232,20 @@ here <a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Doc
 <p>Once the Dockerfile is ready, we need to build the image before running
 it in a container. Please customize the tag name using your own
 docker.io hub account (or you won't be able to push it to the hub):</p>
-<div class="highlight"><pre><span></span>docker build --rm<span class="o">=</span><span class="nb">true</span> -t andreagrandi/postgresql:9.3 .
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>docker build --rm<span class="o">=</span><span class="nb">true</span> -t andreagrandi/postgresql:9.3 .
+</code></pre></div>
 
 <h3>Running the PostgreSQL Docker container</h3>
 <p>To run the container, once the image is built, you just need to use this
 command:</p>
-<div class="highlight"><pre><span></span>docker run -i -t -p <span class="m">5432</span>:5432 andreagrandi/postgresql:9.3
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>docker run -i -t -p <span class="m">5432</span>:5432 andreagrandi/postgresql:9.3
+</code></pre></div>
 
 <h3>Testing the running PostgreSQL</h3>
 <p>To test the running container we can use any client, even the
 commandline one:</p>
-<div class="highlight"><pre><span></span>psql -h localhost -p <span class="m">5432</span> -U pguser -W pgdb
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>psql -h localhost -p <span class="m">5432</span> -U pguser -W pgdb
+</code></pre></div>
 
 <p>When you are prompted for password, type: <strong>pguser</strong><br>
 Please note that <strong>localhost</strong> is only valid if you are running Docker
@@ -275,7 +264,7 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
 fig</strong>).</p>
-<div class="highlight"><pre><span></span><span class="nt">dbdata</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="nt">dbdata</span><span class="p">:</span>
   <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
   <span class="nt">volumes</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span>
@@ -287,12 +276,11 @@ fig</strong>).</p>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dbdata</span>
   <span class="nt">ports</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="s">&quot;5432:5432&quot;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Save this file as <strong>fig.yml</strong> in the same folder of the Dockerfile and
 spin up the container using this command: <strong>fig up</strong></p>
-<div class="highlight"><pre><span></span>andreas-air:postgresql-docker andrea <span class="o">[</span>master<span class="o">]</span> $ fig up
+<div class="highlight"><pre><span></span><code>andreas-air:postgresql-docker andrea <span class="o">[</span>master<span class="o">]</span> $ fig up
 Recreating postgresqldocker_dbdata_1...
 Recreating postgresqldocker_db_1...
 Attaching to postgresqldocker_db_1
@@ -304,8 +292,7 @@ db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">
 db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-6<span class="o">]</span> LOG:  last completed transaction was at log <span class="nb">time</span> <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10.61746+00
 db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">1</span>-1<span class="o">]</span> LOG:  database system is ready to accept connections
 db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">10</span>-1<span class="o">]</span> LOG:  autovacuum launcher started
-</pre></div>
-
+</code></pre></div>
 
 <p>If you try to write some data on the database and then you stop (CTRL+C)
 the running containers and spin up them again, you will see that your
@@ -361,7 +348,7 @@ the people in <strong>#docker @ FreeNode</strong> for the support.</p>
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
 <strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
     <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
     <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
     <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
@@ -369,18 +356,16 @@ is a <strong>config.json</strong> file where you define the <strong>host</strong
         <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):</p>
-<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+<div class="highlight"><pre><span></span><code>docker pull andreagrandi/test:latest
 docker stop <span class="nb">test</span>
 docker rm <span class="nb">test</span>
 docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
-</pre></div>
-
+</code></pre></div>
 
 <p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
 not covered here) that for example redirect
@@ -421,7 +406,7 @@ recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
 <p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
 <h2>Configure the wifi adapter</h2>
 <p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
-<div class="highlight"><pre><span></span>auto lo
+<div class="highlight"><pre><span></span><code>auto lo
 iface lo inet loopback
 iface eth0 inet dhcp
 
@@ -431,8 +416,7 @@ auto wlan0
 iface wlan0 inet dhcp
 wpa-ssid YOURESSID
 wpa-psk YOURWPAPASSWORD
-</pre></div>
-
+</code></pre></div>
 
 <h2>Power management issue</h2>
 <p>There is a known "issue" with this adapter default configuration that
@@ -440,30 +424,26 @@ makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using <strong>8192cu</strong>
 module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
+<div class="highlight"><pre><span></span><code>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
 8192cu <span class="m">551136</span> <span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
 lines inside:</p>
-<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prevent power down of wireless when idle</span>
 options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>I also suggest to create a little entry in crontab to make the
 RaspberryPi ping your router every minute. This will ensure that your
 wifi connection will stay alive. To edit crontab just type (from pi
 user, you don't need to be root):</p>
-<div class="highlight"><pre><span></span>crontab -e
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>crontab -e
+</code></pre></div>
 
 <p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
+</code></pre></div>
 
 <p>where 192.168.0.1 is the IP of your router (of course substitute this
 value with the ip of your router).</p>
@@ -475,18 +455,15 @@ module for the wifi and bring them up again.</p>
 <p>
 <script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
 </p>
-
 <p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
 <strong>root</strong> user:</p>
-<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+<div class="highlight"><pre><span></span><code>chmod +x wifi_recover.sh
 crontab -e
-</pre></div>
-
+</code></pre></div>
 
 <p>Insert this line inside the crontab editor:</p>
-<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/5 * * * * /root/wifi_recover.sh
+</code></pre></div>
 
 <h2>Conclusion</h2>
 <p>The configuration is done. Just reboot your RaspberryPi and enjoy your
@@ -513,24 +490,21 @@ you have a normal DSL service at home), you need a dynamic DNS service.</p>
 <p>To update the noip.com one you just need <strong>ddclient</strong> a tool that is
 available in Raspbian/Debian repository. You can install it with this
 command:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install ddclient
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install ddclient
+</code></pre></div>
 
 <p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
-<div class="highlight"><pre><span></span><span class="nv">protocol</span><span class="o">=</span>dyndns2
+<div class="highlight"><pre><span></span><code><span class="nv">protocol</span><span class="o">=</span>dyndns2
 <span class="nv">use</span><span class="o">=</span>web, <span class="nv">web</span><span class="o">=</span>checkip.dyndns.com/, web-skip<span class="o">=</span><span class="s1">&#39;IP Address&#39;</span>
 <span class="nv">server</span><span class="o">=</span>dynupdate.no-ip.com
 <span class="nv">login</span><span class="o">=</span>yourusername
 <span class="nv">password</span><span class="o">=</span>yourpassword
 yourhostname.no-ip.org
-</pre></div>
-
+</code></pre></div>
 
 <p>and restart the client:</p>
-<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo /etc/init.d/ddclient restart
+</code></pre></div>
 
 <p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
 <strong>limitation</strong>: they need to be confirmed every 30 days (you will

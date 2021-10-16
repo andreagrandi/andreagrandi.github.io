@@ -14,25 +14,22 @@ instructions are not available in this guide).&lt;/p&gt;
 &lt;strong&gt;Dockerfile&lt;/strong&gt; and use the available commands and syntax to declare how
 the image will be built. At the beginning of the file we need to specify
 the base image we are going to use and our contact informations:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="s"&gt;ubuntu:14.04&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="s"&gt;ubuntu:14.04&lt;/span&gt;
 &lt;span class="k"&gt;MAINTAINER&lt;/span&gt;&lt;span class="s"&gt; Andrea Grandi &amp;lt;nospamthanks@gmail.com&amp;gt;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In our case we are using &lt;strong&gt;Ubuntu 14.04&lt;/strong&gt; as base image. After these
 instructions we need to add PostgreSQL package repository and GnuPG
 public key:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&amp;quot;&lt;/span&gt; &amp;gt; /etc/apt/sources.list.d/pgdg.list
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then we need to update the packages available in Ubuntu and install
 PostgreSQL:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install python-software-properties software-properties-common   
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install python-software-properties software-properties-common   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We are installing version 9.3 of PostgreSQL, instructions would be very
 similar for any other version of the database.&lt;/p&gt;
@@ -42,37 +39,32 @@ considered two different layers by Docker and in case an updated package
 is available it won't be installed when the image is rebuilt.&lt;/p&gt;
 &lt;p&gt;At this point we switch to &lt;strong&gt;postgres&lt;/strong&gt; user to execute the next
 commands:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
 &lt;span class="k"&gt;RUN&lt;/span&gt; /etc/init.d/postgresql start   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; psql --command &lt;span class="s2"&gt;&amp;quot;CREATE USER pguser WITH SUPERUSER PASSWORD &amp;#39;pguser&amp;#39;;&amp;quot;&lt;/span&gt;   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; createdb -O pguser pgdb
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We switch to &lt;strong&gt;root&lt;/strong&gt; user and we complete the configuration:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; root&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; root&lt;/span&gt;
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;host all  all    0.0.0.0/0  md5&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/pg_hba.conf
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;listen_addresses=&amp;#39;*&amp;#39;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/postgresql.conf
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We expose the port where PostgreSQL will listen to:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="s"&gt; 5432&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="s"&gt; 5432&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We setup the data and shared folders that we will use later:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; mkdir -p /var/run/postgresql &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chown -R postgres /var/run/postgresql
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; mkdir -p /var/run/postgresql &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chown -R postgres /var/run/postgresql
 &lt;span class="k"&gt;VOLUME&lt;/span&gt;  &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/etc/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/log/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally we switch again to the &lt;strong&gt;postgres&lt;/strong&gt; user and we define the entry
 command for this image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
 &lt;span class="k"&gt;CMD&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/lib/postgresql/9.3/bin/postgres&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-D&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql/9.3/main&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-c&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The full &lt;strong&gt;Dockerfile&lt;/strong&gt; is available
 here &lt;a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile"&gt;https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile&lt;/a&gt;&lt;/p&gt;
@@ -80,23 +72,20 @@ here &lt;a href="https://github.com/andreagrandi/postgresql-docker/blob/master/
 &lt;p&gt;Once the Dockerfile is ready, we need to build the image before running
 it in a container. Please customize the tag name using your own
 docker.io hub account (or you won't be able to push it to the hub):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker build --rm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; -t andreagrandi/postgresql:9.3 .
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker build --rm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; -t andreagrandi/postgresql:9.3 .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Running the PostgreSQL Docker container&lt;/h3&gt;
 &lt;p&gt;To run the container, once the image is built, you just need to use this
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -i -t -p &lt;span class="m"&gt;5432&lt;/span&gt;:5432 andreagrandi/postgresql:9.3
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker run -i -t -p &lt;span class="m"&gt;5432&lt;/span&gt;:5432 andreagrandi/postgresql:9.3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Testing the running PostgreSQL&lt;/h3&gt;
 &lt;p&gt;To test the running container we can use any client, even the
 commandline one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psql -h localhost -p &lt;span class="m"&gt;5432&lt;/span&gt; -U pguser -W pgdb
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psql -h localhost -p &lt;span class="m"&gt;5432&lt;/span&gt; -U pguser -W pgdb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When you are prompted for password, type: &lt;strong&gt;pguser&lt;/strong&gt;&lt;br&gt;
 Please note that &lt;strong&gt;localhost&lt;/strong&gt; is only valid if you are running Docker
@@ -115,7 +104,7 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use &lt;strong&gt;pip install fig&lt;/strong&gt; and under OSX you can use &lt;strong&gt;brew install
 fig&lt;/strong&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
   &lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
   &lt;span class="nt"&gt;volumes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;/var/lib/postgresql&lt;/span&gt;
@@ -127,12 +116,11 @@ fig&lt;/strong&gt;).&lt;/p&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;dbdata&lt;/span&gt;
   &lt;span class="nt"&gt;ports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;5432:5432&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Save this file as &lt;strong&gt;fig.yml&lt;/strong&gt; in the same folder of the Dockerfile and
 spin up the container using this command: &lt;strong&gt;fig up&lt;/strong&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andreas-air:postgresql-docker andrea &lt;span class="o"&gt;[&lt;/span&gt;master&lt;span class="o"&gt;]&lt;/span&gt; $ fig up
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andreas-air:postgresql-docker andrea &lt;span class="o"&gt;[&lt;/span&gt;master&lt;span class="o"&gt;]&lt;/span&gt; $ fig up
 Recreating postgresqldocker_dbdata_1...
 Recreating postgresqldocker_db_1...
 Attaching to postgresqldocker_db_1
@@ -144,8 +132,7 @@ db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt
 db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-6&lt;span class="o"&gt;]&lt;/span&gt; LOG:  last completed transaction was at log &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;17&lt;/span&gt;:46:10.61746+00
 db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  database system is ready to accept connections
 db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  autovacuum launcher started
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you try to write some data on the database and then you stop (CTRL+C)
 the running containers and spin up them again, you will see that your
@@ -186,7 +173,7 @@ the people in &lt;strong&gt;#docker @ FreeNode&lt;/strong&gt; for the support.&l
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a &lt;strong&gt;config.json&lt;/strong&gt; file where you define the &lt;strong&gt;host&lt;/strong&gt;, &lt;strong&gt;port&lt;/strong&gt;, a
 &lt;strong&gt;token&lt;/strong&gt; and a list of &lt;strong&gt;hooks&lt;/strong&gt; you want to react to. For example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="nt"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;localhost&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="nt"&gt;&amp;quot;port&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="nt"&gt;&amp;quot;token&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;abc123&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -194,18 +181,16 @@ is a &lt;strong&gt;config.json&lt;/strong&gt; file where you define the &lt;stro
         &lt;span class="nt"&gt;&amp;quot;hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;scripts/hello.sh&amp;quot;&lt;/span&gt;
     &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Create a &lt;strong&gt;bash script&lt;/strong&gt; (in this case it was called hello.sh) and put
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker pull andreagrandi/test:latest
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker pull andreagrandi/test:latest
 docker stop &lt;span class="nb"&gt;test&lt;/span&gt;
 docker rm &lt;span class="nb"&gt;test&lt;/span&gt;
 docker run --name &lt;span class="nb"&gt;test&lt;/span&gt; -d -p &lt;span class="m"&gt;8000&lt;/span&gt;:80 andreagrandi/test:latest
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Once configured, I suggest you to setup a &lt;strong&gt;Nginx&lt;/strong&gt; entry (instructions
 not covered here) that for example redirect
@@ -231,7 +216,7 @@ recent version of Raspbian. I'm using the one released on 20/06/2014).&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"&gt;&lt;img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Configure the wifi adapter&lt;/h2&gt;
 &lt;p&gt;Edit &lt;strong&gt;/etc/network/interfaces&lt;/strong&gt; and insert these configuration values:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auto lo
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auto lo
 iface lo inet loopback
 iface eth0 inet dhcp
 
@@ -241,8 +226,7 @@ auto wlan0
 iface wlan0 inet dhcp
 wpa-ssid YOURESSID
 wpa-psk YOURWPAPASSWORD
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Power management issue&lt;/h2&gt;
 &lt;p&gt;There is a known "issue" with this adapter default configuration that
@@ -250,30 +234,26 @@ makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using &lt;strong&gt;8192cu&lt;/strong&gt;
 module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo lsmod &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="m"&gt;8192&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo lsmod &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="m"&gt;8192&lt;/span&gt;
 8192cu &lt;span class="m"&gt;551136&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Create the file &lt;strong&gt;/etc/modprobe.d/8192cu.conf&lt;/strong&gt; and insert the following
 lines inside:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# prevent power down of wireless when idle&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# prevent power down of wireless when idle&lt;/span&gt;
 options 8192cu &lt;span class="nv"&gt;rtw_power_mgnt&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;rtw_enusbss&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I also suggest to create a little entry in crontab to make the
 RaspberryPi ping your router every minute. This will ensure that your
 wifi connection will stay alive. To edit crontab just type (from pi
 user, you don't need to be root):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;crontab -e
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;crontab -e
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and insert this line at the end:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;*/1 * * * * ping -c &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;192&lt;/span&gt;.168.0.1
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*/1 * * * * ping -c &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;192&lt;/span&gt;.168.0.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;where 192.168.0.1 is the IP of your router (of course substitute this
 value with the ip of your router).&lt;/p&gt;
@@ -285,18 +265,15 @@ module for the wifi and bring them up again.&lt;/p&gt;
 &lt;p&gt;
 &lt;script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"&gt;&lt;/script&gt;
 &lt;/p&gt;
-
 &lt;p&gt;Just put this script in &lt;strong&gt;/root/wifi_recover.sh&lt;/strong&gt; and then execute from
 &lt;strong&gt;root&lt;/strong&gt; user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod +x wifi_recover.sh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod +x wifi_recover.sh
 crontab -e
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Insert this line inside the crontab editor:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;*/5 * * * * /root/wifi_recover.sh
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*/5 * * * * /root/wifi_recover.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;The configuration is done. Just reboot your RaspberryPi and enjoy your
@@ -308,24 +285,21 @@ you have a normal DSL service at home), you need a dynamic DNS service.&lt;/p&gt
 &lt;p&gt;To update the noip.com one you just need &lt;strong&gt;ddclient&lt;/strong&gt; a tool that is
 available in Raspbian/Debian repository. You can install it with this
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install ddclient
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install ddclient
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then you just need to edit &lt;strong&gt;/etc/ddclient.conf&lt;/strong&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;protocol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dyndns2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;protocol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dyndns2
 &lt;span class="nv"&gt;use&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;web, &lt;span class="nv"&gt;web&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;checkip.dyndns.com/, web-skip&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;IP Address&amp;#39;&lt;/span&gt;
 &lt;span class="nv"&gt;server&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dynupdate.no-ip.com
 &lt;span class="nv"&gt;login&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yourusername
 &lt;span class="nv"&gt;password&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yourpassword
 yourhostname.no-ip.org
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and restart the client:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo /etc/init.d/ddclient restart
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo /etc/init.d/ddclient restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's all! Please remember that noip.com &lt;strong&gt;free accounts&lt;/strong&gt; have a
 &lt;strong&gt;limitation&lt;/strong&gt;: they need to be confirmed every 30 days (you will
@@ -337,9 +311,8 @@ doesn't work out of the box!&lt;/p&gt;
 &lt;p&gt;The fix is quite easy to apply (but it was not easy to find the right
 one!). First of all edit &lt;strong&gt;/etc/pulse/default.pa&lt;/strong&gt; and add this line at
 the end:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;load-module module-combine &lt;span class="nv"&gt;channels&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="nv"&gt;channel_map&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;front-left,front-right,rear-left,rear-right,front-center,lfe
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;load-module module-combine &lt;span class="nv"&gt;channels&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="nv"&gt;channel_map&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;front-left,front-right,rear-left,rear-right,front-center,lfe
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then edit &lt;strong&gt;&lt;code&gt;/etc/pulse/daemon.conf&lt;/code&gt;&lt;/strong&gt;, modify the line
 &lt;code&gt;enable-lfe-remixing: no&lt;/code&gt; to &lt;strong&gt;&lt;code&gt;enable-lfe-remixing: yes&lt;/code&gt;&lt;/strong&gt;, then
@@ -864,13 +837,12 @@ installation you're only required to restart the device.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;N.B:&lt;/strong&gt; be sure to have at least 19Mb free on the device, else the
 upgrade will fail.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 13 Aug 2008 14:32:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-08-13:/2008/08/13/os-2008-4200830-available-ota/</guid><category>Maemo (EN)</category><category>firmware</category><category>Linux</category><category>maemo</category><category>nokia</category><category>tablet</category></item><item><title>Quali sono i comandi bash che usate di piu'?</title><link>https://www.andreagrandi.it/2008/08/05/quali-sono-i-comandi-bash-che-usate-di-piu/</link><description>&lt;p&gt;Prendendo spunto da alcuni post apparsi sulla versione inglese di Planet
 Ubuntu, ho deciso di provare questo comando:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;history&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{a[$2]++ } END{for(i in a){print a[i] &amp;quot; &amp;quot; i}}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sort -rn &lt;span class="p"&gt;|&lt;/span&gt; head
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;history&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{a[$2]++ } END{for(i in a){print a[i] &amp;quot; &amp;quot; i}}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sort -rn &lt;span class="p"&gt;|&lt;/span&gt; head
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;che dovrebbe stampare la lista dei comandi piu' digitati nella bash
 della vostra macchina Linux. Il risultato è stato il seguente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;history&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{a[$2]++ } END{for(i in a){print a[i] &amp;quot; &amp;quot; i}}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sort -rn &lt;span class="p"&gt;|&lt;/span&gt; head 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;history&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{a[$2]++ } END{for(i in a){print a[i] &amp;quot; &amp;quot; i}}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sort -rn &lt;span class="p"&gt;|&lt;/span&gt; head 
 &lt;span class="m"&gt;4884&lt;/span&gt; git
 &lt;span class="m"&gt;1023&lt;/span&gt; &lt;span class="nb"&gt;eval&lt;/span&gt;
 &lt;span class="m"&gt;382&lt;/span&gt; isort
@@ -881,8 +853,7 @@ della vostra macchina Linux. Il risultato è stato il seguente:&lt;/p&gt;
 &lt;span class="m"&gt;228&lt;/span&gt; docker
 &lt;span class="m"&gt;224&lt;/span&gt; pip
 &lt;span class="m"&gt;151&lt;/span&gt; workon
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;interessante, non trovate?!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 05 Aug 2008 00:19:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-08-05:/2008/08/05/quali-sono-i-comandi-bash-che-usate-di-piu/</guid><category>Linux, Ubuntu (IT)</category><category>bash</category><category>Linux</category></item><item><title>Creative Live Cam Notebook su Ubuntu Linux</title><link>https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="Creative" src="https://www.andreagrandi.it/images/2008/06/creative_live_cam_trasparente1.png"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
@@ -893,13 +864,12 @@ con la &lt;a href="http://it.europe.creative.com/products/product.asp?category=2
 verificare che il modello di "Creative Live Cam" che state cercando di
 installare, sia lo stesso che ho testato io. Potete verificarlo
 scrivendo in un terminale il comando &lt;strong&gt;lsusb&lt;/strong&gt;:  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lsusb 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;lsusb 
 Bus &lt;span class="m"&gt;003&lt;/span&gt; Device &lt;span class="m"&gt;001&lt;/span&gt;: ID &lt;span class="m"&gt;0000&lt;/span&gt;:0000 
 Bus &lt;span class="m"&gt;002&lt;/span&gt; Device &lt;span class="m"&gt;001&lt;/span&gt;: ID &lt;span class="m"&gt;0000&lt;/span&gt;:0000 
 Bus &lt;span class="m"&gt;001&lt;/span&gt; Device &lt;span class="m"&gt;018&lt;/span&gt;: ID 041e:4068 Creative Technology, Ltd 
 Bus &lt;span class="m"&gt;001&lt;/span&gt; Device &lt;span class="m"&gt;001&lt;/span&gt;: ID &lt;span class="m"&gt;0000&lt;/span&gt;:0000&lt;span class="sb"&gt;`&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ovvero dovrete verificare che l'identificativo del vostro modello sia
 esattamente &lt;strong&gt;041e:4068&lt;/strong&gt;&lt;/p&gt;
@@ -916,41 +886,35 @@ che invece supportano il mio modello di webcam.&lt;/p&gt;
 installato sulla nostra macchina tutto il necessario per poter
 ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install build-essential linux-headers-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get install build-essential linux-headers-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto dovrete scaricare i sorgenti del driver, da questo
 indirizzo: &lt;a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"&gt;&lt;strong&gt;http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Dobbiamo poi scompattarli con il seguente comando:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar xfvz ov51x-jpeg-1.5.7.tar.gz
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tar xfvz ov51x-jpeg-1.5.7.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Infine dobbiamo compilare il modulo ed installarlo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ov51x-jpeg-1.5.7 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ov51x-jpeg-1.5.7 
 make
 make install
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;modprobe ov51x-jpeg
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;modprobe ov51x-jpeg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
 modificare il file &lt;code&gt;/etc/modprobe.d/options&lt;/code&gt; ed aggiungere la seguente
 riga:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;options ov51x-jpeg &lt;span class="nv"&gt;forceblock&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;options ov51x-jpeg &lt;span class="nv"&gt;forceblock&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;ovviamente prima di caricare il modulo. A questo punto l'installazione
 dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
@@ -974,7 +938,7 @@ avviare il client Skype.&lt;/p&gt;
 di Skype, sono moltissime. In questo caso particolare farò vedere un
 piccolo script Python che invia un SMS utilizzando il client (ed il
 credito) dell'istanza di Skype che sta girando sulla vostra macchina:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;Skype4Py&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;Skype4Py&lt;/span&gt;
 
 &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;+393*******&amp;#39;&lt;/span&gt;
 &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Messaggio di prova da PySms4Skype!&amp;#39;&lt;/span&gt;
@@ -987,8 +951,7 @@ credito) dell'istanza di Skype che sta girando sulla vostra macchina:&lt;/p&gt;
 &lt;span class="n"&gt;sms&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;skype&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CreateSms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Skype4Py&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsMessageTypeOutgoing&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
 &lt;span class="n"&gt;sms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;  
 &lt;span class="n"&gt;sms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Quando eseguite questo script, Skype vi chiedera' la &lt;strong&gt;conferma&lt;/strong&gt; per
 autorizzare la vostra applicazione ad utilizzare le API, basterà quindi
@@ -1110,9 +1073,8 @@ questo articolo ;) Al limite posso dirvelo in privato, ma credo che
 anche altri venditori abbiano ormai offerte simili a questa.&lt;/em&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Wed, 26 Mar 2008 09:39:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-03-26:/2008/03/26/il-costo-di-un-computer-senza-windows-vista/</guid><category>Linux, Windows</category><category>computer</category><category>costo</category><category>kubuntu</category><category>Linux</category><category>operativo</category><category>senza</category><category>sistema</category><category>Ubuntu (EN)</category><category>vista</category><category>Windows</category></item><item><title>Utilizzare SSH senza password: chiavi SSH</title><link>https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</link><description>&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png"&gt;&lt;img alt="openssh_logo" src="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png" width="40%"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Quando vogliamo connetterci ad un server &lt;strong&gt;SSH&lt;/strong&gt;, solitamente utilizziamo un
 comando simile al seguente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh user@remotehost.com
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ssh user@remotehost.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Una volta connessi ci viene richiesta la password di accesso e subito
 dopo siamo connessi. Digitare ogni volta la password puo' essere
@@ -1129,7 +1091,7 @@ account chiamato &lt;strong&gt;user&lt;/strong&gt; sulla macchina remota.&lt;/p&
 &lt;p&gt;Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
 macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
 verrebbe richiesta comunque al primo login di ogni sessione):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andy80@noteboontu:~$ ssh-keygen -t dsa  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andy80@noteboontu:~$ ssh-keygen -t dsa  
 Generating public/private dsa key pair.  
 Enter file &lt;span class="k"&gt;in&lt;/span&gt; which to save the key &lt;span class="o"&gt;(&lt;/span&gt;/home/andy80/.ssh/id_dsa&lt;span class="o"&gt;)&lt;/span&gt;:  
 Enter passphrase &lt;span class="o"&gt;(&lt;/span&gt;empty &lt;span class="k"&gt;for&lt;/span&gt; no passphrase&lt;span class="o"&gt;)&lt;/span&gt;:  
@@ -1138,32 +1100,28 @@ Your identification has been saved &lt;span class="k"&gt;in&lt;/span&gt; /home/a
 Your public key has been saved &lt;span class="k"&gt;in&lt;/span&gt; /home/andy80/.ssh/id_dsa.pub.  
 The key fingerprint is:  
 &lt;span class="m"&gt;22&lt;/span&gt;:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
 server remoto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ~/.ssh/  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ~/.ssh/  
 scp id_dsa.pub user@192.168.0.2:./id_dsa.pub
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ci verrà chiesta la nostra password remota, per poter effettuare la
 copia del file. A questo punto dobbiamo connetterci via SSH al server
 remoto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh user@192.168.0.2
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ssh user@192.168.0.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
 i seguenti comandi:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; .ssh  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; .ssh  
 touch authorized_keys2  
 chmod &lt;span class="m"&gt;600&lt;/span&gt; authorized_keys2  
 cat ../id_dsa.pub &amp;gt;&amp;gt; authorized_keys2  
 rm ../id_dsa.pub
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
 il server remoto, avverranno senza la richiesta di alcuna password.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 29 Feb 2008 18:59:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-29:/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</guid><category>HowTo</category><category>chiavi</category><category>connessione</category><category>Linux</category><category>openssh</category><category>password</category><category>Sicurezza</category><category>ssh</category><category>ssh2</category></item><item><title>Full Circle Magazine #10</title><link>https://www.andreagrandi.it/2008/02/29/full-circle-magazine-10/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="full_circle_magazine_10" src="https://www.andreagrandi.it/images/2008/02/issue10_en-cover.png"&gt;&lt;/a&gt;&lt;/p&gt;

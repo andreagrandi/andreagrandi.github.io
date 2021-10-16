@@ -205,9 +205,8 @@ Before Python 3.7.x to insert a debugging point we had to write <code>import pdb
 <p>Now you can just write <code>breakpoint()</code> that's it!</p>
 <p>Now... the only problem is that by default that command will use <strong>pdb</strong> which is not exactly the best debugger you can have. I usually use <strong>ipdb</strong> but there wasn't an intuitive way of using it... and no, just installing it in your virtual environment, it won't be used by default.</p>
 <p>How to use it then? It's very simple. The new debugging command will read an environment variable named <strong>PYTHONBREAKPOINT</strong>. If you set it properly, you will be able to use ipdb instead of pdb.</p>
-<div class="highlight"><pre><span></span>export PYTHONBREAKPOINT=ipdb.set_trace
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>export PYTHONBREAKPOINT=ipdb.set_trace
+</code></pre></div>
 
 <p>At this point, any time you use <code>breakpoint()</code> in your code, <strong>ipdb</strong> will be used instead of <strong>pdb</strong>.</p>
 <h4>References</h4>
@@ -235,7 +234,7 @@ it's quite easy to use.</p>
 <p>In my case for example I needed something that could contain a Timer
 object, a string and a method that could start the timer and call a
 method at the end of the Timer execution. I implemented it in this way:</p>
-<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
     <span class="nx">DeviceID</span>    <span class="kt">string</span>
     <span class="nx">DeviceTimer</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span>
 <span class="p">}</span>
@@ -244,19 +243,17 @@ method at the end of the Timer execution. I implemented it in this way:</p>
     <span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span>
     <span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
 where I defined a method called <code>startTimer</code> and I specify timer
 <code>DeviceTimer</code> inside the func definition. This basically "extends" the
 struct DeviceTimer adding that method to it. This means that I can call
 that method in this way:</p>
-<div class="highlight"><pre><span></span><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
 <span class="nx">device_timer</span> <span class="o">:=</span> <span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span> <span class="nx">timer</span><span class="p">}</span>
 <span class="k">go</span> <span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>This is all you need to do. If you want to read more about this subject,
 I can suggest to read these two articles:</p>

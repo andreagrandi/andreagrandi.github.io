@@ -321,9 +321,8 @@ anche altri venditori abbiano ormai offerte simili a questa.</em></p>
       <p><a href="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png"><img alt="openssh_logo" src="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png" width="40%"></a></p>
 <p>Quando vogliamo connetterci ad un server <strong>SSH</strong>, solitamente utilizziamo un
 comando simile al seguente:</p>
-<div class="highlight"><pre><span></span>ssh user@remotehost.com
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>ssh user@remotehost.com
+</code></pre></div>
 
 <p>Una volta connessi ci viene richiesta la password di accesso e subito
 dopo siamo connessi. Digitare ogni volta la password puo' essere
@@ -340,7 +339,7 @@ account chiamato <strong>user</strong> sulla macchina remota.</p>
 <p>Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
 macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
 verrebbe richiesta comunque al primo login di ogni sessione):</p>
-<div class="highlight"><pre><span></span>andy80@noteboontu:~$ ssh-keygen -t dsa  
+<div class="highlight"><pre><span></span><code>andy80@noteboontu:~$ ssh-keygen -t dsa  
 Generating public/private dsa key pair.  
 Enter file <span class="k">in</span> which to save the key <span class="o">(</span>/home/andy80/.ssh/id_dsa<span class="o">)</span>:  
 Enter passphrase <span class="o">(</span>empty <span class="k">for</span> no passphrase<span class="o">)</span>:  
@@ -349,32 +348,28 @@ Your identification has been saved <span class="k">in</span> /home/andy80/.ssh/i
 Your public key has been saved <span class="k">in</span> /home/andy80/.ssh/id_dsa.pub.  
 The key fingerprint is:  
 <span class="m">22</span>:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu
-</pre></div>
-
+</code></pre></div>
 
 <p>A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
 server remoto:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> ~/.ssh/  
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> ~/.ssh/  
 scp id_dsa.pub user@192.168.0.2:./id_dsa.pub
-</pre></div>
-
+</code></pre></div>
 
 <p>Ci verrà chiesta la nostra password remota, per poter effettuare la
 copia del file. A questo punto dobbiamo connetterci via SSH al server
 remoto:</p>
-<div class="highlight"><pre><span></span>ssh user@192.168.0.2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>ssh user@192.168.0.2
+</code></pre></div>
 
 <p>Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
 i seguenti comandi:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> .ssh  
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> .ssh  
 touch authorized_keys2  
 chmod <span class="m">600</span> authorized_keys2  
 cat ../id_dsa.pub &gt;&gt; authorized_keys2  
 rm ../id_dsa.pub
-</pre></div>
-
+</code></pre></div>
 
 <p>Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
 il server remoto, avverranno senza la richiesta di alcuna password.</p>

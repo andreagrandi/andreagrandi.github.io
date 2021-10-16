@@ -161,12 +161,11 @@
   <div>
       <p>If we try to use the usual ipdb commands from a Jupyter (IPython
 notebook)</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+</code></pre></div>
 
 <p>we will get a similar error:</p>
-<div class="highlight"><pre><span></span><span class="o">--------------------------------------------------------------------------</span>
+<div class="highlight"><pre><span></span><code><span class="o">--------------------------------------------------------------------------</span>
 <span class="n">MultipleInstanceError</span>                     <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f2b356251c56</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
     <span class="mi">1</span> <span class="n">a</span><span class="o">=</span><span class="mi">4</span>
@@ -197,14 +196,12 @@ notebook)</p>
     <span class="mi">417</span>
 
 <span class="n">MultipleInstanceError</span><span class="p">:</span> <span class="n">Multiple</span> <span class="n">incompatible</span> <span class="n">subclass</span> <span class="n">instances</span> <span class="n">of</span> <span class="n">TerminalIPythonApp</span> <span class="n">are</span> <span class="n">being</span> <span class="n">created</span><span class="o">.</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The solution is to use Tracer instead:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.debugger</span> <span class="kn">import</span> <span class="n">Tracer</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">IPython.core.debugger</span> <span class="kn">import</span> <span class="n">Tracer</span>
 <span class="n">Tracer</span><span class="p">()()</span>
-</pre></div>
-
+</code></pre></div>
 
 <p><strong>Source:</strong> <a href="http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython">http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython</a></p>
   </div>
@@ -242,7 +239,7 @@ you register, please specify (if you have one, but I really hope you do)
 the <strong>PGP</strong> id of your public key. Once the accounts are created, you
 need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
 the following configuration:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>distutils<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>distutils<span class="o">]</span>
 index-servers <span class="o">=</span>
 pypi
 pypitest
@@ -256,8 +253,7 @@ pypitest
 <span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
 <span class="nv">username</span><span class="o">=</span>your_username
 <span class="nv">password</span><span class="o">=</span>your_password
-</pre></div>
-
+</code></pre></div>
 
 <p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
 details you sent during the registration.</p>
@@ -268,7 +264,7 @@ specific to PyPI so you should have done it already). If you haven't I
 remember you can give a look at my library
 here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
 <strong>setup.py</strong>:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
 
 <span class="n">setup</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
@@ -287,29 +283,25 @@ here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/
         <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Upload the package to PyPI Test server</h3>
 <p>The first time you upload the package you will need to register it:</p>
-<div class="highlight"><pre><span></span>python setup.py register -r pypitest
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>python setup.py register -r pypitest
+</code></pre></div>
 
 <p>and then you will need to build the package and upload it (please note
 I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
-<div class="highlight"><pre><span></span>python setup.py sdist upload --sign -r pypitest
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>python setup.py sdist upload --sign -r pypitest
+</code></pre></div>
 
 <h3>Upload the package to PyPI production server</h3>
 <p>Once you have verified that you are able to build and upload the package
 to the test server (without getting any errors), you should upload it to
 the production server:</p>
-<div class="highlight"><pre><span></span>python setup.py register -r pypi
+<div class="highlight"><pre><span></span><code>python setup.py register -r pypi
 python setup.py sdist upload --sign -r pypi
-</pre></div>
-
+</code></pre></div>
 
 <p>This is everything you need to do if you want to publish a Python
 package on PyPI. Happy coding!</p>
@@ -348,7 +340,6 @@ the light is less intense.</p>
 <p>
 <script src="https://gist.github.com/andreagrandi/99a09be27c9626b1119d.js"></script>
 </p>
-
 <p>and as a demo I realised this small <strong>video</strong>:</p>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/6vLE_AQc4Bc" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
   </div>

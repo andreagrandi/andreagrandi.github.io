@@ -179,9 +179,8 @@ Rest Framework</strong>. This second part will explain how to implement
 <strong>POST</strong> methods and add different levels of <strong>permissions</strong> and
 <strong>authentication</strong>. If you are starting from part 2, you may want to
 checkout the source code at this exact point:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.4
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.4
+</code></pre></div>
 
 <h3>A step back</h3>
 <p>Before showing how easy it is to implement a <strong>POST</strong> method for our
@@ -190,7 +189,7 @@ using just the
 <a href="http://www.django-rest-framework.org/api-guide/views/"><strong>APIView</strong></a>
 class. Edit the file <strong>catalog/views.py</strong> and change the code in this
 way:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
@@ -202,8 +201,7 @@ way:</p>
         <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>If we try to use the API again (from the browser of from the http
 client), it will still work in the same way. The difference here is that
@@ -214,22 +212,20 @@ defined the <strong>GET</strong> method for it.</p>
 going to implement a POST method for the existing view and testing it
 with <a href="https://httpie.org/"><strong>httpie</strong></a> client again. First of all we
 need to add an import to <strong>catalog/views.py</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+</code></pre></div>
 
 <p>then we add this method to our <strong>ProductList</strong> class:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
         <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now let's test our <strong>POST</strong> method we just implemented:</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Salamino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Salamino Piccante&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;10.50&quot;</span>
+<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Salamino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Salamino Piccante&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;10.50&quot;</span>
 HTTP/1.0 <span class="m">201</span> Created
 Allow: GET, POST, HEAD, OPTIONS
 Content-Type: application/json
@@ -243,21 +239,19 @@ X-Frame-Options: SAMEORIGIN
     <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Salamino&quot;</span>,
     <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;10.50&quot;</span>
 <span class="o">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>It works! In case something doesn't work, try to fetch the source code
 at this point:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.7
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.7
+</code></pre></div>
 
 <h3>Implementing a POST method with ListCreateAPIView</h3>
 <p>Do you remember when I mentioned at the beginning that there is an easy
 way to do the same thing? I wasn't cheating. Let's change again our old
 code in <strong>catalog/views.py</strong> but this time we will use a different base
 class:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
 <span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
@@ -267,11 +261,10 @@ class:</p>
 <span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
     <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>let's test this again with <strong>httpie</strong>:</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Pecorino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Pecorino Sardo&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;7.00&quot;</span>
+<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Pecorino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Pecorino Sardo&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;7.00&quot;</span>
 HTTP/1.0 <span class="m">201</span> Created
 Allow: GET, POST, HEAD, OPTIONS
 Content-Type: application/json
@@ -285,8 +278,7 @@ X-Frame-Options: SAMEORIGIN
     <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Pecorino&quot;</span>,
     <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;7.00&quot;</span>
 <span class="o">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>We just POSTed some data on the API! How can it work? Well, we have
 changed the base class from <strong>ListAPIView</strong> to
@@ -303,29 +295,27 @@ an authentication system. For simplicity we will implement
 <a href="http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication"><strong>TokenAuthentication</strong></a>.
 As first step we need to edit <strong>settings.py</strong> and
 insert <strong>rest_framework.authtoken</strong> in the <strong>INSTALLED_APPS</strong>:</p>
-<div class="highlight"><pre><span></span>    <span class="o">...</span>
+<div class="highlight"><pre><span></span><code>    <span class="o">...</span>
     <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
     <span class="s1">&#39;rest_framework.authtoken&#39;</span><span class="p">,</span>
     <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>after this, we need to add <strong>TokenAuthentication</strong> as default
 authentication class (append this in <strong>settings.py</strong> at the end):</p>
-<div class="highlight"><pre><span></span><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
         <span class="s1">&#39;rest_framework.authentication.TokenAuthentication&#39;</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Finally we need to add a particular URL to the project so that clients
 will be able to call an endpoint passing <strong>username</strong> and <strong>password</strong>
 to get a <strong>token</strong> back. Edit <strong>drftutorial/urls.py</strong> and make it's like
 this:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
 <span class="kn">from</span> <span class="nn">rest_framework.authtoken.views</span> <span class="kn">import</span> <span class="n">obtain_auth_token</span>
 
@@ -334,36 +324,32 @@ this:</p>
     <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
     <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^api-token-auth/&#39;</span><span class="p">,</span> <span class="n">obtain_auth_token</span><span class="p">),</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Don't forget to re-run the <strong>migrations</strong>, because TokenAuthorization
 needs to change a couple of tables:</p>
-<div class="highlight"><pre><span></span>$ ./manage.py migrate
+<div class="highlight"><pre><span></span><code>$ ./manage.py migrate
 Operations to perform:
     Apply all migrations: admin, auth, authtoken, catalog, contenttypes, sessions
 Running migrations:
     Applying authtoken.0001_initial... OK
     Applying authtoken.0002_auto_20160226_1747... OK
-</pre></div>
-
+</code></pre></div>
 
 <p>In case you had any problem changing the code up to this point, you can
 always fetch the related git tag:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.9
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.9
+</code></pre></div>
 
 <h4>Testing the Authentication</h4>
 <p>Before testing the authentication, make sure you created at least the
 Django <strong>superuser</strong> with:</p>
-<div class="highlight"><pre><span></span>$ ./manage.py createsuperuser
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>$ ./manage.py createsuperuser
+</code></pre></div>
 
 <p>now let's try to <strong>obtain the token</strong> we will need later for our API
 calls:</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/api-token-auth/ <span class="nv">username</span><span class="o">=</span><span class="s2">&quot;yourusername&quot;</span> <span class="nv">password</span><span class="o">=</span><span class="s2">&quot;yourpassword&quot;</span>
+<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/api-token-auth/ <span class="nv">username</span><span class="o">=</span><span class="s2">&quot;yourusername&quot;</span> <span class="nv">password</span><span class="o">=</span><span class="s2">&quot;yourpassword&quot;</span>
 HTTP/1.0 <span class="m">200</span> OK
 Allow: POST, OPTIONS
 Content-Type: application/json
@@ -374,8 +360,7 @@ X-Frame-Options: SAMEORIGIN
 <span class="o">{</span>
     <span class="s2">&quot;token&quot;</span>: <span class="s2">&quot;bc9514f0892368cfd0ea792a977aff55d53e3634&quot;</span>
 <span class="o">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>We will need to pass this token in every API call we want to be
 authenticated. The token is being passed through the "Authentication"
@@ -396,7 +381,7 @@ class, but this would allow any registered user to add products (and we
 want to let only admins).</p>
 <p>Or...we can define our own permission class and have exactly what we
 want. Create a new file <strong>catalog/permissions.py</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">BasePermission</span><span class="p">,</span> <span class="n">SAFE_METHODS</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">BasePermission</span><span class="p">,</span> <span class="n">SAFE_METHODS</span>
 
 
 <span class="k">class</span> <span class="nc">IsAdminOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
@@ -405,28 +390,25 @@ want. Create a new file <strong>catalog/permissions.py</strong></p>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Just as a side note, <strong>SAFE_METHODS</strong> are <strong>GET</strong>, <strong>HEAD</strong> and
 <strong>OPTIONS</strong>. These method are considered "safe" because they don't
 change any existing data. Open <strong>catalog/views.py</strong> again, import this
 at the beginning:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.permissions</span> <span class="kn">import</span> <span class="n">IsAdminOrReadOnly</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">.permissions</span> <span class="kn">import</span> <span class="n">IsAdminOrReadOnly</span>
+</code></pre></div>
 
 <p>and set this as <strong>permission_classes</strong> to <strong>ProductList</strong>:</p>
-<div class="highlight"><pre><span></span><span class="o">...</span>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
 <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
 <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Let's now try to add a new product using the <strong>token</strong> we got before
 (you will have to use your own token of course, mine only works on my
 local db):</p>
-<div class="highlight"><pre><span></span>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Lardo&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Lardo di Colonnata&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;8.50&quot;</span> <span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
+<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Lardo&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Lardo di Colonnata&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;8.50&quot;</span> <span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
 HTTP/1.0 <span class="m">201</span> Created
 Allow: GET, POST, HEAD, OPTIONS
 Content-Type: application/json
@@ -440,15 +422,13 @@ X-Frame-Options: SAMEORIGIN
     <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Lardo&quot;</span>,
     <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;8.50&quot;</span>
 <span class="o">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>It worked! We have now protected our API so that not admin people can't
 create any product. If you have any problem with the code, you can check
 it out with this tag:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.10
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.10
+</code></pre></div>
 
 <h3>Wrapping Up</h3>
 <p>We have now implemented the POST method to add new products to our

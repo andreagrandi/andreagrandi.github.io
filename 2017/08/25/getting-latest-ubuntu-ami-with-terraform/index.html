@@ -175,7 +175,7 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
 <h3>Getting latest Ubuntu AMI id</h3>
 <p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
-<div class="highlight"><pre><span></span><span class="kr">variable</span> <span class="nv">&quot;aws_region&quot;</span> <span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span> <span class="nv">&quot;aws_region&quot;</span> <span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
 
 <span class="kr">provider</span> <span class="nv">&quot;aws&quot;</span> <span class="p">{</span>
     <span class="na">region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
@@ -211,11 +211,10 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 <span class="kr">output</span> <span class="nv">&quot;image_id&quot;</span> <span class="p">{</span>
     <span class="na">value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
-<div class="highlight"><pre><span></span>➜  example1$: terraform apply
+<div class="highlight"><pre><span></span><code>➜  example1$: terraform apply
 data.aws_ami.ubuntu: Refreshing state...
 aws_instance.web: Creating...
     ami:                          &quot;&quot; =&gt; &quot;ami-03998867&quot;
@@ -255,8 +254,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 Outputs:
 
 image_id = ami-03998867
-</pre></div>
-
+</code></pre></div>
 
 <p>That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.</p>
   </div>

@@ -167,24 +167,21 @@ you have a normal DSL service at home), you need a dynamic DNS service.</p>
 <p>To update the noip.com one you just need <strong>ddclient</strong> a tool that is
 available in Raspbian/Debian repository. You can install it with this
 command:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install ddclient
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install ddclient
+</code></pre></div>
 
 <p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
-<div class="highlight"><pre><span></span><span class="nv">protocol</span><span class="o">=</span>dyndns2
+<div class="highlight"><pre><span></span><code><span class="nv">protocol</span><span class="o">=</span>dyndns2
 <span class="nv">use</span><span class="o">=</span>web, <span class="nv">web</span><span class="o">=</span>checkip.dyndns.com/, web-skip<span class="o">=</span><span class="s1">&#39;IP Address&#39;</span>
 <span class="nv">server</span><span class="o">=</span>dynupdate.no-ip.com
 <span class="nv">login</span><span class="o">=</span>yourusername
 <span class="nv">password</span><span class="o">=</span>yourpassword
 yourhostname.no-ip.org
-</pre></div>
-
+</code></pre></div>
 
 <p>and restart the client:</p>
-<div class="highlight"><pre><span></span>sudo /etc/init.d/ddclient restart
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo /etc/init.d/ddclient restart
+</code></pre></div>
 
 <p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
 <strong>limitation</strong>: they need to be confirmed every 30 days (you will
@@ -229,9 +226,8 @@ www.yourdomain.com to correctly point to your ip.</p>
 <p>In my case I only needed some aliases that I use to forward emails to my
 GMail account, so the configuration is quite easy. First you need to
 install Postfix:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install postfix
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install postfix
+</code></pre></div>
 
 <p>Then you need to edit<strong> /etc/postfix/main.cf</strong> customizing myhostname
 with your domain name and add <strong>virtual_alias_maps</strong> and
@@ -246,16 +242,14 @@ configuration here:</p>
 <h2>Add your email aliases</h2>
 <p>Edit <strong>/etc/postfix/virtual</strong> file and add your aliases, one per line,
 like in this example:</p>
-<div class="highlight"><pre><span></span>info@yourdomain.com youremail@gmail.com
+<div class="highlight"><pre><span></span><code>info@yourdomain.com youremail@gmail.com
 sales@yourdomain.com youremail@gmail.com
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point update the alias map and reload Postfix configuration:</p>
-<div class="highlight"><pre><span></span>sudo postmap /etc/postfix/virtual
+<div class="highlight"><pre><span></span><code>sudo postmap /etc/postfix/virtual
 sudo /etc/init.d/postfix reload
-</pre></div>
-
+</code></pre></div>
 
 <h2>Conclusion</h2>
 <p>As you can see, configuring Postfix is quite easy, you just need to be
@@ -285,9 +279,8 @@ doesn't work out of the box!</p>
 <p>The fix is quite easy to apply (but it was not easy to find the right
 one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
 the end:</p>
-<div class="highlight"><pre><span></span>load-module module-combine <span class="nv">channels</span><span class="o">=</span><span class="m">6</span> <span class="nv">channel_map</span><span class="o">=</span>front-left,front-right,rear-left,rear-right,front-center,lfe
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>load-module module-combine <span class="nv">channels</span><span class="o">=</span><span class="m">6</span> <span class="nv">channel_map</span><span class="o">=</span>front-left,front-right,rear-left,rear-right,front-center,lfe
+</code></pre></div>
 
 <p>then edit <strong><code>/etc/pulse/daemon.conf</code></strong>, modify the line
 <code>enable-lfe-remixing: no</code> to <strong><code>enable-lfe-remixing: yes</code></strong>, then
@@ -331,15 +324,14 @@ using Ubuntu 12.10, but feel free to use your own distribution). Be sure
 to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
 (I'm using Node.js 0.8.20 and npm 1.2.11).</p>
 <h2>Create a project folder and install the required dependencies</h2>
-<div class="highlight"><pre><span></span>mkdir node-bootstrap
+<div class="highlight"><pre><span></span><code>mkdir node-bootstrap
 <span class="nb">cd</span> node-bootstrap
 npm install express
 npm install jade
-</pre></div>
-
+</code></pre></div>
 
 <h2>Create the basic project structure with Express</h2>
-<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+<div class="highlight"><pre><span></span><code>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
 
 create : nodebootstrap
 create : nodebootstrap/package.json
@@ -361,8 +353,7 @@ $ <span class="nb">cd</span> nodebootstrap <span class="o">&amp;&amp;</span> npm
 
 run the app:
 $ node app
-</pre></div>
-
+</code></pre></div>
 
 <p>You should already have installed all the needed dependencies, even
 without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
@@ -373,7 +364,7 @@ unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
 <h2>Bootstrap integration with Jade template system</h2>
 <p>At this point you need to edit the <strong>views/layout.jade</strong> file and
 include the references to Bootsrap</p>
-<div class="highlight"><pre><span></span><span class="nt">html</span>
+<div class="highlight"><pre><span></span><code><span class="nt">html</span>
   <span class="nt">head</span>
     <span class="nt">title</span><span class="p">=</span> <span class="n">title</span>
     <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap.min.css&#39;</span>)
@@ -383,13 +374,12 @@ include the references to Bootsrap</p>
     <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;/bootstrap/js/bootstrap.min.js&#39;</span>)
   <span class="nt">body</span>
     <span class="nt">block</span> content
-</pre></div>
-
+</code></pre></div>
 
 <h2>Test the Bootstrap integration</h2>
 <p>At this point we will modify <strong>views/index.jade</strong> that is the default
 template used to render the index</p>
-<div class="highlight"><pre><span></span><span class="nt">extends</span> layout
+<div class="highlight"><pre><span></span><code><span class="nt">extends</span> layout
 
     <span class="nt">block</span> content
       <span class="nt">div</span><span class="nc">.top</span>
@@ -415,14 +405,12 @@ template used to render the index</p>
                 <span class="nt">td</span> World
 
       <span class="nt">div</span><span class="nc">.footer</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now go back to the terminal and execute the app:</p>
-<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+<div class="highlight"><pre><span></span><code>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
 Express server listening on port <span class="m">3000</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Open your favourite browse and visit <a href="http://localhost:3000">http://localhost:3000</a> to see your
 first Bootstrap + Node.js application app and running.</p>

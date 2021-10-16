@@ -205,14 +205,12 @@ had still some problems logging into &lt;strong&gt;Scratchbox&lt;/strong&gt; and
 &lt;p&gt;The I found this page: &lt;a href="http://suppressingfire.livejournal.com/35277.html"&gt;http://suppressingfire.livejournal.com/35277.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;that explain how to fix these problems. In particular if you get this
 kind of error trying to log into Scratchbox:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Inconsistency detected by ld.so: rtld.c: &lt;span class="m"&gt;1192&lt;/span&gt;: dl_main: Assertion &lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;void *&lt;span class="o"&gt;)&lt;/span&gt; ph-&amp;gt;p_vaddr &lt;span class="o"&gt;==&lt;/span&gt; _rtld_local._dl_sysinfo_dso&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; failed!
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Inconsistency detected by ld.so: rtld.c: &lt;span class="m"&gt;1192&lt;/span&gt;: dl_main: Assertion &lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;void *&lt;span class="o"&gt;)&lt;/span&gt; ph-&amp;gt;p_vaddr &lt;span class="o"&gt;==&lt;/span&gt; _rtld_local._dl_sysinfo_dso&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; failed!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can fix it in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /proc/sys/vm/vdso_enabled
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /proc/sys/vm/vdso_enabled
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can read the complete fix in my updated wiki: &lt;a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4"&gt;http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 21 Apr 2008 14:37:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-21:/2008/04/21/scratchbox-on-ubuntu-hardy-troubleshooting/</guid><category>Maemo (EN)</category><category>maemo</category><category>nokia</category><category>scratchbox</category><category>SDK</category><category>tablet</category></item><item><title>Maps for Nokia OS2008</title><link>https://www.andreagrandi.it/2008/03/06/maps-for-nokia-os2008/</link><description>&lt;p&gt;I report this news from &lt;a href="http://andrew.jorgensenfamily.us/"&gt;Andrew Jorgensen&lt;/a&gt; (Monologue):&lt;/p&gt;
 &lt;p&gt;The Map application for Nokia’s OS2008 (for N800 and N810) lets you
@@ -238,26 +236,22 @@ discovered that one of their developer was working to hildonize
 [WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
 just a test or if this library could work in Maemo, so I followed his
 suggestion and I grabbed the latest SVN sources:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and I compiled it in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; wxWidgets ./configure --with-hildon make make install
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; wxWidgets ./configure --with-hildon make make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then I grabbed a simple "HelloWorld" from the official documentation.
 You can find the complete source code &lt;a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;I compiled the source code in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then I ran it in the usual way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;run-standalone.sh ./hworld
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;run-standalone.sh ./hworld
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The result? I think that a screenshoot is better than thousand words :)&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s1600-h/wxWindowsHildon.jpg"&gt;&lt;img alt="wxWindowsHildon" src="http://bp0.blogger.com/_eBt7-uNFVjs/R2QhZl8EwLI/AAAAAAAAAJ0/rdNTRYsp_n8/s400/wxWindowsHildon.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
@@ -327,14 +321,12 @@ use the script provided but you could choose also to install it manually
 &lt;p&gt;Before beginning the installation of Scratchbox, you have to become
 &lt;strong&gt;&lt;code&gt;root&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;First of all set the permission of the script file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod +x maemo-scratchbox-install_4.0beta.sh
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod +x maemo-scratchbox-install_4.0beta.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Then run it with these parameters:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./maemo-scratchbox-install_4.0beta.sh -d -u andy80
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./maemo-scratchbox-install_4.0beta.sh -d -u andy80
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Please note that &lt;strong&gt;-d&lt;/strong&gt; tells the installer to install from Debian dpkg
 packages while &lt;strong&gt;-u&lt;/strong&gt; specifies your username (in my case is andy80, you
@@ -343,26 +335,24 @@ have to change it using your local username).&lt;/p&gt;
 &lt;p&gt;Please note that you'll have to logout and login again to be able to log
 into you new Scratchbox environment. To test it you simply have to start
 Scratchbox from your local user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/scratchbox/login
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/scratchbox/login
 
 Welcome to Scratchbox, the cross-compilation toolkit!
 
 Use &lt;span class="s1"&gt;&amp;#39;sb-menu&amp;#39;&lt;/span&gt; to change your compilation target.  
 See /scratchbox/doc/ &lt;span class="k"&gt;for&lt;/span&gt; documentation.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Installing Maemo SDK&lt;/h2&gt;
 &lt;p&gt;When Scratchbox is correctly installed on your system, you can install
 the &lt;strong&gt;Maemo SDK&lt;/strong&gt;. Please note that you have to do it from &lt;strong&gt;normal
 user&lt;/strong&gt; (the user you specified in the installation of Scratchbox).&lt;/p&gt;
 &lt;p&gt;Simply run this command and follow instructions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;bash maemo-sdk-install_4.0beta.sh
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;bash maemo-sdk-install_4.0beta.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;At the end you should get this message:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Installation was successful! ----------------------------
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Installation was successful! ----------------------------
 
 IMPORTANT! Please &lt;span class="nb"&gt;read&lt;/span&gt; this.
 
@@ -376,8 +366,7 @@ If you have any problems with targets&lt;span class="s1"&gt;&amp;#39; package da
 This &lt;span class="nb"&gt;command&lt;/span&gt; will try to fix any problems with the package database.
 
 Happy hacking!
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Installing Xephyr&lt;/h2&gt;
 &lt;p&gt;Xephyr is an X11 server that provides a device screen for the developer
@@ -385,22 +374,19 @@ so that you can see all the maemo application windows and visuals on
 your computer.&lt;/p&gt;
 &lt;p&gt;To install it in a Debian based distribution, simply execute this (from
 root):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install xserver-xephyr
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get install xserver-xephyr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Running Xephyr&lt;/h2&gt;
 &lt;p&gt;To see if all works fine, you should start Xephyr and Maemo environment.
 Execute this from outside the Scratchbox environment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Xephyr :2 -host-cursor -screen 800x480x16 -dpi &lt;span class="m"&gt;96&lt;/span&gt; -ac -extension Composite
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Xephyr :2 -host-cursor -screen 800x480x16 -dpi &lt;span class="m"&gt;96&lt;/span&gt; -ac -extension Composite
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, from another shell, log into Scratchbox and execute this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DISPLAY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;:2 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DISPLAY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;:2 
 &lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; af-sb-init.sh start
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This should start the Hildon Application Framework inside the Xephyr
 window. That's all!&lt;/p&gt;

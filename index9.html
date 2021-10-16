@@ -178,11 +178,10 @@ utility. Unless it has already been packaged for your distribution, for
 the moment it's much easier to get it from git as they explain in their
 <a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
 instructions</a>:</p>
-<div class="highlight"><pre><span></span>git clone https://github.com/letsencrypt/letsencrypt
+<div class="highlight"><pre><span></span><code>git clone https://github.com/letsencrypt/letsencrypt
 <span class="nb">cd</span> letsencrypt
 ./letsencrypt-auto
-</pre></div>
-
+</code></pre></div>
 
 <h2>Getting the SSL certificate</h2>
 <p>There are a few different options available to request a certificate,
@@ -191,9 +190,8 @@ document root of your website so that the client will be able to put
 there a verification (temporary) file that will be served to the remote
 service and used as verification method. In my case I only needed this
 command:</p>
-<div class="highlight"><pre><span></span>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
+</code></pre></div>
 
 <p>Please note that I had to specify both www.andreagrandi.it and
 andreagrandi.it as domains, otherwise it would have been invalid when
@@ -206,10 +204,9 @@ files here are symbolic links to the current certificate). If you are
 using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
 <strong>privkey.pem</strong> and you can set them in your Nginx configuration using
 these two parameters:</p>
-<div class="highlight"><pre><span></span>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
 ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem<span class="p">;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>In case you want to have a look at my full Nginx configuration file, as
 reference, you can find it
@@ -222,9 +219,8 @@ but Letsencrypt decided to make it 3 months to incentivate the
 automation of the renewal. I set it to 2 months, so if anything goes
 wrong I still have plenty of time to do it manually. To edit crontab for
 root user execute <strong>crontab -e</strong> and add this line:</p>
-<div class="highlight"><pre><span></span><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
+</code></pre></div>
 
 <p>Just a final note. You may have noticed that this website presents an
 SSL certificate issued by COMODO. That's because I have
@@ -248,38 +244,35 @@ that's how their SSL strict option works (at least for free plans).</p>
 While there can be many different ways of implementing this task, I
 found three in particular that I appreciate for different reasons. Let's
 define first a list of integers that we will reverse later.</p>
-<div class="highlight"><pre><span></span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</code></pre></div>
 
 <h3>List slicing</h3>
 <p>This method can be a bit obscure at first read, but basically it slices
 the whole list proceding in the reverse order:</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Reversed method</h3>
 <p>We use the
 <strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
 that returns an iterable object and a list comprehension to generate the
 new list</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Swapping values in place</h3>
 <p>This last method is more verbose and it basically divides the list in
 two parts and swaps the first with sixth, the second with fifth, etc...</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
     <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 <span class="nb">print</span> <span class="n">l</span>
 
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</pre></div>
+</code></pre></div>
   </div>
   <hr />
 </article>
@@ -302,23 +295,20 @@ currently unsupported) even on Windows.</p>
 <h2>Installing EncFS</h2>
 <p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
 manager installed on OSX you can install it using this command:</p>
-<div class="highlight"><pre><span></span>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+</code></pre></div>
 
 <p>After brew, you need to install <strong>OSXFuse</strong> from this
 website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
 <p>Finally you can install <strong>encfs</strong> using this command:</p>
-<div class="highlight"><pre><span></span>brew install homebrew/fuse/encfs
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>brew install homebrew/fuse/encfs
+</code></pre></div>
 
 <h2>Configuring the encrypted folder</h2>
 <p>Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:</p>
-<div class="highlight"><pre><span></span>encfs ~/Dropbox/Private ~/Private
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>encfs ~/Dropbox/Private ~/Private
+</code></pre></div>
 
 <p>If you are mounting an existing encrypted volume, you will be prompted
 for the password. If you are creating a new encrypted volume you will be
@@ -336,7 +326,7 @@ and click <strong>Add</strong>:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
 <p>Once the password is saved, <strong>open a text editor</strong> and paste this script
 and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 <span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
 
 <span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
@@ -355,20 +345,17 @@ chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
 <span class="k">fi</span>
 
 <span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Make it <strong>executable</strong>:</p>
-<div class="highlight"><pre><span></span>chmod +x ~/encfs_mount.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>chmod +x ~/encfs_mount.sh
+</code></pre></div>
 
 <p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
 app in the \$HOME folder:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
-<div class="highlight"><pre><span></span><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
+</code></pre></div>
 
 <p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
 add the previously saved application.</p>
@@ -400,23 +387,21 @@ directly on <code>~/Dropbox/Private</code></strong>, only read and save your fil
       <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
 an argument and returns a function as a <em>value</em>. Here is an example of
 decorator definition:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="c1"># make a new function</span>
     <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
         <span class="c1"># some code</span>
 
     <span class="k">return</span> <span class="n">new_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>To apply a decorator to an existing function, you just need to put
-<strong>@*decorator_name</strong>* in the line before its definition, like this
+<strong>@<em>decorator_name</em></strong> in the line before its definition, like this
 example:</p>
-<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@foo</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
     <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>This decorator doesn't do anything, so let's think about a more concrete
 problem we could solve using decorators.</p>
@@ -441,13 +426,12 @@ describe it in this way:</p>
 </ul>
 <p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
 one:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">n</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>What's the problem with this implementation? The code works as expected,
 but it's very <strong>inefficient</strong>. The next picture will explain what
@@ -468,7 +452,7 @@ inputs occur again.</p>
 <p>We need to store values of the sequence we have already calculated and
 get them later when we need them. Let's implement a simple memoization
 decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -479,8 +463,7 @@ decorator:</p>
             <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
             <span class="k">return</span> <span class="n">val</span>
     <span class="k">return</span> <span class="n">decorated_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The decorator defines a dict at the beginning that is used as a cache.
 When we want to find the n number of the sequence, it first checks if
@@ -492,7 +475,7 @@ returned to the caller.</p>
 <p>How much this decorator can speed up our fib method? Let's try to
 benchmark the execution using Python
 <strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
-<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># First example, not using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 
@@ -504,12 +487,11 @@ benchmark the execution using Python
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>4.73480010033</strong></p>
-<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Second example, using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 <span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
@@ -524,8 +506,7 @@ on my laptop is: <strong>4.73480010033</strong></p>
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>0.000133037567139</strong></p>

@@ -48,14 +48,13 @@ di &lt;strong&gt;elmurato&lt;/strong&gt; che vi permetteranno di utilizzare corr
 tasti funzione (Fn+Fx). Perchè possano funzionare dovrete anche
 installare sia un pacchetto presente nella Ubuntu, sia uno incluso nel
 tar.gz, seguendo le seguenti istruzioni:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install dkms
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install dkms
 sudo apt-get remove --purge nvidia-common
 tar xzvf Jaunty_Eeeasy-Scripts.tar.gz
 &lt;span class="nb"&gt;cd&lt;/span&gt; Jaunty_Eeeasy-Scripts
 sudo dpkg --install asus-eee-dkms_3.0_all.deb
 sudo ./eeeasy-scripts.sh&lt;span class="sb"&gt;`&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto non vi resta che riavviare il vostro EeePC e
 l'installazione sarà completata. Se vogliamo essere precisi, ci sono
@@ -71,9 +70,8 @@ modulo che fa funzionare la scheda &lt;strong&gt;wireless&lt;/strong&gt;, permet
 un &lt;strong&gt;segnale piu' stabile&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Consiglio infine di aggiungere la seguente stringa in fondo al file
 &lt;strong&gt;&lt;code&gt;/etc/modprobe.d/options&lt;/code&gt;&lt;/strong&gt; (createlo se non esistesse):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;options psmouse &lt;span class="nv"&gt;proto&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;imps
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;options psmouse &lt;span class="nv"&gt;proto&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;imps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;questa opzione fa in modo che il touchpad funzioni meglio rispetto a
 come viene configurato di default.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sun, 26 Apr 2009 15:20:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-04-26:/2009/04/26/ubuntu-904-jaunty-su-asus-eeepc-901/</guid><category>EeePC, HowTo, Linux, Recensione, Ubuntu (IT)</category><category>9.04</category><category>901</category><category>asus</category><category>EeePC</category><category>jaunty</category><category>Ubuntu (EN)</category></item><item><title>Importare le chiavi pubbliche PGP in apt su Ubuntu</title><link>https://www.andreagrandi.it/2009/02/14/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="pgp logo" src="https://www.andreagrandi.it/images/2009/02/pg2logo.png"&gt;&lt;/a&gt;&lt;/p&gt;
@@ -87,21 +85,20 @@ solitamente è indicato anche l'ID della chiave pubblica PGP. Ad esempio
 sul sito del &lt;em&gt;Blueman Development Team&lt;/em&gt; troviamo &lt;strong&gt;6B15AB91951DC1E2&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Per importare questa chiave pubblica dentro apt di Ubuntu, sono
 sufficienti i seguenti comandi da terminale:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
 gpg --export --armor 6B15AB91951DC1E2 &lt;span class="p"&gt;|&lt;/span&gt; sudo apt-key add -
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ovviamente dovrete sostituire l'ID della chiave PGP con quello che vi
 interessa aggiungere. Qui di seguito potete vedere un esempio completo
 dei messaggi di conferma che si ricevono quando si aggiunge la chiave:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
     gpg: requesting key 951DC1E2 from hkp server keyserver.ubuntu.com
     gpg: key 951DC1E2: public key &lt;span class="s2"&gt;&amp;quot;Launchpad PPA for Blueman Development Team&amp;quot;&lt;/span&gt; imported
     gpg: Total number processed: &lt;span class="m"&gt;1&lt;/span&gt;
     gpg:               imported: &lt;span class="m"&gt;1&lt;/span&gt;  &lt;span class="o"&gt;(&lt;/span&gt;RSA: &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; 
 gpg --export --armor 6B15AB91951DC1E2 &lt;span class="p"&gt;|&lt;/span&gt; sudo apt-key add - OK
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 14 Feb 2009 22:48:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-14:/2009/02/14/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</guid><category>HowTo, Linux, Sicurezza, Ubuntu (IT)</category><category>apt</category><category>pgp</category><category>Ubuntu (EN)</category></item><item><title>Ubuntu Linux 8.10 su Asus EeePC 901</title><link>https://www.andreagrandi.it/2009/02/02/ubuntu-linux-810-su-asus-eeepc-901/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="eee pc 901" src="https://www.andreagrandi.it/images/2008/10/eee-pc-901.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 14 Feb 2009 22:48:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-02-14:/2009/02/14/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</guid><category>HowTo, Linux, Sicurezza, Ubuntu (IT)</category><category>apt</category><category>pgp</category><category>Ubuntu (EN)</category></item><item><title>Ubuntu Linux 8.10 su Asus EeePC 901</title><link>https://www.andreagrandi.it/2009/02/02/ubuntu-linux-810-su-asus-eeepc-901/</link><description>&lt;p&gt;&lt;a href=""&gt;&lt;img alt="eee pc 901" src="https://www.andreagrandi.it/images/2008/10/eee-pc-901.jpg"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Dal momento in cui ho acquistato l'&lt;strong&gt;Asus EeePC 901&lt;/strong&gt;, ho rimosso la versione personalizzata
 di &lt;strong&gt;Xandros Linux&lt;/strong&gt; che viene installata su questi modelli, ed ho
 installato una versione personalizzata di Ubuntu: &lt;a href="http://www.ubuntu-eee.com"&gt;&lt;strong&gt;Ubuntu-eee
@@ -430,13 +427,12 @@ con la &lt;a href="http://it.europe.creative.com/products/product.asp?category=2
 verificare che il modello di "Creative Live Cam" che state cercando di
 installare, sia lo stesso che ho testato io. Potete verificarlo
 scrivendo in un terminale il comando &lt;strong&gt;lsusb&lt;/strong&gt;:  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lsusb 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;lsusb 
 Bus &lt;span class="m"&gt;003&lt;/span&gt; Device &lt;span class="m"&gt;001&lt;/span&gt;: ID &lt;span class="m"&gt;0000&lt;/span&gt;:0000 
 Bus &lt;span class="m"&gt;002&lt;/span&gt; Device &lt;span class="m"&gt;001&lt;/span&gt;: ID &lt;span class="m"&gt;0000&lt;/span&gt;:0000 
 Bus &lt;span class="m"&gt;001&lt;/span&gt; Device &lt;span class="m"&gt;018&lt;/span&gt;: ID 041e:4068 Creative Technology, Ltd 
 Bus &lt;span class="m"&gt;001&lt;/span&gt; Device &lt;span class="m"&gt;001&lt;/span&gt;: ID &lt;span class="m"&gt;0000&lt;/span&gt;:0000&lt;span class="sb"&gt;`&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ovvero dovrete verificare che l'identificativo del vostro modello sia
 esattamente &lt;strong&gt;041e:4068&lt;/strong&gt;&lt;/p&gt;
@@ -453,41 +449,35 @@ che invece supportano il mio modello di webcam.&lt;/p&gt;
 installato sulla nostra macchina tutto il necessario per poter
 ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install build-essential linux-headers-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get install build-essential linux-headers-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto dovrete scaricare i sorgenti del driver, da questo
 indirizzo: &lt;a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"&gt;&lt;strong&gt;http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Dobbiamo poi scompattarli con il seguente comando:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar xfvz ov51x-jpeg-1.5.7.tar.gz
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tar xfvz ov51x-jpeg-1.5.7.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Infine dobbiamo compilare il modulo ed installarlo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ov51x-jpeg-1.5.7 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ov51x-jpeg-1.5.7 
 make
 make install
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;modprobe ov51x-jpeg
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;modprobe ov51x-jpeg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
 modificare il file &lt;code&gt;/etc/modprobe.d/options&lt;/code&gt; ed aggiungere la seguente
 riga:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;options ov51x-jpeg &lt;span class="nv"&gt;forceblock&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;options ov51x-jpeg &lt;span class="nv"&gt;forceblock&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;ovviamente prima di caricare il modulo. A questo punto l'installazione
 dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
@@ -678,31 +668,27 @@ però possiamo almeno fare in modo che il nostro computer venga spento in
 maniera corretta, prima che la batteria dell'UPS si esaurisca del tutto.&lt;/p&gt;
 &lt;p&gt;Nel caso di una macchina Linux, ci viene in aiuto una utility chiamata
 &lt;strong&gt;apcupsd&lt;/strong&gt;. Installarla su Ubuntu è molto semplice:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install apcupsd
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get install apcupsd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto, dando per scontato che abbiate già connesso l'UPS al
 PC/server, collegate il cavo USB a corredo in modo da far riconoscere
 l'UPS a Linux, in modo da poter proseguire con la configurazione. Il
 primo file da modificare è &lt;strong&gt;&lt;code&gt;/etc/apcupsd/apcupsd.conf&lt;/code&gt;&lt;/strong&gt; ed impostare i
 seguenti parametri come segue:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;UPSCABLE usb
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;UPSCABLE usb
 UPSTYPE usb
 DEVICE
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto non ci resta che modificare il file
 &lt;strong&gt;&lt;code&gt;/etc/default/apcupsd&lt;/code&gt;&lt;/strong&gt; in modo da rendere effettive le modifiche:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ISCONFIGURED&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yes
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;ISCONFIGURED&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Infine dobbiamo soltanto avviare il demone ed il gioco è fatto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc/init.d/apcupsd start
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/apcupsd start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Per default &lt;strong&gt;apcupsd&lt;/strong&gt; effettuerà lo &lt;strong&gt;shutdown&lt;/strong&gt; nel PC quando la
 batteria sarà arrivata al &lt;strong&gt;5%&lt;/strong&gt; della sua capacità, consentendo così

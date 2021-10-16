@@ -4,7 +4,7 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?&lt;/p&gt;
 &lt;h3&gt;Getting latest Ubuntu AMI id&lt;/h3&gt;
 &lt;p&gt;In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;variable&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws_region&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt; default = &amp;quot;eu-west-2&amp;quot; } # London&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kr"&gt;variable&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws_region&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt; default = &amp;quot;eu-west-2&amp;quot; } # London&lt;/span&gt;
 
 &lt;span class="kr"&gt;provider&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="na"&gt;region&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${var.aws_region}&amp;quot;&lt;/span&gt;
@@ -40,11 +40,10 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 &lt;span class="kr"&gt;output&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;image_id&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="na"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${data.aws_ami.ubuntu.id}&amp;quot;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;After we have initialised our script using &lt;strong&gt;terraform init&lt;/strong&gt; if we run it, we will get the AMI id and the instance will be created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;➜  example1$: terraform apply
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;➜  example1$: terraform apply
 data.aws_ami.ubuntu: Refreshing state...
 aws_instance.web: Creating...
     ami:                          &amp;quot;&amp;quot; =&amp;gt; &amp;quot;ami-03998867&amp;quot;
@@ -84,7 +83,6 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 Outputs:
 
 image_id = ami-03998867
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 25 Aug 2017 11:00:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2017-08-25:/2017/08/25/getting-latest-ubuntu-ami-with-terraform/</guid><category>Development</category><category>AWS</category><category>Terraform</category><category>Ubuntu</category><category>devops</category></item></channel></rss>

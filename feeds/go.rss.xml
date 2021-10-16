@@ -10,51 +10,44 @@ will be installed in that specific &lt;code&gt;$GOPATH&lt;/code&gt;.&lt;/p&gt;
 this allow us to use different library versions for each project and
 &lt;strong&gt;avoid version conflicts&lt;/strong&gt;.&lt;/p&gt;
 &lt;h2&gt;Installation&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://bitbucket.org/ymotongpoo/goenv
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;git clone https://bitbucket.org/ymotongpoo/goenv
 &lt;span class="nb"&gt;cd&lt;/span&gt; goenv
 go build -o goenv *.go
 chmod +x goenv
 sudo cp goenv /usr/bin
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Goenv is now installed, we will now install its wrapper &lt;strong&gt;goof&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo cp shellscripts/goenvwrapper.sh /usr/bin
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo cp shellscripts/goenvwrapper.sh /usr/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Edit &lt;code&gt;.bashrc&lt;/code&gt; (or &lt;code&gt;.zshrc&lt;/code&gt; if you use zsh) and append these lines:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;GOENVHOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/goenvs
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;GOENVHOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/goenvs
 &lt;span class="nb"&gt;source&lt;/span&gt; /usr/bin/goenvwrapper.sh
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;How to use it&lt;/h2&gt;
 &lt;p&gt;To &lt;strong&gt;create&lt;/strong&gt; a new go environment use &lt;strong&gt;make&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;goof make go-test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;goof make go-test
 Do you want to create all parental directory of &lt;span class="s1"&gt;&amp;#39;/Users/andrea/goenvs/go-test&amp;#39;&lt;/span&gt;? &lt;span class="o"&gt;[&lt;/span&gt;y/N&lt;span class="o"&gt;]&lt;/span&gt;: y
 Environment /Users/andrea/goenvs/go-test created!
 &lt;span class="o"&gt;(&lt;/span&gt;go:go-test&lt;span class="o"&gt;)&lt;/span&gt; ➜  go-test
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To exit the go environment use &lt;strong&gt;deactivate&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;go:go-test&lt;span class="o"&gt;)&lt;/span&gt; ➜  go-test  deactivate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;go:go-test&lt;span class="o"&gt;)&lt;/span&gt; ➜  go-test  deactivate
 go-test
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To use an environment use &lt;strong&gt;workon&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;go-test  goof workon go-test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;go-test  goof workon go-test
 &lt;span class="o"&gt;(&lt;/span&gt;go:go-test&lt;span class="o"&gt;)&lt;/span&gt; ➜  go-test
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To show available environments use &lt;strong&gt;show&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;go:go-test&lt;span class="o"&gt;)&lt;/span&gt; ➜  go-test  goof show
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;go:go-test&lt;span class="o"&gt;)&lt;/span&gt; ➜  go-test  goof show
 go-test
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Goenv itself is not enough to manage Go packages. It would be like using
 &lt;strong&gt;Virtualenv&lt;/strong&gt; only and not using &lt;strong&gt;pip&lt;/strong&gt; and &lt;strong&gt;requirements&lt;/strong&gt;. In a
@@ -66,7 +59,7 @@ it's quite easy to use.&lt;/p&gt;
 &lt;p&gt;In my case for example I needed something that could contain a Timer
 object, a string and a method that could start the timer and call a
 method at the end of the Timer execution. I implemented it in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;DeviceTimer&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;DeviceTimer&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="nx"&gt;DeviceID&lt;/span&gt;    &lt;span class="kt"&gt;string&lt;/span&gt;
     &lt;span class="nx"&gt;DeviceTimer&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;time&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Timer&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
@@ -75,19 +68,17 @@ method at the end of the Timer execution. I implemented it in this way:&lt;/p&gt
     &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="nx"&gt;timer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;DeviceTimer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;C&lt;/span&gt;
     &lt;span class="nx"&gt;notifyDeviceTimerExpired&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;timer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;DeviceID&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The key point is &lt;strong&gt;row 6&lt;/strong&gt; &lt;code&gt;func (timer DeviceTimer) startTimer() { ... }&lt;/code&gt; 
 where I defined a method called &lt;code&gt;startTimer&lt;/code&gt; and I specify timer
 &lt;code&gt;DeviceTimer&lt;/code&gt; inside the func definition. This basically "extends" the
 struct DeviceTimer adding that method to it. This means that I can call
 that method in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;timer&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nx"&gt;time&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;NewTimer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;time&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Millisecond&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nx"&gt;timer&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nx"&gt;time&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;NewTimer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;time&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Millisecond&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="nx"&gt;device_timer&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nx"&gt;DeviceTimer&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;abc123&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;timer&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="k"&gt;go&lt;/span&gt; &lt;span class="nx"&gt;device_timer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;startTimer&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This is all you need to do. If you want to read more about this subject,
 I can suggest to read these two articles:&lt;/p&gt;

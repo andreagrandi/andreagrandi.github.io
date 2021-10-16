@@ -187,59 +187,51 @@
 <h2>Installing Python 3.7.x and Python 2.7.x</h2>
 <p>Even if I strongly suggest to start every new project with Python 3 (since Python 2 will only be supported until the end of 2019), there may be use cases when version 2 is still required, so I will give you the instructions to install both.</p>
 <h3>Installing Python 3.7.x</h3>
-<div class="highlight"><pre><span></span>brew install python
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>brew install python
+</code></pre></div>
 
 <p>This will install Python 3 by default.</p>
 <h3>Installing Python 2.7.x</h3>
-<div class="highlight"><pre><span></span>brew install python@2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>brew install python@2
+</code></pre></div>
 
 <p>This will install version 2 of Python.</p>
 <h3>Add the Python locations to PATH</h3>
 <p>Edit your <code>.bashrc</code> or <code>.zshrc</code> and add this:</p>
-<div class="highlight"><pre><span></span>export PATH=&quot;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&quot;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>export PATH=&quot;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&quot;
+</code></pre></div>
 
 <p>You will need to close your terminal and reopen it for the changes to be applied. Once you have done it, you can verify if Python 3 and Python 2 have been installed correctly:</p>
-<div class="highlight"><pre><span></span>python --version
+<div class="highlight"><pre><span></span><code>python --version
 Python 3.7.1
-</pre></div>
-
+</code></pre></div>
 
 <p>and</p>
-<div class="highlight"><pre><span></span>python2 --version
+<div class="highlight"><pre><span></span><code>python2 --version
 Python 2.7.15
-</pre></div>
-
+</code></pre></div>
 
 <h2>Install virtualenv and virtualenvwrapper</h2>
 <p>When working with Python, it's a good thing not to install packages system wide, but confine them in virtual environments. A good and well tested way of doing that is to use <code>virtualenv</code> (and its companion <code>virtualenvwrapper</code>) which makes the most common operations easier.</p>
-<div class="highlight"><pre><span></span>pip install virtualenv
+<div class="highlight"><pre><span></span><code>pip install virtualenv
 pip install virtualenvwrapper
-</pre></div>
-
+</code></pre></div>
 
 <p>Those (and only those) two packages will be installed system wide, because we will need them to be available outside of a virtual environment.</p>
 <h3>Configure virtualenv</h3>
 <p>Edit again your <code>.bashrc</code> (or <code>.zshrc</code>) and add these lines:</p>
-<div class="highlight"><pre><span></span>export WORKON_HOME=~/.virtualenvs
+<div class="highlight"><pre><span></span><code>export WORKON_HOME=~/.virtualenvs
 [ -f /usr/local/bin/virtualenvwrapper.sh ] &amp;&amp; source /usr/local/bin/virtualenvwrapper.sh
-</pre></div>
-
+</code></pre></div>
 
 <p>This will configure the default location where to store your virtual environments and will run a command every time you open a new terminal, to make sure <code>virtualenvwrapper</code> can work correctly.</p>
 <h2>Test if the installed tools are working</h2>
 <p>To make sure everything has been configured correctly, please close and reopen your terminal and let's try to create a new virtual environment:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv test
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>mkvirtualenv test
+</code></pre></div>
 
 <p>which should output something like this:</p>
-<div class="highlight"><pre><span></span>Using base prefix &#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&#39;
+<div class="highlight"><pre><span></span><code>Using base prefix &#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&#39;
 New python executable in /Users/andrea/.virtualenvs/test/bin/python3.7
 Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
 Installing setuptools, pip, wheel...
@@ -250,16 +242,14 @@ virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/prea
 virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
 virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
 (test) ➜  ~
-</pre></div>
-
+</code></pre></div>
 
 <p>If you see something similar, it means that the virtual environment has been created correctly. Please note that by default this command will create an environment base on Python 3. Do you need to create one for Python 2? No problem, you just need to do the following:</p>
-<div class="highlight"><pre><span></span>mkvirtualenv -p /usr/local/bin/python2 test
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>mkvirtualenv -p /usr/local/bin/python2 test
+</code></pre></div>
 
 <p>which should output this:</p>
-<div class="highlight"><pre><span></span>Running virtualenv with interpreter /usr/local/bin/python2
+<div class="highlight"><pre><span></span><code>Running virtualenv with interpreter /usr/local/bin/python2
 New python executable in /Users/andrea/.virtualenvs/test/bin/python2.7
 Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
 Installing setuptools, pip, wheel...
@@ -270,8 +260,7 @@ virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/prea
 virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
 virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
 (test) ➜  ~
-</pre></div>
-
+</code></pre></div>
 
 <h2>Conclusion</h2>
 <p>That's all you have to do to install and configure Python and virtualenv on MacOS. If you have problems, comments or questions, feel free to leave a comment on this post.</p>

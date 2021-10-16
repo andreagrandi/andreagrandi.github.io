@@ -189,11 +189,10 @@ utility. Unless it has already been packaged for your distribution, for
 the moment it's much easier to get it from git as they explain in their
 <a href="https://letsencrypt.readthedocs.org/en/latest/using.html#installation">installation
 instructions</a>:</p>
-<div class="highlight"><pre><span></span>git clone https://github.com/letsencrypt/letsencrypt
+<div class="highlight"><pre><span></span><code>git clone https://github.com/letsencrypt/letsencrypt
 <span class="nb">cd</span> letsencrypt
 ./letsencrypt-auto
-</pre></div>
-
+</code></pre></div>
 
 <h2>Getting the SSL certificate</h2>
 <p>There are a few different options available to request a certificate,
@@ -202,9 +201,8 @@ document root of your website so that the client will be able to put
 there a verification (temporary) file that will be served to the remote
 service and used as verification method. In my case I only needed this
 command:</p>
-<div class="highlight"><pre><span></span>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
+</code></pre></div>
 
 <p>Please note that I had to specify both www.andreagrandi.it and
 andreagrandi.it as domains, otherwise it would have been invalid when
@@ -217,10 +215,9 @@ files here are symbolic links to the current certificate). If you are
 using <strong>Nginx</strong> the only files you need are <strong>fullchain.pem</strong> and
 <strong>privkey.pem</strong> and you can set them in your Nginx configuration using
 these two parameters:</p>
-<div class="highlight"><pre><span></span>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem<span class="p">;</span>
 ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem<span class="p">;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>In case you want to have a look at my full Nginx configuration file, as
 reference, you can find it
@@ -233,9 +230,8 @@ but Letsencrypt decided to make it 3 months to incentivate the
 automation of the renewal. I set it to 2 months, so if anything goes
 wrong I still have plenty of time to do it manually. To edit crontab for
 root user execute <strong>crontab -e</strong> and add this line:</p>
-<div class="highlight"><pre><span></span><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="m">0</span> <span class="m">3</span> <span class="m">1</span> */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos <span class="o">&amp;&amp;</span> service nginx reload
+</code></pre></div>
 
 <p>Just a final note. You may have noticed that this website presents an
 SSL certificate issued by COMODO. That's because I have

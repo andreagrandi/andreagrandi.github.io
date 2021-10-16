@@ -162,23 +162,21 @@
       <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
 an argument and returns a function as a <em>value</em>. Here is an example of
 decorator definition:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="c1"># make a new function</span>
     <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
         <span class="c1"># some code</span>
 
     <span class="k">return</span> <span class="n">new_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>To apply a decorator to an existing function, you just need to put
-<strong>@*decorator_name</strong>* in the line before its definition, like this
+<strong>@<em>decorator_name</em></strong> in the line before its definition, like this
 example:</p>
-<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@foo</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
     <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>This decorator doesn't do anything, so let's think about a more concrete
 problem we could solve using decorators.</p>
@@ -203,13 +201,12 @@ describe it in this way:</p>
 </ul>
 <p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
 one:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">n</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>What's the problem with this implementation? The code works as expected,
 but it's very <strong>inefficient</strong>. The next picture will explain what
@@ -230,7 +227,7 @@ inputs occur again.</p>
 <p>We need to store values of the sequence we have already calculated and
 get them later when we need them. Let's implement a simple memoization
 decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -241,8 +238,7 @@ decorator:</p>
             <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
             <span class="k">return</span> <span class="n">val</span>
     <span class="k">return</span> <span class="n">decorated_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The decorator defines a dict at the beginning that is used as a cache.
 When we want to find the n number of the sequence, it first checks if
@@ -254,7 +250,7 @@ returned to the caller.</p>
 <p>How much this decorator can speed up our fib method? Let's try to
 benchmark the execution using Python
 <strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
-<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># First example, not using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 
@@ -266,12 +262,11 @@ benchmark the execution using Python
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>4.73480010033</strong></p>
-<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Second example, using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 <span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
@@ -286,8 +281,7 @@ on my laptop is: <strong>4.73480010033</strong></p>
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>0.000133037567139</strong></p>

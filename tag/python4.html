@@ -188,21 +188,20 @@ step.</p>
 <p><strong>Note:</strong> at the time of writing, the tutorial has been based on
 <strong>Django 1.10.1</strong> and <strong>Django Rest Framework 3.4.7</strong></p>
 <h3>Creating the main project structure</h3>
-<div class="highlight"><pre><span></span>mkdir drf-tutorial
+<div class="highlight"><pre><span></span><code>mkdir drf-tutorial
 mkvirtualenv drf-tutorial
 <span class="nb">cd</span> drf-tutorial
 pip install django djangorestframework
 django-admin.py startproject drftutorial .
 <span class="nb">cd</span> drftutorial
 django-admin.py startapp catalog
-</pre></div>
-
+</code></pre></div>
 
 <h3>Data Model</h3>
 <p>We will create the API for a generic products catalog, using a very
 simple structure (to keep things simple). Edit the file
 <strong>catalog/models.py</strong> adding these lines:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
 
 
@@ -210,13 +209,12 @@ simple structure (to keep things simple). Edit the file
     <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
     <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
     <span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_digits</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>after creating the model, we need to add 'catalog' application to
 <strong>INSTALLED_APPS</strong>. Edit <strong>settings.py</strong> and add the app at the end of
 the list:</p>
-<div class="highlight"><pre><span></span><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight"><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
     <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
     <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
@@ -225,12 +223,11 @@ the list:</p>
     <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
     <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>at this point the Django application will be recognised by the project
 and we can create and apply the schema migration:</p>
-<div class="highlight"><pre><span></span><span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>235dfcc<span class="o">)</span> ✗ ./manage.py makemigrations
+<div class="highlight"><pre><span></span><code><span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>235dfcc<span class="o">)</span> ✗ ./manage.py makemigrations
 Migrations <span class="k">for</span> <span class="s1">&#39;catalog&#39;</span>:
     catalog/migrations/0001_initial.py:
         - Create model Product
@@ -253,15 +250,14 @@ Operations to perform:
         Applying auth.0008_alter_user_username_max_length... OK
         Applying catalog.0001_initial... OK
         Applying sessions.0001_initial... OK
-</pre></div>
-
+</code></pre></div>
 
 <h3>API Serializer</h3>
 <p><a href="http://www.django-rest-framework.org/api-guide/serializers/"><strong>Serializers</strong></a>
 are those components used to convert the received data from JSON format
 to the relative Django model and viceversa. Create the new file
 <strong>catalog/serializers.py</strong> and place this code inside:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
 <span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
 
 
@@ -269,8 +265,7 @@ to the relative Django model and viceversa. Create the new file
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>In this case we are using a
 <a href="http://www.django-rest-framework.org/api-guide/serializers/#modelserializer"><strong>ModelSerializer</strong></a>.
@@ -282,7 +277,7 @@ why we need to implement a view. In this first version of the view (that
 we will improve soon) we will "manually" transform the data available in
 the serializer dictionary to a JSON response. In <strong>catalog/views.py</strong>
 add this code:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">rest_framework.renderers</span> <span class="kn">import</span> <span class="n">JSONRenderer</span>
 <span class="kn">from</span> <span class="nn">rest_framework.parsers</span> <span class="kn">import</span> <span class="n">JSONParser</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
@@ -304,45 +299,40 @@ add this code:</p>
         <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point we need to tell our Django app to use this API view when a
 certain URL is requested. We first need to add this code in
 <strong>catalog/urls.py</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">views</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">product_list</span><span class="p">),</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>and finally we need to add this to <strong>drftutorial/urls.py</strong></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
     <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h4>Testing our work</h4>
 <p>At this point we should be able to start our Django app:</p>
-<div class="highlight"><pre><span></span>./manage.py runserver
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>./manage.py runserver
+</code></pre></div>
 
 <p>Let's install a tool that will help us to test the API:</p>
-<div class="highlight"><pre><span></span>pip install httpie
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>pip install httpie
+</code></pre></div>
 
 <p>now we can use it to call our URL:</p>
-<div class="highlight"><pre><span></span>$ http http://127.0.0.1:8000/products/
+<div class="highlight"><pre><span></span><code>$ http http://127.0.0.1:8000/products/
 HTTP/1.0 <span class="m">200</span> OK
 Content-Type: application/json
 Date: Wed, <span class="m">28</span> Sep <span class="m">2016</span> <span class="m">09</span>:54:50 GMT
@@ -350,17 +340,15 @@ Server: WSGIServer/0.1 Python/2.7.11
 X-Frame-Options: SAMEORIGIN
 
 <span class="o">[]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>It works! It's an empty response of course, because we still don't have
 any data to show, but we will see later how to load some example data in
 our database. If you have been able to follow the tutorial up to this
 point, that's good. If not, don't worry. You can checkout the code at
 exactly this point of the tutorial doing:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.0
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.0
+</code></pre></div>
 
 <h3>Improving the API View</h3>
 <p>There is a quicker and more efficient way of implementing the same API
@@ -368,7 +356,7 @@ view we have seen before. We can use a class based view, in particular
 the APIView class and also have the JSON response implemented
 automatically. Change the code inside <strong>catalog/views.py</strong> with this
 one:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
 <span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
@@ -380,25 +368,22 @@ one:</p>
         <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>You will also have to change <strong>catalog/urls.py</strong> in this way:</p>
-<div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>You can check the source code for this step of the tutorial with:</p>
-<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">tutorial</span><span class="o">-</span><span class="mf">1.1</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="n">checkout</span> <span class="n">tutorial</span><span class="o">-</span><span class="mf">1.1</span>
+</code></pre></div>
 
 <p>There is also another way of writing the same view. Let's try it with
 <a href="http://www.django-rest-framework.org/api-guide/generic-views/#listapiview"><strong>ListAPIView</strong></a>.
 Edit <strong>catalog/views.py</strong> again and substitute the code with this one:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
 <span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
@@ -408,16 +393,14 @@ Edit <strong>catalog/views.py</strong> again and substitute the code with this o
 <span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListAPIView</span><span class="p">):</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
     <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>With a <strong>ListAPIView</strong> we are basically creating a read-only API that is
 supposed to return a list of items. We need to specify a <strong>queryset</strong>
 and the <strong>serializer_class</strong> parameters. Once again, you can get up to
 this point, checking out the related git tag:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.2
+</code></pre></div>
 
 <h3>Creating Initial Data</h3>
 <p>An API that doesn't return any data is not very useful, right? Also, at
@@ -429,15 +412,14 @@ you to google this products and if you ever happen to visit Italy, try
 them. You won't regret!</p>
 <p>Going back to our data migration, you first have to create an empty one
 with:</p>
-<div class="highlight"><pre><span></span>./manage.py makemigrations --empty catalog
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>./manage.py makemigrations --empty catalog
+</code></pre></div>
 
 <p>and then open the file that has been created under
 <strong>catalog/migrations/</strong> named <strong>0002_.....</strong> (your name will be
 different from mine, so just edit the one starting with 0002 and you
 will be fine) and fill it with this code:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">migrations</span>
 
 
@@ -463,17 +445,15 @@ will be fine) and fill it with this code:</p>
     <span class="n">operations</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">migrations</span><span class="o">.</span><span class="n">RunPython</span><span class="p">(</span><span class="n">create_initial_products</span><span class="p">),</span>
     <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>to apply the migration we just created, just do:</p>
-<div class="highlight"><pre><span></span>./manage.py migrate
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>./manage.py migrate
+</code></pre></div>
 
 <p>If you try to test the API again from the command line, you will get
 these products back:</p>
-<div class="highlight"><pre><span></span>$ http http://127.0.0.1:8000/products/
+<div class="highlight"><pre><span></span><code>$ http http://127.0.0.1:8000/products/
 HTTP/1.0 <span class="m">200</span> OK
 Allow: GET, HEAD, OPTIONS
 Content-Type: application/json
@@ -524,20 +504,18 @@ X-Frame-Options: SAMEORIGIN
         <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;3.50&quot;</span>
     <span class="o">}</span>
 <span class="o">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Again, you can get up to this point with:</p>
-<div class="highlight"><pre><span></span>git checkout tutorial-1.3
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.3
+</code></pre></div>
 
 <h3>One more thing...</h3>
 <p>No, we are not going to present a new amazing device, I'm sorry, but I
 want to show you a nice Django Rest Framework feature you can have
 without much additional work. Edit <strong>settings.py</strong> and add
 <strong>rest_framework</strong> to the list of <strong>INSTALLED_APPS</strong>:</p>
-<div class="highlight"><pre><span></span><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight"><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
     <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
     <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
@@ -547,8 +525,7 @@ without much additional work. Edit <strong>settings.py</strong> and add
     <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
     <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
 <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now, if you are still running the Django app, try to visit this url from
 your browser: <a href="http://127.0.0.1:8000/products/">http://127.0.0.1:8000/products/</a><br>
@@ -583,12 +560,11 @@ tutorial</a>.</p>
   <div>
       <p>If we try to use the usual ipdb commands from a Jupyter (IPython
 notebook)</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+</code></pre></div>
 
 <p>we will get a similar error:</p>
-<div class="highlight"><pre><span></span><span class="o">--------------------------------------------------------------------------</span>
+<div class="highlight"><pre><span></span><code><span class="o">--------------------------------------------------------------------------</span>
 <span class="n">MultipleInstanceError</span>                     <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f2b356251c56</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
     <span class="mi">1</span> <span class="n">a</span><span class="o">=</span><span class="mi">4</span>
@@ -619,14 +595,12 @@ notebook)</p>
     <span class="mi">417</span>
 
 <span class="n">MultipleInstanceError</span><span class="p">:</span> <span class="n">Multiple</span> <span class="n">incompatible</span> <span class="n">subclass</span> <span class="n">instances</span> <span class="n">of</span> <span class="n">TerminalIPythonApp</span> <span class="n">are</span> <span class="n">being</span> <span class="n">created</span><span class="o">.</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The solution is to use Tracer instead:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.debugger</span> <span class="kn">import</span> <span class="n">Tracer</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">IPython.core.debugger</span> <span class="kn">import</span> <span class="n">Tracer</span>
 <span class="n">Tracer</span><span class="p">()()</span>
-</pre></div>
-
+</code></pre></div>
 
 <p><strong>Source:</strong> <a href="http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython">http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython</a></p>
   </div>
@@ -664,7 +638,7 @@ you register, please specify (if you have one, but I really hope you do)
 the <strong>PGP</strong> id of your public key. Once the accounts are created, you
 need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
 the following configuration:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>distutils<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>distutils<span class="o">]</span>
 index-servers <span class="o">=</span>
 pypi
 pypitest
@@ -678,8 +652,7 @@ pypitest
 <span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
 <span class="nv">username</span><span class="o">=</span>your_username
 <span class="nv">password</span><span class="o">=</span>your_password
-</pre></div>
-
+</code></pre></div>
 
 <p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
 details you sent during the registration.</p>
@@ -690,7 +663,7 @@ specific to PyPI so you should have done it already). If you haven't I
 remember you can give a look at my library
 here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
 <strong>setup.py</strong>:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
 
 <span class="n">setup</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
@@ -709,29 +682,25 @@ here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/
         <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <h3>Upload the package to PyPI Test server</h3>
 <p>The first time you upload the package you will need to register it:</p>
-<div class="highlight"><pre><span></span>python setup.py register -r pypitest
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>python setup.py register -r pypitest
+</code></pre></div>
 
 <p>and then you will need to build the package and upload it (please note
 I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
-<div class="highlight"><pre><span></span>python setup.py sdist upload --sign -r pypitest
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>python setup.py sdist upload --sign -r pypitest
+</code></pre></div>
 
 <h3>Upload the package to PyPI production server</h3>
 <p>Once you have verified that you are able to build and upload the package
 to the test server (without getting any errors), you should upload it to
 the production server:</p>
-<div class="highlight"><pre><span></span>python setup.py register -r pypi
+<div class="highlight"><pre><span></span><code>python setup.py register -r pypi
 python setup.py sdist upload --sign -r pypi
-</pre></div>
-
+</code></pre></div>
 
 <p>This is everything you need to do if you want to publish a Python
 package on PyPI. Happy coding!</p>
@@ -770,7 +739,6 @@ the light is less intense.</p>
 <p>
 <script src="https://gist.github.com/andreagrandi/99a09be27c9626b1119d.js"></script>
 </p>
-
 <p>and as a demo I realised this small <strong>video</strong>:</p>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/6vLE_AQc4Bc" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
   </div>

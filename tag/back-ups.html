@@ -171,31 +171,27 @@ però possiamo almeno fare in modo che il nostro computer venga spento in
 maniera corretta, prima che la batteria dell'UPS si esaurisca del tutto.</p>
 <p>Nel caso di una macchina Linux, ci viene in aiuto una utility chiamata
 <strong>apcupsd</strong>. Installarla su Ubuntu è molto semplice:</p>
-<div class="highlight"><pre><span></span>apt-get install apcupsd
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>apt-get install apcupsd
+</code></pre></div>
 
 <p>A questo punto, dando per scontato che abbiate già connesso l'UPS al
 PC/server, collegate il cavo USB a corredo in modo da far riconoscere
 l'UPS a Linux, in modo da poter proseguire con la configurazione. Il
 primo file da modificare è <strong><code>/etc/apcupsd/apcupsd.conf</code></strong> ed impostare i
 seguenti parametri come segue:</p>
-<div class="highlight"><pre><span></span>UPSCABLE usb
+<div class="highlight"><pre><span></span><code>UPSCABLE usb
 UPSTYPE usb
 DEVICE
-</pre></div>
-
+</code></pre></div>
 
 <p>A questo punto non ci resta che modificare il file
 <strong><code>/etc/default/apcupsd</code></strong> in modo da rendere effettive le modifiche:</p>
-<div class="highlight"><pre><span></span><span class="nv">ISCONFIGURED</span><span class="o">=</span>yes
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="nv">ISCONFIGURED</span><span class="o">=</span>yes
+</code></pre></div>
 
 <p>Infine dobbiamo soltanto avviare il demone ed il gioco è fatto:</p>
-<div class="highlight"><pre><span></span>/etc/init.d/apcupsd start
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>/etc/init.d/apcupsd start
+</code></pre></div>
 
 <p>Per default <strong>apcupsd</strong> effettuerà lo <strong>shutdown</strong> nel PC quando la
 batteria sarà arrivata al <strong>5%</strong> della sua capacità, consentendo così

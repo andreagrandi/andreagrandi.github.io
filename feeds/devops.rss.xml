@@ -4,7 +4,7 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?&lt;/p&gt;
 &lt;h3&gt;Getting latest Ubuntu AMI id&lt;/h3&gt;
 &lt;p&gt;In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;variable&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws_region&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt; default = &amp;quot;eu-west-2&amp;quot; } # London&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kr"&gt;variable&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws_region&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt; default = &amp;quot;eu-west-2&amp;quot; } # London&lt;/span&gt;
 
 &lt;span class="kr"&gt;provider&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;aws&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="na"&gt;region&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${var.aws_region}&amp;quot;&lt;/span&gt;
@@ -40,11 +40,10 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 &lt;span class="kr"&gt;output&lt;/span&gt; &lt;span class="nv"&gt;&amp;quot;image_id&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="na"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${data.aws_ami.ubuntu.id}&amp;quot;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;After we have initialised our script using &lt;strong&gt;terraform init&lt;/strong&gt; if we run it, we will get the AMI id and the instance will be created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;➜  example1$: terraform apply
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;➜  example1$: terraform apply
 data.aws_ami.ubuntu: Refreshing state...
 aws_instance.web: Creating...
     ami:                          &amp;quot;&amp;quot; =&amp;gt; &amp;quot;ami-03998867&amp;quot;
@@ -84,8 +83,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 Outputs:
 
 image_id = ami-03998867
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 25 Aug 2017 11:00:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2017-08-25:/2017/08/25/getting-latest-ubuntu-ami-with-terraform/</guid><category>Development</category><category>AWS</category><category>Terraform</category><category>Ubuntu</category><category>devops</category></item><item><title>How to create a Docker image for PostgreSQL and persist data</title><link>https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</link><description>&lt;p&gt;Before I start, let me confirm to you that official
 &lt;a href="https://www.docker.com/"&gt;&lt;strong&gt;Docker&lt;/strong&gt;&lt;/a&gt; images for
@@ -102,25 +100,22 @@ instructions are not available in this guide).&lt;/p&gt;
 &lt;strong&gt;Dockerfile&lt;/strong&gt; and use the available commands and syntax to declare how
 the image will be built. At the beginning of the file we need to specify
 the base image we are going to use and our contact informations:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="s"&gt;ubuntu:14.04&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="s"&gt;ubuntu:14.04&lt;/span&gt;
 &lt;span class="k"&gt;MAINTAINER&lt;/span&gt;&lt;span class="s"&gt; Andrea Grandi &amp;lt;nospamthanks@gmail.com&amp;gt;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In our case we are using &lt;strong&gt;Ubuntu 14.04&lt;/strong&gt; as base image. After these
 instructions we need to add PostgreSQL package repository and GnuPG
 public key:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&amp;quot;&lt;/span&gt; &amp;gt; /etc/apt/sources.list.d/pgdg.list
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then we need to update the packages available in Ubuntu and install
 PostgreSQL:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install python-software-properties software-properties-common   
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install python-software-properties software-properties-common   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We are installing version 9.3 of PostgreSQL, instructions would be very
 similar for any other version of the database.&lt;/p&gt;
@@ -130,37 +125,32 @@ considered two different layers by Docker and in case an updated package
 is available it won't be installed when the image is rebuilt.&lt;/p&gt;
 &lt;p&gt;At this point we switch to &lt;strong&gt;postgres&lt;/strong&gt; user to execute the next
 commands:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
 &lt;span class="k"&gt;RUN&lt;/span&gt; /etc/init.d/postgresql start   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; psql --command &lt;span class="s2"&gt;&amp;quot;CREATE USER pguser WITH SUPERUSER PASSWORD &amp;#39;pguser&amp;#39;;&amp;quot;&lt;/span&gt;   
   &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; createdb -O pguser pgdb
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We switch to &lt;strong&gt;root&lt;/strong&gt; user and we complete the configuration:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; root&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; root&lt;/span&gt;
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;host all  all    0.0.0.0/0  md5&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/pg_hba.conf
 &lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;listen_addresses=&amp;#39;*&amp;#39;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/postgresql.conf
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We expose the port where PostgreSQL will listen to:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="s"&gt; 5432&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="s"&gt; 5432&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We setup the data and shared folders that we will use later:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; mkdir -p /var/run/postgresql &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chown -R postgres /var/run/postgresql
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; mkdir -p /var/run/postgresql &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chown -R postgres /var/run/postgresql
 &lt;span class="k"&gt;VOLUME&lt;/span&gt;  &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/etc/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/log/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally we switch again to the &lt;strong&gt;postgres&lt;/strong&gt; user and we define the entry
 command for this image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="s"&gt; postgres&lt;/span&gt;
 &lt;span class="k"&gt;CMD&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/lib/postgresql/9.3/bin/postgres&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-D&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql/9.3/main&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-c&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The full &lt;strong&gt;Dockerfile&lt;/strong&gt; is available
 here &lt;a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile"&gt;https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile&lt;/a&gt;&lt;/p&gt;
@@ -168,23 +158,20 @@ here &lt;a href="https://github.com/andreagrandi/postgresql-docker/blob/master/
 &lt;p&gt;Once the Dockerfile is ready, we need to build the image before running
 it in a container. Please customize the tag name using your own
 docker.io hub account (or you won't be able to push it to the hub):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker build --rm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; -t andreagrandi/postgresql:9.3 .
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker build --rm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; -t andreagrandi/postgresql:9.3 .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Running the PostgreSQL Docker container&lt;/h3&gt;
 &lt;p&gt;To run the container, once the image is built, you just need to use this
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -i -t -p &lt;span class="m"&gt;5432&lt;/span&gt;:5432 andreagrandi/postgresql:9.3
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker run -i -t -p &lt;span class="m"&gt;5432&lt;/span&gt;:5432 andreagrandi/postgresql:9.3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Testing the running PostgreSQL&lt;/h3&gt;
 &lt;p&gt;To test the running container we can use any client, even the
 commandline one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psql -h localhost -p &lt;span class="m"&gt;5432&lt;/span&gt; -U pguser -W pgdb
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psql -h localhost -p &lt;span class="m"&gt;5432&lt;/span&gt; -U pguser -W pgdb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When you are prompted for password, type: &lt;strong&gt;pguser&lt;/strong&gt;&lt;br&gt;
 Please note that &lt;strong&gt;localhost&lt;/strong&gt; is only valid if you are running Docker
@@ -203,7 +190,7 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use &lt;strong&gt;pip install fig&lt;/strong&gt; and under OSX you can use &lt;strong&gt;brew install
 fig&lt;/strong&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
   &lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
   &lt;span class="nt"&gt;volumes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;/var/lib/postgresql&lt;/span&gt;
@@ -215,12 +202,11 @@ fig&lt;/strong&gt;).&lt;/p&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;dbdata&lt;/span&gt;
   &lt;span class="nt"&gt;ports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;5432:5432&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Save this file as &lt;strong&gt;fig.yml&lt;/strong&gt; in the same folder of the Dockerfile and
 spin up the container using this command: &lt;strong&gt;fig up&lt;/strong&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andreas-air:postgresql-docker andrea &lt;span class="o"&gt;[&lt;/span&gt;master&lt;span class="o"&gt;]&lt;/span&gt; $ fig up
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andreas-air:postgresql-docker andrea &lt;span class="o"&gt;[&lt;/span&gt;master&lt;span class="o"&gt;]&lt;/span&gt; $ fig up
 Recreating postgresqldocker_dbdata_1...
 Recreating postgresqldocker_db_1...
 Attaching to postgresqldocker_db_1
@@ -232,8 +218,7 @@ db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt
 db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-6&lt;span class="o"&gt;]&lt;/span&gt; LOG:  last completed transaction was at log &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;17&lt;/span&gt;:46:10.61746+00
 db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  database system is ready to accept connections
 db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  autovacuum launcher started
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you try to write some data on the database and then you stop (CTRL+C)
 the running containers and spin up them again, you will see that your

@@ -162,23 +162,21 @@
       <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
 an argument and returns a function as a <em>value</em>. Here is an example of
 decorator definition:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="c1"># make a new function</span>
     <span class="k">def</span> <span class="nf">new_function</span><span class="p">():</span>
         <span class="c1"># some code</span>
 
     <span class="k">return</span> <span class="n">new_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>To apply a decorator to an existing function, you just need to put
-<strong>@*decorator_name</strong>* in the line before its definition, like this
+<strong>@<em>decorator_name</em></strong> in the line before its definition, like this
 example:</p>
-<div class="highlight"><pre><span></span><span class="nd">@foo</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@foo</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
     <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>This decorator doesn't do anything, so let's think about a more concrete
 problem we could solve using decorators.</p>
@@ -203,13 +201,12 @@ describe it in this way:</p>
 </ul>
 <p>In <strong>Python</strong> we could have a <strong>recursive function</strong> like the following
 one:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">n</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>What's the problem with this implementation? The code works as expected,
 but it's very <strong>inefficient</strong>. The next picture will explain what
@@ -230,7 +227,7 @@ inputs occur again.</p>
 <p>We need to store values of the sequence we have already calculated and
 get them later when we need them. Let's implement a simple memoization
 decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -241,8 +238,7 @@ decorator:</p>
             <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
             <span class="k">return</span> <span class="n">val</span>
     <span class="k">return</span> <span class="n">decorated_function</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The decorator defines a dict at the beginning that is used as a cache.
 When we want to find the n number of the sequence, it first checks if
@@ -254,7 +250,7 @@ returned to the caller.</p>
 <p>How much this decorator can speed up our fib method? Let's try to
 benchmark the execution using Python
 <strong><a href="https://docs.python.org/2/library/timeit.html">timeit</a></strong> module.</p>
-<div class="highlight"><pre><span></span><span class="c1"># First example, not using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># First example, not using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 
@@ -266,12 +262,11 @@ benchmark the execution using Python
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>4.73480010033</strong></p>
-<div class="highlight"><pre><span></span><span class="c1"># Second example, using the memoize decorator</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Second example, using the memoize decorator</span>
 
 <span class="kn">import</span> <span class="nn">timeit</span>
 <span class="kn">from</span> <span class="nn">memoize</span> <span class="kn">import</span> <span class="n">memoize</span>  <span class="c1"># For convenience I put my decorator</span>
@@ -286,8 +281,7 @@ on my laptop is: <strong>4.73480010033</strong></p>
 
 <span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>0.000133037567139</strong></p>
@@ -310,11 +304,10 @@ decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
   <div>
       <p>Working on <strong>Django</strong> projects I find very often that many developers
 access the values that are defined in <strong>settings</strong> in this way</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">my_value</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MY_SETTING</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>What happens if <code>MY_SETTING</code> has not been defined in <strong>settings.py</strong>?
 The code will raise an error and crash, of course. How can we make the
@@ -322,11 +315,10 @@ code more reliable? We could <em>try/except</em> the code block that tries to
 read the value and maybe set a value if we get an exception, but this
 would not be a clean way to do this job.</p>
 <p>A cleaner way to do it is to use <strong>getattr</strong> in this way:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
 if the value doesn't exist <code>my_value</code> will be assigned with
@@ -372,7 +364,7 @@ request is made and the time when a request has been processed, then
 calculates the time delta and exposes this value in the context so that
 is accessible from our templates. How to implement a similar feature
 using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 
 <span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -383,8 +375,7 @@ using a middleware? Here is my example:</p>
         <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Please don't care about how I calculated the time. I'm aware that there
 are better ways to do it, but I just wanted to keep it simple and show

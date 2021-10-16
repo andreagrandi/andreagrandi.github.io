@@ -164,7 +164,7 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
 <h3>Getting latest Ubuntu AMI id</h3>
 <p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
-<div class="highlight"><pre><span></span><span class="kr">variable</span> <span class="nv">&quot;aws_region&quot;</span> <span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span> <span class="nv">&quot;aws_region&quot;</span> <span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
 
 <span class="kr">provider</span> <span class="nv">&quot;aws&quot;</span> <span class="p">{</span>
     <span class="na">region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
@@ -200,11 +200,10 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 <span class="kr">output</span> <span class="nv">&quot;image_id&quot;</span> <span class="p">{</span>
     <span class="na">value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
-<div class="highlight"><pre><span></span>➜  example1$: terraform apply
+<div class="highlight"><pre><span></span><code>➜  example1$: terraform apply
 data.aws_ami.ubuntu: Refreshing state...
 aws_instance.web: Creating...
     ami:                          &quot;&quot; =&gt; &quot;ami-03998867&quot;
@@ -244,8 +243,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 Outputs:
 
 image_id = ami-03998867
-</pre></div>
-
+</code></pre></div>
 
 <p>That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.</p>
   </div>
@@ -269,9 +267,8 @@ doesn't work out of the box!</p>
 <p>The fix is quite easy to apply (but it was not easy to find the right
 one!). First of all edit <strong>/etc/pulse/default.pa</strong> and add this line at
 the end:</p>
-<div class="highlight"><pre><span></span>load-module module-combine <span class="nv">channels</span><span class="o">=</span><span class="m">6</span> <span class="nv">channel_map</span><span class="o">=</span>front-left,front-right,rear-left,rear-right,front-center,lfe
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>load-module module-combine <span class="nv">channels</span><span class="o">=</span><span class="m">6</span> <span class="nv">channel_map</span><span class="o">=</span>front-left,front-right,rear-left,rear-right,front-center,lfe
+</code></pre></div>
 
 <p>then edit <strong><code>/etc/pulse/daemon.conf</code></strong>, modify the line
 <code>enable-lfe-remixing: no</code> to <strong><code>enable-lfe-remixing: yes</code></strong>, then
@@ -390,15 +387,14 @@ using Ubuntu 12.10, but feel free to use your own distribution). Be sure
 to have installed a recent version of <strong>nodejs</strong> and <strong>npm</strong> packages
 (I'm using Node.js 0.8.20 and npm 1.2.11).</p>
 <h2>Create a project folder and install the required dependencies</h2>
-<div class="highlight"><pre><span></span>mkdir node-bootstrap
+<div class="highlight"><pre><span></span><code>mkdir node-bootstrap
 <span class="nb">cd</span> node-bootstrap
 npm install express
 npm install jade
-</pre></div>
-
+</code></pre></div>
 
 <h2>Create the basic project structure with Express</h2>
-<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+<div class="highlight"><pre><span></span><code>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
 
 create : nodebootstrap
 create : nodebootstrap/package.json
@@ -420,8 +416,7 @@ $ <span class="nb">cd</span> nodebootstrap <span class="o">&amp;&amp;</span> npm
 
 run the app:
 $ node app
-</pre></div>
-
+</code></pre></div>
 
 <p>You should already have installed all the needed dependencies, even
 without executing <strong>npm install</strong>, anyway executing it won't hurt.</p>
@@ -432,7 +427,7 @@ unzip it under the <strong>nodebootstrap/public</strong> folder.</p>
 <h2>Bootstrap integration with Jade template system</h2>
 <p>At this point you need to edit the <strong>views/layout.jade</strong> file and
 include the references to Bootsrap</p>
-<div class="highlight"><pre><span></span><span class="nt">html</span>
+<div class="highlight"><pre><span></span><code><span class="nt">html</span>
   <span class="nt">head</span>
     <span class="nt">title</span><span class="p">=</span> <span class="n">title</span>
     <span class="nt">link</span>(<span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;/bootstrap/css/bootstrap.min.css&#39;</span>)
@@ -442,13 +437,12 @@ include the references to Bootsrap</p>
     <span class="nt">script</span>(<span class="na">src=</span><span class="s">&#39;/bootstrap/js/bootstrap.min.js&#39;</span>)
   <span class="nt">body</span>
     <span class="nt">block</span> content
-</pre></div>
-
+</code></pre></div>
 
 <h2>Test the Bootstrap integration</h2>
 <p>At this point we will modify <strong>views/index.jade</strong> that is the default
 template used to render the index</p>
-<div class="highlight"><pre><span></span><span class="nt">extends</span> layout
+<div class="highlight"><pre><span></span><code><span class="nt">extends</span> layout
 
     <span class="nt">block</span> content
       <span class="nt">div</span><span class="nc">.top</span>
@@ -474,14 +468,12 @@ template used to render the index</p>
                 <span class="nt">td</span> World
 
       <span class="nt">div</span><span class="nc">.footer</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now go back to the terminal and execute the app:</p>
-<div class="highlight"><pre><span></span>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+<div class="highlight"><pre><span></span><code>andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
 Express server listening on port <span class="m">3000</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Open your favourite browse and visit <a href="http://localhost:3000">http://localhost:3000</a> to see your
 first Bootstrap + Node.js application app and running.</p>

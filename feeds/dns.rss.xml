@@ -7,24 +7,21 @@ you have a normal DSL service at home), you need a dynamic DNS service.&lt;/p&gt
 &lt;p&gt;To update the noip.com one you just need &lt;strong&gt;ddclient&lt;/strong&gt; a tool that is
 available in Raspbian/Debian repository. You can install it with this
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install ddclient
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install ddclient
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then you just need to edit &lt;strong&gt;/etc/ddclient.conf&lt;/strong&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;protocol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dyndns2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;protocol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dyndns2
 &lt;span class="nv"&gt;use&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;web, &lt;span class="nv"&gt;web&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;checkip.dyndns.com/, web-skip&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;IP Address&amp;#39;&lt;/span&gt;
 &lt;span class="nv"&gt;server&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dynupdate.no-ip.com
 &lt;span class="nv"&gt;login&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yourusername
 &lt;span class="nv"&gt;password&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;yourpassword
 yourhostname.no-ip.org
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and restart the client:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo /etc/init.d/ddclient restart
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo /etc/init.d/ddclient restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's all! Please remember that noip.com &lt;strong&gt;free accounts&lt;/strong&gt; have a
 &lt;strong&gt;limitation&lt;/strong&gt;: they need to be confirmed every 30 days (you will
@@ -54,9 +51,8 @@ www.yourdomain.com to correctly point to your ip.&lt;/p&gt;
 &lt;p&gt;In my case I only needed some aliases that I use to forward emails to my
 GMail account, so the configuration is quite easy. First you need to
 install Postfix:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install postfix
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install postfix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Then you need to edit&lt;strong&gt; /etc/postfix/main.cf&lt;/strong&gt; customizing myhostname
 with your domain name and add &lt;strong&gt;virtual_alias_maps&lt;/strong&gt; and
@@ -71,16 +67,14 @@ configuration here:&lt;/p&gt;
 &lt;h2&gt;Add your email aliases&lt;/h2&gt;
 &lt;p&gt;Edit &lt;strong&gt;/etc/postfix/virtual&lt;/strong&gt; file and add your aliases, one per line,
 like in this example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;info@yourdomain.com youremail@gmail.com
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;info@yourdomain.com youremail@gmail.com
 sales@yourdomain.com youremail@gmail.com
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;At this point update the alias map and reload Postfix configuration:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo postmap /etc/postfix/virtual
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo postmap /etc/postfix/virtual
 sudo /etc/init.d/postfix reload
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;As you can see, configuring Postfix is quite easy, you just need to be

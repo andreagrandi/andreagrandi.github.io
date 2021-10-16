@@ -234,14 +234,12 @@ to the account.</p>
 <h4>Command line</h4>
 <p>Keybase works from the command line too. There is no need to use the graphic
 client to send a message to another user, you can do something like this:</p>
-<div class="highlight"><pre><span></span>keybase chat send andreagrandi <span class="s2">&quot;Hello mate!&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>keybase chat send andreagrandi <span class="s2">&quot;Hello mate!&quot;</span>
+</code></pre></div>
 
 <p>You can integrate messages in any script and it's even available a JSON API:</p>
-<div class="highlight"><pre><span></span>keybase chat <span class="nb">help</span> api
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>keybase chat <span class="nb">help</span> api
+</code></pre></div>
 
 <p>For more details you can have a look a this blog post on their website: <a href="https://keybase.io/blog/keybase-chat">https://keybase.io/blog/keybase-chat</a></p>
 <h3>Teams</h3>
@@ -255,20 +253,17 @@ team called <strong>keybaselovers</strong> you can create a sub team for admins 
 <p>Teams have a dedicated encrypter folder that you will find under <strong>/keybase/team/keybaselovers</strong></p>
 <p>At the moment the features available from the UI are quite limited and are only available from the command line. In the next
 weeks these features will be available from the UI too. In the mean time you can have a look at the commandline help:</p>
-<div class="highlight"><pre><span></span>keybase team --help <span class="c1"># for admin&#39;ing teams</span>
+<div class="highlight"><pre><span></span><code>keybase team --help <span class="c1"># for admin&#39;ing teams</span>
 keybase chat --help <span class="c1"># for admin&#39;ing chat channels</span>
-</pre></div>
-
+</code></pre></div>
 
 <h4>Create a Team</h4>
-<div class="highlight"><pre><span></span>keybase team create keybaselovers
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>keybase team create keybaselovers
+</code></pre></div>
 
 <h4>Add a user to a Team</h4>
-<div class="highlight"><pre><span></span>keybase team add-member keybaselovers --user<span class="o">=</span>alice --role<span class="o">=</span>writer
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>keybase team add-member keybaselovers --user<span class="o">=</span>alice --role<span class="o">=</span>writer
+</code></pre></div>
 
 <p>For more information you can have a look at the official announcement page: <a href="https://keybase.io/blog/introducing-keybase-teams">https://keybase.io/blog/introducing-keybase-teams</a></p>
 <h3>Git</h3>
@@ -288,9 +283,8 @@ all the members of the team.</p>
 <p>Both teams and single users have <strong>100GB of space</strong> available (which is separate from Folders quota).</p>
 <h4>Usage</h4>
 <p>If I create my personal repository called <strong>documents</strong> all I have to do to clone it and use it is:</p>
-<div class="highlight"><pre><span></span>git clone keybase://private/andreagrandi/documents
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>git clone keybase://private/andreagrandi/documents
+</code></pre></div>
 
 <p>and I can use it as a normal git repository. Every time I commit and push something, the content will be <strong>signed and encrypted</strong>
 and only available to the repository owner (which is me) or to the whole team if it's a team repository.</p>
@@ -348,10 +342,9 @@ Raspbian) and you will type the next commands there and only there.</p>
 <p>Plug one of the <strong>USB key</strong> (you can format it with VFAT for simplicity) in the offline computer and wait for the system to mount it.
 At this point it should be mounted in a path like this: <strong>/media/AABB-BAAC</strong></p>
 <p>Now set the GnuPG working directory and create it:</p>
-<div class="highlight"><pre><span></span>user@debian:~$ export GNUPGHOME=/media/AABB-BAAC/gnupghome
+<div class="highlight"><pre><span></span><code>user@debian:~$ export GNUPGHOME=/media/AABB-BAAC/gnupghome
 user@debian:~$ mkdir $GNUPGHOME
-</pre></div>
-
+</code></pre></div>
 
 <h4>Second disclaimer</h4>
 <p>If you think your threat model doesn't include someone can hack your computer from remote,
@@ -370,7 +363,7 @@ is created with all the capabilities (Authentication + Signing + Encryption), wh
 a <strong>2048 bits</strong> key because it's the maximum size supported. Here you will create a PGP key with <strong>only
 the Authentication capability</strong>. If your GnuPG version doesn't allow this, choose "sign only", just don't
 create the encryption capability at this time.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --expert --gen-key
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --expert --gen-key
 gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -457,15 +450,14 @@ gpg: next trustdb check due at 2019-09-25
 pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
     Key fingerprint = 7D4C 4090 DB50 1693 4614  F6FC 6206 9DE9 2240 402E
 uid       [ultimate] Andrea Grandi &lt;user@email.com&gt;
-</pre></div>
-
+</code></pre></div>
 
 <p><strong>Note:</strong> please remember to save your passphrase in a safe place. Choose something you
 can remember because you will need it every time you need to sign, encrypt or decrypt something.</p>
 <h3>Creating a revocation certificate</h3>
 <p>It's very important to create a revocation certificate to be used if and when 
 in the future you want to change your master key and revoke the existing one:</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --gen-revoke 2240402E &gt; 2240402E-revocation-certificate.asc
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --gen-revoke 2240402E &gt; 2240402E-revocation-certificate.asc
 
 sec  4096R/2240402E 2017-09-25 Andrea Grandi &lt;user@email.com&gt;
 
@@ -496,14 +488,13 @@ access to this certificate he can use it to make your key unusable.
 It is smart to print this certificate and store it away, just in case
 your media become unreadable.  But have some caution:  The print system of
 your machine might store the data and make it available to others!
-</pre></div>
-
+</code></pre></div>
 
 <h3>Creating Encryption subkey</h3>
 <p>To create a subkey we need to edit the existing key (please note that <strong>2240402E</strong>
 is the last 8 chars from the fingerprint of the previously generated master key)
 and specify we want to create an Encryption only key.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --edit-key 2240402E
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --edit-key 2240402E
 gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -551,16 +542,14 @@ sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
 [ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
 
 gpg&gt; save
-</pre></div>
-
+</code></pre></div>
 
 <h3>Export a backup of the secret keys</h3>
 <p>It's very important to export a backup of the secret keys at this point.
 Writing the secret subkey to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> is a destructive process: keys are moved
 to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>, they are not copied.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --export-secret-key 2240402E &gt; 2240402E-secret.pgp
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --export-secret-key 2240402E &gt; 2240402E-secret.pgp
+</code></pre></div>
 
 <p><strong>Note:</strong> this backup includes both the secret master key and the secret subkey.
 Please remember to <strong>save a backup of this key</strong> on a couple of separate USB keys: you will need
@@ -570,7 +559,7 @@ this keys to generate future subkeys and/or to revoke the existing ones.</p>
 create the <strong>authentication</strong> and <strong>signing</strong> keys directly on the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> (we don't
 need to have a copy of these keys) and we will move the secret encryption key
 to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --edit-key 2240402E
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --edit-key 2240402E
 gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -697,13 +686,12 @@ ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
 (1)  Andrea Grandi &lt;user@email.com&gt;
 
 gpg&gt; save
-</pre></div>
-
+</code></pre></div>
 
 <h4>Check public keys</h4>
 <p>Just to verify everything has been created correctly, we check the public keys.
 We should see one <strong>pub</strong> key and three <strong>sub</strong>:</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg -k
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg -k
 /media/AABB-BAAC/gnupghome/pubring.gpg
 --------------------------------
 pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
@@ -711,14 +699,13 @@ uid       [ultimate] Andrea Grandi &lt;user@email.com&gt;
 sub   4096R/01731555 2017-09-25 [expires: 2019-09-25]
 sub   4096R/771B0554 2017-09-25 [expires: 2019-09-25]
 sub   4096R/A9B5334C 2017-09-25 [expires: 2019-09-25]
-</pre></div>
-
+</code></pre></div>
 
 <h4>Check private keys</h4>
 <p>When we check the private keys we should see that one key is still local, marked as <strong>sec</strong> (it's
 the private key of the master key), while three other keys are marked as <strong>ssb&gt;</strong>
 which means they have been moved to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>:</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg -K
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg -K
 /media/AABB-BAAC/gnupghome/secring.gpg
 --------------------------------
 sec   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
@@ -726,8 +713,7 @@ uid                  Andrea Grandi &lt;user@email.com&gt;
 ssb&gt;  4096R/01731555 2017-09-25
 ssb&gt;  4096R/771B0554 2017-09-25
 ssb&gt;  4096R/A9B5334C 2017-09-25
-</pre></div>
-
+</code></pre></div>
 
 <h4>Import back secret keys from backup (only for multiple YubiKeys)</h4>
 <p>As previously said, when we write the encryption subkey to the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a>, the key
@@ -735,26 +721,23 @@ is <strong>moved</strong> and not just copied, so we need to import back the sec
 the keyring. It's important to have a backup of the subkey too, not because we need it
 in case the key is compromised etc... but because we need it in case we want to write
 multiple YubiKeys with the same encryption key, so that we have a backup key to use.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --import &lt; 2240402E-secret.pgp
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --import &lt; 2240402E-secret.pgp
+</code></pre></div>
 
 <h4>Completely remove secret keys from laptop</h4>
 <p>Once you have programmed the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> and you are sure the secret keys are
 backed up on a couple of USB keys, you are ready to remove the secret keys from your laptop.</p>
 <p><strong>Note:</strong> you don't need to remove anything if you have conducted the whole setup
 on a spare offline PC (or on a RaspberryPi) because that's not your every day computer.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --delete-secret-key 2240402E
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --delete-secret-key 2240402E
+</code></pre></div>
 
 <h3>Exporting the public PGP key</h3>
 <p>As you know, PGP keys are composed by a secret part and a public one. The public one
 must be distributed publicly and it's the one people will use to encrypt messages directed
 to you.</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --armor --export 2240402E &gt; 2240402E.asc
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --armor --export 2240402E &gt; 2240402E.asc
+</code></pre></div>
 
 <p>If you have a personal blog/website I suggest to upload it there (for example mine
 can be found here <a href="https://www.andreagrandi.it/2240402E.asc">https://www.andreagrandi.it/2240402E.asc</a>)</p>
@@ -769,7 +752,7 @@ certain settings on the <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4
 <li>admin PIN: 12345678</li>
 </ul>
 <p>I strongly recommend you to change them following this example:</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --card-edit
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --card-edit
 
 Reader ...........: Yubico Yubikey 4 OTP U2F CCID
 Application ID ...: D000000000000000000000000000000000
@@ -845,15 +828,13 @@ URL to retrieve public key: https://www.andreagrandi.it/2240402E.asc
 gpg/card&gt; fetch
 
 gpg/card&gt; quit
-</pre></div>
-
+</code></pre></div>
 
 <p><strong>Note:</strong> when you want to use your <a href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico+4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605">YubiKey</a> on any computer (for example your work laptop)
 you need to at least import your public PGP key into the keyring. If the key is not
 read automatically, you may need to give it a refresh using this command:</p>
-<div class="highlight"><pre><span></span>user@debian:~$ gpg --card-status
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>user@debian:~$ gpg --card-status
+</code></pre></div>
 
 <h4>Careful with PINs</h4>
 <p>Please remember that you can only digit a wrong user PIN for a maximum of three times.
@@ -918,7 +899,7 @@ the people in <strong>#docker @ FreeNode</strong> for the support.</p>
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
 <strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
     <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
     <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
     <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
@@ -926,18 +907,16 @@ is a <strong>config.json</strong> file where you define the <strong>host</strong
         <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):</p>
-<div class="highlight"><pre><span></span>docker pull andreagrandi/test:latest
+<div class="highlight"><pre><span></span><code>docker pull andreagrandi/test:latest
 docker stop <span class="nb">test</span>
 docker rm <span class="nb">test</span>
 docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
-</pre></div>
-
+</code></pre></div>
 
 <p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
 not covered here) that for example redirect
@@ -978,7 +957,7 @@ recent version of Raspbian. I'm using the one released on 20/06/2014).</p>
 <p><a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"><img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"></a></p>
 <h2>Configure the wifi adapter</h2>
 <p>Edit <strong>/etc/network/interfaces</strong> and insert these configuration values:</p>
-<div class="highlight"><pre><span></span>auto lo
+<div class="highlight"><pre><span></span><code>auto lo
 iface lo inet loopback
 iface eth0 inet dhcp
 
@@ -988,8 +967,7 @@ auto wlan0
 iface wlan0 inet dhcp
 wpa-ssid YOURESSID
 wpa-psk YOURWPAPASSWORD
-</pre></div>
-
+</code></pre></div>
 
 <h2>Power management issue</h2>
 <p>There is a known "issue" with this adapter default configuration that
@@ -997,30 +975,26 @@ makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using <strong>8192cu</strong>
 module:</p>
-<div class="highlight"><pre><span></span>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
+<div class="highlight"><pre><span></span><code>sudo lsmod <span class="p">|</span> grep <span class="m">8192</span>
 8192cu <span class="m">551136</span> <span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Create the file <strong>/etc/modprobe.d/8192cu.conf</strong> and insert the following
 lines inside:</p>
-<div class="highlight"><pre><span></span><span class="c1"># prevent power down of wireless when idle</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># prevent power down of wireless when idle</span>
 options 8192cu <span class="nv">rtw_power_mgnt</span><span class="o">=</span><span class="m">0</span> <span class="nv">rtw_enusbss</span><span class="o">=</span><span class="m">0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>I also suggest to create a little entry in crontab to make the
 RaspberryPi ping your router every minute. This will ensure that your
 wifi connection will stay alive. To edit crontab just type (from pi
 user, you don't need to be root):</p>
-<div class="highlight"><pre><span></span>crontab -e
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>crontab -e
+</code></pre></div>
 
 <p>and insert this line at the end:</p>
-<div class="highlight"><pre><span></span>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/1 * * * * ping -c <span class="m">1</span> <span class="m">192</span>.168.0.1
+</code></pre></div>
 
 <p>where 192.168.0.1 is the IP of your router (of course substitute this
 value with the ip of your router).</p>
@@ -1032,18 +1006,15 @@ module for the wifi and bring them up again.</p>
 <p>
 <script src="https://gist.github.com/andreagrandi/c703e4e67c38fbecf340.js"></script>
 </p>
-
 <p>Just put this script in <strong>/root/wifi_recover.sh</strong> and then execute from
 <strong>root</strong> user:</p>
-<div class="highlight"><pre><span></span>chmod +x wifi_recover.sh
+<div class="highlight"><pre><span></span><code>chmod +x wifi_recover.sh
 crontab -e
-</pre></div>
-
+</code></pre></div>
 
 <p>Insert this line inside the crontab editor:</p>
-<div class="highlight"><pre><span></span>*/5 * * * * /root/wifi_recover.sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>*/5 * * * * /root/wifi_recover.sh
+</code></pre></div>
 
 <h2>Conclusion</h2>
 <p>The configuration is done. Just reboot your RaspberryPi and enjoy your

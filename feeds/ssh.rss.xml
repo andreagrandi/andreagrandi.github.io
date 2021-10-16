@@ -11,7 +11,7 @@ questa pagina del router: &lt;code&gt;http://192.168.0.105/luci/fon_devices/fon_
 effettuare due reboot affinchè SSH sia attivato. Non dimenticatevi
 ovviamente di aprire l'accesso SSH nella configurazione del firewall
 della Fonera. Accedendo via SSH, vi troverete davanti questi messaggi:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ssh
 root@192.168.0.105  
 The authenticity of host &lt;span class="s1"&gt;&amp;#39;192.168.0.105 (192.168.0.105)&amp;#39;&lt;/span&gt; can&lt;span class="s1"&gt;&amp;#39;t be&lt;/span&gt;
 &lt;span class="s1"&gt;established.  &lt;/span&gt;
@@ -48,17 +48,15 @@ Flipper
 root@Fonera:~# uname -a  
 Linux Fonera &lt;span class="m"&gt;2&lt;/span&gt;.6.26.2 &lt;span class="c1"&gt;#9 Tue Apr 21 11:32:31 CEST 2009 mips unknown  &lt;/span&gt;
 root@Fonera:~#
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Cercherò prossimamente, nel caso ci sia interesse, di scrivere qualche
 post piu' approfondito su questa nuova Fonera, in modo da mostrare le
 caratteristiche di questo dispositivo.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 05 May 2009 13:10:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2009-05-05:/2009/05/05/come-passare-dalla-modalita-enduser-alla-modalita-developer-su-fonera-2/</guid><category>HowTo, Linux, Recensione</category><category>fon</category><category>fonera</category><category>router</category><category>ssh</category></item><item><title>Utilizzare SSH senza password: chiavi SSH</title><link>https://www.andreagrandi.it/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</link><description>&lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png"&gt;&lt;img alt="openssh_logo" src="https://www.andreagrandi.it/images/2008/02/openssh_logo.thumbnail.png" width="40%"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Quando vogliamo connetterci ad un server &lt;strong&gt;SSH&lt;/strong&gt;, solitamente utilizziamo un
 comando simile al seguente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh user@remotehost.com
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ssh user@remotehost.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Una volta connessi ci viene richiesta la password di accesso e subito
 dopo siamo connessi. Digitare ogni volta la password puo' essere
@@ -75,7 +73,7 @@ account chiamato &lt;strong&gt;user&lt;/strong&gt; sulla macchina remota.&lt;/p&
 &lt;p&gt;Per prima cosa dobbiamo generare la coppia di chiavi sulla nostra
 macchina locale (n.b: non utilizzo alcuna passphrase, altrimenti mi
 verrebbe richiesta comunque al primo login di ogni sessione):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;andy80@noteboontu:~$ ssh-keygen -t dsa  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andy80@noteboontu:~$ ssh-keygen -t dsa  
 Generating public/private dsa key pair.  
 Enter file &lt;span class="k"&gt;in&lt;/span&gt; which to save the key &lt;span class="o"&gt;(&lt;/span&gt;/home/andy80/.ssh/id_dsa&lt;span class="o"&gt;)&lt;/span&gt;:  
 Enter passphrase &lt;span class="o"&gt;(&lt;/span&gt;empty &lt;span class="k"&gt;for&lt;/span&gt; no passphrase&lt;span class="o"&gt;)&lt;/span&gt;:  
@@ -84,32 +82,28 @@ Your identification has been saved &lt;span class="k"&gt;in&lt;/span&gt; /home/a
 Your public key has been saved &lt;span class="k"&gt;in&lt;/span&gt; /home/andy80/.ssh/id_dsa.pub.  
 The key fingerprint is:  
 &lt;span class="m"&gt;22&lt;/span&gt;:99:69:d2:8d:8e:a5:f1:f4:dc:0f:d8:49:52:53:cd andy80@noteboontu
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;A questo punto dobbiamo copiare la chiave pubblica appena generata, sul
 server remoto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ~/.ssh/  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ~/.ssh/  
 scp id_dsa.pub user@192.168.0.2:./id_dsa.pub
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Ci verrà chiesta la nostra password remota, per poter effettuare la
 copia del file. A questo punto dobbiamo connetterci via SSH al server
 remoto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh user@192.168.0.2
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ssh user@192.168.0.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Quando abbiamo effettuato correttamente il login, dobbiamo procedere con
 i seguenti comandi:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; .ssh  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; .ssh  
 touch authorized_keys2  
 chmod &lt;span class="m"&gt;600&lt;/span&gt; authorized_keys2  
 cat ../id_dsa.pub &amp;gt;&amp;gt; authorized_keys2  
 rm ../id_dsa.pub
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Il gioco è fatto! Le successive connessioni SSH che effettueremo verso
 il server remoto, avverranno senza la richiesta di alcuna password.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 29 Feb 2008 18:59:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-02-29:/2008/02/29/utilizzare-ssh-senza-password-chiavi-ssh/</guid><category>HowTo</category><category>chiavi</category><category>connessione</category><category>Linux</category><category>openssh</category><category>password</category><category>Sicurezza</category><category>ssh</category><category>ssh2</category></item></channel></rss>
