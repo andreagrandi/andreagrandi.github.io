@@ -150,6 +150,59 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/">Go: defining methods on struct types</a></h2>
+    <p>
+      Posted on Mon 16 March 2015 in <a href="https://www.andreagrandi.it/category/go.html">Go</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/go.html">go</a>,              <a href="https://www.andreagrandi.it/tag/golang.html">golang</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/struct.html">struct</a>
+    </p>
+  </header>
+  <div>
+      <p>In <strong>Go</strong> it's possible to define <strong>methods</strong> on <strong>struct types</strong>. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.</p>
+<p>In my case for example I needed something that could contain a Timer
+object, a string and a method that could start the timer and call a
+method at the end of the Timer execution. I implemented it in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">type</span><span class="w"> </span><span class="nx">DeviceTimer</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nx">DeviceID</span><span class="w">    </span><span class="kt">string</span><span class="w"></span>
+<span class="w">    </span><span class="nx">DeviceTimer</span><span class="w"> </span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">timer</span><span class="w"> </span><span class="nx">DeviceTimer</span><span class="p">)</span><span class="w"> </span><span class="nx">startTimer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span><span class="w"></span>
+<span class="w">    </span><span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+
+<p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
+where I defined a method called <code>startTimer</code> and I specify timer
+<code>DeviceTimer</code> inside the func definition. This basically "extends" the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">timer</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">300</span><span class="p">)</span><span class="w"></span>
+<span class="nx">device_timer</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">timer</span><span class="p">}</span><span class="w"></span>
+<span class="k">go</span><span class="w"> </span><span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+
+<p>This is all you need to do. If you want to read more about this subject,
+I can suggest to read these two articles:</p>
+<ul>
+<li><strong>Go by Example: Methods</strong> <a href="https://gobyexample.com/methods">https://gobyexample.com/methods</a></li>
+<li><strong>Inheritance and subclassing in Go - or its near likeness</strong>
+    <a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html">http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html</a></li>
+</ul>
+<p><strong>Note:</strong> I'm not a Go expert and these are just my personal notes I'm
+taking during my learning experience. I'm very keen to share my notes
+with everyone, but please don't take them as notes from an expert Go
+developer.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/">Using GtkIconView in Python: a small tutorial</a></h2>
     <p>
       Posted on Tue 15 April 2008 in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a>
@@ -282,7 +335,7 @@ directly with Internet Tablet.</p>
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>

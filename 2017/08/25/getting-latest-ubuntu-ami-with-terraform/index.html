@@ -175,42 +175,42 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
 <h3>Getting latest Ubuntu AMI id</h3>
 <p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
-<div class="highlight"><pre><span></span><code><span class="kr">variable</span> <span class="nv">&quot;aws_region&quot;</span> <span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;aws_region&quot;</span><span class="w"> </span><span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
 
-<span class="kr">provider</span> <span class="nv">&quot;aws&quot;</span> <span class="p">{</span>
-    <span class="na">region</span> <span class="o">=</span> <span class="s2">&quot;${var.aws_region}&quot;</span>
-    <span class="na">access_key</span> <span class="o">=</span> <span class="s2">&quot;youraccesskey&quot;</span>
-    <span class="na">secret_key</span> <span class="o">=</span> <span class="s2">&quot;yoursecretkey&quot;</span>
-<span class="p">}</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;aws&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${var.aws_region}&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="na">access_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;youraccesskey&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="na">secret_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;yoursecretkey&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kr">data</span> <span class="nc">&quot;aws_ami&quot;</span> <span class="nv">&quot;ubuntu&quot;</span> <span class="p">{</span>
-    <span class="na">most_recent</span> <span class="o">=</span> <span class="no">true</span>
+<span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_ami&quot;</span><span class="w"> </span><span class="nv">&quot;ubuntu&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">most_recent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="w"></span>
 
-    <span class="nb">filter</span> <span class="p">{</span>
-        <span class="na">name</span>   <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
-        <span class="na">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="nb">filter</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="na">name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-    <span class="nb">filter</span> <span class="p">{</span>
-        <span class="na">name</span>   <span class="o">=</span> <span class="s2">&quot;virtualization-type&quot;</span>
-        <span class="na">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="nb">filter</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="na">name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;virtualization-type&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="na">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;hvm&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-    <span class="na">owners</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="na">owners</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kr">resource</span> <span class="nc">&quot;aws_instance&quot;</span> <span class="nv">&quot;web&quot;</span> <span class="p">{</span>
-    <span class="na">ami</span>           <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
-    <span class="na">instance_type</span> <span class="o">=</span> <span class="s2">&quot;t2.micro&quot;</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;aws_instance&quot;</span><span class="w"> </span><span class="nv">&quot;web&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">ami</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="na">instance_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;t2.micro&quot;</span><span class="w"></span>
 
-    <span class="nb">tags</span> <span class="p">{</span>
-        <span class="na">Name</span> <span class="o">=</span> <span class="s2">&quot;HelloUbuntu&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="nb">tags</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="na">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;HelloUbuntu&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kr">output</span> <span class="nv">&quot;image_id&quot;</span> <span class="p">{</span>
-    <span class="na">value</span> <span class="o">=</span> <span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span>
-<span class="p">}</span>
+<span class="kr">output</span><span class="w"> </span><span class="nv">&quot;image_id&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>After we have initialised our script using <strong>terraform init</strong> if we run it, we will get the AMI id and the instance will be created:</p>
@@ -289,7 +289,7 @@ image_id = ami-03998867
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>

@@ -200,17 +200,17 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 
 <h2>Implement an add() method in Go</h2>
 <p>Create a new empty project/repository using your favourite IDE (I personally used <strong>VSCode</strong>, but of course you can use anything else) and then create <code>main.go</code> file with this code:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w"></span>
 
-<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-<span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="c1">// This function is exported to JavaScript, so can be called using</span>
-<span class="c1">// exports.add() in JavaScript.</span>
-<span class="c1">//export add</span>
-<span class="kd">func</span> <span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span>
-<span class="p">}</span>
+<span class="c1">// This function is exported to JavaScript, so can be called using</span><span class="w"></span>
+<span class="c1">// exports.add() in JavaScript.</span><span class="w"></span>
+<span class="c1">//export add</span><span class="w"></span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <h2>Compile to WebAssembly (WASM)</h2>
@@ -284,27 +284,27 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 <p><strong>Please note:</strong> frontend development is really not my daily bread. I'm sure the above code can be written in a better way, but I can assure you that at least it works.</p>
 <h2>Serving the static files</h2>
 <p>The project itself would be complete, but you need something able to serve static pages and set a couple of required headers. We can implement one with a few lines of Go. Create a new file named <code>server.go</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w"></span>
 
-<span class="kn">import</span> <span class="p">(</span>
-    <span class="s">&quot;log&quot;</span>
-    <span class="s">&quot;net/http&quot;</span>
-    <span class="s">&quot;strings&quot;</span>
-<span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&quot;log&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="s">&quot;net/http&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="s">&quot;strings&quot;</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
 
-<span class="kd">const</span> <span class="nx">dir</span> <span class="p">=</span> <span class="s">&quot;./&quot;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">dir</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;./&quot;</span><span class="w"></span>
 
-<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">fs</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">Dir</span><span class="p">(</span><span class="nx">dir</span><span class="p">))</span>
-    <span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;Serving &quot;</span> <span class="o">+</span> <span class="nx">dir</span> <span class="o">+</span> <span class="s">&quot; on http://localhost:8080&quot;</span><span class="p">)</span>
-    <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">resp</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="s">&quot;Cache-Control&quot;</span><span class="p">,</span> <span class="s">&quot;no-cache&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">HasSuffix</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span> <span class="s">&quot;.wasm&quot;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;content-type&quot;</span><span class="p">,</span> <span class="s">&quot;application/wasm&quot;</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="nx">fs</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">resp</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span>
-    <span class="p">}))</span>
-<span class="p">}</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nx">fs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">Dir</span><span class="p">(</span><span class="nx">dir</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;Serving &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; on http://localhost:8080&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">resp</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="s">&quot;Cache-Control&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;no-cache&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">HasSuffix</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.wasm&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;content-type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/wasm&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="nx">fs</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">}))</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <h2>Testing the project</h2>
@@ -373,7 +373,7 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>

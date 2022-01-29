@@ -188,20 +188,20 @@ instructions are not available in this guide).</p>
 <strong>Dockerfile</strong> and use the available commands and syntax to declare how
 the image will be built. At the beginning of the file we need to specify
 the base image we are going to use and our contact informations:</p>
-<div class="highlight"><pre><span></span><code><span class="k">FROM</span> <span class="s">ubuntu:14.04</span>
-<span class="k">MAINTAINER</span><span class="s"> Andrea Grandi &lt;nospamthanks@gmail.com&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">ubuntu:14.04</span>
+<span class="k">MAINTAINER</span><span class="w"> </span><span class="s">Andrea Grandi &lt;nospamthanks@gmail.com&gt;</span>
 </code></pre></div>
 
 <p>In our case we are using <strong>Ubuntu 14.04</strong> as base image. After these
 instructions we need to add PostgreSQL package repository and GnuPG
 public key:</p>
-<div class="highlight"><pre><span></span><code><span class="k">RUN</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span> &gt; /etc/apt/sources.list.d/pgdg.list
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span> &gt; /etc/apt/sources.list.d/pgdg.list
 </code></pre></div>
 
 <p>then we need to update the packages available in Ubuntu and install
 PostgreSQL:</p>
-<div class="highlight"><pre><span></span><code><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
   <span class="o">&amp;&amp;</span> apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
 </code></pre></div>
 
@@ -213,31 +213,31 @@ considered two different layers by Docker and in case an updated package
 is available it won't be installed when the image is rebuilt.</p>
 <p>At this point we switch to <strong>postgres</strong> user to execute the next
 commands:</p>
-<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="s"> postgres</span>
-<span class="k">RUN</span> /etc/init.d/postgresql start   
+<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="w"> </span><span class="s">postgres</span>
+<span class="k">RUN</span><span class="w"> </span>/etc/init.d/postgresql start   
   <span class="o">&amp;&amp;</span> psql --command <span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span>   
   <span class="o">&amp;&amp;</span> createdb -O pguser pgdb
 </code></pre></div>
 
 <p>We switch to <strong>root</strong> user and we complete the configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="s"> root</span>
-<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
-<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
+<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="w"> </span><span class="s">root</span>
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
 </code></pre></div>
 
 <p>We expose the port where PostgreSQL will listen to:</p>
-<div class="highlight"><pre><span></span><code><span class="k">EXPOSE</span><span class="s"> 5432</span>
+<div class="highlight"><pre><span></span><code><span class="k">EXPOSE</span><span class="w"> </span><span class="s">5432</span>
 </code></pre></div>
 
 <p>We setup the data and shared folders that we will use later:</p>
-<div class="highlight"><pre><span></span><code><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
-<span class="k">VOLUME</span>  <span class="p">[</span><span class="s2">&quot;/etc/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/log/postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
+<span class="k">VOLUME</span><span class="w">  </span><span class="p">[</span><span class="s2">&quot;/etc/postgresql&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/var/log/postgresql&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/var/lib/postgresql&quot;</span><span class="p">]</span>
 </code></pre></div>
 
 <p>Finally we switch again to the <strong>postgres</strong> user and we define the entry
 command for this image:</p>
-<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="s"> postgres</span>
-<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;</span><span class="p">,</span> <span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/lib/postgresql/9.3/main&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="w"> </span><span class="s">postgres</span>
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/usr/lib/postgresql/9.3/bin/postgres&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-D&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/var/lib/postgresql/9.3/main&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;config_file=/etc/postgresql/9.3/main/postgresql.conf&quot;</span><span class="p">]</span>
 </code></pre></div>
 
 <p>The full <strong>Dockerfile</strong> is available
@@ -278,18 +278,18 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
 fig</strong>).</p>
-<div class="highlight"><pre><span></span><code><span class="nt">dbdata</span><span class="p">:</span>
-  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
-  <span class="nt">volumes</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span>
-  <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">dbdata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span><span class="w"></span>
+<span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span><span class="w"></span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 
-<span class="nt">db</span><span class="p">:</span>
-  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
-  <span class="nt">volumes_from</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dbdata</span>
-  <span class="nt">ports</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;5432:5432&quot;</span>
+<span class="nt">db</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span><span class="w"></span>
+<span class="w">  </span><span class="nt">volumes_from</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbdata</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5432:5432&quot;</span><span class="w"></span>
 </code></pre></div>
 
 <p>Save this file as <strong>fig.yml</strong> in the same folder of the Dockerfile and
@@ -355,7 +355,7 @@ repository <a href="https://github.com/andreagrandi/postgresql-docker">https://
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>

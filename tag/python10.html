@@ -150,6 +150,87 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/">Using GtkIconView in Python: a small tutorial</a></h2>
+    <p>
+      Posted on Tue 15 April 2008 in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/gtk.html">gtk</a>,              <a href="https://www.andreagrandi.it/tag/gtkiconview.html">gtkiconview</a>,              <a href="https://www.andreagrandi.it/tag/gtkliststore.html">gtkliststore</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>In these days I was looking for a simple tutorial to understand how to
+use <strong>GtkIconView</strong>, but the only thing I was able to find was an
+example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
+thinking it would be useful for other people trying to use that Gtk
+control. You can find the code here:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">gtk</span>
+<span class="kn">import</span> <span class="nn">gobject</span>
+
+<span class="n">DEFAULT_IMAGE_WIDTH</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># Main Window setup  </span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">WINDOW_TOPLEVEL</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_size_request</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;destroy&quot;</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Python GtkIconView Test&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a VBox  </span>
+<span class="n">vbox</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>  
+<span class="n">window</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vbox</span><span class="p">)</span>
+
+<span class="c1"># Setup Scrolled Window  </span>
+<span class="n">scrolled_win</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">ScrolledWindow</span><span class="p">()</span>
+<span class="n">scrolled_win</span><span class="o">.</span><span class="n">set_policy</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">POLICY_AUTOMATIC</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">POLICY_AUTOMATIC</span><span class="p">)</span>
+
+<span class="c1"># Setup ListStore to contain images and description  </span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">ListStore</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">Pixbuf</span><span class="p">,</span> <span class="n">gobject</span><span class="o">.</span><span class="n">TYPE_STRING</span><span class="p">)</span>
+
+<span class="c1"># Create a tuple with image files</span>
+<span class="n">immagini</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;BD786-TFR.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;guido_sottozero.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;IMG_0056.JPG&quot;</span><span class="p">,</span> <span class="s2">&quot;movies_card.jpg&quot;</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">im</span> <span class="ow">in</span> <span class="n">immagini</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>  
+        <span class="n">pixbuf</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">pixbuf_new_from_file</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">pix_w</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+        <span class="n">pix_h</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">new_h</span> <span class="o">=</span> <span class="p">(</span><span class="n">pix_h</span> <span class="o">*</span> <span class="n">DEFAULT_IMAGE_WIDTH</span><span class="p">)</span> <span class="o">/</span> <span class="n">pix_w</span> <span class="c1"># Calculate the scaled height before resizing image</span>
+        <span class="n">scaled_pix</span> <span class="o">=</span> <span class="n">pixbuf</span><span class="o">.</span><span class="n">scale_simple</span><span class="p">(</span>
+            <span class="n">DEFAULT_IMAGE_WIDTH</span><span class="p">,</span> <span class="n">new_h</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">INTERP_TILES</span>
+        <span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scaled_pix</span><span class="p">,</span> <span class="n">im</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Setup GtkIconView  </span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">IconView</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>  <span class="c1"># Pass the model stored in a ListStore to the GtkIconView</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_pixbuf_column</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_text_column</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_selection_mode</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">SELECTION_MULTIPLE</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_columns</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">set_item_width</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Pack objects and show them all  </span>
+<span class="n">scrolled_win</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>  
+<span class="n">vbox</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">scrolled_win</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+<span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+
+<p>The important thing to notice is that you have to store all the images
+in a <strong>GtkListStore</strong> and pass it to the <strong>GtkIconView</strong> as <em>"model"</em>
+parameter. I hope this example is clear. If you have any question,
+please comment this post and I'll try to answer.</p>
+<p>This is a screenshot of this example:</p>
+<p><a href=""><img alt="gtkiconview" src="https://www.andreagrandi.it/images/2008/04/gtkiconview_sample.png"></a></p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2008/04/09/pymaemo-talk-on-may-10th-in-florence-at-pycon2-conference/">PyMaemo Talk on May 10th in Florence at PyCon2 Conference</a></h2>
     <p>
       Posted on Wed 09 April 2008 in <a href="https://www.andreagrandi.it/category/linux-maemo-en-python.html">Linux, Maemo (EN), Python</a>
@@ -270,7 +351,7 @@ vanno da 2 fino al numero passato come parametro.</p>
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>

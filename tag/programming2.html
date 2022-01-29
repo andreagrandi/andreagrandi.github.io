@@ -150,6 +150,43 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2019/02/21/skipping-tests-depending-python-version/">Skipping tests depending on the Python version</a></h2>
+    <p>
+      Posted on Thu 21 February 2019 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/python.html">python</a>,              <a href="https://www.andreagrandi.it/tag/test.html">test</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/software.html">software</a>,              <a href="https://www.andreagrandi.it/tag/development.html">development</a>,              <a href="https://www.andreagrandi.it/tag/testing.html">testing</a>
+    </p>
+  </header>
+  <div>
+      <p>Sometimes we want to run certain tests only on a specific version of Python.</p>
+<p>Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won't run
+under Python 3.</p>
+<p>Chances are that during the migration you are already using the <a href="https://pythonhosted.org/six/">six</a> library. The <strong>six</strong> libraries have
+two boolean properties which are initialised to <code>True</code> depending on the Python version which is being used: <code>PY2</code> when running under Python 2
+and <code>PY3</code> when running under Python 3.</p>
+<p>This library, combined with the <strong>skipIf</strong> method of <a href="https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures">unittest library</a>
+can be used to easily skip tests when using Python 3:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+
+<span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">PY3</span><span class="p">,</span> <span class="s2">&quot;not compatible with Python 3&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This test won&#39;t run under Python 3</span>
+        <span class="k">pass</span>
+</code></pre></div>
+
+<h2>Credits</h2>
+<p>Thanks to my colleague <strong><a href="https://github.com/valnico">Nicola</a></strong> for giving me the inspiration to write this post.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2018/12/19/installing-python-and-virtualenv-on-osx/">Installing Python and virtualenv on MacOS</a></h2>
     <p>
       Posted on Wed 19 December 2018 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
@@ -214,59 +251,6 @@ Before Python 3.7.x to insert a debugging point we had to write <code>import pdb
 <li><a href="https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c">https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c</a></li>
 </ul>
   </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/">Go: defining methods on struct types</a></h2>
-    <p>
-      Posted on Mon 16 March 2015 in <a href="https://www.andreagrandi.it/category/go.html">Go</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/go.html">go</a>,              <a href="https://www.andreagrandi.it/tag/golang.html">golang</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/struct.html">struct</a>
-    </p>
-  </header>
-  <div>
-      <p>In <strong>Go</strong> it's possible to define <strong>methods</strong> on <strong>struct types</strong>. The
-syntax needed for it can be a bit strange for people that are used to
-define classes and methods in Java, C# etc... but once you learn it
-it's quite easy to use.</p>
-<p>In my case for example I needed something that could contain a Timer
-object, a string and a method that could start the timer and call a
-method at the end of the Timer execution. I implemented it in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">type</span> <span class="nx">DeviceTimer</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">DeviceID</span>    <span class="kt">string</span>
-    <span class="nx">DeviceTimer</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">timer</span> <span class="nx">DeviceTimer</span><span class="p">)</span> <span class="nx">startTimer</span><span class="p">()</span> <span class="p">{</span>
-    <span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span>
-    <span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div>
-
-<p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
-where I defined a method called <code>startTimer</code> and I specify timer
-<code>DeviceTimer</code> inside the func definition. This basically "extends" the
-struct DeviceTimer adding that method to it. This means that I can call
-that method in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span> <span class="o">*</span> <span class="mi">300</span><span class="p">)</span>
-<span class="nx">device_timer</span> <span class="o">:=</span> <span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span> <span class="nx">timer</span><span class="p">}</span>
-<span class="k">go</span> <span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span>
-</code></pre></div>
-
-<p>This is all you need to do. If you want to read more about this subject,
-I can suggest to read these two articles:</p>
-<ul>
-<li><strong>Go by Example: Methods</strong> <a href="https://gobyexample.com/methods">https://gobyexample.com/methods</a></li>
-<li><strong>Inheritance and subclassing in Go - or its near likeness</strong>
-    <a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html">http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html</a></li>
-</ul>
-<p><strong>Note:</strong> I'm not a Go expert and these are just my personal notes I'm
-taking during my learning experience. I'm very keen to share my notes
-with everyone, but please don't take them as notes from an expert Go
-developer.</p>
-  </div>
 </article>
 
   <div class="pagination">
@@ -282,7 +266,7 @@ developer.</p>
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>

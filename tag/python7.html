@@ -150,6 +150,56 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h2>
+    <p>
+      Posted on Sun 12 July 2015 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/importio.html">import.io</a>,              <a href="https://www.andreagrandi.it/tag/music.html">music</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/somafm.html">soma.fm</a>,              <a href="https://www.andreagrandi.it/tag/spotify.html">spotify</a>
+    </p>
+  </header>
+  <div>
+      <p>I'm a big fan of <a href="http://somafm.com">Soma.fm</a> (a 25+ channels streaming
+radio based in San Francisco) and during the years I've been writing
+clients for this radio for different mobile platforms (Maemo, MeeGo,
+Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
+their "<a href="http://somafm.com/indiepop/"><strong>Indie Pop Rock</strong></a>" channel that
+during these years made me discover some very good artists.</p>
+<p>When <strong>Spotify</strong> finally was available in Italy (I'm still using it
+right now that I live in the UK), something that I always missed was a
+radio with the same good music. Why not just listening to Soma.fm?
+Because I like to listen to the music while I commute and in the London
+Underground it's nearly impossible to have signal.</p>
+<p>So I was thinking: it would be nice to have <strong>a Spotify playlist with
+Soma.fm tracks</strong>. Wait a moment.... <strong>I can do it!</strong></p>
+<p><a href="https://www.andreagrandi.it/images/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/images/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg" width="60%"></a></p>
+<p>Soma.fm publishes the tracks history with all the tracks streamed during
+the last hour <a href="http://somafm.com/indiepop/songhistory.html">http://somafm.com/indiepop/songhistory.html</a> so I just
+needed something to parse this list for me and return me a well
+formatted version.</p>
+<p>Thanks to <a href="https://import.io"><strong>import.io</strong></a> (it's a service that takes
+a web page as input, parse the data and generates a RESTful API to
+access this data) I was able to easily get the data I needed. At this
+point I only needed to be able to loop through the list, search each
+track on Spotify and add it to my playlist.</p>
+<p>The <strong>source code is fully available</strong> here
+<a href="https://github.com/andreagrandi/spotisoma">https://github.com/andreagrandi/spotisoma</a></p>
+<p><strong>Note:</strong> you can't just get the code and run it. You will need to get
+your own <strong>import.io api key</strong>, generate your import.io api url, get a
+<a href="https://developer.spotify.com/technologies/libspotify/keys/"><strong>Spotify application
+key</strong></a> (the
+old/deprecated one, since it was nearly impossible for me to use oauth
+in a simple Python script due to the fact I didn't have an endpoint to
+receive the token back. You can get more informations here:
+<a href="https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys">https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys</a>)
+and set your env variables with your Spotify username and password. Last
+but not least: the <strong>old Spotify library</strong> only works with <strong>Premium</strong>
+accounts.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">Automatically pull updated Docker images and restart containers with docker-puller</a></h2>
     <p>
       Posted on Sat 25 October 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
@@ -187,14 +237,14 @@ the people in <strong>#docker @ FreeNode</strong> for the support.</p>
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
 <strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-    <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
-    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;scripts/hello.sh&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;hooks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;hello&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts/hello.sh&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
@@ -301,58 +351,6 @@ to this project. I still have to find a good name and logo for this
 application.</p>
 <p>Who want to help me?</p>
   </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2009/08/13/writing-python-bindings-of-existing-c-libraries-building-and-installing-with-distutils/">Writing Python bindings of existing C libraries – (3) – Building and Installing with distutils</a></h2>
-    <p>
-      Posted on Thu 13 August 2009 in <a href="https://www.andreagrandi.it/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/binding.html">binding</a>,              <a href="https://www.andreagrandi.it/tag/distutils.html">distutils</a>,              <a href="https://www.andreagrandi.it/tag/library.html">library</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/setup.html">setup</a>
-    </p>
-  </header>
-  <div>
-      <p>In the last post of this series, we saw how to write a simple binding
-and we finished to build and install it manually. This is of course not
-a good way to manage the building/installation procedure.</p>
-<p>In Python we can use a library called <strong>distutils</strong> that let us to
-automatize the building and installing process. I'll use the <strong>foo</strong>
-source code to create the package, so it will be easier to understand.</p>
-<h2>Using distutils</h2>
-<p>All we have to do is to write a <strong>setup.py</strong> file similar to this one:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">distutils.core</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">Extension</span>
-
-<span class="n">foomodule</span> <span class="o">=</span> <span class="n">Extension</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">sources</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;foo.c&#39;</span><span class="p">])</span>
-
-<span class="n">setup</span> <span class="p">(</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Foo&#39;</span><span class="p">,</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span>  
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;This is a package for Foo&#39;</span><span class="p">,</span>  
-    <span class="n">ext_modules</span> <span class="o">=</span> <span class="p">[</span><span class="n">foomodule</span><span class="p">]</span>
-<span class="p">)</span>
-</code></pre></div>
-
-<p>As you can see, we have to first import needed modules with: <strong>from
-distutils.core import setup, Extension</strong><br>
-then we create an entry for each module we have (in this case just one,
-"foomodule"). We then call the <strong>setup()</strong> method passing it all the
-parameters and our <strong>setup.py</strong> is complete.</p>
-<h2>Building and installing</h2>
-<p>To test it we can try to build the package in this way:</p>
-<div class="highlight"><pre><span></span><code>python2.5 setup.py build
-</code></pre></div>
-
-<p>if we want to install the module in our system:</p>
-<div class="highlight"><pre><span></span><code>python2.5 setup.py install
-</code></pre></div>
-
-<h2>References</h2>
-<ul>
-<li>Official Python documentation: <a href="http://docs.python.org/extending/building.html">http://docs.python.org/extending/building.html</a></li>
-</ul>
-  </div>
 </article>
 
   <div class="pagination">
@@ -368,7 +366,7 @@ parameters and our <strong>setup.py</strong> is complete.</p>
 
     <footer>
 <p>
-  &copy; 2021  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  &copy; 2022  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
