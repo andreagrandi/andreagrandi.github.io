@@ -68,6 +68,8 @@
   <title>Andrea Grandi &ndash; Posts by Andrea Grandi:</title>
 
 
+
+  <link rel="me" href="https://mastodon.social/@andreagrandi" />
 </head>
 
 <body class="light-theme"
@@ -148,115 +150,6 @@
 
 
 
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h2>
-    <p>
-      Posted on Thu 06 August 2009 in <a href="https://www.andreagrandi.it/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/binding.html">binding</a>,              <a href="https://www.andreagrandi.it/tag/igalia.html">Igalia</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-    </p>
-  </header>
-  <div>
-      <h2>Introduction</h2>
-<p>As I promised in the preceding post, I'll provide a very easy example of
-a python binding. Let's suppose we don't want to use the methods
-included in Python to sum two integer values and we want to do it in C
-and then call the add method from a python script. I'll write the
-complete source code first and then I'll explain all the parts of it.</p>
-<h2>Source Code</h2>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Python.h&gt;</span><span class="cp"></span>
-
-<span class="k">static</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="nf">foo_add</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="w">  </span>
-<span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">  </span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ii&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">b</span><span class="p">))</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w">  </span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w">  </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">  </span>
-<span class="p">}</span><span class="w"></span>
-
-<span class="k">static</span><span class="w"> </span><span class="n">PyMethodDef</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span><span class="w"> </span><span class="n">METH_VARARGS</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">},</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">}</span><span class="w">  </span>
-<span class="p">};</span><span class="w"></span>
-
-<span class="n">PyMODINIT_FUNC</span><span class="w"> </span><span class="nf">initfoo</span><span class="p">()</span><span class="w"></span>
-<span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w">  </span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-
-<h2>How it works</h2>
-<p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
-us to write an extension for Python language. To be able to include this
-header, we must have the python development packages installed in our
-system. For example in Debian based distributions we can install them
-with this command:</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install python2.5-dev
-</code></pre></div>
-
-<p>Every module has at least three parts. In the first part we write
-methods we want to call from the final python module: in this case we
-have a method called <strong>foo_add</strong> where "<em>foo</em>" is the name of the
-module and "<em>add</em>" the name of the method. Every method is declared as
-<strong>static PyObject</strong>. The method does anything particular except calling
-PyArg_ParseTuple to validate the input (we'll discuss this later),
-adding the two passed numbers and returning the result.</p>
-<p>In the second part we have something like a dictionary, defined as
-static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
-name of the module). For each method we want to expose in our python
-module, we have to add something like this:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
-</code></pre></div>
-
-<p>where "<em>add</em>" is the name of the method we want to be visible in our
-module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
-implemented in the C module, METH_VARARGS means that we want to pass
-some parameters to the function and the last one would be the
-description of the method (we can leave it NULL if we want).</p>
-<p>Third part allows us to register the defined method/s and the module:</p>
-<div class="highlight"><pre><span></span><code><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w"></span>
-</code></pre></div>
-
-<h3>Parsing Parameters</h3>
-<p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
-<strong>PyObject</strong> passed as parameter to the current method and follows
-almost the sscanf syntax to parse parameters (in this case we had <em>"ii"</em>
-for two integers). You can fin the complete reference here:
-<a href="http://docs.python.org/c-api/arg.html">http://docs.python.org/c-api/arg.html</a></p>
-<h2>Building and installing</h2>
-<p>To build the module, we have to be in the source directory and execute
-this command:</p>
-<div class="highlight"><pre><span></span><code>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
-</code></pre></div>
-
-<p>then we've to copy the generated module to the python's modules
-directory:</p>
-<div class="highlight"><pre><span></span><code>cp foo.so /usr/lib/python2.5/site-packages/
-</code></pre></div>
-
-<h2>Testing our module</h2>
-<p>Testing the module is really easy. We've to start a python shell or
-create a python script with the following source code:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">foo</span>
-<span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</code></pre></div>
-
-<p>if all is working fine, the printed result should be <strong>5</strong></p>
-<h2>References</h2>
-<ul>
-<li><a href="http://docs.python.org/extending/extending.html">http://docs.python.org/extending/extending.html</a></li>
-<li><a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html">http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html</a></li>
-</ul>
-  </div>
-  <hr />
-</article>
 <article>
   <header>
     <h2><a href="https://www.andreagrandi.it/2009/08/05/mafw-and-python-asking-for-developers-feedback/">MAFW and Python: asking for developers feedback</a></h2>
@@ -379,6 +272,36 @@ so I hope to be able to learn a lot and to contribute as much as I can
 to this project.</p>
 <p>If anyone else want to join PyMaemo team and help us to develop Python
 bindings, I think he will be welcome!</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://www.andreagrandi.it/2009/07/22/registration-to-maemo-summit-2009-open/">Registration to Maemo Summit 2009 open!</a></h2>
+    <p>
+      Posted on Wed 22 July 2009 in <a href="https://www.andreagrandi.it/category/linux-maemo-en.html">Linux, Maemo (EN)</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/2009.html">2009</a>,              <a href="https://www.andreagrandi.it/tag/amsterdam.html">amsterdam</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/summit.html">summit</a>
+    </p>
+  </header>
+  <div>
+      <p><a href=""><img alt="Maemo Logo" src="https://www.andreagrandi.it/images/2009/07/Maemo_org_logo_colour.png" title="Maemo Logo"></a></p>
+<p><a href="http://maemo.org/news/events/registrations/register/e840196271eb11deb15535a00f6d72187218">Registration</a>
+for the <a href="http://wiki.maemo.org/Maemo_Summit_2009">Maemo Summit 2009</a> has
+been opened.</p>
+<p>The summit will have free entrance, but registration is required to
+grant you food, drinks, a maemo.org shirt and a seat. Please register as
+soon as possible, so we can get a clear picture of how many people are
+expected.</p>
+<p><a href="http://maemo.org/news/events/registrations/register/e840196271eb11deb15535a00f6d72187218">The registration form</a>
+also has an option for sponsorship requests. Details about sponsorship
+will be published later and requests will be evaluated after this. You
+can always change your registration entry at a later point in time if
+needed.</p>
+<p>The event location details and a list of participants can be found
+<a href="http://maemo.org/news/events/maemo_summit_2009/">here</a>.</p>
+<p>See you all in Amsterdam at Maemo Summit 2009!</p>
   </div>
 </article>
 

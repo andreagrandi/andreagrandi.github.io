@@ -68,6 +68,8 @@
   <title>Andrea Grandi</title>
 
 
+
+  <link rel="me" href="https://mastodon.social/@andreagrandi" />
 </head>
 
 <body class="light-theme"
@@ -148,26 +150,6 @@
 
 
 
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2018/04/14/machine-learning-pima-indians-diabetes/">Machine Learning: Pima Indians Diabetes</a></h2>
-    <p>
-      Posted on Sat 14 April 2018 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/machine-learning.html">Machine Learning</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/scikit-learn.html">scikit-learn</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>Solving the Pima Indians Diabetes problem with Machine Learning using Python and scikit-learn</p>
-        <br>
-        <a class="btn"
-           href="https://www.andreagrandi.it/2018/04/14/machine-learning-pima-indians-diabetes/">
-          Continue reading
-        </a>
-  </div>
-  <hr />
-</article>
 <article>
   <header>
     <h2><a href="https://www.andreagrandi.it/2017/10/21/keybase-pgp-encryption-made-easy/">Keybase: PGP encryption made easy</a></h2>
@@ -896,15 +878,15 @@ The id is not easy to memorise and it changes depending on the zone we are worki
 So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?</p>
 <h3>Getting latest Ubuntu AMI id</h3>
 <p>In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.</p>
-<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;aws_region&quot;</span><span class="w"> </span><span class="p">{</span><span class="err"> default = &quot;eu-west-2&quot; } # London</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;aws_region&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;eu-west-2&quot;</span><span class="w"> </span><span class="p">}</span><span class="c1"> # London</span>
 
-<span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;aws&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;aws&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${var.aws_region}&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="na">access_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;youraccesskey&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="na">secret_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;yoursecretkey&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
-<span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_ami&quot;</span><span class="w"> </span><span class="nv">&quot;ubuntu&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">data</span><span class="w"> </span><span class="nc">&quot;aws_ami&quot;</span><span class="w"> </span><span class="nv">&quot;ubuntu&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="na">most_recent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="w"></span>
 
 <span class="w">    </span><span class="nb">filter</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -920,7 +902,7 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 <span class="w">    </span><span class="na">owners</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;099720109477&quot;</span><span class="p">]</span><span class="c1"> # Canonical</span>
 <span class="p">}</span><span class="w"></span>
 
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;aws_instance&quot;</span><span class="w"> </span><span class="nv">&quot;web&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;aws_instance&quot;</span><span class="w"> </span><span class="nv">&quot;web&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="na">ami</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="na">instance_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;t2.micro&quot;</span><span class="w"></span>
 
@@ -929,7 +911,7 @@ So, how can we be sure to get the correct ID for our region, of the latest image
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
-<span class="kr">output</span><span class="w"> </span><span class="nv">&quot;image_id&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">output</span><span class="w"> </span><span class="nv">&quot;image_id&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;${data.aws_ami.ubuntu.id}&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
@@ -978,6 +960,164 @@ image_id = ami-03998867
 </code></pre></div>
 
 <p>That's all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://www.andreagrandi.it/2017/08/17/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/">Creating a production ready API with Python and Django Rest Framework – part 4</a></h2>
+    <p>
+      Posted on Thu 17 August 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/api.html">API</a>,              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/framework.html">framework</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>In the <a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">previous
+part</a>
+of the tutorial we implemented <strong>details</strong> management, <strong>relations</strong>
+between models, <strong>nested APIs</strong> and a different level of permissions.
+Our API is basically complete but it is working properly? Is the source
+code free of bugs? Would you feel confident to refactor the code without
+breaking something? The answer to all our question is probably no. <strong>I
+can't be sure if the code behaves properly nor I would feel confident
+refactoring anything without having some tests coverage</strong>.</p>
+<p>As I mentioned previously, we should have written tests since the
+beginning, but I really didn't want to mix too many concepts together
+and I wanted to let the user concentrate on the Rest Framework instead.</p>
+<h3>Test structure and configuration</h3>
+<p>Before beginning the fourth part of this tutorial, make sure you have
+grabbed the latest source code
+from <a href="https://github.com/andreagrandi/drf-tutorial">https://github.com/andreagrandi/drf-tutorial</a> and you have checked
+out the previous git tag:</p>
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.14
+</code></pre></div>
+
+<p>Django has an integrated test runner but my personal choice is to use
+<a href="https://doc.pytest.org/en/latest/"><strong>pytest</strong></a>, so as first thing let's
+install the needed libraries:</p>
+<div class="highlight"><pre><span></span><code>pip install pytest pytest-django
+</code></pre></div>
+
+<p>As long as we respect a minimum of conventions (test files must start
+with <strong>test_</strong> prefix), tests can be placed anywhere in the code. My
+advice is to put them all together in a separate folder and divide them
+according to app names. In our case we are going to create a folder
+named "<strong>tests</strong>" at the same level of <strong>manage.py</strong> file. Inside this
+folder we need to create a <strong>__init__.py</strong> file and another folder
+called <strong>catalog</strong> with an additional <strong>__init__.py</strong> inside. Now,
+still at the same level of <strong>manage.py</strong> create a file called
+<strong>pytest.ini</strong> with this content:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">pytest</span><span class="p">]</span>
+<span class="n">DJANGO_SETTINGS_MODULE</span><span class="o">=</span><span class="n">drftutorial</span><span class="o">.</span><span class="n">settings</span>
+</code></pre></div>
+
+<p>Are you feeling confused? No problem. You can checkout the source code
+containing these changes.</p>
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.15
+</code></pre></div>
+
+<p>You can check if you have done everything correctly going inside the
+drftutorial folder (the one containing <strong>manage.py</strong>) and launching
+<strong>pytest</strong>. If you see something like this, you did your changes
+correctly:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>master<span class="o">)</span> <span class="nv">pytest</span>
+<span class="o">=============================================================================================================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==============================================================================================================================</span>
+platform darwin -- Python <span class="m">2</span>.7.13, pytest-3.0.6, py-1.4.32, pluggy-0.4.0
+Django settings: drftutorial.settings <span class="o">(</span>from ini file<span class="o">)</span>
+rootdir: /Users/andrea/Projects/drf-tutorial/drftutorial, inifile: pytest.ini
+plugins: django-3.1.2
+collected <span class="m">0</span> <span class="nv">items</span>
+
+<span class="o">=========================================================================================================================</span> no tests ran <span class="k">in</span> <span class="m">0</span>.01 <span class="nv">seconds</span> <span class="o">=========================================================================================================================</span>
+<span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>master<span class="o">)</span>
+</code></pre></div>
+
+<h3>Writing the first test</h3>
+<p>To begin with, I will show you how to write a simple test that will
+verify if the API can return the products list. If you remember we
+implemented this API in the first part of the tutorial. First of all
+create a file called <strong>test_views.py</strong> under the folder
+<strong>drftutorial/tests/catalog/</strong> and add this code:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">rest_framework.test</span> <span class="kn">import</span> <span class="n">APITestCase</span>
+
+
+<span class="k">class</span> <span class="nc">TestProductList</span><span class="p">(</span><span class="n">APITestCase</span><span class="p">):</span>
+    <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">django_db</span>
+    <span class="k">def</span> <span class="nf">test_can_get_product_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;product-list&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()),</span> <span class="mi">8</span><span class="p">)</span>
+</code></pre></div>
+
+<p>before being able to run this test we need to change a little thing in
+the <strong>catalog/urls.py</strong> file, something we should have done since the
+beginning. Please change the first url in this way, adding the <strong>name</strong>
+parameter:</p>
+<div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;product-list&#39;</span><span class="p">),</span>
+    <span class="o">...</span>
+</code></pre></div>
+
+<p>at this point we are able to run our test suite again and verify the
+test is passing:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>test-productlist<span class="o">)</span> ✗ pytest -v
+<span class="o">=============================================================================================================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==============================================================================================================================</span>
+platform darwin -- Python <span class="m">2</span>.7.13, pytest-3.0.6, py-1.4.32, pluggy-0.4.0 -- /Users/andrea/.virtualenvs/drf-tutorial/bin/python2.7
+cachedir: .cache
+Django settings: drftutorial.settings <span class="o">(</span>from ini file<span class="o">)</span>
+rootdir: /Users/andrea/Projects/drf-tutorial/drftutorial, inifile: pytest.ini
+plugins: django-3.1.2
+collected <span class="m">1</span> items
+
+tests/catalog/test_views.py::TestProductList::test_can_get_product_list <span class="nv">PASSED</span>
+
+<span class="o">===========================================================================================================================</span> <span class="m">1</span> passed <span class="k">in</span> <span class="m">0</span>.98 <span class="nv">seconds</span> <span class="o">===========================================================================================================================</span>
+</code></pre></div>
+
+<p>To checkout the source code at this point:</p>
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.16
+</code></pre></div>
+
+<h3>Explaining the test code</h3>
+<p>When we implement a test, the first thing to do is to create a
+<strong>test_*</strong> file and import the minimum necessary to write a test class
+and method. Each test class must inherit from <strong>APITestCase</strong> and have a
+name that start with <strong>Test</strong>, like <strong>TestProductList</strong>. Since we use
+<a href="https://doc.pytest.org/en/latest/">pytest</a>, we need to mark our method
+with <strong>@pytest.mark.django_db decorator</strong>, to tell the test suite our
+code will explicitly access the database. We are going to use the <strong>client</strong> object
+that is integrated in APITestCase to perform the request. Before doing that we
+first get the local <strong>url</strong> using Django's <strong>reverse</strong> function. At this point
+we do the call using the client:</p>
+<div class="highlight"><pre><span></span><code><span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</code></pre></div>
+
+<p>and then we assert a couple of things that we expect to be true:</p>
+<div class="highlight"><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()),</span> <span class="mi">8</span><span class="p">)</span>
+</code></pre></div>
+
+<p>We check that our API returns the <strong>200</strong> status code and that in the returned
+JSON there are 8 elements.</p>
+<p>It's normally a good practice to create test data inside the tests, but in our case
+we previously created a data migration that creates test data. Migrations are
+run every time we run tests so when we call our API, the data will be already there.</p>
+<h3>Wrapping up</h3>
+<p>I've written a <a href="https://github.com/andreagrandi/drf-tutorial/blob/master/drftutorial/tests/catalog/test_views.py">few tests</a> 
+for all the views we have implemented until now and they are available
+if you checkout this version of the code:</p>
+<div class="highlight"><pre><span></span><code>git checkout tutorial-1.17
+</code></pre></div>
+
+<p>I've only tested the views but it would be nice to test even the permission class, for example.
+Please remember to write your tests first, if possible: implementing the code will be much more natural
+once the tests are already in place.</p>
   </div>
 </article>
 
