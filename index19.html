@@ -152,6 +152,76 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2012/04/27/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/">Ubuntu 12.04, Nvidia 8800 GS and Nouveau drivers</a></h2>
+    <p>
+      Posted on Fri 27 April 2012 in <a href="https://www.andreagrandi.it/category/howto-ubuntu-en.html">HowTo, Ubuntu (EN)</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/drivers.html">drivers</a>,              <a href="https://www.andreagrandi.it/tag/graphic.html">graphic</a>,              <a href="https://www.andreagrandi.it/tag/nouveau.html">Nouveau</a>,              <a href="https://www.andreagrandi.it/tag/nvidia.html">nvidia</a>,              <a href="https://www.andreagrandi.it/tag/pangolin.html">Pangolin</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </header>
+  <div>
+      <p><a href="https://www.andreagrandi.it/images/2012/04/logo_nvidia_linux.jpg"><img alt="logo nvidia linux" src="https://www.andreagrandi.it/images/2012/04/logo_nvidia_linux.jpg"></a></p>
+<p>After upgrading my desktop PC to <strong>Ubuntu 12.04</strong> (actually my main
+machine) I started experimenting many <strong>Xorg crashes</strong> and instability
+issues. I <a href="https://bugs.launchpad.net/ubuntu/+source/nvidia-graphics-drivers/+bug/986445">reported the
+bug</a>,
+but I had to find a solution or I should have rolled back to Ubuntu
+11.10. The problem (from my point of view) is of the new <strong>Nvidia
+295.40</strong> binary drivers. I also tried an older version (295.33)
+experiencing the same problems. I then decided to give the
+<strong><a href="http://nouveau.freedesktop.org">Nouveau</a></strong> opensource drivers a try.</p>
+<p>I must say that in over 24 hours I didn't have a single Xorg crash. My
+desktop is very stable and Nouveau drivers are pretty fast: I can watch
+a 1080p video on Youtube in full screen without having any problem. The
+only problem with my machine is that I'm using a VGA Switcher to share
+my monitor wit Xbox (see <a href="https://www.andreagrandi.it/2012/02/26/sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher/">this old
+post</a>),
+so my monitor capabilities cannot be detected automatically and I had to
+do some manually tuning of the Xorg configuration.</p>
+<p>First of all I had to resolve a very annoying problem: the screen was
+blinking every 10 seconds and this really hurted my eyes. To fix this I
+had to add a kernel parameter: <strong>drm_kms_helper.poll=0<br>
+</strong>you need to add this string in <strong><code>/etc/default/grub</code></strong> to
+the <strong><code>GRUB_CMDLINE_LINUX_DEFAULT</code></strong> parameter. After this your line
+should look like this one: <strong><code>GRUB_CMDLINE_LINUX_DEFAULT="quiet splash drm_kms_helper.poll=0"</code></strong></p>
+<p>Don't forget to execute: <strong><code>sudo update-grub</code></strong> from the command line.</p>
+<p>Then I had to create a proper <strong>xorg.conf</strong> setting my resolution
+(1680x1050) manually:</p>
+<div class="highlight"><pre><span></span><code>Section <span class="s2">&quot;Monitor&quot;</span>  
+Identifier <span class="s2">&quot;DVI-I-1&quot;</span>  
+VendorName <span class="s2">&quot;Asus&quot;</span>  
+ModelName <span class="s2">&quot;Ancor Communications Inc VW222&quot;</span>  
+Modeline <span class="s2">&quot;1680x1050R&quot;</span> <span class="m">119</span>.00 <span class="m">1680</span> <span class="m">1728</span> <span class="m">1760</span> <span class="m">1840</span> <span class="m">1050</span> <span class="m">1053</span> <span class="m">1059</span> <span class="m">1080</span>
++hsync -vsync  
+Option <span class="s2">&quot;PreferredMode&quot;</span> <span class="s2">&quot;1680x1050R&quot;</span>  
+EndSection
+
+Section <span class="s2">&quot;Screen&quot;</span>  
+Identifier <span class="s2">&quot;Screen0&quot;</span>  
+Monitor <span class="s2">&quot;DVI-I-1&quot;</span>  
+EndSection
+</code></pre></div>
+
+<p>How do you generate the <strong>Modeline</strong> line? It's very simple. Just
+execute: "<strong>cvt -r 1680 1050</strong>" in the command line and you'll get a
+line similar to the one I added (of course substitute those numbers with
+the resolution you want).</p>
+<p>You have to save this file in <strong>/etc/X11/xorg.conf</strong> and reboot your
+system to use all the new settings. Now my system runs nicely and very
+fast! I'm really enjoying the new <strong>Ubuntu 12.04 Precise Pangolin</strong>. I
+just hope that Nvidia guys will fix the sta<br>
+bility issues of their driver as soon as possible, so I'll be able to
+choose again between the opensource driver and the closed source one
+(faster with 3D stuff, but more unstable as you can see).</p>
+<p>A big <strong>thanks</strong> to everyone in <strong>#nouveau</strong> <strong>IRC</strong> channel on
+<strong>Freenode</strong>. They were very kind to help me configuring their
+opensource driver.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2012/03/30/using-qml-qt-components-with-qtqnx-for-blackberry-playbook/">Using QML qt-components with QtQNX for BlackBerry PlayBook</a></h2>
     <p>
       Posted on Fri 30 March 2012 in <a href="https://www.andreagrandi.it/category/howto-programmazione-qt.html">HowTo, Programmazione, Qt</a>
@@ -326,41 +396,6 @@ EndSection
 
 <p>Remember to save the file in <strong><code>/etc/X11/xorg.conf</code></strong> and on next boot you
 will have the right resolution even with your VGA Switcher in use.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2012/02/21/ubuntu-syncronizing-settings-among-multiple-pc-using-ubuntu-one/">Ubuntu: synchronizing settings among multiple computers using Ubuntu One</a></h2>
-    <p>
-      Posted on Tue 21 February 2012 in <a href="https://www.andreagrandi.it/category/linux-ubuntu-en.html">Linux, Ubuntu (EN)</a>
-
-
-    </p>
-  </header>
-  <div>
-      <p>Using more than one computer, often it would be useful to have a way to
-synchronize settings among multiple computers. For example you change
-the desktop wallpaper on your office PC and you want to find the same
-wallpaper when you go back home on your personal PC or on your laptop.
-Language settings, online accounts, privacy settings ecc... are only few
-examples of settings you could want to have synchronized.</p>
-<p><strong><a href="https://one.ubuntu.com/">Ubuntu One</a></strong> already gives you <strong>5 Gb</strong>
-space for <strong>free</strong> and it's available for everyone activating it. It's a
-perfect place for storing a shared folder with all those settings. Of
-course not a simple folder, a special one. Applications use settings
-taken from usual \~/.appName and a daemon takes care of synchronizing
-data once you're connected to Internet. Just like Ubuntu One does with
-your documents.</p>
-<p>How do I choose which settings to synchronize? First of all you have to
-<strong>activate an Ubuntu One account</strong>, if you don't have already done it,
-then you just have to choose the settings you want using this tool
-available in <strong>Ubuntu System Settings</strong></p>
-<p><a href="https://www.andreagrandi.it/images/2012/02/UbuntuSettingsSync_mockup.png"><img alt="ubuntu settings sync" src="https://www.andreagrandi.it/images/2012/02/UbuntuSettingsSync_mockup.png"></a></p>
-<p>What? A mockup?! Isn't this tool available yet??!! Exactly :) This tool
-is not available <strong>yet</strong>, but I think <strong>it would be an interesting
-feature to talk about</strong> for the next (not precise, I mean 12.10) Ubuntu
-release. What do you think about?</p>
   </div>
 </article>
 

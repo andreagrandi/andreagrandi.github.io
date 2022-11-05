@@ -152,6 +152,53 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">Reversing a List in Python</a></h2>
+    <p>
+      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/lists.html">lists</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/reversed.html">reversed</a>
+    </p>
+  </header>
+  <div>
+      <p>Sometimes we need to reverse the order of the elements in a Python list.
+While there can be many different ways of implementing this task, I
+found three in particular that I appreciate for different reasons. Let's
+define first a list of integers that we will reverse later.</p>
+<div class="highlight"><pre><span></span><code><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</code></pre></div>
+
+<h3>List slicing</h3>
+<p>This method can be a bit obscure at first read, but basically it slices
+the whole list proceding in the reverse order:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">l</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+
+<h3>Reversed method</h3>
+<p>We use the
+<strong><a href="https://docs.python.org/2/library/functions.html#reversed">reversed</a></strong> method
+that returns an iterable object and a list comprehension to generate the
+new list</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span> <span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+
+<h3>Swapping values in place</h3>
+<p>This last method is more verbose and it basically divides the list in
+two parts and swaps the first with sixth, the second with fifth, etc...</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nb">input</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="n">i</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span> <span class="n">l</span>
+
+<span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/">Understanding Python decorators optimizing a recursive Fibonacci implementation</a></h2>
     <p>
       Posted on Mon 31 August 2015 in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a>
@@ -391,56 +438,6 @@ code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">ht
 <li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
 <li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
 </ul>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h2>
-    <p>
-      Posted on Sun 12 July 2015 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/importio.html">import.io</a>,              <a href="https://www.andreagrandi.it/tag/music.html">music</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/somafm.html">soma.fm</a>,              <a href="https://www.andreagrandi.it/tag/spotify.html">spotify</a>
-    </p>
-  </header>
-  <div>
-      <p>I'm a big fan of <a href="http://somafm.com">Soma.fm</a> (a 25+ channels streaming
-radio based in San Francisco) and during the years I've been writing
-clients for this radio for different mobile platforms (Maemo, MeeGo,
-Harmattan, Windows Phone, BlackBerry 10, Jolla). I love in particular
-their "<a href="http://somafm.com/indiepop/"><strong>Indie Pop Rock</strong></a>" channel that
-during these years made me discover some very good artists.</p>
-<p>When <strong>Spotify</strong> finally was available in Italy (I'm still using it
-right now that I live in the UK), something that I always missed was a
-radio with the same good music. Why not just listening to Soma.fm?
-Because I like to listen to the music while I commute and in the London
-Underground it's nearly impossible to have signal.</p>
-<p>So I was thinking: it would be nice to have <strong>a Spotify playlist with
-Soma.fm tracks</strong>. Wait a moment.... <strong>I can do it!</strong></p>
-<p><a href="https://www.andreagrandi.it/images/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg"><img alt="Frankenstein_Jr_Mel_Brooks_1974" src="https://www.andreagrandi.it/images/2015/07/Frankenstein_Jr_Mel_Brooks_1974.jpg" width="60%"></a></p>
-<p>Soma.fm publishes the tracks history with all the tracks streamed during
-the last hour <a href="http://somafm.com/indiepop/songhistory.html">http://somafm.com/indiepop/songhistory.html</a> so I just
-needed something to parse this list for me and return me a well
-formatted version.</p>
-<p>Thanks to <a href="https://import.io"><strong>import.io</strong></a> (it's a service that takes
-a web page as input, parse the data and generates a RESTful API to
-access this data) I was able to easily get the data I needed. At this
-point I only needed to be able to loop through the list, search each
-track on Spotify and add it to my playlist.</p>
-<p>The <strong>source code is fully available</strong> here
-<a href="https://github.com/andreagrandi/spotisoma">https://github.com/andreagrandi/spotisoma</a></p>
-<p><strong>Note:</strong> you can't just get the code and run it. You will need to get
-your own <strong>import.io api key</strong>, generate your import.io api url, get a
-<a href="https://developer.spotify.com/technologies/libspotify/keys/"><strong>Spotify application
-key</strong></a> (the
-old/deprecated one, since it was nearly impossible for me to use oauth
-in a simple Python script due to the fact I didn't have an endpoint to
-receive the token back. You can get more informations here:
-<a href="https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys">https://pyspotify.mopidy.com/en/latest/quickstart/#application-keys</a>)
-and set your env variables with your Spotify username and password. Last
-but not least: the <strong>old Spotify library</strong> only works with <strong>Premium</strong>
-accounts.</p>
   </div>
 </article>
 
