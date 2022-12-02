@@ -157,6 +157,72 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
+    <p>
+      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+important: middlewares are processed from top to bottom during a
+request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+middleware. For example you can just implement <code>process_request</code>
+and <code>process_template_response</code></li>
+<li>If you implement <code>process_request</code> and you decide to return an
+<code>HttpResponse</code>, all the other middlewares, views etc... will be
+ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</code></pre></div>
+
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/07/12/soma-fm-spotify-import-io-python-mashup/">Soma.fm + Spotify + import.io + Python mashup: automatically create a Spotify playlist with Soma.fm tracks</a></h2>
     <p>
       Posted on Sun 12 July 2015 in <a href="https://www.andreagrandi.it/category/python.html">Python</a>
@@ -309,54 +375,6 @@ libraries you may need. Using virtualenv is very easy:</p>
 <p>That's it! Once you're inside the virtual environment you will be using
 the Python libraries inside it. I suggest you to install all the Python
 libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip</strong></a>.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/">Twitter client for Maemo in Qt + Python: call for developers and UI designers</a></h2>
-    <p>
-      Posted on Mon 22 February 2010 in <a href="https://www.andreagrandi.it/category/linux-maemo-en-meego-programmazione-python-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/meego.html">MeeGo</a>,              <a href="https://www.andreagrandi.it/tag/n900.html">N900</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/qt.html">Qt</a>,              <a href="https://www.andreagrandi.it/tag/twitter.html">twitter</a>
-    </p>
-  </header>
-  <div>
-      <h2>Introduction</h2>
-<p>My name's <strong>Andrea Grandi</strong>, I'm italian and I'm a Maemo
-user/lover/contributor since the <strong>Nokia 770</strong>. I love <strong>Python</strong> as
-development language and few months ago I also gave some contributions
-to the <a href="http://pymaemo.garage.maemo.org/"><strong>PyMaemo</strong></a> project.</p>
-<p>In these days I had the idea to start writing a <strong>Twitter</strong> client for
-<strong>Maemo</strong> with a precise direction in my mind. I'll try to explain all
-my reasons here. First of all I've to thank the author of
-<a href="http://mauku.henrikhedberg.com/"><strong>Mauku</strong></a> client. I use it since its
-first version and I'm quite happy with it. Then, why do I want to write
-another one?</p>
-<ol>
-<li><strong>Maemo</strong> (MeeGo) is moving to <strong>Qt</strong> and for this reason I'm going
-    to use Qt, while Mauku uses Gtk.</li>
-<li>I'm learning Qt and what is better than writing a complete (but not
-    too complex) application to learn better?</li>
-<li>Mauku is not free as lot of people could think. Reading the source
-    codeyou find this "You are NOT allowed to modify or redistribute the
-    source code.", while I want to write a client and release it under
-    <strong>GPL2</strong> or <strong>GPL3</strong> license.</li>
-<li>Mauku is not updated since some months and we have no news about it.</li>
-<li>I love Python and I like to write free software in this language.</li>
-<li>I want to give to Maemo a stronger contribute.</li>
-</ol>
-<h2>My request for help</h2>
-<p>Before lot of people start writing their own client resulting in 4-5
-twitter clients for Maemo, why don't we join our strength and work to a
-common project? I'm not a Python expert nor a Qt one, but I've some
-experience as project/team leader and since this is not a complex
-project, I would be glad to lead it. So, I'm looking for Python
-developers, Qt developers, UI designers and whoever want to contribute
-to this project. I still have to find a good name and logo for this
-application.</p>
-<p>Who want to help me?</p>
   </div>
 </article>
 

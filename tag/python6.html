@@ -157,6 +157,43 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/">Using Python PyPy in a virtual environment</a></h2>
+    <p>
+      Posted on Fri 18 December 2015 in <a href="https://www.andreagrandi.it/category/howto-python.html">HowTo, Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/pypy.html">pypy</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
+    </p>
+  </header>
+  <div>
+      <p>Sometimes we need to test if our code also works with
+<strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
+have already installed it in your system, first find out where it is
+installed:</p>
+<div class="highlight"><pre><span></span><code>which pypy
+/usr/local/bin/pypy
+</code></pre></div>
+
+<p>then you need <strong>mkvirtualenv</strong> to create a virtual environment that will
+use this runtime:</p>
+<div class="highlight"><pre><span></span><code>mkvirtualenv -p /usr/local/bin/pypy pypy-test
+Running virtualenv with interpreter /usr/local/bin/pypy
+New pypy executable <span class="k">in</span> pypy-test/bin/pypy
+Installing setuptools, pip, wheel...done.
+<span class="o">(</span>pypy-test<span class="o">)</span>➜  ~  python
+Python <span class="m">2</span>.7.10 <span class="o">(</span>f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559, Sep <span class="m">01</span> <span class="m">2015</span>, <span class="m">06</span>:26:30<span class="o">)</span>
+<span class="o">[</span>PyPy <span class="m">2</span>.6.1 with GCC <span class="m">4</span>.2.1 Compatible Apple LLVM <span class="m">6</span>.1.0 <span class="o">(</span>clang-602.0.53<span class="o">)]</span> on darwin
+Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.
+&gt;&gt;&gt;&gt;
+</code></pre></div>
+
+<p>That's it! You can now use this virtual environment to run your Python
+application using PyPy environment.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/10/11/reversing-a-list-in-python/">Reversing a List in Python</a></h2>
     <p>
       Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -377,72 +414,6 @@ would not be a clean way to do this job.</p>
 <p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
 if the value doesn't exist <code>my_value</code> will be assigned with
 <code>'my-default-value'</code></p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
-    <p>
-      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
-Middleware</a></strong>
-works we need to remember that the basic architecture of Django is
-composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
-that stays in the middle. Let's give a look to the next diagram, taken
-from official Django documentation:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
-<h2>Important things to know</h2>
-<p>There are four important things to know about middlewares:</p>
-<ul>
-<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
-<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
-important: middlewares are processed from top to bottom during a
-request and from bottom to top during a response.</li>
-<li>You don't need to implement all the available methods of a
-middleware. For example you can just implement <code>process_request</code>
-and <code>process_template_response</code></li>
-<li>If you implement <code>process_request</code> and you decide to return an
-<code>HttpResponse</code>, all the other middlewares, views etc... will be
-ignored and only your response will be returned</li>
-</ul>
-<h2>Writing a middleware</h2>
-<p>In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-
-
-<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span>
-</code></pre></div>
-
-<p>Please don't care about how I calculated the time. I'm aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.</p>
-<p>If you want to see a <strong>complete example</strong> of a project that includes and
-uses this middleware, here you can find the complete source
-code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
-<h2>References</h2>
-<ul>
-<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
-<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
-<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
-</ul>
   </div>
 </article>
 

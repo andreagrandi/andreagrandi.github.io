@@ -157,6 +157,113 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/12/10/getting-started-with-bbc-microbit-and-python/">Getting started with BBC MicroBit and Python</a></h2>
+    <p>
+      Posted on Thu 10 December 2015 in <a href="https://www.andreagrandi.it/category/howto-microbit-python.html">HowTo, Microbit, Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a>,              <a href="https://www.andreagrandi.it/tag/psf.html">psf</a>
+    </p>
+  </header>
+  <div>
+      <p>A few days ago I had the great opportunity to attend an event organised
+in collaboration with <strong><a href="https://www.python.org/">Python Software
+Foundation</a></strong>, a few <strong>primary school
+teachers</strong> and hosted by <strong><a href="http://www.computingatschool.org.uk/">Computing at
+School</a></strong>, in <strong>London</strong>. The
+meeting was organised by <strong>Yvonne Walker</strong> (from CAS) and <strong>Nicholas
+Tollervey</strong> (PSF). The aim of the meeting was for teachers and
+developers to meet and discuss the opportunities offered
+by <strong><a href="https://micropython.org/">MicroPython</a></strong> on the <strong><a href="https://www.microbit.co.uk/">BBC
+micro:bit</a></strong>. During the event a
+<strong>BBC</strong> <strong>micro:bit</strong> board was loaned to each person for the purpose of
+developing Python scripts, MicroPython itself or educational resources
+for the <strong>BBC micro:bit</strong>. Nicholas made it very clear that there is an
+<strong>NDA</strong> in place until the device is delivered to the kids and explained
+what we could or couldn't do.</p>
+<p><a href="https://www.andreagrandi.it/images/2015/12/computing_at_school_microbit_reduced.jpg"><img alt="microbit" src="https://www.andreagrandi.it/images/2015/12/computing_at_school_microbit_reduced.jpg" width="100%"></a></p>
+<h2>The Board</h2>
+<p><a href="https://www.andreagrandi.it/images/2015/12/bbcfullbleed.jpg"><img alt="board" src="https://www.andreagrandi.it/images/2015/12/bbcfullbleed.jpg" width="100%"></a></p>
+<p>The board is a 4 x 5 cm device with an <strong>ARM Cortex-M0</strong> processor,
+<strong>accelerometer</strong> and magnetometer sensors, <strong>Bluetooth</strong> and <strong>USB
+connectivity</strong>, a <strong>display</strong> consisting of 25 LEDs, <strong>two programmable
+buttons</strong>, and can be powered by either USB or an external battery pack
+(source: <a href="https://en.wikipedia.org/wiki/Micro_Bit">https://en.wikipedia.org/wiki/Micro_Bit</a> ).</p>
+<h2>Flashing the firmware</h2>
+<p>Once you get a new board, it probably doesn't have a proper firmware and
+application flashed. I suggest you to download the <strong>Python MicroBit
+REPL</strong> from this repository: <a href="https://github.com/ntoll/microrepl">https://github.com/ntoll/microrepl</a><br>
+All you need to do is to connect the board to your computer, using a
+<strong>micro-USB cable</strong>. The device will be mounted as a volume. At this
+point, drag &amp; drop the file called
+<strong><a href="https://github.com/ntoll/microrepl/blob/master/firmware.hex">firmware.hex</a></strong>
+into the mounted volume. The firmware will be flashed and during the
+operation you will see a yellow led flashing.</p>
+<h2>Using MicroPython micro:bit REPL</h2>
+<p>To start writing some Python code on micro:bit you first need to clone
+this <a href="https://github.com/ntoll/microrepl">repository</a></p>
+<div class="highlight"><pre><span></span><code>git clone git@github.com:ntoll/microrepl.git
+</code></pre></div>
+
+<p>once you have cloned the repository, you need to install the Python
+dependencies (I suggest you to do it from inside a <strong>virtualenv</strong>)</p>
+<div class="highlight"><pre><span></span><code>pip install -r requirements.txt
+</code></pre></div>
+
+<p>start the MicroPython REPL</p>
+<div class="highlight"><pre><span></span><code>python microrepl.py
+</code></pre></div>
+
+<p>and the Python shell will open, so you can start writing commands, like
+this one</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>microbit<span class="o">)</span>➜  microrepl git:<span class="o">(</span>master<span class="o">)</span> python microrepl.py
+Quit: Ctrl+<span class="o">]</span> <span class="p">|</span> Stop program: Ctrl+C <span class="p">|</span> Reset: Ctrl+D
+Type <span class="s1">&#39;help()&#39;</span> <span class="o">(</span>without the quotes<span class="o">)</span> <span class="k">then</span> press ENTER.
+
+&gt;&gt;&gt; import this
+The Zen of MicroPython, by Nicholas H.Tollervey
+
+Code,
+Hack it,
+Less is more,
+Keep it simple,
+Small is beautiful,
+
+Be brave! Break things! Learn and have fun!
+Express yourself with MicroPython.
+
+Happy hacking! :-<span class="o">)</span>
+&gt;&gt;&gt;
+</code></pre></div>
+
+<h2>BBC micro:bit MicroPython Editor</h2>
+<p>Typing all the Python commands directly into the shell can be a bit
+difficult. You can use a very nice and dedicated editor to write code
+and produce the compiled application for the micro:bit. All you need to
+do is clone this <a href="https://github.com/ntoll/upyed">repository</a></p>
+<div class="highlight"><pre><span></span><code>git clone git@github.com:ntoll/upyed.git
+</code></pre></div>
+
+<p>Open the file named <strong>editor.html</strong> with your browser and start writing
+your code. When your code is done, you can generate the <strong>.hex</strong> file
+clicking on <strong>Download</strong> button. To load the compiled application you
+just need to drag &amp; drop the .hex file to the mounted device, exactly
+like you did the first time to flash it. If you need a reference for all
+the methods and libraries available, you can consult the official
+documentation
+here <a href="http://microbit-micropython.readthedocs.org/en/latest/index.html">http://microbit-micropython.readthedocs.org/en/latest/index.html</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://github.com/ntoll/microrepl">https://github.com/ntoll/microrepl</a></li>
+<li><a href="https://github.com/ntoll/upyed">https://github.com/ntoll/upyed</a></li>
+<li><a href="https://www.microbit.co.uk/">https://www.microbit.co.uk/</a></li>
+<li><a href="http://microbit-micropython.readthedocs.org/en/latest/index.html">http://microbit-micropython.readthedocs.org/en/latest/index.html</a></li>
+</ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/12/09/fix-encfs-under-osx-after-upgrading-to-10-11-2/">Fix encfs under OSX after upgrading to 10.11.2</a></h2>
     <p>
       Posted on Wed 09 December 2015 in <a href="https://www.andreagrandi.it/category/howto-osx.html">HowTo, OSX</a>
@@ -309,103 +416,6 @@ two parts and swaps the first with sixth, the second with fifth, etc...</p>
 
 <span class="p">[</span><span class="n">output</span><span class="p">]:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 </code></pre></div>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/10/11/how-to-configure-encfs-on-osx-10-10-yosemite/">How to configure EncFS on OSX 10.10 (Yosemite)</a></h2>
-    <p>
-      Posted on Sun 11 October 2015 in <a href="https://www.andreagrandi.it/category/howto-osx-sicurezza.html">HowTo, OSX, Sicurezza</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/cloud.html">cloud</a>,              <a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a>,              <a href="https://www.andreagrandi.it/tag/encryption.html">encryption</a>,              <a href="https://www.andreagrandi.it/tag/osx.html">OSX</a>,              <a href="https://www.andreagrandi.it/tag/security.html">security</a>
-    </p>
-  </header>
-  <div>
-      <p>With <strong>EncFS</strong> it's possible to keep our data in almost any cloud
-(Dropbox, OneDrive, etc...), having a good level of privacy and
-security. Infact EncFS encrypt and decrypt our data automatically. It's
-available for Linux as well and using a commercial solution (that is
-currently unsupported) even on Windows.</p>
-<h2>Installing EncFS</h2>
-<p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
-manager installed on OSX you can install it using this command:</p>
-<div class="highlight"><pre><span></span><code>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
-</code></pre></div>
-
-<p>After brew, you need to install <strong>OSXFuse</strong> from this
-website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
-<p>Finally you can install <strong>encfs</strong> using this command:</p>
-<div class="highlight"><pre><span></span><code>brew install homebrew/fuse/encfs
-</code></pre></div>
-
-<h2>Configuring the encrypted folder</h2>
-<p>Now that EncFS is installed, you can either mount an existing EncFS
-volume or create a new one. In both cases the command is the same:</p>
-<div class="highlight"><pre><span></span><code>encfs ~/Dropbox/Private ~/Private
-</code></pre></div>
-
-<p>If you are mounting an existing encrypted volume, you will be prompted
-for the password. If you are creating a new encrypted volume you will be
-asked some questions about EncFS parameters.</p>
-<p><strong>Note:</strong> if it's important for you to keep compatibility with
-<strong><a href="https://www.boxcryptor.com/en/classic">BoxCryptor Classic</a></strong> (in case
-you want to use the same volume under Windows), please refer to this
-other article I
-wrote: <a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/</a></p>
-<h2>Mount the encrypted volume on startup</h2>
-<p>First of all you need to save the volume's password inside the OSX
-keychain. Open the app <strong>Keychain Access</strong> and create a new entry with
-name <strong>encfs</strong> and account value <strong>encfs</strong>, then write your <strong>password</strong>
-and click <strong>Add</strong>:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png"><img alt="encfs_keychain_access" src="https://www.andreagrandi.it/images/2015/10/encfs_keychain_access.png" width="60%"></a></p>
-<p>Once the password is saved, <strong>open a text editor</strong> and paste this script
-and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</strong> folder:</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
-<span class="c1"># Secure EncFS Dropbox mounter by Daniel Widerin &lt;daniel@widerin.net&gt;</span>
-
-<span class="nv">SOURCE</span><span class="o">=</span>~/Dropbox/Private
-<span class="nv">TARGET</span><span class="o">=</span>~/Private
-<span class="nv">VOLUME_TITLE</span><span class="o">=</span>Private
-<span class="nv">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="s1">&#39;encfs&#39;</span>
-<span class="nv">ENCFS</span><span class="o">=</span>/usr/local/bin/encfs
-
-mount <span class="p">|</span> grep <span class="nv">$TARGET</span> &gt;/dev/null
-<span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$?</span><span class="s2">&quot;</span> -eq <span class="s2">&quot;0&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> /usr/sbin/diskutil unmount <span class="nv">$TARGET</span>
-
-<span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$TARGET</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-<span class="nb">echo</span> <span class="s2">&quot;Create new mountpoint </span><span class="nv">$TARGET</span><span class="s2">&quot;</span>
-mkdir <span class="nv">$TARGET</span>
-chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
-<span class="k">fi</span>
-
-<span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
-</code></pre></div>
-
-<p>Make it <strong>executable</strong>:</p>
-<div class="highlight"><pre><span></span><code>chmod +x ~/encfs_mount.sh
-</code></pre></div>
-
-<p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
-app in the \$HOME folder:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
-<div class="highlight"><pre><span></span><code><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
-</code></pre></div>
-
-<p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
-add the previously saved application.</p>
-<p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png"><img alt="system preferences" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.44.png" width="60%"></a></p>
-<h2>Final notes</h2>
-<p>At this point encfs is configured to be mounted at startup and to save
-the encrypted files inside Dropbox. Please note: <strong>do not save anything
-directly on <code>~/Dropbox/Private</code></strong>, only read and save your files from
-<code>~/Private</code></p>
-<h2>References</h2>
-<ul>
-<li><a href="https://www.maketecheasier.com/install-encfs-mac/">https://www.maketecheasier.com/install-encfs-mac/</a></li>
-<li><a href="http://ninjatips.com/encrypt-dropbox-using-encfs/">http://ninjatips.com/encrypt-dropbox-using-encfs/</a></li>
-</ul>
   </div>
 </article>
 
