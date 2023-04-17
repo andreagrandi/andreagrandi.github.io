@@ -173,14 +173,14 @@ way to generate a <strong>.deb</strong> package for Maemo.</p>
 <code>.dsc</code> file (for example in an ftp like this:
 <a href="http://ftp.debian.org/debian/pool/non-free/s/spim/">http://ftp.debian.org/debian/pool/non-free/s/spim/</a> ) and execute the
 following commands:</p>
-<div class="highlight"><pre><span></span><code>dget -x DSC_FILE_URL
+<div class="highlight"><pre><span></span><code>dget<span class="w"> </span>-x<span class="w"> </span>DSC_FILE_URL
 </code></pre></div>
 
 <p>It will download the package and will unpack it in the current folder.
 You have to enter in the created folder and edit the debian/* files to
 personalize settings, mantainer data, add deps ecc...</p>
 <p>When you're done, you can generate the package with the usual command:</p>
-<div class="highlight"><pre><span></span><code>dpkg-buildpackage -rfakeroot
+<div class="highlight"><pre><span></span><code>dpkg-buildpackage<span class="w"> </span>-rfakeroot
 </code></pre></div>
   </div>
   <hr />
@@ -261,7 +261,7 @@ responsability of any damage caused to your device.</p>
       <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
-<div class="highlight"><pre><span></span><code>sem_post: Function not implemented
+<div class="highlight"><pre><span></span><code>sem_post:<span class="w"> </span>Function<span class="w"> </span>not<span class="w"> </span>implemented
 </code></pre></div>
 
 <p>This happens because not all the functions have been implemented in the
@@ -274,23 +274,23 @@ howto to install the patch into the Scratchbox environment.</p>
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.</p>
 <p>You need gcc 3.4, SDL dev library andZlib dev:</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gcc-3.4<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>zlib1g-dev
 </code></pre></div>
 
 <p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
-<div class="highlight"><pre><span></span><code>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
-<span class="nb">cd</span> qemu-arm-eabi 
-./configure --target-list<span class="o">=</span>arm-linux-user --static make
+<div class="highlight"><pre><span></span><code>svn<span class="w"> </span>co<span class="w"> </span>https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi<span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
+<span class="nb">cd</span><span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
+./configure<span class="w"> </span>--target-list<span class="o">=</span>arm-linux-user<span class="w"> </span>--static<span class="w"> </span>make
 </code></pre></div>
 
 <p>Copy qemu to the cputransp dir on scratchbox:</p>
-<div class="highlight"><pre><span></span><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>arm-linux-user/qemu-arm<span class="w"> </span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
 </code></pre></div>
 
 <p>Add it to the list of cputransp methods. Open the file:</p>
-<div class="highlight"><pre><span></span><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/scratchbox/devkits/cputransp/etc/cputransp-methods
 </code></pre></div>
 
 <p>and add this line:</p>
@@ -298,7 +298,7 @@ to get the qemu sources.</p>
 </code></pre></div>
 
 <p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
-<div class="highlight"><pre><span></span><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+<div class="highlight"><pre><span></span><code>vim<span class="w"> </span>/scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
 </code></pre></div>
 
 <p>and change this line:</p>
@@ -329,8 +329,8 @@ installing it from scratch?!". Luckly one kind person helped me on
 maemo-developer mailing list, and suggested me to do a dist-upgrade from
 inside the Scratchbox environment. So, login into tour Scratchbox
 environment and execute this:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get update 
-<span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get dist-upgrade
+<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:<span class="w"> </span>~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span>
+<span class="o">[</span>sbox-SDK_BETA_X86:<span class="w"> </span>~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>dist-upgrade
 </code></pre></div>
 
 <p>That's all! I don't know if this is the official method to do the

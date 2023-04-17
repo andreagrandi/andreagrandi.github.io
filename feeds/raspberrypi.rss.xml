@@ -8,16 +8,16 @@ recent version of Raspbian. I'm using the one released on 20/06/2014).&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png"&gt;&lt;img alt="edimax-pi3" src="https://www.andreagrandi.it/images/2014/09/edimax-pi3.png" width="100%"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Configure the wifi adapter&lt;/h2&gt;
 &lt;p&gt;Edit &lt;strong&gt;/etc/network/interfaces&lt;/strong&gt; and insert these configuration values:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auto lo
-iface lo inet loopback
-iface eth0 inet dhcp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auto&lt;span class="w"&gt; &lt;/span&gt;lo
+iface&lt;span class="w"&gt; &lt;/span&gt;lo&lt;span class="w"&gt; &lt;/span&gt;inet&lt;span class="w"&gt; &lt;/span&gt;loopback
+iface&lt;span class="w"&gt; &lt;/span&gt;eth0&lt;span class="w"&gt; &lt;/span&gt;inet&lt;span class="w"&gt; &lt;/span&gt;dhcp
 
-allow-hotplug wlan0
-auto wlan0
+allow-hotplug&lt;span class="w"&gt; &lt;/span&gt;wlan0
+auto&lt;span class="w"&gt; &lt;/span&gt;wlan0
 
-iface wlan0 inet dhcp
-wpa-ssid YOURESSID
-wpa-psk YOURWPAPASSWORD
+iface&lt;span class="w"&gt; &lt;/span&gt;wlan0&lt;span class="w"&gt; &lt;/span&gt;inet&lt;span class="w"&gt; &lt;/span&gt;dhcp
+wpa-ssid&lt;span class="w"&gt; &lt;/span&gt;YOURESSID
+wpa-psk&lt;span class="w"&gt; &lt;/span&gt;YOURWPAPASSWORD
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Power management issue&lt;/h2&gt;
@@ -26,25 +26,25 @@ makes it to turn off if the wlan interface is not in use for some
 minutes. To avoid this you have to customize the parameters used to load
 the kernel module. First check that your adapter is using &lt;strong&gt;8192cu&lt;/strong&gt;
 module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo lsmod &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="m"&gt;8192&lt;/span&gt;
-8192cu &lt;span class="m"&gt;551136&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;lsmod&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;8192&lt;/span&gt;
+8192cu&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;551136&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Create the file &lt;strong&gt;/etc/modprobe.d/8192cu.conf&lt;/strong&gt; and insert the following
 lines inside:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# prevent power down of wireless when idle&lt;/span&gt;
-options 8192cu &lt;span class="nv"&gt;rtw_power_mgnt&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;rtw_enusbss&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
+options&lt;span class="w"&gt; &lt;/span&gt;8192cu&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;rtw_power_mgnt&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;rtw_enusbss&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I also suggest to create a little entry in crontab to make the
 RaspberryPi ping your router every minute. This will ensure that your
 wifi connection will stay alive. To edit crontab just type (from pi
 user, you don't need to be root):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;crontab -e
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;crontab&lt;span class="w"&gt; &lt;/span&gt;-e
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and insert this line at the end:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*/1 * * * * ping -c &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;192&lt;/span&gt;.168.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*/1&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;ping&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;192&lt;/span&gt;.168.0.1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;where 192.168.0.1 is the IP of your router (of course substitute this
@@ -59,12 +59,12 @@ module for the wifi and bring them up again.&lt;/p&gt;
 &lt;/p&gt;
 &lt;p&gt;Just put this script in &lt;strong&gt;/root/wifi_recover.sh&lt;/strong&gt; and then execute from
 &lt;strong&gt;root&lt;/strong&gt; user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod +x wifi_recover.sh
-crontab -e
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod&lt;span class="w"&gt; &lt;/span&gt;+x&lt;span class="w"&gt; &lt;/span&gt;wifi_recover.sh
+crontab&lt;span class="w"&gt; &lt;/span&gt;-e
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Insert this line inside the crontab editor:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*/5 * * * * /root/wifi_recover.sh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;*/5&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;/root/wifi_recover.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Conclusion&lt;/h2&gt;

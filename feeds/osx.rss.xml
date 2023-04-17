@@ -7,19 +7,19 @@ currently unsupported) even on Windows.&lt;/p&gt;
 &lt;h2&gt;Installing EncFS&lt;/h2&gt;
 &lt;p&gt;EncFS can be installed from &lt;strong&gt;brew&lt;/strong&gt;. If you don't have brew package
 manager installed on OSX you can install it using this command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ruby -e &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ruby&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-fsSL&lt;span class="w"&gt; &lt;/span&gt;https://raw.githubusercontent.com/Homebrew/install/master/install&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;After brew, you need to install &lt;strong&gt;OSXFuse&lt;/strong&gt; from this
 website &lt;a href="http://osxfuse.github.io"&gt;http://osxfuse.github.io&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Finally you can install &lt;strong&gt;encfs&lt;/strong&gt; using this command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;brew install homebrew/fuse/encfs
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;brew&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;homebrew/fuse/encfs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Configuring the encrypted folder&lt;/h2&gt;
 &lt;p&gt;Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;encfs ~/Dropbox/Private ~/Private
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;encfs&lt;span class="w"&gt; &lt;/span&gt;~/Dropbox/Private&lt;span class="w"&gt; &lt;/span&gt;~/Private
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you are mounting an existing encrypted volume, you will be prompted
@@ -47,26 +47,26 @@ and save it as &lt;strong&gt;encfs_mount.sh&lt;/strong&gt; inside your &lt;stron
 &lt;span class="nv"&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;encfs&amp;#39;&lt;/span&gt;
 &lt;span class="nv"&gt;ENCFS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/bin/encfs
 
-mount &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="nv"&gt;$TARGET&lt;/span&gt; &amp;gt;/dev/null
-&lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; -eq &lt;span class="s2"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; /usr/sbin/diskutil unmount &lt;span class="nv"&gt;$TARGET&lt;/span&gt;
+mount&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;/dev/null
+&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-eq&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;0&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/usr/sbin/diskutil&lt;span class="w"&gt; &lt;/span&gt;unmount&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;
 
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -d &lt;span class="nv"&gt;$TARGET&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Create new mountpoint &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-mkdir &lt;span class="nv"&gt;$TARGET&lt;/span&gt;
-chmod &lt;span class="m"&gt;0700&lt;/span&gt; &lt;span class="nv"&gt;$TARGET&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;!&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Create new mountpoint &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+mkdir&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;
+chmod&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0700&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
 
-&lt;span class="nv"&gt;$ENCFS&lt;/span&gt; &lt;span class="nv"&gt;$SOURCE&lt;/span&gt; &lt;span class="nv"&gt;$TARGET&lt;/span&gt; --extpass&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39; |grep password|cut -d \\\&amp;quot; -f 2&amp;quot;&lt;/span&gt; -ovolname&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$VOLUME_TITLE&lt;/span&gt;
+&lt;span class="nv"&gt;$ENCFS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$SOURCE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$TARGET&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--extpass&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39; |grep password|cut -d \\\&amp;quot; -f 2&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-ovolname&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$VOLUME_TITLE&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Make it &lt;strong&gt;executable&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod +x ~/encfs_mount.sh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod&lt;span class="w"&gt; &lt;/span&gt;+x&lt;span class="w"&gt; &lt;/span&gt;~/encfs_mount.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Open &lt;strong&gt;AppleScript&lt;/strong&gt; editor and paste this text inside and save as an
 app in the \$HOME folder:&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"&gt;&lt;img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;do&lt;/span&gt; shell script &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/encfs_mount.sh&amp;quot;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;shell&lt;span class="w"&gt; &lt;/span&gt;script&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/encfs_mount.sh&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally, open "&lt;strong&gt;System Preferences&lt;/strong&gt;" -&amp;gt; "&lt;strong&gt;Users &amp;amp; Groups&lt;/strong&gt;" and
@@ -103,14 +103,14 @@ the base image we are going to use and our contact informations:&lt;/p&gt;
 &lt;p&gt;In our case we are using &lt;strong&gt;Ubuntu 14.04&lt;/strong&gt; as base image. After these
 instructions we need to add PostgreSQL package repository and GnuPG
 public key:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&amp;quot;&lt;/span&gt; &amp;gt; /etc/apt/sources.list.d/pgdg.list
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-key&lt;span class="w"&gt; &lt;/span&gt;adv&lt;span class="w"&gt; &lt;/span&gt;--keyserver&lt;span class="w"&gt; &lt;/span&gt;keyserver.ubuntu.com&lt;span class="w"&gt; &lt;/span&gt;--recv-keys&lt;span class="w"&gt; &lt;/span&gt;B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/apt/sources.list.d/pgdg.list
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then we need to update the packages available in Ubuntu and install
 PostgreSQL:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install python-software-properties software-properties-common   
-  &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;update&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;-q&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;python-software-properties&lt;span class="w"&gt; &lt;/span&gt;software-properties-common&lt;span class="w"&gt;   &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;-q&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;postgresql-9.3&lt;span class="w"&gt; &lt;/span&gt;postgresql-client-9.3&lt;span class="w"&gt; &lt;/span&gt;postgresql-contrib-9.3
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We are installing version 9.3 of PostgreSQL, instructions would be very
@@ -122,15 +122,15 @@ is available it won't be installed when the image is rebuilt.&lt;/p&gt;
 &lt;p&gt;At this point we switch to &lt;strong&gt;postgres&lt;/strong&gt; user to execute the next
 commands:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;postgres&lt;/span&gt;
-&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/init.d/postgresql start   
-  &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; psql --command &lt;span class="s2"&gt;&amp;quot;CREATE USER pguser WITH SUPERUSER PASSWORD &amp;#39;pguser&amp;#39;;&amp;quot;&lt;/span&gt;   
-  &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; createdb -O pguser pgdb
+&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/init.d/postgresql&lt;span class="w"&gt; &lt;/span&gt;start&lt;span class="w"&gt;   &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;psql&lt;span class="w"&gt; &lt;/span&gt;--command&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;CREATE USER pguser WITH SUPERUSER PASSWORD &amp;#39;pguser&amp;#39;;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;createdb&lt;span class="w"&gt; &lt;/span&gt;-O&lt;span class="w"&gt; &lt;/span&gt;pguser&lt;span class="w"&gt; &lt;/span&gt;pgdb
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We switch to &lt;strong&gt;root&lt;/strong&gt; user and we complete the configuration:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;USER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;root&lt;/span&gt;
-&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;host all  all    0.0.0.0/0  md5&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/pg_hba.conf
-&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;listen_addresses=&amp;#39;*&amp;#39;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/postgresql/9.3/main/postgresql.conf
+&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;host all  all    0.0.0.0/0  md5&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/postgresql/9.3/main/pg_hba.conf
+&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;listen_addresses=&amp;#39;*&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/postgresql/9.3/main/postgresql.conf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We expose the port where PostgreSQL will listen to:&lt;/p&gt;
@@ -138,7 +138,7 @@ commands:&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We setup the data and shared folders that we will use later:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mkdir -p /var/run/postgresql &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chown -R postgres /var/run/postgresql
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;RUN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;/var/run/postgresql&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;chown&lt;span class="w"&gt; &lt;/span&gt;-R&lt;span class="w"&gt; &lt;/span&gt;postgres&lt;span class="w"&gt; &lt;/span&gt;/var/run/postgresql
 &lt;span class="k"&gt;VOLUME&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/etc/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/log/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/lib/postgresql&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -154,19 +154,19 @@ here &lt;a href="https://github.com/andreagrandi/postgresql-docker/blob/master/
 &lt;p&gt;Once the Dockerfile is ready, we need to build the image before running
 it in a container. Please customize the tag name using your own
 docker.io hub account (or you won't be able to push it to the hub):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker build --rm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; -t andreagrandi/postgresql:9.3 .
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker&lt;span class="w"&gt; &lt;/span&gt;build&lt;span class="w"&gt; &lt;/span&gt;--rm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;andreagrandi/postgresql:9.3&lt;span class="w"&gt; &lt;/span&gt;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Running the PostgreSQL Docker container&lt;/h3&gt;
 &lt;p&gt;To run the container, once the image is built, you just need to use this
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker run -i -t -p &lt;span class="m"&gt;5432&lt;/span&gt;:5432 andreagrandi/postgresql:9.3
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker&lt;span class="w"&gt; &lt;/span&gt;run&lt;span class="w"&gt; &lt;/span&gt;-i&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;5432&lt;/span&gt;:5432&lt;span class="w"&gt; &lt;/span&gt;andreagrandi/postgresql:9.3
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Testing the running PostgreSQL&lt;/h3&gt;
 &lt;p&gt;To test the running container we can use any client, even the
 commandline one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psql -h localhost -p &lt;span class="m"&gt;5432&lt;/span&gt; -U pguser -W pgdb
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;psql&lt;span class="w"&gt; &lt;/span&gt;-h&lt;span class="w"&gt; &lt;/span&gt;localhost&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;5432&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-U&lt;span class="w"&gt; &lt;/span&gt;pguser&lt;span class="w"&gt; &lt;/span&gt;-W&lt;span class="w"&gt; &lt;/span&gt;pgdb
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When you are prompted for password, type: &lt;strong&gt;pguser&lt;/strong&gt;&lt;br&gt;
@@ -186,34 +186,34 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use &lt;strong&gt;pip install fig&lt;/strong&gt; and under OSX you can use &lt;strong&gt;brew install
 fig&lt;/strong&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;volumes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;/var/lib/postgresql&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;command&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;dbdata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;volumes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;/var/lib/postgresql&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;command&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
 
-&lt;span class="nt"&gt;db&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;volumes_from&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;dbdata&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;ports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;5432:5432&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="nt"&gt;db&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;andreagrandi/postgresql:9.3&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;volumes_from&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;dbdata&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;ports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;5432:5432&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Save this file as &lt;strong&gt;fig.yml&lt;/strong&gt; in the same folder of the Dockerfile and
 spin up the container using this command: &lt;strong&gt;fig up&lt;/strong&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andreas-air:postgresql-docker andrea &lt;span class="o"&gt;[&lt;/span&gt;master&lt;span class="o"&gt;]&lt;/span&gt; $ fig up
-Recreating postgresqldocker_dbdata_1...
-Recreating postgresqldocker_db_1...
-Attaching to postgresqldocker_db_1
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  database system was interrupted&lt;span class="p"&gt;;&lt;/span&gt; last known up at &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;17&lt;/span&gt;:46:10 UTC
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-2&lt;span class="o"&gt;]&lt;/span&gt; LOG:  database system was not properly shut down&lt;span class="p"&gt;;&lt;/span&gt; automatic recovery &lt;span class="k"&gt;in&lt;/span&gt; progress
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-3&lt;span class="o"&gt;]&lt;/span&gt; LOG:  redo starts at &lt;span class="m"&gt;0&lt;/span&gt;/1782F68
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-4&lt;span class="o"&gt;]&lt;/span&gt; LOG:  record with zero length at &lt;span class="m"&gt;0&lt;/span&gt;/1782FA8
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-5&lt;span class="o"&gt;]&lt;/span&gt; LOG:  redo &lt;span class="k"&gt;done&lt;/span&gt; at &lt;span class="m"&gt;0&lt;/span&gt;/1782F68
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-6&lt;span class="o"&gt;]&lt;/span&gt; LOG:  last completed transaction was at log &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;17&lt;/span&gt;:46:10.61746+00
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  database system is ready to accept connections
-db_1 &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-21 &lt;span class="m"&gt;19&lt;/span&gt;:01:07 UTC &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt; LOG:  autovacuum launcher started
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;andreas-air:postgresql-docker&lt;span class="w"&gt; &lt;/span&gt;andrea&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;master&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&lt;span class="w"&gt; &lt;/span&gt;fig&lt;span class="w"&gt; &lt;/span&gt;up
+Recreating&lt;span class="w"&gt; &lt;/span&gt;postgresqldocker_dbdata_1...
+Recreating&lt;span class="w"&gt; &lt;/span&gt;postgresqldocker_db_1...
+Attaching&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;postgresqldocker_db_1
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;database&lt;span class="w"&gt; &lt;/span&gt;system&lt;span class="w"&gt; &lt;/span&gt;was&lt;span class="w"&gt; &lt;/span&gt;interrupted&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;last&lt;span class="w"&gt; &lt;/span&gt;known&lt;span class="w"&gt; &lt;/span&gt;up&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;17&lt;/span&gt;:46:10&lt;span class="w"&gt; &lt;/span&gt;UTC
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-2&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;database&lt;span class="w"&gt; &lt;/span&gt;system&lt;span class="w"&gt; &lt;/span&gt;was&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;properly&lt;span class="w"&gt; &lt;/span&gt;shut&lt;span class="w"&gt; &lt;/span&gt;down&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;automatic&lt;span class="w"&gt; &lt;/span&gt;recovery&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;progress
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-3&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;redo&lt;span class="w"&gt; &lt;/span&gt;starts&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;/1782F68
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-4&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;record&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;zero&lt;span class="w"&gt; &lt;/span&gt;length&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;/1782FA8
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-5&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;redo&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;done&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;/1782F68
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;-6&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;last&lt;span class="w"&gt; &lt;/span&gt;completed&lt;span class="w"&gt; &lt;/span&gt;transaction&lt;span class="w"&gt; &lt;/span&gt;was&lt;span class="w"&gt; &lt;/span&gt;at&lt;span class="w"&gt; &lt;/span&gt;log&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;time&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;17&lt;/span&gt;:46:10.61746+00
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;database&lt;span class="w"&gt; &lt;/span&gt;system&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;ready&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;accept&lt;span class="w"&gt; &lt;/span&gt;connections
+db_1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2015&lt;/span&gt;-02-21&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;:01:07&lt;span class="w"&gt; &lt;/span&gt;UTC&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;-1&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOG:&lt;span class="w"&gt;  &lt;/span&gt;autovacuum&lt;span class="w"&gt; &lt;/span&gt;launcher&lt;span class="w"&gt; &lt;/span&gt;started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you try to write some data on the database and then you stop (CTRL+C)
@@ -229,17 +229,17 @@ next posts. You can find the full source code of my PostgreSQL Docker
 image, including the fig.yml file in this
 repository &lt;a href="https://github.com/andreagrandi/postgresql-docker"&gt;https://github.com/andreagrandi/postgresql-docker&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Sat, 21 Feb 2015 20:24:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2015-02-21:/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/</guid><category>Development</category><category>containers</category><category>devops</category><category>docker</category><category>fig</category><category>Linux</category><category>OSX</category><category>postgresql</category></item><item><title>How to fix encfs installation on OSX 10.9 (Mavericks) and brew</title><link>https://www.andreagrandi.it/2013/11/08/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</link><description>&lt;p&gt;After upgrading from OSX 10.8.x to 10.9 (Mavericks), &lt;strong&gt;encfs&lt;/strong&gt; recipe is
 broken. First of all you have to fix a problem with a library header:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;ln&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;/usr/include/sys/_endian.h&lt;span class="w"&gt; &lt;/span&gt;/usr/include/sys/endian.h
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then you can install encfs using this remote brew recipe:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;brew&lt;span class="w"&gt; &lt;/span&gt;reinstall&lt;span class="w"&gt; &lt;/span&gt;https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;It's also possible that you have to fix fuse4x installation before being
 able to use encfs (I had to do it):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
-sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;/bin/cp&lt;span class="w"&gt; &lt;/span&gt;-rfX&lt;span class="w"&gt; &lt;/span&gt;/usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext&lt;span class="w"&gt; &lt;/span&gt;/Library/Extensions
+sudo&lt;span class="w"&gt; &lt;/span&gt;chmod&lt;span class="w"&gt; &lt;/span&gt;+s&lt;span class="w"&gt; &lt;/span&gt;/Library/Extensions/fuse4x.kext/Support/load_fuse4x
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's it! Please note that this is just a workaround (thanks to

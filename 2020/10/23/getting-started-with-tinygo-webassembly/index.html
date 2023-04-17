@@ -197,61 +197,61 @@
 <h2>Install TinyGo</h2>
 <p>To be able to install <a href="https://tinygo.org">TinyGo</a> you need to have <a href="https://golang.org">Go</a> installed first. I have personally tested this on my Mac, so I will provide instructions for MacOS, but you can find instructions for the other operating systems directly on the project website: <a href="https://tinygo.org/getting-started">https://tinygo.org/getting-started</a></p>
 <p>You can install TinyGo on MacOS using <strong>brew</strong>:</p>
-<div class="highlight"><pre><span></span><code>brew tap tinygo-org/tools
-brew install tinygo
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>tap<span class="w"> </span>tinygo-org/tools
+brew<span class="w"> </span>install<span class="w"> </span>tinygo
 </code></pre></div>
 
 <p>If installation is successful, you should be able to run this:</p>
-<div class="highlight"><pre><span></span><code>tinygo version
-tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</span>using go version go1.15.3 and LLVM version <span class="m">10</span>.0.1<span class="o">)</span>
+<div class="highlight"><pre><span></span><code>tinygo<span class="w"> </span>version
+tinygo<span class="w"> </span>version<span class="w"> </span><span class="m">0</span>.15.0<span class="w"> </span>darwin/amd64<span class="w"> </span><span class="o">(</span>using<span class="w"> </span>go<span class="w"> </span>version<span class="w"> </span>go1.15.3<span class="w"> </span>and<span class="w"> </span>LLVM<span class="w"> </span>version<span class="w"> </span><span class="m">10</span>.0.1<span class="o">)</span>
 </code></pre></div>
 
 <h2>Implement an add() method in Go</h2>
 <p>Create a new empty project/repository using your favourite IDE (I personally used <strong>VSCode</strong>, but of course you can use anything else) and then create <code>main.go</code> file with this code:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
 
-<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
 
-<span class="c1">// This function is exported to JavaScript, so can be called using</span><span class="w"></span>
-<span class="c1">// exports.add() in JavaScript.</span><span class="w"></span>
-<span class="c1">//export add</span><span class="w"></span>
-<span class="kd">func</span><span class="w"> </span><span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="c1">// This function is exported to JavaScript, so can be called using</span>
+<span class="c1">// exports.add() in JavaScript.</span>
+<span class="c1">//export add</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">y</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <h2>Compile to WebAssembly (WASM)</h2>
 <p>To compile the above code to <strong>WebAssembly</strong> you need to run this command:</p>
-<div class="highlight"><pre><span></span><code>tinygo build -o wasm.wasm -target wasm ./main.go
+<div class="highlight"><pre><span></span><code>tinygo<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>wasm.wasm<span class="w"> </span>-target<span class="w"> </span>wasm<span class="w"> </span>./main.go
 </code></pre></div>
 
 <p>that will create a file named <code>wasm.wasm</code> in the same directory of your project. This is the compiled web binary that will be loaded later by JavaScript.</p>
 <h2>Add required WASM library</h2>
 <p>There is a file that is provided with TinyGo that you need to distribute with your application: <code>wasm_exec.js</code>. To include it in your project, you need to run this:</p>
-<div class="highlight"><pre><span></span><code>cp <span class="k">$(</span>tinygo env TINYGOROOT<span class="k">)</span>/targets/wasm_exec.js .
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span><span class="k">$(</span>tinygo<span class="w"> </span>env<span class="w"> </span>TINYGOROOT<span class="k">)</span>/targets/wasm_exec.js<span class="w"> </span>.
 </code></pre></div>
 
 <h2>Script to load the WebAssembly</h2>
 <p>At this point you will need an additional JavaScript file that will take care of loading the WebAssembly code. This file is not "standard" and may be different for every project, but the essential commands will be very similar.</p>
 <p>Create a new file named <code>wasm.js</code> with this code and save it in the root of your project along with the other files:</p>
-<div class="highlight"><pre><span></span><code><span class="s1">&#39;use strict&#39;</span><span class="p">;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">WASM_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;wasm.wasm&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="kd">var</span><span class="w"> </span><span class="nx">wasm</span><span class="p">;</span><span class="w"></span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">WASM_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;wasm.wasm&#39;</span><span class="p">;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">wasm</span><span class="p">;</span>
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">go</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Go</span><span class="p">();</span><span class="w"></span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">go</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Go</span><span class="p">();</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;instantiateStreaming&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">WebAssembly</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">instantiateStreaming</span><span class="p">(</span><span class="nx">fetch</span><span class="p">(</span><span class="nx">WASM_URL</span><span class="p">),</span><span class="w"> </span><span class="nx">go</span><span class="p">.</span><span class="nx">importObject</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nx">wasm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">obj</span><span class="p">.</span><span class="nx">instance</span><span class="p">;</span><span class="w"></span>
-<span class="w">            </span><span class="nx">go</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">wasm</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="p">})</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;instantiateStreaming&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">WebAssembly</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">WebAssembly</span><span class="p">.</span><span class="nx">instantiateStreaming</span><span class="p">(</span><span class="nx">fetch</span><span class="p">(</span><span class="nx">WASM_URL</span><span class="p">),</span><span class="w"> </span><span class="nx">go</span><span class="p">.</span><span class="nx">importObject</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">wasm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">obj</span><span class="p">.</span><span class="nx">instance</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">go</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">wasm</span><span class="p">);</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 
-<span class="nx">init</span><span class="p">();</span><span class="w"></span>
+<span class="nx">init</span><span class="p">();</span>
 </code></pre></div>
 
 <h2>HTML page to collect input and show result</h2>
@@ -273,16 +273,16 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
     <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Add two numbers, using WebAssembly calling an add() method written in Go:<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;number&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;a&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;2&quot;</span> <span class="p">/&gt;</span> + <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;number&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;b&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;2&quot;</span> <span class="p">/&gt;</span> = <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;number&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;result&quot;</span><span class="p">/&gt;</span>
     <span class="p">&lt;</span><span class="nt">button</span><span class="p">&gt;</span>Calculate<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="w"></span>
-<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">button</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">);</span><span class="w"></span>
+    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">button</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">);</span>
 
-<span class="w">        </span><span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">);</span><span class="w"></span>
-<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">);</span><span class="w"></span>
-<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wasm</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">);</span><span class="w"></span>
-<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">sum_box</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">            </span><span class="nx">sum_box</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">res</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">});</span><span class="w"></span>
+<span class="w">        </span><span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wasm</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">sum_box</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">sum_box</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">res</span><span class="p">;</span>
+<span class="w">        </span><span class="p">});</span>
 <span class="w">    </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
 
@@ -292,33 +292,33 @@ tinygo version <span class="m">0</span>.15.0 darwin/amd64 <span class="o">(</spa
 <p><strong>Please note:</strong> frontend development is really not my daily bread. I'm sure the above code can be written in a better way, but I can assure you that at least it works.</p>
 <h2>Serving the static files</h2>
 <p>The project itself would be complete, but you need something able to serve static pages and set a couple of required headers. We can implement one with a few lines of Go. Create a new file named <code>server.go</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;log&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;net/http&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;strings&quot;</span><span class="w"></span>
-<span class="p">)</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;log&quot;</span>
+<span class="w">    </span><span class="s">&quot;net/http&quot;</span>
+<span class="w">    </span><span class="s">&quot;strings&quot;</span>
+<span class="p">)</span>
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">dir</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;./&quot;</span><span class="w"></span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">dir</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;./&quot;</span>
 
-<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nx">fs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">Dir</span><span class="p">(</span><span class="nx">dir</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;Serving &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; on http://localhost:8080&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">resp</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="s">&quot;Cache-Control&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;no-cache&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">HasSuffix</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.wasm&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;content-type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/wasm&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="nx">fs</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">}))</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">Dir</span><span class="p">(</span><span class="nx">dir</span><span class="p">))</span>
+<span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;Serving &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; on http://localhost:8080&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:8080&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">resp</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="s">&quot;Cache-Control&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;no-cache&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">HasSuffix</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.wasm&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;content-type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/wasm&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">fs</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}))</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <h2>Testing the project</h2>
 <p>The project is now complete and can be tested. There are at least two methods to check if everything works: <strong>using the webpage</strong> we just created and <strong>calling the method from the JavaScript console</strong>.</p>
 <p>To test the application using the web page, run the server from the command line:</p>
-<div class="highlight"><pre><span></span><code>go run server.go
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>run<span class="w"> </span>server.go
 </code></pre></div>
 
 <p>Open a <strong>web browser</strong> and visit the address <a href="http://localhost:8080">http://localhost:8080</a></p>

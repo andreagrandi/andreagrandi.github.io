@@ -158,6 +158,68 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2007/11/16/the-unofficial-way-to-get-os2008-into-nokia-n800/">The UNOFFICIAL way to get Os2008 into Nokia N800</a></h2>
+    <p>
+      Posted on Fri 16 November 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en.html">HowTo, Linux, Maemo (EN)</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/os2008.html">os2008</a>
+    </p>
+  </header>
+  <div>
+      <p>Since <strong>Os2008</strong> for <strong>N810</strong> is out, a lot of people were asking
+about the possibility to install it on their <strong>N800</strong>. Nokia will relase Os2008 for N800
+too, but at the moment they don't offer the possibility to download it
+since the N810 firmware it's <strong>not 100% compatible</strong> with the old N800.</p>
+<p>The only way to download a Nokia tablet firmware is being the owner of a
+tablet. The user has to enter it's own MAC-address to be able to
+download the file. To download a N810 firmware you need to have a valid
+N810 MAC-address.</p>
+<p>A <a href="http://www.news.com/8301-10784_3-9816300-7.html?tag=nefd.only">post</a>
+on News.com describes the exact procedure to follow if you want to try
+this in your N800:</p>
+<ul>
+<li>Go to the <a class="external-link" href="http://tablets-dev.nokia.com/nokia_N810.php">N810 software download
+    page</a>.</li>
+<li>Enter the serial number for a valid N810 device. To get one of
+    these, pick any number between <code>001d6e9c0000</code> to <code>001d6e9cffff</code>.
+    Pick any random 4 digits (between 0-9 and a-f hex) as the last 4
+    digits.</li>
+<li>Download the file named <strong>RX-44_2008SE_1.2007.42-18_PR_COMBINED_MR0_ARM.bin</strong></li>
+<li>Download the latest <a href="http://tablets-dev.nokia.com/d3.php?f=flasher-3.0">firmware-upgrading software, "flasher-3.0"</a>.</li>
+<li>
+<p>Now that you have the firmware flasher and the 2008 N800 software update in the same directory, open up a terminal (on a Linux
+    desktop/laptop), and type:</p>
+<ul>
+<li><code>chmod a+x ./flasher-3.0</code></li>
+<li><code>./flasher-3.0 -u -F RX-44_2008SE_1.2007.42-18_PR_COMBINED_MR0_ARM.bin</code></li>
+</ul>
+</li>
+<li>
+<p>That will unpack the software, and it may take a few seconds. Once
+    that is done, plug the N800 into your computer, using the included
+    USB cable, then reboot the Nokia device while holding the home
+    button. Now execute the following commands:</p>
+<ul>
+<li><code>sudo ./flasher-3.0 --enable-rd-mode</code></li>
+<li><code>sudo ./flasher-3.0 -k zImage -f</code></li>
+<li><code>sudo ./flasher-3.0 -n initfs.jffs2 -f</code></li>
+<li><code>sudo ./flasher-3.0 -r rootfs.jffs2 -f -R</code></li>
+</ul>
+</li>
+<li>
+<p>That should be it. Your device should now boot up with the new 2008
+    version of the Nokia Maemo operating system.</p>
+</li>
+</ul>
+<p><strong>Note:</strong> Nokia <strong>DOESN'T SUPPORT</strong> this procedure in ANY way. You can
+follow this procedure at your own risk. Neither me or Nokia have the
+responsability of any damage caused to your device.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/">Installing qemu-arm-eabi patch into Scratchbox</a></h2>
     <p>
       Posted on Fri 16 November 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a>
@@ -170,7 +232,7 @@
       <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
-<div class="highlight"><pre><span></span><code>sem_post: Function not implemented
+<div class="highlight"><pre><span></span><code>sem_post:<span class="w"> </span>Function<span class="w"> </span>not<span class="w"> </span>implemented
 </code></pre></div>
 
 <p>This happens because not all the functions have been implemented in the
@@ -183,23 +245,23 @@ howto to install the patch into the Scratchbox environment.</p>
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.</p>
 <p>You need gcc 3.4, SDL dev library andZlib dev:</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gcc-3.4<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>zlib1g-dev
 </code></pre></div>
 
 <p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
-<div class="highlight"><pre><span></span><code>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
-<span class="nb">cd</span> qemu-arm-eabi 
-./configure --target-list<span class="o">=</span>arm-linux-user --static make
+<div class="highlight"><pre><span></span><code>svn<span class="w"> </span>co<span class="w"> </span>https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi<span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
+<span class="nb">cd</span><span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
+./configure<span class="w"> </span>--target-list<span class="o">=</span>arm-linux-user<span class="w"> </span>--static<span class="w"> </span>make
 </code></pre></div>
 
 <p>Copy qemu to the cputransp dir on scratchbox:</p>
-<div class="highlight"><pre><span></span><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>arm-linux-user/qemu-arm<span class="w"> </span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
 </code></pre></div>
 
 <p>Add it to the list of cputransp methods. Open the file:</p>
-<div class="highlight"><pre><span></span><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/scratchbox/devkits/cputransp/etc/cputransp-methods
 </code></pre></div>
 
 <p>and add this line:</p>
@@ -207,7 +269,7 @@ to get the qemu sources.</p>
 </code></pre></div>
 
 <p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
-<div class="highlight"><pre><span></span><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+<div class="highlight"><pre><span></span><code>vim<span class="w"> </span>/scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
 </code></pre></div>
 
 <p>and change this line:</p>
@@ -238,8 +300,8 @@ installing it from scratch?!". Luckly one kind person helped me on
 maemo-developer mailing list, and suggested me to do a dist-upgrade from
 inside the Scratchbox environment. So, login into tour Scratchbox
 environment and execute this:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get update 
-<span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get dist-upgrade
+<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:<span class="w"> </span>~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span>
+<span class="o">[</span>sbox-SDK_BETA_X86:<span class="w"> </span>~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>dist-upgrade
 </code></pre></div>
 
 <p>That's all! I don't know if this is the official method to do the
@@ -278,154 +340,12 @@ and to start learning how to do ports.</p>
 <li><a href="http://www.cs.wisc.edu/%7Elarus/spim.html" title="http://www.cs.wisc.edu/~larus/spim.html">http://www.cs.wisc.edu/\~larus/spim.html</a></li>
 </ul>
   </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/">Installing Maemo SDK 4 Beta</a></h2>
-    <p>
-      Posted on Thu 25 October 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>,              <a href="https://www.andreagrandi.it/tag/tablet.html">tablet</a>
-    </p>
-  </header>
-  <div>
-      <h2>Introduction</h2>
-<p><strong>Maemo</strong> is an opensource development platform for <strong>Linux</strong> based
-devices. Actually is the base for the operating system installed on
-<strong>Nokia</strong>
-<a href="http://www.nokia.it/770" title="http://www.nokia.it/770">N770</a>,
-<a href="http://europe.nokia.com/phones/n800" title="http://europe.nokia.com/phones/n800">N800</a> and the upcoming
-<a href="http://www.nokia.com/N810" title="http://www.nokia.com/N810">N810</a> but it could be adopted, with few changes, even by other similar
-devices.</p>
-<p>In particular, this version of Maemo SDK is the only one that allow
-developers to develop new applications for <strong>N810</strong> and to start porting
-old application to this new platform.</p>
-<p>The SDK is not only a set of libraries and compiler, it gives you a real
-environment that emulates the Nokia device, so the developer can write
-applications, debug them and test them. Both command line and gui
-application are supported in emulator.</p>
-<p>Graphical environment is based on a real <strong>X server</strong>, a <strong>window
-manager</strong> and on <strong>GTK</strong> libraries, with a particular extension called
-<strong>Hildon</strong>.</p>
-<p>With Maemo SDK you can:</p>
-<ul>
-<li>Test Maemo applications using a normal PC with Linux.</li>
-<li>Write and debug applications written by you.</li>
-<li>Port existing applications written for Linux/GTK and verify if they
-    work correctly.</li>
-<li>Compile and build ARMEL package so you can install them in the
-    device.</li>
-</ul>
-<h2>Requirements</h2>
-<p>These are the minimum requirements to work with Maemo SDK:</p>
-<ul>
-<li>Intel compatible processor (x86), at least 500 Mhz</li>
-<li>256 Mb RAM</li>
-<li>2 Gb space on hard disk</li>
-<li>A Linux distribution (I suggest Debian or Ubuntu)</li>
-</ul>
-<p>You need the following software packages:</p>
-<ul>
-<li>Scratchbox: a cross-compiling toolkit that allows you to compile
-    applications for different platform</li>
-<li>Maemo SDK: you can find it at this address: <a href="http://www.maemo.org/downloads/download-sdk.html">http://www.maemo.org/downloads/download-sdk.html</a></li>
-<li>Xephyr Xserver:</li>
-</ul>
-<p>Starting from <strong>4.x</strong> version, Maemo has a simple installer script, so
-all you need are these two files:</p>
-<ul>
-<li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-scratchbox-install_4.0beta.sh" title="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-scratchbox-install_4.0beta.sh">maemo-scratchbox-install_4.0beta.sh</a></li>
-<li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-sdk-install_4.0beta.sh" title="http://tabletsdev.maemo.org/unstable/chinook-beta/maemo-sdk-install_4.0beta.sh">maemo-sdk-install_4.0beta.sh</a></li>
-</ul>
-<h2>Installing Scratchbox</h2>
-<p>The first tool you have to install is <strong>Scratchbox</strong>. I suggest you to
-use the script provided but you could choose also to install it manually
-(in this case please refer to <a href="http://scratchbox.org/documentation/user/scratchbox-1.0/html/installdoc.html" title="http://scratchbox.org/documentation/user/scratchbox-1.0/html/installdoc.html">this site</a> for detailed instructions).</p>
-<p>Before beginning the installation of Scratchbox, you have to become
-<strong><code>root</code></strong>.</p>
-<p>First of all set the permission of the script file:</p>
-<div class="highlight"><pre><span></span><code>chmod +x maemo-scratchbox-install_4.0beta.sh
-</code></pre></div>
-
-<p>Then run it with these parameters:</p>
-<div class="highlight"><pre><span></span><code>./maemo-scratchbox-install_4.0beta.sh -d -u andy80
-</code></pre></div>
-
-<p>Please note that <strong>-d</strong> tells the installer to install from Debian dpkg
-packages while <strong>-u</strong> specifies your username (in my case is andy80, you
-have to change it using your local username).</p>
-<p>Scratchbox environment will be installed in <code>/scratchbox/</code></p>
-<p>Please note that you'll have to logout and login again to be able to log
-into you new Scratchbox environment. To test it you simply have to start
-Scratchbox from your local user:</p>
-<div class="highlight"><pre><span></span><code>/scratchbox/login
-
-Welcome to Scratchbox, the cross-compilation toolkit!
-
-Use <span class="s1">&#39;sb-menu&#39;</span> to change your compilation target.  
-See /scratchbox/doc/ <span class="k">for</span> documentation.
-</code></pre></div>
-
-<h2>Installing Maemo SDK</h2>
-<p>When Scratchbox is correctly installed on your system, you can install
-the <strong>Maemo SDK</strong>. Please note that you have to do it from <strong>normal
-user</strong> (the user you specified in the installation of Scratchbox).</p>
-<p>Simply run this command and follow instructions:</p>
-<div class="highlight"><pre><span></span><code>bash maemo-sdk-install_4.0beta.sh
-</code></pre></div>
-
-<p>At the end you should get this message:</p>
-<div class="highlight"><pre><span></span><code>Installation was successful! ----------------------------
-
-IMPORTANT! Please <span class="nb">read</span> this.
-
-You now have the maemo <span class="m">4</span>.0beta <span class="s1">&#39;chinook&#39;</span> installed on your computer.  
-You can now start your maemo SDK session with /scratchbox/login and  
-<span class="k">then</span> <span class="k">select</span> your target with <span class="s1">&#39;sb-conf select SDK\_BETA\_ARMEL&#39;</span> <span class="k">for</span> the  
-armel target or <span class="s1">&#39;sb-conf select SDK\_BETA\_X86&#39;</span> <span class="k">for</span> the i386 target.
-
-If you have any problems with targets<span class="s1">&#39; package databases, you can try  </span>
-<span class="s1">running &#39;</span>fakeroot apt-get -f install<span class="err">&#39;</span> on your scratchbox target.  
-This <span class="nb">command</span> will try to fix any problems with the package database.
-
-Happy hacking!
-</code></pre></div>
-
-<h2>Installing Xephyr</h2>
-<p>Xephyr is an X11 server that provides a device screen for the developer
-so that you can see all the maemo application windows and visuals on
-your computer.</p>
-<p>To install it in a Debian based distribution, simply execute this (from
-root):</p>
-<div class="highlight"><pre><span></span><code>apt-get install xserver-xephyr
-</code></pre></div>
-
-<h2>Running Xephyr</h2>
-<p>To see if all works fine, you should start Xephyr and Maemo environment.
-Execute this from outside the Scratchbox environment:</p>
-<div class="highlight"><pre><span></span><code>Xephyr :2 -host-cursor -screen 800x480x16 -dpi <span class="m">96</span> -ac -extension Composite
-</code></pre></div>
-
-<p>Now, from another shell, log into Scratchbox and execute this:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; <span class="nb">export</span> <span class="nv">DISPLAY</span><span class="o">=</span>:2 
-<span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; af-sb-init.sh start
-</code></pre></div>
-
-<p>This should start the Hildon Application Framework inside the Xephyr
-window. That's all!</p>
-<h2>References</h2>
-<p>Here you can find a list of website where I took information from to
-write this guide:</p>
-<ul>
-<li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt">http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt</a></li>
-<li><a href="http://www.maemo.org/" title="http://www.maemo.org">http://www.maemo.org</a></li>
-</ul>
-  </div>
 </article>
 
   <div class="pagination">
+    <a class="btn float-left" href="https://www.andreagrandi.it/index54.html">
+      <i class="fa fa-angle-left"></i> Older Posts
+    </a>
     <a class="btn float-right" href="https://www.andreagrandi.it/index52.html">
       Newer Posts <i class="fa fa-angle-right"></i>
     </a>

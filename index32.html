@@ -158,6 +158,52 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2009/02/22/convertire-i-file-wma-in-mp3-sotto-linux/">Convertire i file WMA in MP3 sotto Linux</a></h2>
+    <p>
+      Posted on Sun 22 February 2009 in <a href="https://www.andreagrandi.it/category/howto-linux-programmazione.html">HowTo, Linux, Programmazione</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/conversione.html">conversione</a>,              <a href="https://www.andreagrandi.it/tag/mp3.html">mp3</a>,              <a href="https://www.andreagrandi.it/tag/wma.html">wma</a>
+    </p>
+  </header>
+  <div>
+      <p>Se abbiamo dei file audio in formato <strong>.wma</strong> e li vogliamo convertire
+in formato <strong>.mp3</strong> utilizzando Linux, è sufficiente creare un piccolo
+script in <strong>bash</strong> che facendo uso di <strong>mplayer</strong> e <strong>lame</strong> provveda a
+convertire tutti i file che si trovano all'interno di una certa
+directory.</p>
+<p>Creiamo un file chiamato <strong>wma2mp3.sh</strong> con all'interno il seguente
+script:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="nv">current_directory</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="nb">pwd</span><span class="w"> </span><span class="k">)</span>
+
+<span class="c1">#remove spaces  </span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.wma<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="w"> </span><span class="sb">`</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="sb">`</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1">#remove uppercase  </span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.<span class="o">[</span>Ww<span class="o">][</span>Mm<span class="o">][</span>Aa<span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="w"> </span><span class="sb">`</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s1">&#39;[A-Z]&#39;</span>
+<span class="s1">&#39;[a-z]&#39;</span><span class="sb">`</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1">#Rip with Mplayer / encode with LAME  </span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.wma<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mplayer<span class="w"> </span>-vo<span class="w"> </span>null<span class="w"> </span>-vc<span class="w"> </span>dummy<span class="w"> </span>-af<span class="w"> </span><span class="nv">resample</span><span class="o">=</span><span class="m">44100</span><span class="w"> </span>-ao
+pcm:waveheader<span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>lame<span class="w"> </span>-m<span class="w"> </span>s<span class="w"> </span>audiodump.wav<span class="w"> </span>-o<span class="w"> </span><span class="nv">$i</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1">#convert file names</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.wma<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;`basename &quot;</span><span class="nv">$i</span><span class="s2">&quot; .wma`.mp3&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+rm<span class="w"> </span>audiodump.wav
+</code></pre></div>
+
+<p>a questo punto basta mettere lo script nella cartella dove ci sono i
+file .wma, dare i permessi di esecuzione a tale file (<strong>chmod +x
+wma2mp3.sh</strong>) ed eseguirlo con <strong><code>./wma2mp3.sh</code></strong></p>
+<h3>Fonte: <a href="http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3">http://www.linuxquestions.org/linux/answers/Applications_GUI_Multimedia/Convert_WMA_to_MP3</a>*</h3>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2009/02/14/evitare-che-wordpress-modifichi-il-codice-da-copia-incollare/">Evitare che Wordpress modifichi il codice da copia-incollare</a></h2>
     <p>
       Posted on Sat 14 February 2009 in <a href="https://www.andreagrandi.it/category/howto-wordpress.html">HowTo, WordPress</a>
@@ -181,7 +227,7 @@ utilissimo post</a>. In pratica si piega
 all'interno dei blocchi di codice.</p>
 <p>E' sufficiente modificare il file <strong>functions.php</strong> del tema Wordpress
 che stiamo utilizzando ed aggiungere questa riga in fondo al file:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nx">remove_filter</span><span class="p">(</span><span class="s1">&#39;the_content&#39;</span><span class="p">,</span> <span class="s2">&quot;wptexturize&quot;</span> <span class="p">);</span> <span class="cp">?&gt;</span><span class="x"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span> <span class="nx">remove_filter</span><span class="p">(</span><span class="s1">&#39;the_content&#39;</span><span class="p">,</span> <span class="s2">&quot;wptexturize&quot;</span> <span class="p">);</span> <span class="cp">?&gt;</span>
 </code></pre></div>
   </div>
   <hr />
@@ -208,19 +254,19 @@ solitamente è indicato anche l'ID della chiave pubblica PGP. Ad esempio
 sul sito del <em>Blueman Development Team</em> troviamo <strong>6B15AB91951DC1E2</strong>.</p>
 <p>Per importare questa chiave pubblica dentro apt di Ubuntu, sono
 sufficienti i seguenti comandi da terminale:</p>
-<div class="highlight"><pre><span></span><code>gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
-gpg --export --armor 6B15AB91951DC1E2 <span class="p">|</span> sudo apt-key add -
+<div class="highlight"><pre><span></span><code>gpg<span class="w"> </span>--keyserver<span class="w"> </span>keyserver.ubuntu.com<span class="w"> </span>--recv<span class="w"> </span>6B15AB91951DC1E2
+gpg<span class="w"> </span>--export<span class="w"> </span>--armor<span class="w"> </span>6B15AB91951DC1E2<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
 </code></pre></div>
 
 <p>Ovviamente dovrete sostituire l'ID della chiave PGP con quello che vi
 interessa aggiungere. Qui di seguito potete vedere un esempio completo
 dei messaggi di conferma che si ricevono quando si aggiunge la chiave:</p>
-<div class="highlight"><pre><span></span><code>gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
-    gpg: requesting key 951DC1E2 from hkp server keyserver.ubuntu.com
-    gpg: key 951DC1E2: public key <span class="s2">&quot;Launchpad PPA for Blueman Development Team&quot;</span> imported
-    gpg: Total number processed: <span class="m">1</span>
-    gpg:               imported: <span class="m">1</span>  <span class="o">(</span>RSA: <span class="m">1</span><span class="o">)</span> 
-gpg --export --armor 6B15AB91951DC1E2 <span class="p">|</span> sudo apt-key add - OK
+<div class="highlight"><pre><span></span><code>gpg<span class="w"> </span>--keyserver<span class="w"> </span>keyserver.ubuntu.com<span class="w"> </span>--recv<span class="w"> </span>6B15AB91951DC1E2
+<span class="w">    </span>gpg:<span class="w"> </span>requesting<span class="w"> </span>key<span class="w"> </span>951DC1E2<span class="w"> </span>from<span class="w"> </span>hkp<span class="w"> </span>server<span class="w"> </span>keyserver.ubuntu.com
+<span class="w">    </span>gpg:<span class="w"> </span>key<span class="w"> </span>951DC1E2:<span class="w"> </span>public<span class="w"> </span>key<span class="w"> </span><span class="s2">&quot;Launchpad PPA for Blueman Development Team&quot;</span><span class="w"> </span>imported
+<span class="w">    </span>gpg:<span class="w"> </span>Total<span class="w"> </span>number<span class="w"> </span>processed:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>gpg:<span class="w">               </span>imported:<span class="w"> </span><span class="m">1</span><span class="w">  </span><span class="o">(</span>RSA:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span>
+gpg<span class="w"> </span>--export<span class="w"> </span>--armor<span class="w"> </span>6B15AB91951DC1E2<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-<span class="w"> </span>OK
 </code></pre></div>
   </div>
   <hr />
@@ -253,46 +299,6 @@ in previous editions of GSoC.</p>
 mentors, will be fine if that happens this year too.</p>
 <p><strong><em>Note:</em>* I reported this news thanks to </strong>Valerio Valerio<strong> who wrote
 this on </strong>maemo-community*<em> mailing list.</em></p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2009/02/07/nuove-versioni-di-skype-per-linux-qualcosa-si-muove/">Nuove versioni di Skype per Linux: qualcosa si muove</a></h2>
-    <p>
-      Posted on Sat 07 February 2009 in <a href="https://www.andreagrandi.it/category/linux-skype.html">Linux, Skype</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>,              <a href="https://www.andreagrandi.it/tag/skype.html">Skype</a>,              <a href="https://www.andreagrandi.it/tag/sviluppo.html">sviluppo</a>
-    </p>
-  </header>
-  <div>
-      <p><a href="https://www.andreagrandi.it/images/2008/05/skype_logo.jpg"><img alt="skype logo" src="https://www.andreagrandi.it/images/2008/05/skype_logo.jpg"></a></p>
-<p>Gli utenti <strong>Linux</strong> che utilizzano <strong>Skype</strong> lo sanno: la versione
-disponibile per il pinguino non è mai stata aggiornata come quella per
-Windows. Su Linux siamo ancora alla versione <strong>2.0.0.72</strong> da piu' di un
-anno, nonostante siano stati segnalati da tempo vari <strong>problemi</strong> sia
-con l'<strong>audio</strong> che con il <strong>video</strong>.</p>
-<p>Pochi giorni fa uno degli sviluppatori della versione Linux di Skype, ha
-pubblicato sul <a href="http://share.skype.com/sites/linux/2009/01/skype_for_linux_updates.html">proprio blog</a>
-qualche aggiornamento su come sta procedendo lo sviluppo della versione
-Linux, in particolare:</p>
-<ul>
-<li>la libreria <strong>audio</strong> è stata completamente riscritta e sono state
-    risolte delle incompatibilità con gli auricolari bluetooth</li>
-<li>aggiornamenti anche alla libreria <strong>video</strong> in modo da renderla piu'
-    stabile e compatibile con un maggior numero di webcam</li>
-<li>l'<strong>interfaccia</strong> utente verrà completamente <strong>ridisegnata</strong>
-    ispirandosi alla versione 4.0 per Windows</li>
-<li>verrà aggiunto il supporto per un maggior numero di sistemi
-    operativi, come ad esempio <strong>FreeBSD</strong>, <strong>OpenSolaris</strong> e le
-    versione di <strong>Linux a 64 bit</strong></li>
-<li>sono stati assunti in questi mesi diversi sviluppatori esperti di
-    Linux e delle librerie Qt e ne verranno assunti altri nei prossimi
-    mesi</li>
-</ul>
-<p>A questo punto non ci resta che attendere, sperando di veder uscire una
-nuova versione almeno entro la fine dell'anno.</p>
   </div>
 </article>
 

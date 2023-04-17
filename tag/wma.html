@@ -176,23 +176,23 @@ directory.</p>
 script:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
-<span class="nv">current_directory</span><span class="o">=</span><span class="k">$(</span> <span class="nb">pwd</span> <span class="k">)</span>
+<span class="nv">current_directory</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="nb">pwd</span><span class="w"> </span><span class="k">)</span>
 
 <span class="c1">#remove spaces  </span>
-<span class="k">for</span> i <span class="k">in</span> *.wma<span class="p">;</span> <span class="k">do</span> mv <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$i</span> <span class="p">|</span> tr <span class="s1">&#39; &#39;</span> <span class="s1">&#39;_&#39;</span><span class="sb">`</span><span class="p">;</span> <span class="k">done</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.wma<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="w"> </span><span class="sb">`</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="sb">`</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 
 <span class="c1">#remove uppercase  </span>
-<span class="k">for</span> i <span class="k">in</span> *.<span class="o">[</span>Ww<span class="o">][</span>Mm<span class="o">][</span>Aa<span class="o">]</span><span class="p">;</span> <span class="k">do</span> mv <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$i</span> <span class="p">|</span> tr <span class="s1">&#39;[A-Z]&#39;</span>
-<span class="s1">&#39;[a-z]&#39;</span><span class="sb">`</span><span class="p">;</span> <span class="k">done</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.<span class="o">[</span>Ww<span class="o">][</span>Mm<span class="o">][</span>Aa<span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="w"> </span><span class="sb">`</span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s1">&#39;[A-Z]&#39;</span>
+<span class="s1">&#39;[a-z]&#39;</span><span class="sb">`</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 
 <span class="c1">#Rip with Mplayer / encode with LAME  </span>
-<span class="k">for</span> i <span class="k">in</span> *.wma <span class="p">;</span> <span class="k">do</span> mplayer -vo null -vc dummy -af <span class="nv">resample</span><span class="o">=</span><span class="m">44100</span> -ao
-pcm:waveheader <span class="nv">$i</span> <span class="o">&amp;&amp;</span> lame -m s audiodump.wav -o <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.wma<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mplayer<span class="w"> </span>-vo<span class="w"> </span>null<span class="w"> </span>-vc<span class="w"> </span>dummy<span class="w"> </span>-af<span class="w"> </span><span class="nv">resample</span><span class="o">=</span><span class="m">44100</span><span class="w"> </span>-ao
+pcm:waveheader<span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>lame<span class="w"> </span>-m<span class="w"> </span>s<span class="w"> </span>audiodump.wav<span class="w"> </span>-o<span class="w"> </span><span class="nv">$i</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 
 <span class="c1">#convert file names</span>
-<span class="k">for</span> i <span class="k">in</span> *.wma<span class="p">;</span> <span class="k">do</span> mv <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> <span class="s2">&quot;`basename &quot;</span><span class="nv">$i</span><span class="s2">&quot; .wma`.mp3&quot;</span><span class="p">;</span> <span class="k">done</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>*.wma<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>mv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;`basename &quot;</span><span class="nv">$i</span><span class="s2">&quot; .wma`.mp3&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 
-rm audiodump.wav
+rm<span class="w"> </span>audiodump.wav
 </code></pre></div>
 
 <p>a questo punto basta mettere lo script nella cartella dove ci sono i

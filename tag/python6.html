@@ -158,6 +158,46 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2016/01/26/using-bbc-microbit-accelerometer-with-python/">Using BBC MicroBit accelerometer with Python</a></h2>
+    <p>
+      Posted on Tue 26 January 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/bbc.html">bbc</a>,              <a href="https://www.andreagrandi.it/tag/microbit.html">microbit</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>
+    </p>
+  </header>
+  <div>
+      <p>In these days I'm having a bit of fun with <strong><a href="https://www.microbit.co.uk/">BBC
+MicroBit</a></strong> board and I'm learning how to
+use the different sensors available. The latest one I wanted to try was
+the accelerometer. The board can "sense" if you are moving it in any of
+the 3 dimensional axes: X, Y, Z. According to the
+<a href="https://microbit-micropython.readthedocs.org/en/latest/accelerometer.html">documentation</a>
+there are four methods available that can be used to get these
+values: <code>microbit.accelerometer.get_values()</code> will return you a tuple with all the 3 values, 
+while  <code>microbit.accelerometer.get_x()</code>, <code>microbit.accelerometer.get_y()</code>, <code>microbit.accelerometer.get_z()</code>
+will give you the single values.</p>
+<p>The documentation on the official website doesn't explain much and for
+example I didn't even know what was the range of the values I can get
+back from these methods (by the way it's <strong>between -1024</strong> and
+<strong>1024</strong>), so I decided to play with the code directly and write a very
+simple example. The small example I wrote, shows a smile on the board
+display if you keep it straight and shows a sad face if you bend it.</p>
+<p>This is the result:</p>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/LX8fYBsOxA0" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+<p>and this is all the needed code of the application:</p>
+<p>
+<script src="https://gist.github.com/andreagrandi/f4a7c8ee8597dde3070d.js"></script>
+</p>
+
+<p>In the next days I will try to play with more sensors and to publish
+other examples.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/12/18/using-python-pypy-in-a-virtual-environment/">Using Python PyPy in a virtual environment</a></h2>
     <p>
       Posted on Fri 18 December 2015 in <a href="https://www.andreagrandi.it/category/howto-python.html">HowTo, Python</a>
@@ -171,20 +211,20 @@
 <strong><a href="http://pypy.org/">PyPy</a></strong> implementation of <strong>Python</strong>. Assuming you
 have already installed it in your system, first find out where it is
 installed:</p>
-<div class="highlight"><pre><span></span><code>which pypy
+<div class="highlight"><pre><span></span><code>which<span class="w"> </span>pypy
 /usr/local/bin/pypy
 </code></pre></div>
 
 <p>then you need <strong>mkvirtualenv</strong> to create a virtual environment that will
 use this runtime:</p>
-<div class="highlight"><pre><span></span><code>mkvirtualenv -p /usr/local/bin/pypy pypy-test
-Running virtualenv with interpreter /usr/local/bin/pypy
-New pypy executable <span class="k">in</span> pypy-test/bin/pypy
-Installing setuptools, pip, wheel...done.
-<span class="o">(</span>pypy-test<span class="o">)</span>➜  ~  python
-Python <span class="m">2</span>.7.10 <span class="o">(</span>f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559, Sep <span class="m">01</span> <span class="m">2015</span>, <span class="m">06</span>:26:30<span class="o">)</span>
-<span class="o">[</span>PyPy <span class="m">2</span>.6.1 with GCC <span class="m">4</span>.2.1 Compatible Apple LLVM <span class="m">6</span>.1.0 <span class="o">(</span>clang-602.0.53<span class="o">)]</span> on darwin
-Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.
+<div class="highlight"><pre><span></span><code>mkvirtualenv<span class="w"> </span>-p<span class="w"> </span>/usr/local/bin/pypy<span class="w"> </span>pypy-test
+Running<span class="w"> </span>virtualenv<span class="w"> </span>with<span class="w"> </span>interpreter<span class="w"> </span>/usr/local/bin/pypy
+New<span class="w"> </span>pypy<span class="w"> </span>executable<span class="w"> </span><span class="k">in</span><span class="w"> </span>pypy-test/bin/pypy
+Installing<span class="w"> </span>setuptools,<span class="w"> </span>pip,<span class="w"> </span>wheel...done.
+<span class="o">(</span>pypy-test<span class="o">)</span>➜<span class="w">  </span>~<span class="w">  </span>python
+Python<span class="w"> </span><span class="m">2</span>.7.10<span class="w"> </span><span class="o">(</span>f3ad1e1e1d6215e20d34bb65ab85ff9188c9f559,<span class="w"> </span>Sep<span class="w"> </span><span class="m">01</span><span class="w"> </span><span class="m">2015</span>,<span class="w"> </span><span class="m">06</span>:26:30<span class="o">)</span>
+<span class="o">[</span>PyPy<span class="w"> </span><span class="m">2</span>.6.1<span class="w"> </span>with<span class="w"> </span>GCC<span class="w"> </span><span class="m">4</span>.2.1<span class="w"> </span>Compatible<span class="w"> </span>Apple<span class="w"> </span>LLVM<span class="w"> </span><span class="m">6</span>.1.0<span class="w"> </span><span class="o">(</span>clang-602.0.53<span class="o">)]</span><span class="w"> </span>on<span class="w"> </span>darwin
+Type<span class="w"> </span><span class="s2">&quot;help&quot;</span>,<span class="w"> </span><span class="s2">&quot;copyright&quot;</span>,<span class="w"> </span><span class="s2">&quot;credits&quot;</span><span class="w"> </span>or<span class="w"> </span><span class="s2">&quot;license&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>more<span class="w"> </span>information.
 &gt;&gt;&gt;&gt;
 </code></pre></div>
 
@@ -380,41 +420,6 @@ on my laptop is: <strong>0.000133037567139</strong></p>
 <p>Quite faster, don't you think? I will let you try how long does it take
 to calculate the 60th number of the sequence with and without using the
 decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">Django Notes: read values from settings in a safe way</a></h2>
-    <p>
-      Posted on Sat 29 August 2015 in <a href="https://www.andreagrandi.it/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/getattr.html">getattr</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/settings.html">settings</a>
-    </p>
-  </header>
-  <div>
-      <p>Working on <strong>Django</strong> projects I find very often that many developers
-access the values that are defined in <strong>settings</strong> in this way</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
-
-<span class="n">my_value</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MY_SETTING</span>
-</code></pre></div>
-
-<p>What happens if <code>MY_SETTING</code> has not been defined in <strong>settings.py</strong>?
-The code will raise an error and crash, of course. How can we make the
-code more reliable? We could <em>try/except</em> the code block that tries to
-read the value and maybe set a value if we get an exception, but this
-would not be a clean way to do this job.</p>
-<p>A cleaner way to do it is to use <strong>getattr</strong> in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
-
-<span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
-</code></pre></div>
-
-<p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
-if the value doesn't exist <code>my_value</code> will be assigned with
-<code>'my-default-value'</code></p>
   </div>
 </article>
 

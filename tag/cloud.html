@@ -175,19 +175,19 @@ currently unsupported) even on Windows.</p>
 <h2>Installing EncFS</h2>
 <p>EncFS can be installed from <strong>brew</strong>. If you don't have brew package
 manager installed on OSX you can install it using this command:</p>
-<div class="highlight"><pre><span></span><code>ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code>ruby<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div>
 
 <p>After brew, you need to install <strong>OSXFuse</strong> from this
 website <a href="http://osxfuse.github.io">http://osxfuse.github.io</a></p>
 <p>Finally you can install <strong>encfs</strong> using this command:</p>
-<div class="highlight"><pre><span></span><code>brew install homebrew/fuse/encfs
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>homebrew/fuse/encfs
 </code></pre></div>
 
 <h2>Configuring the encrypted folder</h2>
 <p>Now that EncFS is installed, you can either mount an existing EncFS
 volume or create a new one. In both cases the command is the same:</p>
-<div class="highlight"><pre><span></span><code>encfs ~/Dropbox/Private ~/Private
+<div class="highlight"><pre><span></span><code>encfs<span class="w"> </span>~/Dropbox/Private<span class="w"> </span>~/Private
 </code></pre></div>
 
 <p>If you are mounting an existing encrypted volume, you will be prompted
@@ -215,26 +215,26 @@ and save it as <strong>encfs_mount.sh</strong> inside your <strong>\$HOME</stron
 <span class="nv">KEYCHAIN_PASSWORD</span><span class="o">=</span><span class="s1">&#39;encfs&#39;</span>
 <span class="nv">ENCFS</span><span class="o">=</span>/usr/local/bin/encfs
 
-mount <span class="p">|</span> grep <span class="nv">$TARGET</span> &gt;/dev/null
-<span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$?</span><span class="s2">&quot;</span> -eq <span class="s2">&quot;0&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> /usr/sbin/diskutil unmount <span class="nv">$TARGET</span>
+mount<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nv">$TARGET</span><span class="w"> </span>&gt;/dev/null
+<span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$?</span><span class="s2">&quot;</span><span class="w"> </span>-eq<span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>/usr/sbin/diskutil<span class="w"> </span>unmount<span class="w"> </span><span class="nv">$TARGET</span>
 
-<span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$TARGET</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-<span class="nb">echo</span> <span class="s2">&quot;Create new mountpoint </span><span class="nv">$TARGET</span><span class="s2">&quot;</span>
-mkdir <span class="nv">$TARGET</span>
-chmod <span class="m">0700</span> <span class="nv">$TARGET</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-d<span class="w"> </span><span class="nv">$TARGET</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Create new mountpoint </span><span class="nv">$TARGET</span><span class="s2">&quot;</span>
+mkdir<span class="w"> </span><span class="nv">$TARGET</span>
+chmod<span class="w"> </span><span class="m">0700</span><span class="w"> </span><span class="nv">$TARGET</span>
 <span class="k">fi</span>
 
-<span class="nv">$ENCFS</span> <span class="nv">$SOURCE</span> <span class="nv">$TARGET</span> --extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span> -ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
+<span class="nv">$ENCFS</span><span class="w"> </span><span class="nv">$SOURCE</span><span class="w"> </span><span class="nv">$TARGET</span><span class="w"> </span>--extpass<span class="o">=</span><span class="s2">&quot;security 2&gt;&amp;1 &gt;/dev/null find-generic-password -gl &#39;</span><span class="nv">$KEYCHAIN_PASSWORD</span><span class="s2">&#39; |grep password|cut -d \\\&quot; -f 2&quot;</span><span class="w"> </span>-ovolname<span class="o">=</span><span class="nv">$VOLUME_TITLE</span>
 </code></pre></div>
 
 <p>Make it <strong>executable</strong>:</p>
-<div class="highlight"><pre><span></span><code>chmod +x ~/encfs_mount.sh
+<div class="highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>~/encfs_mount.sh
 </code></pre></div>
 
 <p>Open <strong>AppleScript</strong> editor and paste this text inside and save as an
 app in the \$HOME folder:</p>
 <p><a href="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png"><img alt="apple script" src="https://www.andreagrandi.it/images/2015/10/Screenshot-2015-10-11-19.27.14.png" width="60%"></a></p>
-<div class="highlight"><pre><span></span><code><span class="k">do</span> shell script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="k">do</span><span class="w"> </span>shell<span class="w"> </span>script<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/encfs_mount.sh&quot;</span>
 </code></pre></div>
 
 <p>Finally, open "<strong>System Preferences</strong>" -&gt; "<strong>Users &amp; Groups</strong>" and
@@ -266,17 +266,17 @@ directly on <code>~/Dropbox/Private</code></strong>, only read and save your fil
   <div>
       <p>After upgrading from OSX 10.8.x to 10.9 (Mavericks), <strong>encfs</strong> recipe is
 broken. First of all you have to fix a problem with a library header:</p>
-<div class="highlight"><pre><span></span><code>sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>/usr/include/sys/_endian.h<span class="w"> </span>/usr/include/sys/endian.h
 </code></pre></div>
 
 <p>then you can install encfs using this remote brew recipe:</p>
-<div class="highlight"><pre><span></span><code>brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>reinstall<span class="w"> </span>https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
 </code></pre></div>
 
 <p>It's also possible that you have to fix fuse4x installation before being
 able to use encfs (I had to do it):</p>
-<div class="highlight"><pre><span></span><code>sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
-sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/bin/cp<span class="w"> </span>-rfX<span class="w"> </span>/usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext<span class="w"> </span>/Library/Extensions
+sudo<span class="w"> </span>chmod<span class="w"> </span>+s<span class="w"> </span>/Library/Extensions/fuse4x.kext/Support/load_fuse4x
 </code></pre></div>
 
 <p>That's it! Please note that this is just a workaround (thanks to

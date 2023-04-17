@@ -158,6 +158,36 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h2>
+    <p>
+      Posted on Thu 25 April 2013 in <a href="https://www.andreagrandi.it/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/virtualenv.html">virtualenv</a>
+    </p>
+  </header>
+  <div>
+      <p>Developing Python applications sometimes it's useful to be able to test
+the code with different environments, for example a particular version
+of Python or a specific Django version etc... Setting up many different
+virtual machines would be really too much work and even using a chroot
+environment is not what you need in some cases. Thanks to
+<a href="https://github.com/pypa/virtualenv"><strong>virtualenv</strong></a> is it possible to
+create a self contained Python environment with all the specific
+libraries you may need. Using virtualenv is very easy:</p>
+<ul>
+<li>Creating the virtual environment: <strong><code>virtualenvmyenv --no-site-packages</code></strong></li>
+<li>Entering the virtual environment: <strong><code>source myenv/bin/activate</code></strong></li>
+<li>Deactivating the virtual environment: <strong><code>deactivate</code></strong></li>
+</ul>
+<p>That's it! Once you're inside the virtual environment you will be using
+the Python libraries inside it. I suggest you to install all the Python
+libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip</strong></a>.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2010/02/22/twitter-client-for-maemo-in-qt-python-call-for-developers-and-ui-designers/">Twitter client for Maemo in Qt + Python: call for developers and UI designers</a></h2>
     <p>
       Posted on Mon 22 February 2010 in <a href="https://www.andreagrandi.it/category/linux-maemo-en-meego-programmazione-python-qt.html">Linux, Maemo (EN), MeeGo, Programmazione, Python, Qt</a>
@@ -242,11 +272,11 @@ then we create an entry for each module we have (in this case just one,
 parameters and our <strong>setup.py</strong> is complete.</p>
 <h2>Building and installing</h2>
 <p>To test it we can try to build the package in this way:</p>
-<div class="highlight"><pre><span></span><code>python2.5 setup.py build
+<div class="highlight"><pre><span></span><code>python2.5<span class="w"> </span>setup.py<span class="w"> </span>build
 </code></pre></div>
 
 <p>if we want to install the module in our system:</p>
-<div class="highlight"><pre><span></span><code>python2.5 setup.py install
+<div class="highlight"><pre><span></span><code>python2.5<span class="w"> </span>setup.py<span class="w"> </span>install
 </code></pre></div>
 
 <h2>References</h2>
@@ -383,115 +413,6 @@ feel free to report it on the pymaemo-developers mailing list [19].</p>
 <h2>Credits</h2>
 <p>This post was possible thanks to <strong>Anderson Lizardo</strong>, from PyMaemo
 team, who posted these informations on pymaemo-developers mailing list.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/">Writing Python bindings of existing C libraries – (2) – A simple example of binding</a></h2>
-    <p>
-      Posted on Thu 06 August 2009 in <a href="https://www.andreagrandi.it/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/binding.html">binding</a>,              <a href="https://www.andreagrandi.it/tag/igalia.html">Igalia</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-    </p>
-  </header>
-  <div>
-      <h2>Introduction</h2>
-<p>As I promised in the preceding post, I'll provide a very easy example of
-a python binding. Let's suppose we don't want to use the methods
-included in Python to sum two integer values and we want to do it in C
-and then call the add method from a python script. I'll write the
-complete source code first and then I'll explain all the parts of it.</p>
-<h2>Source Code</h2>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Python.h&gt;</span><span class="cp"></span>
-
-<span class="k">static</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="nf">foo_add</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="w">  </span>
-<span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">  </span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ii&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">b</span><span class="p">))</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w">  </span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w">  </span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">  </span>
-<span class="p">}</span><span class="w"></span>
-
-<span class="k">static</span><span class="w"> </span><span class="n">PyMethodDef</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span><span class="w"> </span><span class="n">METH_VARARGS</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">},</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">}</span><span class="w">  </span>
-<span class="p">};</span><span class="w"></span>
-
-<span class="n">PyMODINIT_FUNC</span><span class="w"> </span><span class="nf">initfoo</span><span class="p">()</span><span class="w"></span>
-<span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w">  </span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-
-<h2>How it works</h2>
-<p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
-us to write an extension for Python language. To be able to include this
-header, we must have the python development packages installed in our
-system. For example in Debian based distributions we can install them
-with this command:</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install python2.5-dev
-</code></pre></div>
-
-<p>Every module has at least three parts. In the first part we write
-methods we want to call from the final python module: in this case we
-have a method called <strong>foo_add</strong> where "<em>foo</em>" is the name of the
-module and "<em>add</em>" the name of the method. Every method is declared as
-<strong>static PyObject</strong>. The method does anything particular except calling
-PyArg_ParseTuple to validate the input (we'll discuss this later),
-adding the two passed numbers and returning the result.</p>
-<p>In the second part we have something like a dictionary, defined as
-static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
-name of the module). For each method we want to expose in our python
-module, we have to add something like this:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
-</code></pre></div>
-
-<p>where "<em>add</em>" is the name of the method we want to be visible in our
-module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
-implemented in the C module, METH_VARARGS means that we want to pass
-some parameters to the function and the last one would be the
-description of the method (we can leave it NULL if we want).</p>
-<p>Third part allows us to register the defined method/s and the module:</p>
-<div class="highlight"><pre><span></span><code><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w"></span>
-</code></pre></div>
-
-<h3>Parsing Parameters</h3>
-<p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
-<strong>PyObject</strong> passed as parameter to the current method and follows
-almost the sscanf syntax to parse parameters (in this case we had <em>"ii"</em>
-for two integers). You can fin the complete reference here:
-<a href="http://docs.python.org/c-api/arg.html">http://docs.python.org/c-api/arg.html</a></p>
-<h2>Building and installing</h2>
-<p>To build the module, we have to be in the source directory and execute
-this command:</p>
-<div class="highlight"><pre><span></span><code>gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
-</code></pre></div>
-
-<p>then we've to copy the generated module to the python's modules
-directory:</p>
-<div class="highlight"><pre><span></span><code>cp foo.so /usr/lib/python2.5/site-packages/
-</code></pre></div>
-
-<h2>Testing our module</h2>
-<p>Testing the module is really easy. We've to start a python shell or
-create a python script with the following source code:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">foo</span>
-<span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</code></pre></div>
-
-<p>if all is working fine, the printed result should be <strong>5</strong></p>
-<h2>References</h2>
-<ul>
-<li><a href="http://docs.python.org/extending/extending.html">http://docs.python.org/extending/extending.html</a></li>
-<li><a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html">http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html</a></li>
-</ul>
   </div>
 </article>
 

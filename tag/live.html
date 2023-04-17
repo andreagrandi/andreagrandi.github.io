@@ -176,11 +176,11 @@ con la <a href="http://it.europe.creative.com/products/product.asp?category=218&
 verificare che il modello di "Creative Live Cam" che state cercando di
 installare, sia lo stesso che ho testato io. Potete verificarlo
 scrivendo in un terminale il comando <strong>lsusb</strong>:  </p>
-<div class="highlight"><pre><span></span><code>lsusb 
-Bus <span class="m">003</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
-Bus <span class="m">002</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000 
-Bus <span class="m">001</span> Device <span class="m">018</span>: ID 041e:4068 Creative Technology, Ltd 
-Bus <span class="m">001</span> Device <span class="m">001</span>: ID <span class="m">0000</span>:0000<span class="sb">`</span>
+<div class="highlight"><pre><span></span><code>lsusb<span class="w"> </span>
+Bus<span class="w"> </span><span class="m">003</span><span class="w"> </span>Device<span class="w"> </span><span class="m">001</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">0000</span>:0000<span class="w"> </span>
+Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Device<span class="w"> </span><span class="m">001</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">0000</span>:0000<span class="w"> </span>
+Bus<span class="w"> </span><span class="m">001</span><span class="w"> </span>Device<span class="w"> </span><span class="m">018</span>:<span class="w"> </span>ID<span class="w"> </span>041e:4068<span class="w"> </span>Creative<span class="w"> </span>Technology,<span class="w"> </span>Ltd<span class="w"> </span>
+Bus<span class="w"> </span><span class="m">001</span><span class="w"> </span>Device<span class="w"> </span><span class="m">001</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">0000</span>:0000<span class="sb">`</span>
 </code></pre></div>
 
 <p>Ovvero dovrete verificare che l'identificativo del vostro modello sia
@@ -198,34 +198,34 @@ che invece supportano il mio modello di webcam.</p>
 installato sulla nostra macchina tutto il necessario per poter
 ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:</p>
-<div class="highlight"><pre><span></span><code>apt-get install build-essential linux-headers-<span class="k">$(</span>uname -r<span class="k">)</span>
+<div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>linux-headers-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
 </code></pre></div>
 
 <p>A questo punto dovrete scaricare i sorgenti del driver, da questo
 indirizzo: <a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
-<div class="highlight"><pre><span></span><code>wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
 </code></pre></div>
 
 <p>Dobbiamo poi scompattarli con il seguente comando:</p>
-<div class="highlight"><pre><span></span><code>tar xfvz ov51x-jpeg-1.5.7.tar.gz
+<div class="highlight"><pre><span></span><code>tar<span class="w"> </span>xfvz<span class="w"> </span>ov51x-jpeg-1.5.7.tar.gz
 </code></pre></div>
 
 <p>Infine dobbiamo compilare il modulo ed installarlo:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> ov51x-jpeg-1.5.7 
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>ov51x-jpeg-1.5.7<span class="w"> </span>
 make
-make install
+make<span class="w"> </span>install
 </code></pre></div>
 
 <p>Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:</p>
-<div class="highlight"><pre><span></span><code>modprobe ov51x-jpeg
+<div class="highlight"><pre><span></span><code>modprobe<span class="w"> </span>ov51x-jpeg
 </code></pre></div>
 
 <p>Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
 modificare il file <code>/etc/modprobe.d/options</code> ed aggiungere la seguente
 riga:</p>
-<div class="highlight"><pre><span></span><code>options ov51x-jpeg <span class="nv">forceblock</span><span class="o">=</span><span class="m">1</span>
+<div class="highlight"><pre><span></span><code>options<span class="w"> </span>ov51x-jpeg<span class="w"> </span><span class="nv">forceblock</span><span class="o">=</span><span class="m">1</span>
 </code></pre></div>
 
 <p>ovviamente prima di caricare il modulo. A questo punto l'installazione

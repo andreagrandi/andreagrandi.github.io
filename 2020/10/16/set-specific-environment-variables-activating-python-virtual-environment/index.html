@@ -203,15 +203,15 @@ Automating this process makes sure we don't forget about setting everything we n
 <p>At this point edit <code>postactivate</code> file with (you can replace <code>nano</code> with your preferred editor) <code>nano bin/postactivate</code> and add the following script:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/zsh</span>
 <span class="c1"># This hook is sourced after this virtualenv is activated.</span>
-<span class="nb">set</span> -a
-<span class="nb">source</span> .env
-<span class="nb">set</span> +a
+<span class="nb">set</span><span class="w"> </span>-a
+<span class="nb">source</span><span class="w"> </span>.env
+<span class="nb">set</span><span class="w"> </span>+a
 </code></pre></div>
 
 <p><strong>Note:</strong> I'm using <code>zsh</code> here but you can replace it with <code>bash</code> (the syntax should be the same).</p>
 <h2>Test the configuration</h2>
 <p>To make the configuration effective you need to <code>deactivate</code> your virtual environment and <code>activate</code> it again. The <code>postactivate</code> script will run automatically and you can now check that your environment variables have been set correctly (the <code>...</code> have been placed to replace other existing values):</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>test-env<span class="o">)</span> ➜ env
+<div class="highlight"><pre><span></span><code><span class="o">(</span>test-env<span class="o">)</span><span class="w"> </span>➜<span class="w"> </span>env
 ...
 <span class="nv">MY_USERNAME</span><span class="o">=</span>user1
 <span class="nv">MY_PASSWORD</span><span class="o">=</span>secret

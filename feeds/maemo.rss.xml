@@ -245,11 +245,11 @@ then we create an entry for each module we have (in this case just one,
 parameters and our &lt;strong&gt;setup.py&lt;/strong&gt; is complete.&lt;/p&gt;
 &lt;h2&gt;Building and installing&lt;/h2&gt;
 &lt;p&gt;To test it we can try to build the package in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;python2.5 setup.py build
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;python2.5&lt;span class="w"&gt; &lt;/span&gt;setup.py&lt;span class="w"&gt; &lt;/span&gt;build
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;if we want to install the module in our system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;python2.5 setup.py install
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;python2.5&lt;span class="w"&gt; &lt;/span&gt;setup.py&lt;span class="w"&gt; &lt;/span&gt;install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;References&lt;/h2&gt;
@@ -392,30 +392,30 @@ included in Python to sum two integer values and we want to do it in C
 and then call the add method from a python script. I'll write the
 complete source code first and then I'll explain all the parts of it.&lt;/p&gt;
 &lt;h2&gt;Source Code&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;Python.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;Python.h&amp;gt;&lt;/span&gt;
 
 &lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PyObject&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nf"&gt;foo_add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyObject&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PyObject&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;PyArg_ParseTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;ii&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Py_BuildValue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;i&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
 
 &lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PyMethodDef&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyCFunction&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;foo_add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;METH_VARARGS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
 
-&lt;span class="n"&gt;PyMODINIT_FUNC&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;initfoo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;PyMODINIT_FUNC&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;initfoo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;Py_InitModule3&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;foo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;My first extension module.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;How it works&lt;/h2&gt;
@@ -424,7 +424,7 @@ us to write an extension for Python language. To be able to include this
 header, we must have the python development packages installed in our
 system. For example in Debian based distributions we can install them
 with this command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install python2.5-dev
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;python2.5-dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Every module has at least three parts. In the first part we write
@@ -447,7 +447,7 @@ implemented in the C module, METH_VARARGS means that we want to pass
 some parameters to the function and the last one would be the
 description of the method (we can leave it NULL if we want).&lt;/p&gt;
 &lt;p&gt;Third part allows us to register the defined method/s and the module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Py_InitModule3&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;foo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;My first extension module.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Py_InitModule3&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;foo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foo_methods&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;My first extension module.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;Parsing Parameters&lt;/h3&gt;
@@ -459,12 +459,12 @@ for two integers). You can fin the complete reference here:
 &lt;h2&gt;Building and installing&lt;/h2&gt;
 &lt;p&gt;To build the module, we have to be in the source directory and execute
 this command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;gcc -shared -I/usr/include/python2.5 foo.c -o foo.so
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;gcc&lt;span class="w"&gt; &lt;/span&gt;-shared&lt;span class="w"&gt; &lt;/span&gt;-I/usr/include/python2.5&lt;span class="w"&gt; &lt;/span&gt;foo.c&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;foo.so
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then we've to copy the generated module to the python's modules
 directory:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;cp foo.so /usr/lib/python2.5/site-packages/
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;cp&lt;span class="w"&gt; &lt;/span&gt;foo.so&lt;span class="w"&gt; &lt;/span&gt;/usr/lib/python2.5/site-packages/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Testing our module&lt;/h2&gt;
@@ -815,11 +815,11 @@ had still some problems logging into &lt;strong&gt;Scratchbox&lt;/strong&gt; and
 &lt;p&gt;The I found this page: &lt;a href="http://suppressingfire.livejournal.com/35277.html"&gt;http://suppressingfire.livejournal.com/35277.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;that explain how to fix these problems. In particular if you get this
 kind of error trying to log into Scratchbox:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Inconsistency detected by ld.so: rtld.c: &lt;span class="m"&gt;1192&lt;/span&gt;: dl_main: Assertion &lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;void *&lt;span class="o"&gt;)&lt;/span&gt; ph-&amp;gt;p_vaddr &lt;span class="o"&gt;==&lt;/span&gt; _rtld_local._dl_sysinfo_dso&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; failed!
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Inconsistency&lt;span class="w"&gt; &lt;/span&gt;detected&lt;span class="w"&gt; &lt;/span&gt;by&lt;span class="w"&gt; &lt;/span&gt;ld.so:&lt;span class="w"&gt; &lt;/span&gt;rtld.c:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1192&lt;/span&gt;:&lt;span class="w"&gt; &lt;/span&gt;dl_main:&lt;span class="w"&gt; &lt;/span&gt;Assertion&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;void&lt;span class="w"&gt; &lt;/span&gt;*&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;ph-&amp;gt;p_vaddr&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;_rtld_local._dl_sysinfo_dso&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;failed!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can fix it in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /proc/sys/vm/vdso_enabled
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt; &lt;/span&gt;/proc/sys/vm/vdso_enabled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can read the complete fix in my updated wiki: &lt;a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4"&gt;http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Mon, 21 Apr 2008 14:37:00 +0200</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2008-04-21:/2008/04/21/scratchbox-on-ubuntu-hardy-troubleshooting/</guid><category>Maemo (EN)</category><category>maemo</category><category>nokia</category><category>scratchbox</category><category>SDK</category><category>tablet</category></item><item><title>Installing Maemo SDK 4 HowTo Updated</title><link>https://www.andreagrandi.it/2008/04/17/installing-maemo-sdk-4-howto-updated/</link><description>&lt;p&gt;I've updated my previous howto that explain how to install &lt;strong&gt;Maemo SDK 4 (Chinook)&lt;/strong&gt;.
@@ -890,21 +890,21 @@ discovered that one of their developer was working to hildonize
 [WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
 just a test or if this library could work in Maemo, so I followed his
 suggestion and I grabbed the latest SVN sources:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;svn&lt;span class="w"&gt; &lt;/span&gt;checkout&lt;span class="w"&gt; &lt;/span&gt;http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk&lt;span class="w"&gt; &lt;/span&gt;wxWidgets
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and I compiled it in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; wxWidgets ./configure --with-hildon make make install
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;wxWidgets&lt;span class="w"&gt; &lt;/span&gt;./configure&lt;span class="w"&gt; &lt;/span&gt;--with-hildon&lt;span class="w"&gt; &lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then I grabbed a simple "HelloWorld" from the official documentation.
 You can find the complete source code &lt;a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;I compiled the source code in this way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;g++&lt;span class="w"&gt; &lt;/span&gt;hworld.cpp&lt;span class="w"&gt; &lt;/span&gt;wx-config&lt;span class="w"&gt; &lt;/span&gt;--libs&lt;span class="w"&gt; &lt;/span&gt;wx-config&lt;span class="w"&gt; &lt;/span&gt;--cxxflags&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;hworld
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;then I ran it in the usual way:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;run-standalone.sh ./hworld
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;run-standalone.sh&lt;span class="w"&gt; &lt;/span&gt;./hworld
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The result? I think that a screenshoot is better than thousand words :)&lt;/p&gt;
@@ -937,14 +937,14 @@ way to generate a &lt;strong&gt;.deb&lt;/strong&gt; package for Maemo.&lt;/p&gt;
 &lt;code&gt;.dsc&lt;/code&gt; file (for example in an ftp like this:
 &lt;a href="http://ftp.debian.org/debian/pool/non-free/s/spim/"&gt;http://ftp.debian.org/debian/pool/non-free/s/spim/&lt;/a&gt; ) and execute the
 following commands:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dget -x DSC_FILE_URL
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dget&lt;span class="w"&gt; &lt;/span&gt;-x&lt;span class="w"&gt; &lt;/span&gt;DSC_FILE_URL
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;It will download the package and will unpack it in the current folder.
 You have to enter in the created folder and edit the debian/* files to
 personalize settings, mantainer data, add deps ecc...&lt;/p&gt;
 &lt;p&gt;When you're done, you can generate the package with the usual command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dpkg-buildpackage -rfakeroot
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dpkg-buildpackage&lt;span class="w"&gt; &lt;/span&gt;-rfakeroot
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Tue, 20 Nov 2007 15:46:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2007-11-20:/2007/11/20/alternative-way-to-generate-deb-packages-for-maemo/</guid><category>HowTo, Linux, Maemo (EN), Programmazione, Ubuntu (EN)</category><category>debian</category><category>maemo</category><category>nokia</category><category>package</category></item><item><title>The UNOFFICIAL way to get Os2008 into Nokia N800</title><link>https://www.andreagrandi.it/2007/11/16/the-unofficial-way-to-get-os2008-into-nokia-n800/</link><description>&lt;p&gt;Since &lt;strong&gt;Os2008&lt;/strong&gt; for &lt;strong&gt;N810&lt;/strong&gt; is out, a lot of people were asking
 about the possibility to install it on their &lt;strong&gt;N800&lt;/strong&gt;. Nokia will relase Os2008 for N800
 too, but at the moment they don't offer the possibility to download it
@@ -995,7 +995,7 @@ follow this procedure at your own risk. Neither me or Nokia have the
 responsability of any damage caused to your device.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andrea Grandi</dc:creator><pubDate>Fri, 16 Nov 2007 15:56:00 +0100</pubDate><guid isPermaLink="false">tag:www.andreagrandi.it,2007-11-16:/2007/11/16/the-unofficial-way-to-get-os2008-into-nokia-n800/</guid><category>HowTo, Linux, Maemo (EN)</category><category>maemo</category><category>nokia</category><category>os2008</category></item><item><title>Installing qemu-arm-eabi patch into Scratchbox</title><link>https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/</link><description>&lt;p&gt;Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sem_post: Function not implemented
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sem_post:&lt;span class="w"&gt; &lt;/span&gt;Function&lt;span class="w"&gt; &lt;/span&gt;not&lt;span class="w"&gt; &lt;/span&gt;implemented
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This happens because not all the functions have been implemented in the
@@ -1008,23 +1008,23 @@ howto to install the patch into the Scratchbox environment.&lt;/p&gt;
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.&lt;/p&gt;
 &lt;p&gt;You need gcc 3.4, SDL dev library andZlib dev:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;gcc-3.4&lt;span class="w"&gt; &lt;/span&gt;libsdl1.2-dev&lt;span class="w"&gt; &lt;/span&gt;zlib1g-dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
-&lt;span class="nb"&gt;cd&lt;/span&gt; qemu-arm-eabi 
-./configure --target-list&lt;span class="o"&gt;=&lt;/span&gt;arm-linux-user --static make
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;svn&lt;span class="w"&gt; &lt;/span&gt;co&lt;span class="w"&gt; &lt;/span&gt;https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi&lt;span class="w"&gt; &lt;/span&gt;qemu-arm-eabi&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;qemu-arm-eabi&lt;span class="w"&gt; &lt;/span&gt;
+./configure&lt;span class="w"&gt; &lt;/span&gt;--target-list&lt;span class="o"&gt;=&lt;/span&gt;arm-linux-user&lt;span class="w"&gt; &lt;/span&gt;--static&lt;span class="w"&gt; &lt;/span&gt;make
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Copy qemu to the cputransp dir on scratchbox:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;cp&lt;span class="w"&gt; &lt;/span&gt;arm-linux-user/qemu-arm&lt;span class="w"&gt; &lt;/span&gt;/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Add it to the list of cputransp methods. Open the file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;vim&lt;span class="w"&gt; &lt;/span&gt;/scratchbox/devkits/cputransp/etc/cputransp-methods
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and add this line:&lt;/p&gt;
@@ -1032,7 +1032,7 @@ to get the qemu sources.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Configure the target to use the patched qemu as transparency method. Edit the file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;vim&lt;span class="w"&gt; &lt;/span&gt;/scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and change this line:&lt;/p&gt;
@@ -1048,8 +1048,8 @@ installing it from scratch?!". Luckly one kind person helped me on
 maemo-developer mailing list, and suggested me to do a dist-upgrade from
 inside the Scratchbox environment. So, login into tour Scratchbox
 environment and execute this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86: ~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; fakeroot apt-get update 
-&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86: ~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; fakeroot apt-get dist-upgrade
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:&lt;span class="w"&gt; &lt;/span&gt;~&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;fakeroot&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;update&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:&lt;span class="w"&gt; &lt;/span&gt;~&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;fakeroot&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;dist-upgrade
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's all! I don't know if this is the official method to do the
@@ -1111,11 +1111,11 @@ use the script provided but you could choose also to install it manually
 &lt;p&gt;Before beginning the installation of Scratchbox, you have to become
 &lt;strong&gt;&lt;code&gt;root&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;First of all set the permission of the script file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod +x maemo-scratchbox-install_4.0beta.sh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod&lt;span class="w"&gt; &lt;/span&gt;+x&lt;span class="w"&gt; &lt;/span&gt;maemo-scratchbox-install_4.0beta.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Then run it with these parameters:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./maemo-scratchbox-install_4.0beta.sh -d -u andy80
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./maemo-scratchbox-install_4.0beta.sh&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;andy80
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Please note that &lt;strong&gt;-d&lt;/strong&gt; tells the installer to install from Debian dpkg
@@ -1127,10 +1127,10 @@ into you new Scratchbox environment. To test it you simply have to start
 Scratchbox from your local user:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/scratchbox/login
 
-Welcome to Scratchbox, the cross-compilation toolkit!
+Welcome&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;Scratchbox,&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;cross-compilation&lt;span class="w"&gt; &lt;/span&gt;toolkit!
 
-Use &lt;span class="s1"&gt;&amp;#39;sb-menu&amp;#39;&lt;/span&gt; to change your compilation target.  
-See /scratchbox/doc/ &lt;span class="k"&gt;for&lt;/span&gt; documentation.
+Use&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sb-menu&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;change&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;compilation&lt;span class="w"&gt; &lt;/span&gt;target.&lt;span class="w"&gt;  &lt;/span&gt;
+See&lt;span class="w"&gt; &lt;/span&gt;/scratchbox/doc/&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;documentation.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Installing Maemo SDK&lt;/h2&gt;
@@ -1138,24 +1138,24 @@ See /scratchbox/doc/ &lt;span class="k"&gt;for&lt;/span&gt; documentation.
 the &lt;strong&gt;Maemo SDK&lt;/strong&gt;. Please note that you have to do it from &lt;strong&gt;normal
 user&lt;/strong&gt; (the user you specified in the installation of Scratchbox).&lt;/p&gt;
 &lt;p&gt;Simply run this command and follow instructions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;bash maemo-sdk-install_4.0beta.sh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;bash&lt;span class="w"&gt; &lt;/span&gt;maemo-sdk-install_4.0beta.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;At the end you should get this message:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Installation was successful! ----------------------------
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Installation&lt;span class="w"&gt; &lt;/span&gt;was&lt;span class="w"&gt; &lt;/span&gt;successful!&lt;span class="w"&gt; &lt;/span&gt;----------------------------
 
-IMPORTANT! Please &lt;span class="nb"&gt;read&lt;/span&gt; this.
+IMPORTANT!&lt;span class="w"&gt; &lt;/span&gt;Please&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;read&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;this.
 
-You now have the maemo &lt;span class="m"&gt;4&lt;/span&gt;.0beta &lt;span class="s1"&gt;&amp;#39;chinook&amp;#39;&lt;/span&gt; installed on your computer.  
-You can now start your maemo SDK session with /scratchbox/login and  
-&lt;span class="k"&gt;then&lt;/span&gt; &lt;span class="k"&gt;select&lt;/span&gt; your target with &lt;span class="s1"&gt;&amp;#39;sb-conf select SDK\_BETA\_ARMEL&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; the  
-armel target or &lt;span class="s1"&gt;&amp;#39;sb-conf select SDK\_BETA\_X86&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; the i386 target.
+You&lt;span class="w"&gt; &lt;/span&gt;now&lt;span class="w"&gt; &lt;/span&gt;have&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;maemo&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;.0beta&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;chinook&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;installed&lt;span class="w"&gt; &lt;/span&gt;on&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;computer.&lt;span class="w"&gt;  &lt;/span&gt;
+You&lt;span class="w"&gt; &lt;/span&gt;can&lt;span class="w"&gt; &lt;/span&gt;now&lt;span class="w"&gt; &lt;/span&gt;start&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;maemo&lt;span class="w"&gt; &lt;/span&gt;SDK&lt;span class="w"&gt; &lt;/span&gt;session&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;/scratchbox/login&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt;  &lt;/span&gt;
+&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;target&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sb-conf select SDK\_BETA\_ARMEL&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt;  &lt;/span&gt;
+armel&lt;span class="w"&gt; &lt;/span&gt;target&lt;span class="w"&gt; &lt;/span&gt;or&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sb-conf select SDK\_BETA\_X86&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;i386&lt;span class="w"&gt; &lt;/span&gt;target.
 
-If you have any problems with targets&lt;span class="s1"&gt;&amp;#39; package databases, you can try  &lt;/span&gt;
-&lt;span class="s1"&gt;running &amp;#39;&lt;/span&gt;fakeroot apt-get -f install&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; on your scratchbox target.  
-This &lt;span class="nb"&gt;command&lt;/span&gt; will try to fix any problems with the package database.
+If&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;have&lt;span class="w"&gt; &lt;/span&gt;any&lt;span class="w"&gt; &lt;/span&gt;problems&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;targets&lt;span class="s1"&gt;&amp;#39; package databases, you can try  &lt;/span&gt;
+&lt;span class="s1"&gt;running &amp;#39;&lt;/span&gt;fakeroot&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;on&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;scratchbox&lt;span class="w"&gt; &lt;/span&gt;target.&lt;span class="w"&gt;  &lt;/span&gt;
+This&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;command&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;will&lt;span class="w"&gt; &lt;/span&gt;try&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;fix&lt;span class="w"&gt; &lt;/span&gt;any&lt;span class="w"&gt; &lt;/span&gt;problems&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;package&lt;span class="w"&gt; &lt;/span&gt;database.
 
-Happy hacking!
+Happy&lt;span class="w"&gt; &lt;/span&gt;hacking!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Installing Xephyr&lt;/h2&gt;
@@ -1164,18 +1164,18 @@ so that you can see all the maemo application windows and visuals on
 your computer.&lt;/p&gt;
 &lt;p&gt;To install it in a Debian based distribution, simply execute this (from
 root):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get install xserver-xephyr
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;xserver-xephyr
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Running Xephyr&lt;/h2&gt;
 &lt;p&gt;To see if all works fine, you should start Xephyr and Maemo environment.
 Execute this from outside the Scratchbox environment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Xephyr :2 -host-cursor -screen 800x480x16 -dpi &lt;span class="m"&gt;96&lt;/span&gt; -ac -extension Composite
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Xephyr&lt;span class="w"&gt; &lt;/span&gt;:2&lt;span class="w"&gt; &lt;/span&gt;-host-cursor&lt;span class="w"&gt; &lt;/span&gt;-screen&lt;span class="w"&gt; &lt;/span&gt;800x480x16&lt;span class="w"&gt; &lt;/span&gt;-dpi&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;96&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-ac&lt;span class="w"&gt; &lt;/span&gt;-extension&lt;span class="w"&gt; &lt;/span&gt;Composite
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, from another shell, log into Scratchbox and execute this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DISPLAY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;:2 
-&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt; &amp;gt; af-sb-init.sh start
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;DISPLAY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;:2&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;sbox-SDK_BETA_X86:~&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;af-sb-init.sh&lt;span class="w"&gt; &lt;/span&gt;start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This should start the Hildon Application Framework inside the Xephyr

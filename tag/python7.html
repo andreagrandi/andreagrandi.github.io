@@ -158,6 +158,41 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/08/29/django-notes-read-values-from-settings-in-a-safe-way/">Django Notes: read values from settings in a safe way</a></h2>
+    <p>
+      Posted on Sat 29 August 2015 in <a href="https://www.andreagrandi.it/category/django-howto-programmazione-python.html">Django, HowTo, Programmazione, Python</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/getattr.html">getattr</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/settings.html">settings</a>
+    </p>
+  </header>
+  <div>
+      <p>Working on <strong>Django</strong> projects I find very often that many developers
+access the values that are defined in <strong>settings</strong> in this way</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">my_value</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MY_SETTING</span>
+</code></pre></div>
+
+<p>What happens if <code>MY_SETTING</code> has not been defined in <strong>settings.py</strong>?
+The code will raise an error and crash, of course. How can we make the
+code more reliable? We could <em>try/except</em> the code block that tries to
+read the value and maybe set a value if we get an exception, but this
+would not be a clean way to do this job.</p>
+<p>A cleaner way to do it is to use <strong>getattr</strong> in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">my_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;MY_SETTING&#39;</span><span class="p">,</span> <span class="s1">&#39;my-default-value&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>getattr</strong> will try to read <code>MY_SETTING</code> value from <strong>settings.py</strong>,
+if the value doesn't exist <code>my_value</code> will be assigned with
+<code>'my-default-value'</code></p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
     <p>
       Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -311,23 +346,23 @@ the people in <strong>#docker @ FreeNode</strong> for the support.</p>
 repository from https://github.com/glowdigitalmedia/docker-puller there
 is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
 <strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;hooks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;hello&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts/hello.sh&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hooks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;hello&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts/hello.sh&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
 it under script folder and write the instructions to be executed to pull
 the new image and restart the container (example):</p>
-<div class="highlight"><pre><span></span><code>docker pull andreagrandi/test:latest
-docker stop <span class="nb">test</span>
-docker rm <span class="nb">test</span>
-docker run --name <span class="nb">test</span> -d -p <span class="m">8000</span>:80 andreagrandi/test:latest
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>pull<span class="w"> </span>andreagrandi/test:latest
+docker<span class="w"> </span>stop<span class="w"> </span><span class="nb">test</span>
+docker<span class="w"> </span>rm<span class="w"> </span><span class="nb">test</span>
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">8000</span>:80<span class="w"> </span>andreagrandi/test:latest
 </code></pre></div>
 
 <p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
@@ -346,36 +381,6 @@ the relative script.</p>
 <p>That's all! I hope this very simple service can be useful to other
 people and once again, if you want to improve it, I will be glad to
 accept your pull requests on GitHub.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h2>
-    <p>
-      Posted on Thu 25 April 2013 in <a href="https://www.andreagrandi.it/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/virtualenv.html">virtualenv</a>
-    </p>
-  </header>
-  <div>
-      <p>Developing Python applications sometimes it's useful to be able to test
-the code with different environments, for example a particular version
-of Python or a specific Django version etc... Setting up many different
-virtual machines would be really too much work and even using a chroot
-environment is not what you need in some cases. Thanks to
-<a href="https://github.com/pypa/virtualenv"><strong>virtualenv</strong></a> is it possible to
-create a self contained Python environment with all the specific
-libraries you may need. Using virtualenv is very easy:</p>
-<ul>
-<li>Creating the virtual environment: <strong><code>virtualenvmyenv --no-site-packages</code></strong></li>
-<li>Entering the virtual environment: <strong><code>source myenv/bin/activate</code></strong></li>
-<li>Deactivating the virtual environment: <strong><code>deactivate</code></strong></li>
-</ul>
-<p>That's it! Once you're inside the virtual environment you will be using
-the Python libraries inside it. I suggest you to install all the Python
-libraries you need using <a href="https://pypi.python.org/pypi/pip"><strong>pip</strong></a>.</p>
   </div>
 </article>
 

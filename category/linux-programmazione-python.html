@@ -231,8 +231,8 @@ example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds
 profile with GitHub, like we did for Travis-ci.org and then enable the
 repository. To trigger Coveralls after a successful Travis build, we
 need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
-<div class="highlight"><pre><span></span><code><span class="nt">after_success</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coveralls</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">after_success</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coveralls</span>
 </code></pre></div>
 
 <p><a href="https://www.andreagrandi.it/images/2014/03/coveralls-console.png"><img alt="coveralls-console" src="https://www.andreagrandi.it/images/2014/03/coveralls-console-1024x767.png" width="90%"></a><br>
@@ -244,16 +244,16 @@ application. Normally to deploy on Heroku you so something like this:
 <strong>git push heroku master</strong></p>
 <p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
 deploy the application on Heroku, if the build was successful:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">deploy</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">heroku</span><span class="w"></span>
-<span class="w">  </span><span class="nt">api_key</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">secure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">R4LFkVu1/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/FeUk0Yl+I=</span><span class="w"></span>
-<span class="w">  </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workshopvenues</span><span class="w"></span>
-<span class="w">  </span><span class="nt">on</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/workshopvenues</span><span class="w"></span>
-<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">workshopvenues/manage.py</span><span class="nv"> </span><span class="s">syncdb&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">workshopvenues/manage.py</span><span class="nv"> </span><span class="s">migrate&quot;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">heroku</span>
+<span class="w">  </span><span class="nt">api_key</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">secure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">R4LFkVu1/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/FeUk0Yl+I=</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workshopvenues</span>
+<span class="w">  </span><span class="nt">on</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/workshopvenues</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">workshopvenues/manage.py</span><span class="nv"> </span><span class="s">syncdb&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">workshopvenues/manage.py</span><span class="nv"> </span><span class="s">migrate&quot;</span>
 </code></pre></div>
 
 <p>Not only the code is deployed, after deployment the <strong>South migrations</strong> are executed.</p>

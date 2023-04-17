@@ -187,11 +187,11 @@
   <div>
     <p>You just got a new Arduino board (maybe a wifi enabled one), you wrote a useful application and you are about to share it on GitHub.</p>
 <p>If your code looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;WiFi101.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;WiFi101.h&gt;</span>
 
-<span class="kr">char</span><span class="w"> </span><span class="n">ssid</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;myessid&quot;</span><span class="w"></span>
-<span class="kr">char</span><span class="w"> </span><span class="n">pass</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mypassword&quot;</span><span class="w"></span>
-<span class="p">...</span><span class="w"></span>
+<span class="kr">char</span><span class="w"> </span><span class="n">ssid</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;myessid&quot;</span>
+<span class="kr">char</span><span class="w"> </span><span class="n">pass</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mypassword&quot;</span>
+<span class="p">...</span>
 </code></pre></div>
 
 <p>do <strong>not</strong> share it! You would leak your ESSID, password and maybe othere secrets to everyone.</p>
@@ -202,12 +202,12 @@
 </code></pre></div>
 
 <p>and change the main file in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;WiFi101.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;arduino_secrets.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;WiFi101.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;arduino_secrets.h&gt;</span>
 
-<span class="kr">char</span><span class="w"> </span><span class="n">ssid</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SECRET_SSID</span><span class="w"></span>
-<span class="kr">char</span><span class="w"> </span><span class="n">pass</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SECRET_PASS</span><span class="w"></span>
-<span class="p">...</span><span class="w"></span>
+<span class="kr">char</span><span class="w"> </span><span class="n">ssid</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SECRET_SSID</span>
+<span class="kr">char</span><span class="w"> </span><span class="n">pass</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SECRET_PASS</span>
+<span class="p">...</span>
 </code></pre></div>
 
 <p><strong>Note:</strong> using the <strong><code>SECRET_...</code></strong> naming convention is also useful if you use the <strong>Arduino Web Editor</strong> <a href="https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0">https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0</a> because these values will be automatically added to a secret tab and will only be visible to you, even if you share your project.</p>
@@ -224,21 +224,21 @@
 <p>In case you want to build your code in a CI environment, the full source code needs to be there, but at the same time you still don't want to push your secrets to GitHub. What to do then?</p>
 <h3>Store your secrets in environment variables</h3>
 <p>Create an environment variable in your CI (or set it locally on your machine if you want to build it locally) for each secret:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">WIFI_SSID_NAME</span><span class="o">=</span><span class="s2">&quot;myessid&quot;</span>
-<span class="nb">export</span> <span class="nv">WIFI_PASSWORD</span><span class="o">=</span><span class="s2">&quot;mypassword&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">WIFI_SSID_NAME</span><span class="o">=</span><span class="s2">&quot;myessid&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WIFI_PASSWORD</span><span class="o">=</span><span class="s2">&quot;mypassword&quot;</span>
 </code></pre></div>
 
 <h3>Create a Makefile</h3>
 <p>Add a <code>Makefile</code> to your project, similar to this one:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
-<span class="nv">OUTPUT</span> <span class="o">=</span> <span class="s2">&quot;arduino_secrets.h&quot;</span>
+<span class="nv">OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;arduino_secrets.h&quot;</span>
 
 arduino_secrets:
-    @echo <span class="s2">&quot;Generating </span><span class="k">$(</span>OUTPUT<span class="k">)</span><span class="s2">&quot;</span>
-    @<span class="o">[</span> -e <span class="k">$(</span>OUTPUT<span class="k">)</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> rm <span class="k">$(</span>OUTPUT<span class="k">)</span>
-    @echo <span class="s2">&quot;#define SECRET_SSID \&quot;</span><span class="k">$(</span>WIFI_SSID_NAME<span class="k">)</span><span class="s2">\&quot;&quot;</span> &gt;&gt; <span class="k">$(</span>OUTPUT<span class="k">)</span>
-    @echo <span class="s2">&quot;#define SECRET_PASS \&quot;</span><span class="k">$(</span>WIFI_PASSWORD<span class="k">)</span><span class="s2">\&quot;&quot;</span> &gt;&gt; <span class="k">$(</span>OUTPUT<span class="k">)</span>
+<span class="w">    </span>@echo<span class="w"> </span><span class="s2">&quot;Generating </span><span class="k">$(</span>OUTPUT<span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span>@<span class="o">[</span><span class="w"> </span>-e<span class="w"> </span><span class="k">$(</span>OUTPUT<span class="k">)</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="k">$(</span>OUTPUT<span class="k">)</span>
+<span class="w">    </span>@echo<span class="w"> </span><span class="s2">&quot;#define SECRET_SSID \&quot;</span><span class="k">$(</span>WIFI_SSID_NAME<span class="k">)</span><span class="s2">\&quot;&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="k">$(</span>OUTPUT<span class="k">)</span>
+<span class="w">    </span>@echo<span class="w"> </span><span class="s2">&quot;#define SECRET_PASS \&quot;</span><span class="k">$(</span>WIFI_PASSWORD<span class="k">)</span><span class="s2">\&quot;&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="k">$(</span>OUTPUT<span class="k">)</span>
 </code></pre></div>
 
 <p>If you run <code>make</code> you will generate a file named <code>arduino_secrets.h</code> containing the proper values.</p>

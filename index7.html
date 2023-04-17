@@ -158,6 +158,271 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">Creating a production ready API with Python and Django Rest Framework – part 3</a></h2>
+    <p>
+      Posted on Sun 12 March 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/api.html">API</a>,              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/framework.html">framework</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>In the <a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">previous
+part</a>
+we implemented authentication, permissions and the possibility to POST
+new products for admins. In this new episode we will see how to
+implement <strong>details</strong> management, <strong>relations</strong> between models, <strong>nested
+APIs</strong> and a different level of permissions.</p>
+<p>If you haven't completed the previous parts or if you want to begin from
+this one, checkout the right code first:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.10
+</code></pre></div>
+
+<h3>Handling Product Details</h3>
+<p>Our current API methods allow us to list all the products we have in our
+catalog and to create a new one (if we have admin permissions), but what
+if we wanted to delete or update a single one? What if we wanted to get
+only a specific product? We need to handle details.</p>
+<p>As first thing we need to change the <strong>ProductSerializer</strong> to return the
+id of the product. Edit <strong>catalog/serializers.py</strong> and change the class
+in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>After changing the serializer we need to implement a new view called
+<strong>ProductDetail</strong>. Edit <strong>catalog/views.py</strong> and add the following
+imports:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+</code></pre></div>
+
+<p>and the following class:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Product</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_204_NO_CONTENT</span><span class="p">)</span>
+</code></pre></div>
+
+<p>let's connect the new view to the urls, editing catalog/urls.py and
+changing the code in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>If we try to <strong>PUT</strong>, <strong>DELETE</strong> or <strong>GET</strong> a product like
+<strong>/products/1/</strong> we can now update, delete or retrieve an existing item,
+but there is a little problem: we haven't set any permission on this
+class, so anyone can do it. The previous view was also more compact, why
+don't we use a generic view to perform these basic operations? Let's
+refactor <strong>ProductDetail</strong> with a
+<a href="http://www.django-rest-framework.org/api-guide/generic-views/#retrieveupdatedestroyapiview"><strong>RetrieveUpdateDestroyAPIView</strong></a>
+generic class. Open <strong>catalog/views.py</strong> and change the class code in
+this way:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
+</code></pre></div>
+
+<p>That's it! With just three lines of code we have now implemented the
+same feature of the previous class, plus we have set the correct
+permissions.</p>
+<p>To checkout the code at this point:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.12
+</code></pre></div>
+
+<h3>Reviews - Relations between models</h3>
+<p>As many online catalogs already have, it would be nice if our API had an
+endpoint where it is possible to leave a review for a product and get a
+list of reviews for a specific product. To implement this feature we
+need to add a new model to our application. Edit <strong>catalog/models.py</strong>
+adding this import:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+</code></pre></div>
+
+<p>and this Django model:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Review</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">review</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+</code></pre></div>
+
+<p>after creating the model, please remember to create the related DB
+<strong>migration</strong>:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>catalog
+</code></pre></div>
+
+<p>When the model is ready, we have to do some changes to the serializers.
+First of all we need to write a new one, for our new <strong>Review</strong> model.
+Then we have to change our <strong>ProductSerializer</strong> so that it will return
+its related reviews. Each Product can have multiple Review. And each
+Review will be always linked to a specific Product. Edit
+<strong>catalog/serializers.py</strong> and change it in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+
+<span class="k">class</span> <span class="nc">ReviewSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ReadOnlyField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">&#39;created_by.username&#39;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Review</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;review&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;created_by&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">reviews</span> <span class="o">=</span> <span class="n">ReviewSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Note:</strong> in <strong>ReviewSerializer</strong> when we serialise the user contained
+in <strong>created_by</strong> field, return the username instead of the id (to make
+it more human readable). Another important thing to notice is that the
+value of the <strong>related_name</strong> we have set in the <strong>Review</strong> model must
+match with the field name we have added in <strong>ProductSerializer fields</strong>
+property. In this case we have set it to <strong>reviews</strong>.</p>
+<p>At this point we need to add a new view. Edit <strong>catalog/views.py</strong> and
+add the following imports:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">IsAuthenticatedOrReadOnly</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
+<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span><span class="p">,</span> <span class="n">ReviewSerializer</span>
+</code></pre></div>
+
+<p>then add this class:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="n">created_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+            <span class="n">product_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+<p>As you can notice, I had to customise the <strong>perform_create</strong> method
+because the default one doesn't know anything about the fact we want to
+set the <strong>created_by</strong> and <strong>product_id</strong> fields. Finally we need to
+bind this new view to a specific url, so we need to edit
+<strong>catalog/urls.py</strong> and add this:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>At this point any authenticated user should be able to <strong>POST a review</strong>
+for a product and anyone should be able to get the <strong>list of reviews</strong>
+for each product. If you have any problem with the code and want to move
+to this point, please checkout this:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.13
+</code></pre></div>
+
+<h3>Nested APIs details</h3>
+<p>To complete our API endpoints for Review, we need to add an additional
+feature that will let users to edit/delete their own review. Before
+implementing the new view, we need a little bit of refactoring and a new
+permission class. Edit <strong>catalog/permissions.py</strong> and add this new
+class:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">IsOwnerOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">has_object_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">created_by</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+</code></pre></div>
+
+<p>Basically this will permit changes to the review only to its author. Now
+we are going to add new urls and doing some refactoring at the same
+time. Edit <strong>catalog/urls.py</strong> and change the urls in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span>
+        <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
+    <span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span>
+        <span class="n">views</span><span class="o">.</span><span class="n">ReviewDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>You may have noticed that I substituted <strong>pk</strong> with <strong>product_id</strong>. In
+the latest url I added, we need to be able to identify two primary keys:
+the one for the product and the one for the review. I renamed the
+previous ones for consistency. Now it's time to add the new view for
+Review details. Edit <strong>catalog/view.py</strong> and add this class:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="n">IsOwnerOrReadOnly</span><span class="p">)</span>
+    <span class="n">lookup_url_kwarg</span> <span class="o">=</span> <span class="s1">&#39;review_id&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;review_id&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">review</span><span class="p">)</span>
+</code></pre></div>
+
+<p>What are we doing here? You may have noticed that we set a new property
+called <strong>lookup_url_kwarg</strong>. That property is being used to determine
+the keyword in <strong>urls.py</strong> to be used for the primary key lookup.</p>
+<p>You will also need to do some refactoring to the other views, to adapt
+them to the changes we just did to the urls. I suggest you to have a
+look at the diffs
+here: <a href="https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14">https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14</a>
+or you can have a look at the whole file
+here <a href="https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py">https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py</a></p>
+<p>In alternative, you can fetch the whole source code at this point:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.14
+</code></pre></div>
+
+<h3>Wrapping Up</h3>
+<p>In this third part of the tutorial you learned how to handle model
+details in the API and how relations between different model work. In
+the <a href="https://www.andreagrandi.it/2017/08/17/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/">next part of the tutorial</a>
+we will do something we should have done since the beginning: adding <strong>tests</strong> to 
+our code and learn how to properly
+test the API.</p>
+<h3>Feedback Please</h3>
+<p>If you enjoyed this tutorial, please leave me some feedback!
+I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">Creating a production ready API with Python and Django Rest Framework – part 2</a></h2>
     <p>
       Posted on Sat 01 October 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -174,7 +439,7 @@ Rest Framework</strong>. This second part will explain how to implement
 <strong>POST</strong> methods and add different levels of <strong>permissions</strong> and
 <strong>authentication</strong>. If you are starting from part 2, you may want to
 checkout the source code at this exact point:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.4
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.4
 </code></pre></div>
 
 <h3>A step back</h3>
@@ -220,25 +485,25 @@ need to add an import to <strong>catalog/views.py</strong></p>
 </code></pre></div>
 
 <p>Now let's test our <strong>POST</strong> method we just implemented:</p>
-<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Salamino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Salamino Piccante&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;10.50&quot;</span>
-HTTP/1.0 <span class="m">201</span> Created
-Allow: GET, POST, HEAD, OPTIONS
-Content-Type: application/json
-Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> <span class="m">11</span>:48:48 GMT
-Server: WSGIServer/0.1 Python/2.7.10
-Vary: Accept, Cookie
-X-Frame-Options: SAMEORIGIN
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>--json<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/products/<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Salamino&quot;</span><span class="w"> </span><span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Salamino Piccante&quot;</span><span class="w"> </span><span class="nv">price</span><span class="o">=</span><span class="s2">&quot;10.50&quot;</span>
+HTTP/1.0<span class="w"> </span><span class="m">201</span><span class="w"> </span>Created
+Allow:<span class="w"> </span>GET,<span class="w"> </span>POST,<span class="w"> </span>HEAD,<span class="w"> </span>OPTIONS
+Content-Type:<span class="w"> </span>application/json
+Date:<span class="w"> </span>Thu,<span class="w"> </span><span class="m">29</span><span class="w"> </span>Sep<span class="w"> </span><span class="m">2016</span><span class="w"> </span><span class="m">11</span>:48:48<span class="w"> </span>GMT
+Server:<span class="w"> </span>WSGIServer/0.1<span class="w"> </span>Python/2.7.10
+Vary:<span class="w"> </span>Accept,<span class="w"> </span>Cookie
+X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">{</span>
-    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Salamino Piccante&quot;</span>,
-    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Salamino&quot;</span>,
-    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;10.50&quot;</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Salamino Piccante&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Salamino&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.50&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 
 <p>It works! In case something doesn't work, try to fetch the source code
 at this point:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.7
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.7
 </code></pre></div>
 
 <h3>Implementing a POST method with ListCreateAPIView</h3>
@@ -259,19 +524,19 @@ class:</p>
 </code></pre></div>
 
 <p>let's test this again with <strong>httpie</strong>:</p>
-<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Pecorino&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Pecorino Sardo&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;7.00&quot;</span>
-HTTP/1.0 <span class="m">201</span> Created
-Allow: GET, POST, HEAD, OPTIONS
-Content-Type: application/json
-Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> <span class="m">15</span>:21:20 GMT
-Server: WSGIServer/0.1 Python/2.7.10
-Vary: Accept, Cookie
-X-Frame-Options: SAMEORIGIN
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>--json<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/products/<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Pecorino&quot;</span><span class="w"> </span><span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Pecorino Sardo&quot;</span><span class="w"> </span><span class="nv">price</span><span class="o">=</span><span class="s2">&quot;7.00&quot;</span>
+HTTP/1.0<span class="w"> </span><span class="m">201</span><span class="w"> </span>Created
+Allow:<span class="w"> </span>GET,<span class="w"> </span>POST,<span class="w"> </span>HEAD,<span class="w"> </span>OPTIONS
+Content-Type:<span class="w"> </span>application/json
+Date:<span class="w"> </span>Thu,<span class="w"> </span><span class="m">29</span><span class="w"> </span>Sep<span class="w"> </span><span class="m">2016</span><span class="w"> </span><span class="m">15</span>:21:20<span class="w"> </span>GMT
+Server:<span class="w"> </span>WSGIServer/0.1<span class="w"> </span>Python/2.7.10
+Vary:<span class="w"> </span>Accept,<span class="w"> </span>Cookie
+X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">{</span>
-    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Pecorino Sardo&quot;</span>,
-    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Pecorino&quot;</span>,
-    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;7.00&quot;</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Pecorino Sardo&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Pecorino&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;7.00&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 
@@ -323,37 +588,37 @@ this:</p>
 
 <p>Don't forget to re-run the <strong>migrations</strong>, because TokenAuthorization
 needs to change a couple of tables:</p>
-<div class="highlight"><pre><span></span><code>$ ./manage.py migrate
-Operations to perform:
-    Apply all migrations: admin, auth, authtoken, catalog, contenttypes, sessions
-Running migrations:
-    Applying authtoken.0001_initial... OK
-    Applying authtoken.0002_auto_20160226_1747... OK
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./manage.py<span class="w"> </span>migrate
+Operations<span class="w"> </span>to<span class="w"> </span>perform:
+<span class="w">    </span>Apply<span class="w"> </span>all<span class="w"> </span>migrations:<span class="w"> </span>admin,<span class="w"> </span>auth,<span class="w"> </span>authtoken,<span class="w"> </span>catalog,<span class="w"> </span>contenttypes,<span class="w"> </span>sessions
+Running<span class="w"> </span>migrations:
+<span class="w">    </span>Applying<span class="w"> </span>authtoken.0001_initial...<span class="w"> </span>OK
+<span class="w">    </span>Applying<span class="w"> </span>authtoken.0002_auto_20160226_1747...<span class="w"> </span>OK
 </code></pre></div>
 
 <p>In case you had any problem changing the code up to this point, you can
 always fetch the related git tag:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.9
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.9
 </code></pre></div>
 
 <h4>Testing the Authentication</h4>
 <p>Before testing the authentication, make sure you created at least the
 Django <strong>superuser</strong> with:</p>
-<div class="highlight"><pre><span></span><code>$ ./manage.py createsuperuser
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./manage.py<span class="w"> </span>createsuperuser
 </code></pre></div>
 
 <p>now let's try to <strong>obtain the token</strong> we will need later for our API
 calls:</p>
-<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/api-token-auth/ <span class="nv">username</span><span class="o">=</span><span class="s2">&quot;yourusername&quot;</span> <span class="nv">password</span><span class="o">=</span><span class="s2">&quot;yourpassword&quot;</span>
-HTTP/1.0 <span class="m">200</span> OK
-Allow: POST, OPTIONS
-Content-Type: application/json
-Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> <span class="m">08</span>:55:07 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-X-Frame-Options: SAMEORIGIN
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>--json<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/api-token-auth/<span class="w"> </span><span class="nv">username</span><span class="o">=</span><span class="s2">&quot;yourusername&quot;</span><span class="w"> </span><span class="nv">password</span><span class="o">=</span><span class="s2">&quot;yourpassword&quot;</span>
+HTTP/1.0<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
+Allow:<span class="w"> </span>POST,<span class="w"> </span>OPTIONS
+Content-Type:<span class="w"> </span>application/json
+Date:<span class="w"> </span>Fri,<span class="w"> </span><span class="m">30</span><span class="w"> </span>Sep<span class="w"> </span><span class="m">2016</span><span class="w"> </span><span class="m">08</span>:55:07<span class="w"> </span>GMT
+Server:<span class="w"> </span>WSGIServer/0.1<span class="w"> </span>Python/2.7.11
+X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">{</span>
-    <span class="s2">&quot;token&quot;</span>: <span class="s2">&quot;bc9514f0892368cfd0ea792a977aff55d53e3634&quot;</span>
+<span class="w">    </span><span class="s2">&quot;token&quot;</span>:<span class="w"> </span><span class="s2">&quot;bc9514f0892368cfd0ea792a977aff55d53e3634&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 
@@ -403,26 +668,26 @@ at the beginning:</p>
 <p>Let's now try to add a new product using the <strong>token</strong> we got before
 (you will have to use your own token of course, mine only works on my
 local db):</p>
-<div class="highlight"><pre><span></span><code>$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Lardo&quot;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Lardo di Colonnata&quot;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&quot;8.50&quot;</span> <span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
-HTTP/1.0 <span class="m">201</span> Created
-Allow: GET, POST, HEAD, OPTIONS
-Content-Type: application/json
-Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> <span class="m">13</span>:04:13 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-Vary: Accept
-X-Frame-Options: SAMEORIGIN
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>--json<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/products/<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;Lardo&quot;</span><span class="w"> </span><span class="nv">description</span><span class="o">=</span><span class="s2">&quot;Lardo di Colonnata&quot;</span><span class="w"> </span><span class="nv">price</span><span class="o">=</span><span class="s2">&quot;8.50&quot;</span><span class="w"> </span><span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
+HTTP/1.0<span class="w"> </span><span class="m">201</span><span class="w"> </span>Created
+Allow:<span class="w"> </span>GET,<span class="w"> </span>POST,<span class="w"> </span>HEAD,<span class="w"> </span>OPTIONS
+Content-Type:<span class="w"> </span>application/json
+Date:<span class="w"> </span>Fri,<span class="w"> </span><span class="m">30</span><span class="w"> </span>Sep<span class="w"> </span><span class="m">2016</span><span class="w"> </span><span class="m">13</span>:04:13<span class="w"> </span>GMT
+Server:<span class="w"> </span>WSGIServer/0.1<span class="w"> </span>Python/2.7.11
+Vary:<span class="w"> </span>Accept
+X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">{</span>
-    <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Lardo di Colonnata&quot;</span>,
-    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Lardo&quot;</span>,
-    <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;8.50&quot;</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Lardo di Colonnata&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Lardo&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;8.50&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 
 <p>It worked! We have now protected our API so that not admin people can't
 create any product. If you have any problem with the code, you can check
 it out with this tag:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.10
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.10
 </code></pre></div>
 
 <h3>Wrapping Up</h3>
@@ -481,13 +746,13 @@ step.</p>
 <p><strong>Note:</strong> at the time of writing, the tutorial has been based on
 <strong>Django 1.10.1</strong> and <strong>Django Rest Framework 3.4.7</strong></p>
 <h3>Creating the main project structure</h3>
-<div class="highlight"><pre><span></span><code>mkdir drf-tutorial
-mkvirtualenv drf-tutorial
-<span class="nb">cd</span> drf-tutorial
-pip install django djangorestframework
-django-admin.py startproject drftutorial .
-<span class="nb">cd</span> drftutorial
-django-admin.py startapp catalog
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>drf-tutorial
+mkvirtualenv<span class="w"> </span>drf-tutorial
+<span class="nb">cd</span><span class="w"> </span>drf-tutorial
+pip<span class="w"> </span>install<span class="w"> </span>django<span class="w"> </span>djangorestframework
+django-admin.py<span class="w"> </span>startproject<span class="w"> </span>drftutorial<span class="w"> </span>.
+<span class="nb">cd</span><span class="w"> </span>drftutorial
+django-admin.py<span class="w"> </span>startapp<span class="w"> </span>catalog
 </code></pre></div>
 
 <h3>Data Model</h3>
@@ -520,29 +785,29 @@ the list:</p>
 
 <p>at this point the Django application will be recognised by the project
 and we can create and apply the schema migration:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>235dfcc<span class="o">)</span> ✗ ./manage.py makemigrations
-Migrations <span class="k">for</span> <span class="s1">&#39;catalog&#39;</span>:
-    catalog/migrations/0001_initial.py:
-        - Create model Product
+<div class="highlight"><pre><span></span><code><span class="o">(</span>drf-tutorial<span class="o">)</span><span class="w"> </span>➜<span class="w">  </span>drftutorial<span class="w"> </span>git:<span class="o">(</span>235dfcc<span class="o">)</span><span class="w"> </span>✗<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations
+Migrations<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;catalog&#39;</span>:
+<span class="w">    </span>catalog/migrations/0001_initial.py:
+<span class="w">        </span>-<span class="w"> </span>Create<span class="w"> </span>model<span class="w"> </span>Product
 
-<span class="o">(</span>drf-tutorial<span class="o">)</span> ➜  drftutorial git:<span class="o">(</span>235dfcc<span class="o">)</span> ✗ ./manage.py migrate
-Operations to perform:
-    Apply all migrations: admin, auth, catalog, contenttypes, sessions
-    Running migrations:
-        Applying contenttypes.0001_initial... OK
-        Applying auth.0001_initial... OK
-        Applying admin.0001_initial... OK
-        Applying admin.0002_logentry_remove_auto_add... OK
-        Applying contenttypes.0002_remove_content_type_name... OK
-        Applying auth.0002_alter_permission_name_max_length... OK
-        Applying auth.0003_alter_user_email_max_length... OK
-        Applying auth.0004_alter_user_username_opts... OK
-        Applying auth.0005_alter_user_last_login_null... OK
-        Applying auth.0006_require_contenttypes_0002... OK
-        Applying auth.0007_alter_validators_add_error_messages... OK
-        Applying auth.0008_alter_user_username_max_length... OK
-        Applying catalog.0001_initial... OK
-        Applying sessions.0001_initial... OK
+<span class="o">(</span>drf-tutorial<span class="o">)</span><span class="w"> </span>➜<span class="w">  </span>drftutorial<span class="w"> </span>git:<span class="o">(</span>235dfcc<span class="o">)</span><span class="w"> </span>✗<span class="w"> </span>./manage.py<span class="w"> </span>migrate
+Operations<span class="w"> </span>to<span class="w"> </span>perform:
+<span class="w">    </span>Apply<span class="w"> </span>all<span class="w"> </span>migrations:<span class="w"> </span>admin,<span class="w"> </span>auth,<span class="w"> </span>catalog,<span class="w"> </span>contenttypes,<span class="w"> </span>sessions
+<span class="w">    </span>Running<span class="w"> </span>migrations:
+<span class="w">        </span>Applying<span class="w"> </span>contenttypes.0001_initial...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0001_initial...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>admin.0001_initial...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>admin.0002_logentry_remove_auto_add...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>contenttypes.0002_remove_content_type_name...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0002_alter_permission_name_max_length...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0003_alter_user_email_max_length...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0004_alter_user_username_opts...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0005_alter_user_last_login_null...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0006_require_contenttypes_0002...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0007_alter_validators_add_error_messages...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>auth.0008_alter_user_username_max_length...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>catalog.0001_initial...<span class="w"> </span>OK
+<span class="w">        </span>Applying<span class="w"> </span>sessions.0001_initial...<span class="w"> </span>OK
 </code></pre></div>
 
 <h3>API Serializer</h3>
@@ -578,7 +843,7 @@ add this code:</p>
 
 
 <span class="k">class</span> <span class="nc">JSONResponse</span><span class="p">(</span><span class="n">HttpResponse</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An HttpResponse that renders its content into JSON.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -617,20 +882,20 @@ certain URL is requested. We first need to add this code in
 
 <h4>Testing our work</h4>
 <p>At this point we should be able to start our Django app:</p>
-<div class="highlight"><pre><span></span><code>./manage.py runserver
+<div class="highlight"><pre><span></span><code>./manage.py<span class="w"> </span>runserver
 </code></pre></div>
 
 <p>Let's install a tool that will help us to test the API:</p>
-<div class="highlight"><pre><span></span><code>pip install httpie
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>httpie
 </code></pre></div>
 
 <p>now we can use it to call our URL:</p>
-<div class="highlight"><pre><span></span><code>$ http http://127.0.0.1:8000/products/
-HTTP/1.0 <span class="m">200</span> OK
-Content-Type: application/json
-Date: Wed, <span class="m">28</span> Sep <span class="m">2016</span> <span class="m">09</span>:54:50 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-X-Frame-Options: SAMEORIGIN
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>http://127.0.0.1:8000/products/
+HTTP/1.0<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
+Content-Type:<span class="w"> </span>application/json
+Date:<span class="w"> </span>Wed,<span class="w"> </span><span class="m">28</span><span class="w"> </span>Sep<span class="w"> </span><span class="m">2016</span><span class="w"> </span><span class="m">09</span>:54:50<span class="w"> </span>GMT
+Server:<span class="w"> </span>WSGIServer/0.1<span class="w"> </span>Python/2.7.11
+X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">[]</span>
 </code></pre></div>
@@ -640,7 +905,7 @@ any data to show, but we will see later how to load some example data in
 our database. If you have been able to follow the tutorial up to this
 point, that's good. If not, don't worry. You can checkout the code at
 exactly this point of the tutorial doing:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.0
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.0
 </code></pre></div>
 
 <h3>Improving the API View</h3>
@@ -692,7 +957,7 @@ Edit <strong>catalog/views.py</strong> again and substitute the code with this o
 supposed to return a list of items. We need to specify a <strong>queryset</strong>
 and the <strong>serializer_class</strong> parameters. Once again, you can get up to
 this point, checking out the related git tag:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.2
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.2
 </code></pre></div>
 
 <h3>Creating Initial Data</h3>
@@ -705,7 +970,7 @@ you to google this products and if you ever happen to visit Italy, try
 them. You won't regret!</p>
 <p>Going back to our data migration, you first have to create an empty one
 with:</p>
-<div class="highlight"><pre><span></span><code>./manage.py makemigrations --empty catalog
+<div class="highlight"><pre><span></span><code>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>--empty<span class="w"> </span>catalog
 </code></pre></div>
 
 <p>and then open the file that has been created under
@@ -741,66 +1006,66 @@ will be fine) and fill it with this code:</p>
 </code></pre></div>
 
 <p>to apply the migration we just created, just do:</p>
-<div class="highlight"><pre><span></span><code>./manage.py migrate
+<div class="highlight"><pre><span></span><code>./manage.py<span class="w"> </span>migrate
 </code></pre></div>
 
 <p>If you try to test the API again from the command line, you will get
 these products back:</p>
-<div class="highlight"><pre><span></span><code>$ http http://127.0.0.1:8000/products/
-HTTP/1.0 <span class="m">200</span> OK
-Allow: GET, HEAD, OPTIONS
-Content-Type: application/json
-Date: Wed, <span class="m">28</span> Sep <span class="m">2016</span> <span class="m">12</span>:29:36 GMT
-Server: WSGIServer/0.1 Python/2.7.11
-Vary: Accept, Cookie
-X-Frame-Options: SAMEORIGIN
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>http://127.0.0.1:8000/products/
+HTTP/1.0<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
+Allow:<span class="w"> </span>GET,<span class="w"> </span>HEAD,<span class="w"> </span>OPTIONS
+Content-Type:<span class="w"> </span>application/json
+Date:<span class="w"> </span>Wed,<span class="w"> </span><span class="m">28</span><span class="w"> </span>Sep<span class="w"> </span><span class="m">2016</span><span class="w"> </span><span class="m">12</span>:29:36<span class="w"> </span>GMT
+Server:<span class="w"> </span>WSGIServer/0.1<span class="w"> </span>Python/2.7.11
+Vary:<span class="w"> </span>Accept,<span class="w"> </span>Cookie
+X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">[</span>
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Salame Toscano&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Salame&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;12.00&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Olio balsamico di Modena&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Olio Balsamico&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;10.00&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Parmigiano Reggiano&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Parmigiano&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;8.50&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Olio Oliva Toscano&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Olio&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;13.00&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Porchetta toscana cotta a legna&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Porchetta&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;7.50&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Cantucci di Prato&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Cantucci&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;4.00&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Vino Rosso del Chianti&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Vino Rosso&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;9.50&quot;</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;Brigidini di Lamporecchio&quot;</span>,
-        <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;Brigidini&quot;</span>,
-        <span class="s2">&quot;price&quot;</span>: <span class="s2">&quot;3.50&quot;</span>
-    <span class="o">}</span>
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Salame Toscano&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Salame&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;12.00&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio balsamico di Modena&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio Balsamico&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.00&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Parmigiano Reggiano&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Parmigiano&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;8.50&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio Oliva Toscano&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;13.00&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Porchetta toscana cotta a legna&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Porchetta&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;7.50&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Cantucci di Prato&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Cantucci&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;4.00&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Vino Rosso del Chianti&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Vino Rosso&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;9.50&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Brigidini di Lamporecchio&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Brigidini&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;3.50&quot;</span>
+<span class="w">    </span><span class="o">}</span>
 <span class="o">]</span>
 </code></pre></div>
 
 <p>Again, you can get up to this point with:</p>
-<div class="highlight"><pre><span></span><code>git checkout tutorial-1.3
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.3
 </code></pre></div>
 
 <h3>One more thing...</h3>
@@ -896,107 +1161,6 @@ notebook)</p>
 </code></pre></div>
 
 <p><strong>Source:</strong> <a href="http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython">http://stackoverflow.com/questions/35613249/using-ipdb-to-debug-python-code-in-one-cell-jupyter-or-ipython</a></p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2016/04/10/how-to-publish-a-python-package-to-pypi/">How to publish a Python package to PyPI</a></h2>
-    <p>
-      Posted on Sun 10 April 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/pip.html">pip</a>,              <a href="https://www.andreagrandi.it/tag/pypi.html">pypi</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-    </p>
-  </header>
-  <div>
-      <p><strong>PyPI</strong> is the <strong>Python Package Index</strong>, that archive that let you
-install a package using pip, for example: <strong>pip install Flask</strong></p>
-<p>In the past days I started writing a <strong>Python API client</strong> for
-<strong><a href="https://www.toshl.com">Toshl</a></strong> expense manager and I decided to
-publish the library on PyPI. You can have a look at my library
-here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> (please note: it's
-still in development and <a href="https://developer.toshl.com/">Toshl API</a> is
-not even public yet) in case you are not sure how to structure it.</p>
-<p>I found a <a href="http://peterdowns.com/posts/first-time-with-pypi.html">nice
-guide</a> but it
-wasn't complete (for example it didn't say how to sign packages) so I
-decided to rewrite it adding more information.</p>
-<h3>Create PyPI accounts</h3>
-<p>To publish packages on PyPI you need to create two accounts: one for the
-<a href="http://pypi.python.org/pypi?%3Aaction=register_form">production server</a>
-and another one for the <a href="http://testpypi.python.org/pypi?%3Aaction=register_form">test
-server</a>. When
-you register, please specify (if you have one, but I really hope you do)
-the <strong>PGP</strong> id of your public key. Once the accounts are created, you
-need to create a file named <strong>.pypirc</strong> in your \$HOME folder containing
-the following configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>distutils<span class="o">]</span>
-index-servers <span class="o">=</span>
-pypi
-pypitest
-
-<span class="o">[</span>pypi<span class="o">]</span>
-<span class="nv">repository</span><span class="o">=</span>https://pypi.python.org/pypi
-<span class="nv">username</span><span class="o">=</span>your_username
-<span class="nv">password</span><span class="o">=</span>your_password
-
-<span class="o">[</span>pypitest<span class="o">]</span>
-<span class="nv">repository</span><span class="o">=</span>https://testpypi.python.org/pypi
-<span class="nv">username</span><span class="o">=</span>your_username
-<span class="nv">password</span><span class="o">=</span>your_password
-</code></pre></div>
-
-<p>Please substitute <strong>your_username</strong> and <strong>your_password</strong> with the
-details you sent during the registration.</p>
-<h3>Preparing the package</h3>
-<p>I assume you have structured your library in the proper way and have
-included a <strong>setup.py</strong> with all the configuration (it's not something
-specific to PyPI so you should have done it already). If you haven't I
-remember you can give a look at my library
-here <a href="https://github.com/andreagrandi/toshl-python">https://github.com/andreagrandi/toshl-python</a> in particular to the
-<strong>setup.py</strong>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
-
-<span class="n">setup</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;toshl&#39;</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.3&#39;</span><span class="p">,</span>
-    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python&#39;</span><span class="p">,</span>
-    <span class="n">download_url</span><span class="o">=</span><span class="s1">&#39;https://github.com/andreagrandi/toshl-python/tarball/0.0.3&#39;</span><span class="p">,</span>
-    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Andrea Grandi&#39;</span><span class="p">,</span>
-    <span class="n">author_email</span><span class="o">=</span><span class="s1">&#39;a.grandi@gmail.com&#39;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Python client library for Toshl API.&#39;</span><span class="p">,</span>
-    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tests&#39;</span><span class="p">]),</span>
-    <span class="n">zip_safe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">include_package_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">platforms</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
-    <span class="n">license</span><span class="o">=</span><span class="s1">&#39;MIT&#39;</span><span class="p">,</span>
-    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
-        <span class="s1">&#39;requests==2.9.1&#39;</span><span class="p">,</span>
-    <span class="p">],</span>
-<span class="p">)</span>
-</code></pre></div>
-
-<h3>Upload the package to PyPI Test server</h3>
-<p>The first time you upload the package you will need to register it:</p>
-<div class="highlight"><pre><span></span><code>python setup.py register -r pypitest
-</code></pre></div>
-
-<p>and then you will need to build the package and upload it (please note
-I'm using the <strong>--sign</strong> to sign the package with PGP):</p>
-<div class="highlight"><pre><span></span><code>python setup.py sdist upload --sign -r pypitest
-</code></pre></div>
-
-<h3>Upload the package to PyPI production server</h3>
-<p>Once you have verified that you are able to build and upload the package
-to the test server (without getting any errors), you should upload it to
-the production server:</p>
-<div class="highlight"><pre><span></span><code>python setup.py register -r pypi
-python setup.py sdist upload --sign -r pypi
-</code></pre></div>
-
-<p>This is everything you need to do if you want to publish a Python
-package on PyPI. Happy coding!</p>
   </div>
 </article>
 

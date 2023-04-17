@@ -158,6 +158,72 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/08/23/how-to-write-a-custom-django-middleware/">How to write a custom Django Middleware</a></h2>
+    <p>
+      Posted on Sun 23 August 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/middleware.html">middleware</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+    </p>
+  </header>
+  <div>
+      <p>To understand how a <strong><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">Django
+Middleware</a></strong>
+works we need to remember that the basic architecture of Django is
+composed by a <strong>request</strong> and a <strong>response</strong>. A middleware is something
+that stays in the middle. Let's give a look to the next diagram, taken
+from official Django documentation:</p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/middleware.png"><img alt="middleware" src="https://www.andreagrandi.it/images/2015/08/middleware.png" width="100%"></a></p>
+<h2>Important things to know</h2>
+<p>There are four important things to know about middlewares:</p>
+<ul>
+<li>You need to write a class that just inherit from <strong><em>object</em></strong></li>
+<li>The <strong>order</strong> where you place your middleware in <strong>settings.py</strong> is
+important: middlewares are processed from top to bottom during a
+request and from bottom to top during a response.</li>
+<li>You don't need to implement all the available methods of a
+middleware. For example you can just implement <code>process_request</code>
+and <code>process_template_response</code></li>
+<li>If you implement <code>process_request</code> and you decide to return an
+<code>HttpResponse</code>, all the other middlewares, views etc... will be
+ignored and only your response will be returned</li>
+</ul>
+<h2>Writing a middleware</h2>
+<p>In my example I wanted to implement a feature that saves the time when a
+request is made and the time when a request has been processed, then
+calculates the time delta and exposes this value in the context so that
+is accessible from our templates. How to implement a similar feature
+using a middleware? Here is my example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">BenchmarkMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response_time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">_request_time</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">response_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</code></pre></div>
+
+<p>Please don't care about how I calculated the time. I'm aware that there
+are better ways to do it, but I just wanted to keep it simple and show
+how to implement a simple middleware.</p>
+<p>If you want to see a <strong>complete example</strong> of a project that includes and
+uses this middleware, here you can find the complete source
+code: <a href="https://github.com/andreagrandi/benchmark-middleware-example">https://github.com/andreagrandi/benchmark-middleware-example</a></p>
+<h2>References</h2>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.8/topics/http/middleware/">https://docs.djangoproject.com/en/1.8/topics/http/middleware/</a></li>
+<li><a href="http://agiliq.com/blog/2015/07/understanding-django-middlewares/">http://agiliq.com/blog/2015/07/understanding-django-middlewares/</a></li>
+<li><a href="http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django">http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django</a></li>
+</ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/">How to create a Docker image for PostgreSQL and persist data</a></h2>
     <p>
       Posted on Sat 21 February 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -189,14 +255,14 @@ the base image we are going to use and our contact informations:</p>
 <p>In our case we are using <strong>Ubuntu 14.04</strong> as base image. After these
 instructions we need to add PostgreSQL package repository and GnuPG
 public key:</p>
-<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span> &gt; /etc/apt/sources.list.d/pgdg.list
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>apt-key<span class="w"> </span>adv<span class="w"> </span>--keyserver<span class="w"> </span>keyserver.ubuntu.com<span class="w"> </span>--recv-keys<span class="w"> </span>B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/apt/sources.list.d/pgdg.list
 </code></pre></div>
 
 <p>then we need to update the packages available in Ubuntu and install
 PostgreSQL:</p>
-<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   
-  <span class="o">&amp;&amp;</span> apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>-y<span class="w"> </span>-q<span class="w"> </span>install<span class="w"> </span>python-software-properties<span class="w"> </span>software-properties-common<span class="w">   </span>
+<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>-y<span class="w"> </span>-q<span class="w"> </span>install<span class="w"> </span>postgresql-9.3<span class="w"> </span>postgresql-client-9.3<span class="w"> </span>postgresql-contrib-9.3
 </code></pre></div>
 
 <p>We are installing version 9.3 of PostgreSQL, instructions would be very
@@ -208,15 +274,15 @@ is available it won't be installed when the image is rebuilt.</p>
 <p>At this point we switch to <strong>postgres</strong> user to execute the next
 commands:</p>
 <div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="w"> </span><span class="s">postgres</span>
-<span class="k">RUN</span><span class="w"> </span>/etc/init.d/postgresql start   
-  <span class="o">&amp;&amp;</span> psql --command <span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span>   
-  <span class="o">&amp;&amp;</span> createdb -O pguser pgdb
+<span class="k">RUN</span><span class="w"> </span>/etc/init.d/postgresql<span class="w"> </span>start<span class="w">   </span>
+<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span>psql<span class="w"> </span>--command<span class="w"> </span><span class="s2">&quot;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&quot;</span><span class="w">   </span>
+<span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span>createdb<span class="w"> </span>-O<span class="w"> </span>pguser<span class="w"> </span>pgdb
 </code></pre></div>
 
 <p>We switch to <strong>root</strong> user and we complete the configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="k">USER</span><span class="w"> </span><span class="s">root</span>
-<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf
-<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span> <span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;host all  all    0.0.0.0/0  md5&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/postgresql/9.3/main/pg_hba.conf
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;listen_addresses=&#39;*&#39;&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/postgresql/9.3/main/postgresql.conf
 </code></pre></div>
 
 <p>We expose the port where PostgreSQL will listen to:</p>
@@ -224,7 +290,7 @@ commands:</p>
 </code></pre></div>
 
 <p>We setup the data and shared folders that we will use later:</p>
-<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql
+<div class="highlight"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/var/run/postgresql<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>postgres<span class="w"> </span>/var/run/postgresql
 <span class="k">VOLUME</span><span class="w">  </span><span class="p">[</span><span class="s2">&quot;/etc/postgresql&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/var/log/postgresql&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/var/lib/postgresql&quot;</span><span class="p">]</span>
 </code></pre></div>
 
@@ -240,19 +306,19 @@ here <a href="https://github.com/andreagrandi/postgresql-docker/blob/master/Doc
 <p>Once the Dockerfile is ready, we need to build the image before running
 it in a container. Please customize the tag name using your own
 docker.io hub account (or you won't be able to push it to the hub):</p>
-<div class="highlight"><pre><span></span><code>docker build --rm<span class="o">=</span><span class="nb">true</span> -t andreagrandi/postgresql:9.3 .
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>--rm<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-t<span class="w"> </span>andreagrandi/postgresql:9.3<span class="w"> </span>.
 </code></pre></div>
 
 <h3>Running the PostgreSQL Docker container</h3>
 <p>To run the container, once the image is built, you just need to use this
 command:</p>
-<div class="highlight"><pre><span></span><code>docker run -i -t -p <span class="m">5432</span>:5432 andreagrandi/postgresql:9.3
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-i<span class="w"> </span>-t<span class="w"> </span>-p<span class="w"> </span><span class="m">5432</span>:5432<span class="w"> </span>andreagrandi/postgresql:9.3
 </code></pre></div>
 
 <h3>Testing the running PostgreSQL</h3>
 <p>To test the running container we can use any client, even the
 commandline one:</p>
-<div class="highlight"><pre><span></span><code>psql -h localhost -p <span class="m">5432</span> -U pguser -W pgdb
+<div class="highlight"><pre><span></span><code>psql<span class="w"> </span>-h<span class="w"> </span>localhost<span class="w"> </span>-p<span class="w"> </span><span class="m">5432</span><span class="w"> </span>-U<span class="w"> </span>pguser<span class="w"> </span>-W<span class="w"> </span>pgdb
 </code></pre></div>
 
 <p>When you are prompted for password, type: <strong>pguser</strong><br>
@@ -272,34 +338,34 @@ reuse it once this feature will be integrated into Docker. Please refer
 to fig website for the instructions to install it (briefly: under Ubuntu
 you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
 fig</strong>).</p>
-<div class="highlight"><pre><span></span><code><span class="nt">dbdata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span><span class="w"></span>
-<span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span><span class="w"></span>
-<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">dbdata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
+<span class="w">  </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/lib/postgresql</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 
-<span class="nt">db</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span><span class="w"></span>
-<span class="w">  </span><span class="nt">volumes_from</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbdata</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5432:5432&quot;</span><span class="w"></span>
+<span class="nt">db</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/postgresql:9.3</span>
+<span class="w">  </span><span class="nt">volumes_from</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbdata</span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5432:5432&quot;</span>
 </code></pre></div>
 
 <p>Save this file as <strong>fig.yml</strong> in the same folder of the Dockerfile and
 spin up the container using this command: <strong>fig up</strong></p>
-<div class="highlight"><pre><span></span><code>andreas-air:postgresql-docker andrea <span class="o">[</span>master<span class="o">]</span> $ fig up
-Recreating postgresqldocker_dbdata_1...
-Recreating postgresqldocker_db_1...
-Attaching to postgresqldocker_db_1
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-1<span class="o">]</span> LOG:  database system was interrupted<span class="p">;</span> last known up at <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10 UTC
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-2<span class="o">]</span> LOG:  database system was not properly shut down<span class="p">;</span> automatic recovery <span class="k">in</span> progress
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-3<span class="o">]</span> LOG:  redo starts at <span class="m">0</span>/1782F68
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-4<span class="o">]</span> LOG:  record with zero length at <span class="m">0</span>/1782FA8
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-5<span class="o">]</span> LOG:  redo <span class="k">done</span> at <span class="m">0</span>/1782F68
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">6</span>-6<span class="o">]</span> LOG:  last completed transaction was at log <span class="nb">time</span> <span class="m">2015</span>-02-21 <span class="m">17</span>:46:10.61746+00
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">1</span>-1<span class="o">]</span> LOG:  database system is ready to accept connections
-db_1 <span class="p">|</span> <span class="m">2015</span>-02-21 <span class="m">19</span>:01:07 UTC <span class="o">[</span><span class="m">10</span>-1<span class="o">]</span> LOG:  autovacuum launcher started
+<div class="highlight"><pre><span></span><code>andreas-air:postgresql-docker<span class="w"> </span>andrea<span class="w"> </span><span class="o">[</span>master<span class="o">]</span><span class="w"> </span>$<span class="w"> </span>fig<span class="w"> </span>up
+Recreating<span class="w"> </span>postgresqldocker_dbdata_1...
+Recreating<span class="w"> </span>postgresqldocker_db_1...
+Attaching<span class="w"> </span>to<span class="w"> </span>postgresqldocker_db_1
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">6</span>-1<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>database<span class="w"> </span>system<span class="w"> </span>was<span class="w"> </span>interrupted<span class="p">;</span><span class="w"> </span>last<span class="w"> </span>known<span class="w"> </span>up<span class="w"> </span>at<span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">17</span>:46:10<span class="w"> </span>UTC
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">6</span>-2<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>database<span class="w"> </span>system<span class="w"> </span>was<span class="w"> </span>not<span class="w"> </span>properly<span class="w"> </span>shut<span class="w"> </span>down<span class="p">;</span><span class="w"> </span>automatic<span class="w"> </span>recovery<span class="w"> </span><span class="k">in</span><span class="w"> </span>progress
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">6</span>-3<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>redo<span class="w"> </span>starts<span class="w"> </span>at<span class="w"> </span><span class="m">0</span>/1782F68
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">6</span>-4<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>record<span class="w"> </span>with<span class="w"> </span>zero<span class="w"> </span>length<span class="w"> </span>at<span class="w"> </span><span class="m">0</span>/1782FA8
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">6</span>-5<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>redo<span class="w"> </span><span class="k">done</span><span class="w"> </span>at<span class="w"> </span><span class="m">0</span>/1782F68
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">6</span>-6<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>last<span class="w"> </span>completed<span class="w"> </span>transaction<span class="w"> </span>was<span class="w"> </span>at<span class="w"> </span>log<span class="w"> </span><span class="nb">time</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">17</span>:46:10.61746+00
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">1</span>-1<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>database<span class="w"> </span>system<span class="w"> </span>is<span class="w"> </span>ready<span class="w"> </span>to<span class="w"> </span>accept<span class="w"> </span>connections
+db_1<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">2015</span>-02-21<span class="w"> </span><span class="m">19</span>:01:07<span class="w"> </span>UTC<span class="w"> </span><span class="o">[</span><span class="m">10</span>-1<span class="o">]</span><span class="w"> </span>LOG:<span class="w">  </span>autovacuum<span class="w"> </span>launcher<span class="w"> </span>started
 </code></pre></div>
 
 <p>If you try to write some data on the database and then you stop (CTRL+C)

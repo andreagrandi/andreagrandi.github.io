@@ -172,21 +172,21 @@ discovered that one of their developer was working to hildonize
 [WxWidgets]{style="font-weight: bold;"}. I wanted to know if that was
 just a test or if this library could work in Maemo, so I followed his
 suggestion and I grabbed the latest SVN sources:</p>
-<div class="highlight"><pre><span></span><code>svn checkout http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk wxWidgets
+<div class="highlight"><pre><span></span><code>svn<span class="w"> </span>checkout<span class="w"> </span>http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk<span class="w"> </span>wxWidgets
 </code></pre></div>
 
 <p>and I compiled it in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> wxWidgets ./configure --with-hildon make make install
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>wxWidgets<span class="w"> </span>./configure<span class="w"> </span>--with-hildon<span class="w"> </span>make<span class="w"> </span>make<span class="w"> </span>install
 </code></pre></div>
 
 <p>then I grabbed a simple "HelloWorld" from the official documentation.
 You can find the complete source code <a href="http://www.wxwidgets.org/docs/tutorials/hworld.txt">here</a>.</p>
 <p>I compiled the source code in this way:</p>
-<div class="highlight"><pre><span></span><code>g++ hworld.cpp wx-config --libs wx-config --cxxflags -o hworld
+<div class="highlight"><pre><span></span><code>g++<span class="w"> </span>hworld.cpp<span class="w"> </span>wx-config<span class="w"> </span>--libs<span class="w"> </span>wx-config<span class="w"> </span>--cxxflags<span class="w"> </span>-o<span class="w"> </span>hworld
 </code></pre></div>
 
 <p>then I ran it in the usual way:</p>
-<div class="highlight"><pre><span></span><code>run-standalone.sh ./hworld
+<div class="highlight"><pre><span></span><code>run-standalone.sh<span class="w"> </span>./hworld
 </code></pre></div>
 
 <p>The result? I think that a screenshoot is better than thousand words :)</p>
@@ -211,7 +211,7 @@ developers porting some interesting applications (uhm... aMule for example ;) ) 
       <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
-<div class="highlight"><pre><span></span><code>sem_post: Function not implemented
+<div class="highlight"><pre><span></span><code>sem_post:<span class="w"> </span>Function<span class="w"> </span>not<span class="w"> </span>implemented
 </code></pre></div>
 
 <p>This happens because not all the functions have been implemented in the
@@ -224,23 +224,23 @@ howto to install the patch into the Scratchbox environment.</p>
 from outside the Scratchbox environment and you should not be logged
 into the environment at the same time.</p>
 <p>You need gcc 3.4, SDL dev library andZlib dev:</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gcc-3.4<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>zlib1g-dev
 </code></pre></div>
 
 <p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
-<div class="highlight"><pre><span></span><code>svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi 
-<span class="nb">cd</span> qemu-arm-eabi 
-./configure --target-list<span class="o">=</span>arm-linux-user --static make
+<div class="highlight"><pre><span></span><code>svn<span class="w"> </span>co<span class="w"> </span>https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi<span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
+<span class="nb">cd</span><span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
+./configure<span class="w"> </span>--target-list<span class="o">=</span>arm-linux-user<span class="w"> </span>--static<span class="w"> </span>make
 </code></pre></div>
 
 <p>Copy qemu to the cputransp dir on scratchbox:</p>
-<div class="highlight"><pre><span></span><code>sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>arm-linux-user/qemu-arm<span class="w"> </span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
 </code></pre></div>
 
 <p>Add it to the list of cputransp methods. Open the file:</p>
-<div class="highlight"><pre><span></span><code>sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/scratchbox/devkits/cputransp/etc/cputransp-methods
 </code></pre></div>
 
 <p>and add this line:</p>
@@ -248,7 +248,7 @@ to get the qemu sources.</p>
 </code></pre></div>
 
 <p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
-<div class="highlight"><pre><span></span><code>vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
+<div class="highlight"><pre><span></span><code>vim<span class="w"> </span>/scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
 </code></pre></div>
 
 <p>and change this line:</p>
@@ -279,8 +279,8 @@ installing it from scratch?!". Luckly one kind person helped me on
 maemo-developer mailing list, and suggested me to do a dist-upgrade from
 inside the Scratchbox environment. So, login into tour Scratchbox
 environment and execute this:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get update 
-<span class="o">[</span>sbox-SDK_BETA_X86: ~<span class="o">]</span> &gt; fakeroot apt-get dist-upgrade
+<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:<span class="w"> </span>~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span>
+<span class="o">[</span>sbox-SDK_BETA_X86:<span class="w"> </span>~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>dist-upgrade
 </code></pre></div>
 
 <p>That's all! I don't know if this is the official method to do the
@@ -357,11 +357,11 @@ use the script provided but you could choose also to install it manually
 <p>Before beginning the installation of Scratchbox, you have to become
 <strong><code>root</code></strong>.</p>
 <p>First of all set the permission of the script file:</p>
-<div class="highlight"><pre><span></span><code>chmod +x maemo-scratchbox-install_4.0beta.sh
+<div class="highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>maemo-scratchbox-install_4.0beta.sh
 </code></pre></div>
 
 <p>Then run it with these parameters:</p>
-<div class="highlight"><pre><span></span><code>./maemo-scratchbox-install_4.0beta.sh -d -u andy80
+<div class="highlight"><pre><span></span><code>./maemo-scratchbox-install_4.0beta.sh<span class="w"> </span>-d<span class="w"> </span>-u<span class="w"> </span>andy80
 </code></pre></div>
 
 <p>Please note that <strong>-d</strong> tells the installer to install from Debian dpkg
@@ -373,10 +373,10 @@ into you new Scratchbox environment. To test it you simply have to start
 Scratchbox from your local user:</p>
 <div class="highlight"><pre><span></span><code>/scratchbox/login
 
-Welcome to Scratchbox, the cross-compilation toolkit!
+Welcome<span class="w"> </span>to<span class="w"> </span>Scratchbox,<span class="w"> </span>the<span class="w"> </span>cross-compilation<span class="w"> </span>toolkit!
 
-Use <span class="s1">&#39;sb-menu&#39;</span> to change your compilation target.  
-See /scratchbox/doc/ <span class="k">for</span> documentation.
+Use<span class="w"> </span><span class="s1">&#39;sb-menu&#39;</span><span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>your<span class="w"> </span>compilation<span class="w"> </span>target.<span class="w">  </span>
+See<span class="w"> </span>/scratchbox/doc/<span class="w"> </span><span class="k">for</span><span class="w"> </span>documentation.
 </code></pre></div>
 
 <h2>Installing Maemo SDK</h2>
@@ -384,24 +384,24 @@ See /scratchbox/doc/ <span class="k">for</span> documentation.
 the <strong>Maemo SDK</strong>. Please note that you have to do it from <strong>normal
 user</strong> (the user you specified in the installation of Scratchbox).</p>
 <p>Simply run this command and follow instructions:</p>
-<div class="highlight"><pre><span></span><code>bash maemo-sdk-install_4.0beta.sh
+<div class="highlight"><pre><span></span><code>bash<span class="w"> </span>maemo-sdk-install_4.0beta.sh
 </code></pre></div>
 
 <p>At the end you should get this message:</p>
-<div class="highlight"><pre><span></span><code>Installation was successful! ----------------------------
+<div class="highlight"><pre><span></span><code>Installation<span class="w"> </span>was<span class="w"> </span>successful!<span class="w"> </span>----------------------------
 
-IMPORTANT! Please <span class="nb">read</span> this.
+IMPORTANT!<span class="w"> </span>Please<span class="w"> </span><span class="nb">read</span><span class="w"> </span>this.
 
-You now have the maemo <span class="m">4</span>.0beta <span class="s1">&#39;chinook&#39;</span> installed on your computer.  
-You can now start your maemo SDK session with /scratchbox/login and  
-<span class="k">then</span> <span class="k">select</span> your target with <span class="s1">&#39;sb-conf select SDK\_BETA\_ARMEL&#39;</span> <span class="k">for</span> the  
-armel target or <span class="s1">&#39;sb-conf select SDK\_BETA\_X86&#39;</span> <span class="k">for</span> the i386 target.
+You<span class="w"> </span>now<span class="w"> </span>have<span class="w"> </span>the<span class="w"> </span>maemo<span class="w"> </span><span class="m">4</span>.0beta<span class="w"> </span><span class="s1">&#39;chinook&#39;</span><span class="w"> </span>installed<span class="w"> </span>on<span class="w"> </span>your<span class="w"> </span>computer.<span class="w">  </span>
+You<span class="w"> </span>can<span class="w"> </span>now<span class="w"> </span>start<span class="w"> </span>your<span class="w"> </span>maemo<span class="w"> </span>SDK<span class="w"> </span>session<span class="w"> </span>with<span class="w"> </span>/scratchbox/login<span class="w"> </span>and<span class="w">  </span>
+<span class="k">then</span><span class="w"> </span><span class="k">select</span><span class="w"> </span>your<span class="w"> </span>target<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;sb-conf select SDK\_BETA\_ARMEL&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w">  </span>
+armel<span class="w"> </span>target<span class="w"> </span>or<span class="w"> </span><span class="s1">&#39;sb-conf select SDK\_BETA\_X86&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>i386<span class="w"> </span>target.
 
-If you have any problems with targets<span class="s1">&#39; package databases, you can try  </span>
-<span class="s1">running &#39;</span>fakeroot apt-get -f install<span class="err">&#39;</span> on your scratchbox target.  
-This <span class="nb">command</span> will try to fix any problems with the package database.
+If<span class="w"> </span>you<span class="w"> </span>have<span class="w"> </span>any<span class="w"> </span>problems<span class="w"> </span>with<span class="w"> </span>targets<span class="s1">&#39; package databases, you can try  </span>
+<span class="s1">running &#39;</span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>-f<span class="w"> </span>install<span class="err">&#39;</span><span class="w"> </span>on<span class="w"> </span>your<span class="w"> </span>scratchbox<span class="w"> </span>target.<span class="w">  </span>
+This<span class="w"> </span><span class="nb">command</span><span class="w"> </span>will<span class="w"> </span>try<span class="w"> </span>to<span class="w"> </span>fix<span class="w"> </span>any<span class="w"> </span>problems<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>package<span class="w"> </span>database.
 
-Happy hacking!
+Happy<span class="w"> </span>hacking!
 </code></pre></div>
 
 <h2>Installing Xephyr</h2>
@@ -410,18 +410,18 @@ so that you can see all the maemo application windows and visuals on
 your computer.</p>
 <p>To install it in a Debian based distribution, simply execute this (from
 root):</p>
-<div class="highlight"><pre><span></span><code>apt-get install xserver-xephyr
+<div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>xserver-xephyr
 </code></pre></div>
 
 <h2>Running Xephyr</h2>
 <p>To see if all works fine, you should start Xephyr and Maemo environment.
 Execute this from outside the Scratchbox environment:</p>
-<div class="highlight"><pre><span></span><code>Xephyr :2 -host-cursor -screen 800x480x16 -dpi <span class="m">96</span> -ac -extension Composite
+<div class="highlight"><pre><span></span><code>Xephyr<span class="w"> </span>:2<span class="w"> </span>-host-cursor<span class="w"> </span>-screen<span class="w"> </span>800x480x16<span class="w"> </span>-dpi<span class="w"> </span><span class="m">96</span><span class="w"> </span>-ac<span class="w"> </span>-extension<span class="w"> </span>Composite
 </code></pre></div>
 
 <p>Now, from another shell, log into Scratchbox and execute this:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; <span class="nb">export</span> <span class="nv">DISPLAY</span><span class="o">=</span>:2 
-<span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span> &gt; af-sb-init.sh start
+<div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">DISPLAY</span><span class="o">=</span>:2<span class="w"> </span>
+<span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>af-sb-init.sh<span class="w"> </span>start
 </code></pre></div>
 
 <p>This should start the Hildon Application Framework inside the Xephyr
