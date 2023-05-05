@@ -158,6 +158,125 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2008/10/05/installazione-e-configurazione-di-ubuntu-eee-8041-su-asus-eeepc-901/">Installazione e configurazione di Ubuntu Eee 8.04.1 su Asus EeePC 901</a></h2>
+    <p>
+      Posted on Sun 05 October 2008 in <a href="https://www.andreagrandi.it/category/eeepc-howto-linux.html">EeePC, HowTo, Linux</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/asus.html">asus</a>,              <a href="https://www.andreagrandi.it/tag/eeepc.html">EeePC</a>,              <a href="https://www.andreagrandi.it/tag/ubuntu-eee.html">ubuntu-eee</a>
+    </p>
+  </header>
+  <div>
+      <p><a href=""><img alt="asus ubuntu eee" src="https://www.andreagrandi.it/images/2008/10/asus_ubuntueee.jpg"></a></p>
+<p>La versione di Linux che viene installata sugli EeePC (<strong>Xandros</strong> Linux) da Asus, sebbene
+sia l'ideale per chi non ha mai utilizzato Linux e desidera un netbook
+semplice da usare, tuttavia <strong>non permette di sfruttare pienamente le
+potenzialità</strong> che l'EeePC ha.</p>
+<p>Poco tempo dopo l'uscita dei primi modelli degli EeePC sono iniziate
+quindi ad essere rilasciate distribuzioni alternative alla Xandros,
+ottimizzate per il netbook di Asus. E' ovviamente possibile installare
+una qualsiasi distribuzione Linux, ma ovviamente il lavoro da compiere
+per far funzionare tutte le periferiche sarà maggiore rispetto a quello
+necessario con una distribuzione realizzata ad hoc.</p>
+<p>La distribuzione che ho deciso di installare sul mio <strong>EeePC 901</strong> è la
+<a href="http://www.ubuntu-eee.com">Ubuntu Eee 8.04.1</a>.</p>
+<p>Per installare la <strong>Ubuntu Eee</strong> è necessario scaricarla dal <a href="http://www.ubuntu-eee.com/wiki/index.php5?title=Get_Ubuntu_Eee">sito web dedicato</a>
+e poi trasferirla su una chiavetta USB o su un disco USB esterno (visto
+che l'EeePC non è dotato di lettore CD/DVD) utilizzando una utility
+chiamata <strong>Unetbootin</strong> e seguendo le <a href="http://www.ubuntu-eee.com/wiki/index.php5?title=How_to:_Using_Unetbootin">istruzioni presenti sul wiki</a>.</p>
+<p>Dopo aver trasferito l'installazione sulla chiavetta USB dobbiamo
+inserirla nell'EeePC ed avviare premendo piu' volte il tasto <strong>Esc</strong>.
+Quando compare il menu di avvio, dobbiamo selezionare il disco USB dalla
+lista e premere <strong>Invio</strong> per continuare.</p>
+<p>Nel caso la Ubuntu Eee non si dovesse avviare, i motivi possono essere
+diversi. Per prima cosa dobbiamo controllare nella sezione Boot del
+<strong>BIOS</strong> se il disco USB è al primo posto nell'ordine dei dischi da cui
+fare il boot. Se non dovesse avviarsi nemmeno in questo caso, è
+possibile che la <strong>chiavetta</strong> USB <strong>non sia compatibile</strong>: a me è
+successo di non essere in grado di utilizzare una chiavetta USB da 1 Gb
+che avevo e sono dovuto ricorrere ad un disco esterno USB.</p>
+<p>Se riusciamo ad avviare la Ubuntu Eee, saremo in grado di utilizzare
+l'installer grafico senza alcun problema. Il mio consiglio è quello di
+scegliere il <strong>partizionamento manuale</strong> e di utilizzare il primo
+<strong>disco SSD</strong> da <strong>4 Gb per la root /</strong> ed il <strong>disco SSD</strong> da <strong>16 Gb
+per la /home</strong>.</p>
+<p>Le <strong>caratteristiche</strong> della <strong>Ubuntu Eee</strong> la rendono praticamente la
+distribuzione perfetta per gli EeePC:</p>
+<ul>
+<li>supporto per gli Asus EeePC 701, 900, 900A, 901, 1000 e 1000H</li>
+<li>occupa 1.8 Gb di spazio</li>
+<li>Kernel ottimizzato di <a href="http://www.array.org/ubuntu/">Adam</a> con
+    supporto per tutte le periferiche degli EeePC</li>
+<li>interfaccia Notebook Remix predefinita (è possibile cambiarla
+    tramite un'apposita utility)</li>
+</ul>
+<p>Sebbene il setup e la configurazione predefiniti di Ubuntu Eee siano
+quasi perfetti, tuttavia sono necessari ancora alcuni ritocchi per fare
+in modo che tutto funzioni regolarmente.</p>
+<p>Per prima cosa occorre <strong>commentare</strong> l'ultima riga di <strong>/etc/fstab</strong>,
+quella relativa al cdrom, altrimenti si otterrà un errore durante la
+fase di mount quando si inserisce una chiavetta USB.</p>
+<p>Per ottenere il meglio dal <strong>risparmio energetico</strong>, consiglio di
+installare gli <strong>script ACPI</strong> di <strong>Murat</strong> che potete trovare a questo
+indirizzo:
+<a href="http://www.informatik.uni-bremen.de/~elmurato/EeePC/Hardy_ACPI_scripts-EeePC_900A_901_1000.tar.gz">http://www.informatik.uni-bremen.de/~elmurato/EeePC/Hardy_ACPI_scripts-EeePC_900A_901_1000.tar.gz</a></p>
+<p>Gli script permettono di attivare/disattivare alcune periferiche come il
+bluetooth, la webcam, la wifi ecc... consentendo alla batteria di durare
+piu' a lungo. Per l'installazione sono sufficienti i seguenti passaggi:</p>
+<div class="highlight"><pre><span></span><code>tar<span class="w"> </span>xfvz<span class="w"> </span>Ubuntu_ACPI_scripts-EeePC_900A_901_1000.tar.gz<span class="w"> </span>
+<span class="nb">cd</span><span class="w"> </span>Ubuntu_ACPI_scripts-EeePC_900A_901_1000/<span class="w"> </span>
+chmod<span class="w"> </span>+x<span class="w"> </span>install.sh<span class="w"> </span>
+sudo<span class="w"> </span>./install.sh<span class="sb">`</span>
+</code></pre></div>
+
+<p>In particolare le funzionalità che vengono aggiunte sono le seguenti
+(gli hotkey sono quei tasti hardware posizionati sopra ad i tasti F1,
+F2, ecc...):</p>
+<ul>
+<li>Fn+F1 Standby</li>
+<li>Fn+F2 WLAN-toggle</li>
+<li>Fn+F3/F4 Brightness</li>
+<li>Fn+F5 VGA-toggle</li>
+<li>Fn+F6 Taskmanager</li>
+<li>Fn+F7/F8/F9 Volume</li>
+<li>
+<ol>
+<li>new hotkey Display-toggle (internal)</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>new hotkey Bluetooth-toggle</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>new hotkey CPU frequency control or user-defined</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>new hotkey Webcam-toggle or user-defined</li>
+</ol>
+</li>
+</ul>
+<p>Gli script di Murat purtroppo introducono un <strong>piccolo bug</strong>: viene
+disattivata la funzionalità <strong>"Dim when idle"</strong> del display (in pratica
+non viene abbuiato lo schermo quando non si usa l'EeePC). Per
+ripristinare questa funzionalità è sufficiente eseguire questo comando:  </p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>/etc/acpi/backup/hal-system-lcd-set-brightness-linux<span class="w"> </span>/usr/lib/hal/scripts/linux/
+</code></pre></div>
+
+<p>A questo punto la configurazione dovrebbe essere al completo. Si
+consiglia di <strong>riavviare l'EeePC</strong> per rendere effettive tutte le
+modifiche. Per ulteriori trucchetti su come ottimizzare la
+configurazione, vi consiglio di visitare direttamente il <a href="http://www.ubuntu-eee.com/wiki/index.php5?title=User_Guides">wiki di Ubuntu Eee</a> dove
+potrete trovare articoli piu' approfonditi.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2008/10/04/come-aggiornare-il-bios-dellasus-eeepc/">Come aggiornare il BIOS dell'Asus EeePC</a></h2>
     <p>
       Posted on Sat 04 October 2008 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
@@ -267,32 +386,6 @@ Ubuntu 8.04, visto che si tratta di una <strong>LTS</strong> (non tutti vorranno
 abbandonare una versione la cui stabilità e gli aggiornamenti sono
 mantenuti per almeno 3 anni) solo per risolvere un problema col RAID1,
 ma per adesso non sembra rientrare nei piani degli sviluppatori.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2008/09/24/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/">Un bug del Kernel Linux 2.6.27 potrebbe danneggiare le schede ethernet con driver e1000e</a></h2>
-    <p>
-      Posted on Wed 24 September 2008 in <a href="https://www.andreagrandi.it/category/linux-sicurezza.html">Linux, Sicurezza</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/bug.html">bug</a>,              <a href="https://www.andreagrandi.it/tag/e1000e.html">e1000e</a>,              <a href="https://www.andreagrandi.it/tag/kernel.html">kernel</a>
-    </p>
-  </header>
-  <div>
-      <p><a href=""><img alt="ethernet" src="https://www.andreagrandi.it/images/2008/09/ethernet.jpg"></a></p>
-<p>Secondo quanto <a href="https://lists.ubuntu.com/archives/ubuntu-devel-announce/2008-September/000488.html">riportato sulla mailing list</a>
-di sviluppo di Ubuntu, un <strong>bug</strong> presente nella versione <strong>2.6.27</strong> del
-<strong>kernel Linux</strong> potrebbe <strong>danneggiare irreparabilmente</strong> le schede
-ethernet dotate di chipset <strong>Intel GigE</strong> che utilizzano il driver
-<strong>e1000e</strong>.</p>
-<p>Secondo le prime analisi, il bug andrebbe a sovrascrivere la eprom di
-queste schede di rete, rendendole inutilizzabili.</p>
-<p>L'attuale alpha 6 di Ubuntu contiene questo bug, si consiglia quindi di
-non utilizzarla se si possiede tale scheda, ma di attendere almeno la
-prossima release (la beta dovrebbe uscire il 2 ottobre), dove il bug è
-già stato corretto.</p>
   </div>
 </article>
 

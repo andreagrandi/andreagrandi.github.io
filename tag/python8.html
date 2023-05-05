@@ -158,6 +158,83 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2014/10/25/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">Automatically pull updated Docker images and restart containers with docker-puller</a></h2>
+    <p>
+      Posted on Sat 25 October 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/containers.html">containers</a>,              <a href="https://www.andreagrandi.it/tag/docker.html">docker</a>,              <a href="https://www.andreagrandi.it/tag/dockerio.html">docker.io</a>,              <a href="https://www.andreagrandi.it/tag/flask.html">Flask</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
+    </p>
+  </header>
+  <div>
+      <p>If you use <a href="https://docker.io">docker.io</a> (or any similar service) to
+build your <strong>Docker</strong> containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.</p>
+<p>Docker.io gives you the possibility to set a <strong>web hook</strong> after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.</p>
+<p><a href="https://github.com/glowdigitalmedia/docker-puller">docker-puller</a>
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It's a very simple service I wrote using
+Python/Flask. It's also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.</p>
+<p><strong>Note:</strong> this is not the only existing service that is able to do this
+task. I took inspiration from this
+article <a href="http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/">http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/</a>
+and I really tried to
+customize <a href="https://github.com/cpuguy83/dockerhub-webhook-listener">https://github.com/cpuguy83/dockerhub-webhook-listener</a> for
+my own needs, but the problem is that <strong>dockerhub-webhook-listener</strong> is
+not ready to be used as is (you have to customize it) and I'm not very
+good with <strong>Golang</strong> (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank <a href="https://github.com/cpuguy83">Brian Goff</a> for the idea and all
+the people in <strong>#docker @ FreeNode</strong> for the support.</p>
+<h2>How to use docker-puller</h2>
+<p>Setting up the service should be quite easy. After you clone the
+repository from https://github.com/glowdigitalmedia/docker-puller there
+is a <strong>config.json</strong> file where you define the <strong>host</strong>, <strong>port</strong>, a
+<strong>token</strong> and a list of <strong>hooks</strong> you want to react to. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hooks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;hello&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts/hello.sh&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Create a <strong>bash script</strong> (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>pull<span class="w"> </span>andreagrandi/test:latest
+docker<span class="w"> </span>stop<span class="w"> </span><span class="nb">test</span>
+docker<span class="w"> </span>rm<span class="w"> </span><span class="nb">test</span>
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">8000</span>:80<span class="w"> </span>andreagrandi/test:latest
+</code></pre></div>
+
+<p>Once configured, I suggest you to setup a <strong>Nginx</strong> entry (instructions
+not covered here) that for example redirect
+<strong>yourhost.com/dockerpuller</strong> to <strong>localhost:8000</strong> (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: "<strong>python app.py</strong>" (or you can setup a
+Supervisor script).</p>
+<p>At this point docker-puller is up and running. Go to <strong>docker.io</strong>
+automatic build settings and setup a webhook like this:
+<strong>http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello</strong></p>
+<p>Every time docker.io finishes building and pushing your image to the
+docker registry, it will <strong>POST</strong> on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.</p>
+<p>That's all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2013/04/25/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">Using virtualenv to manage multiple Python/Django environments in the same machine</a></h2>
     <p>
       Posted on Thu 25 April 2013 in <a href="https://www.andreagrandi.it/category/howto-linux-programmazione-python-ubuntu-en.html">HowTo, Linux, Programmazione, Python, Ubuntu (EN)</a>
@@ -283,136 +360,6 @@ parameters and our <strong>setup.py</strong> is complete.</p>
 <ul>
 <li>Official Python documentation: <a href="http://docs.python.org/extending/building.html">http://docs.python.org/extending/building.html</a></li>
 </ul>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2009/08/10/pymaemo-python-for-maemo-second-beta-release-for-fremantle/">PyMaemo (Python for Maemo) second beta release for Fremantle</a></h2>
-    <p>
-      Posted on Mon 10 August 2009 in <a href="https://www.andreagrandi.it/category/igalia-linux-maemo-en-programmazione-python.html">Igalia, Linux, Maemo (EN), Programmazione, Python</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/bindings.html">bindings</a>,              <a href="https://www.andreagrandi.it/tag/fremantle.html">fremantle</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/pymaemo.html">pymaemo</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/tablet.html">tablet</a>
-    </p>
-  </header>
-  <div>
-      <p>The <strong>PyMaemo</strong> team is pleased to announce the second beta release of
-PyMaemo for <strong>Fremantle</strong>!</p>
-<p>This new release is available through the <strong>extras-devel</strong> repository,
-see installation instructions in<br>
-<a href="http://pymaemo.garage.maemo.org/sdk_installation.html#fremantle">http://pymaemo.garage.maemo.org/sdk_installation.html#fremantle</a></p>
-<h2>What is it?</h2>
-<p>Python for Maemo (PyMaemo for short) main objective is to make possible
-to use <strong>Python</strong> programming language as the scripting and development
-language for Maemo Platform, providing a better alternative for fast
-prototyping and programming in Maemo environment besides the C
-programming language.</p>
-<p>Python is for serious programming and to have fun. Python has a nice
-syntax, it is easy to learn and powerful enough for a vast range of
-applications, this is why we choose Python for Maemo.</p>
-<h2>What has changed?</h2>
-<p><strong>New packages:</strong></p>
-<ul>
-<li><strong>python-mafw</strong> (0.1-1maemo1)<ul>
-<li>Python bindings for the Media Application Framework [1]</li>
-<li>Supported API is very basic at the moment, and there are some
-    bugs. Feedback is welcome!</li>
-</ul>
-</li>
-<li><strong>python-hildondesktop</strong> (0.0.3-1maemo1)<ul>
-<li>Python bindings for the home/status widgets API</li>
-</ul>
-</li>
-<li><strong>python-notify</strong> (0.1.1-2maemo1)<ul>
-<li>Python bindings for libnotify</li>
-</ul>
-</li>
-<li><strong>pyclutter</strong> (0.8.0-1maemo2)<ul>
-<li>Python bindings for the Clutter API [2]</li>
-<li>Experimental package, waiting for developer feedback</li>
-</ul>
-</li>
-</ul>
-<p><strong>Updated packages:</strong></p>
-<ul>
-<li><strong>gnome-python</strong> (2.26.1-1maemo1)<ul>
-<li>major upgrade, matching current Debian testing release;</li>
-<li>feedback on this is welcome, as it replaces a fairly old version
-    (2.18).</li>
-</ul>
-</li>
-<li><strong>pygtk</strong> (2.12.1-6maemo7)<ul>
-<li>Enable glade support.</li>
-</ul>
-</li>
-<li><strong>python2.5</strong> (2.5.4-1maemo1)<ul>
-<li>Updated to latest upstream 2.5.x release.</li>
-<li>add support to --install-layout=deb flag.</li>
-</ul>
-</li>
-<li><strong>python-central</strong> (0.6.11.1maemo1)<ul>
-<li>dependency needed by the new python-setuptools version.</li>
-</ul>
-</li>
-<li><strong>python-defaults</strong> (2.5.2-3maemo3)<ul>
-<li>Change PREVVER in debian/rules, avoiding old python2.5-minimal
-    versions that had "/usr/bin/python" and thus conflicts with
-    python-minimal.</li>
-</ul>
-</li>
-<li><strong>python-hildo</strong>n (0.9.0-1maemo10)<ul>
-<li>lots of bug fixes</li>
-</ul>
-</li>
-<li><strong>python-setuptools</strong> (0.6c9-1maemo1)<ul>
-<li>add support to --install-layout=deb flag.</li>
-</ul>
-</li>
-</ul>
-<p><strong>Bugs fixed:</strong> MB#4530 [3], MB#4450 [4], MB#4629 [5], MB#4628 [6],<br>
-MB#4647 [7], MB#4632 [8],  MB#4646 [9],  MB#4750 [10], MB#4749 [11],<br>
-MB#4791 [12]</p>
-<h2>Known issues</h2>
-<p>MB#4782 [13]: osso.Context causes segmentation fault<br>
-MB#4821 [14]: Cannot create HildonTouchSelector with single text column<br>
-MB#4824 [15]: python-mafw: source_browsing.py example does not work<br>
-MB#4839 [16]: python-mafw: mafw.Registry lacks list_plugins() method<br>
-MB#4849 [17]: python-mafw: MafwPluginDescriptorPublic structure is missing</p>
-<p>We will not migrate to python2.6 in fremantle due to a (unresolved) bug
-(MB#4734 [18]), where a core SDK package explicitly conflicts with
-python &gt;= 2.6, preventing any further upgrades from the 2.5.x series.</p>
-<p>This release is supposed to be compatible with previous releases. If you
-have any issues regarding building your Python application on Fremantle,
-feel free to report it on the pymaemo-developers mailing list [19].</p>
-<h2>Acknowledgments</h2>
-<p>Thanks to everybody who helped making this release possible.</p>
-<p>Bug reports, as always, should go to our Bugzilla [20]. Use the
-<strong>pymaemo-developers</strong> mailing list for help, feedback or suggestions.</p>
-<h2>References</h2>
-<p>[1] <a href="https://garage.maemo.org/projects/mafw/">https://garage.maemo.org/projects/mafw/</a><br>
-[2] <a href="http://www.clutter-project.org/">http://www.clutter-project.org/</a><br>
-[3] <a href="https://bugs.maemo.org/show_bug.cgi?id=4530">https://bugs.maemo.org/show_bug.cgi?id=4530</a><br>
-[4] <a href="https://bugs.maemo.org/show_bug.cgi?id=4450">https://bugs.maemo.org/show_bug.cgi?id=4450</a><br>
-[5] <a href="https://bugs.maemo.org/show_bug.cgi?id=4629">https://bugs.maemo.org/show_bug.cgi?id=4629</a><br>
-[6] <a href="https://bugs.maemo.org/show_bug.cgi?id=4628">https://bugs.maemo.org/show_bug.cgi?id=4628</a><br>
-[7] <a href="https://bugs.maemo.org/show_bug.cgi?id=4647">https://bugs.maemo.org/show_bug.cgi?id=4647</a><br>
-[8] <a href="https://bugs.maemo.org/show_bug.cgi?id=4632">https://bugs.maemo.org/show_bug.cgi?id=4632</a><br>
-[9] <a href="https://bugs.maemo.org/show_bug.cgi?id=4646">https://bugs.maemo.org/show_bug.cgi?id=4646</a><br>
-[10] <a href="https://bugs.maemo.org/show_bug.cgi?id=4750">https://bugs.maemo.org/show_bug.cgi?id=4750</a><br>
-[11] <a href="https://bugs.maemo.org/show_bug.cgi?id=4749">https://bugs.maemo.org/show_bug.cgi?id=4749</a><br>
-[12] <a href="https://bugs.maemo.org/show_bug.cgi?id=4791">https://bugs.maemo.org/show_bug.cgi?id=4791</a><br>
-[13] <a href="https://bugs.maemo.org/show_bug.cgi?id=4782">https://bugs.maemo.org/show_bug.cgi?id=4782</a><br>
-[14] <a href="https://bugs.maemo.org/show_bug.cgi?id=4821">https://bugs.maemo.org/show_bug.cgi?id=4821</a><br>
-[15] <a href="https://bugs.maemo.org/show_bug.cgi?id=4824">https://bugs.maemo.org/show_bug.cgi?id=4824</a><br>
-[16] <a href="https://bugs.maemo.org/show_bug.cgi?id=4839">https://bugs.maemo.org/show_bug.cgi?id=4839</a><br>
-[17] <a href="https://bugs.maemo.org/show_bug.cgi?id=4849">https://bugs.maemo.org/show_bug.cgi?id=4849</a><br>
-[18] <a href="https://bugs.maemo.org/show_bug.cgi?id=4734">https://bugs.maemo.org/show_bug.cgi?id=4734</a><br>
-[19] <a href="https://garage.maemo.org/mailman/listinfo/pymaemo-developers">https://garage.maemo.org/mailman/listinfo/pymaemo-developers</a><br>
-[20] <a href="https://bugs.maemo.org/enter_bug.cgi?product=PyMaemo">https://bugs.maemo.org/enter_bug.cgi?product=PyMaemo</a></p>
-<h2>Credits</h2>
-<p>This post was possible thanks to <strong>Anderson Lizardo</strong>, from PyMaemo
-team, who posted these informations on pymaemo-developers mailing list.</p>
   </div>
 </article>
 

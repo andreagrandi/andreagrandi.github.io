@@ -158,6 +158,48 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2014/09/02/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/">Configuring ddclient to update your dynamic DNS at noip.com</a></h2>
+    <p>
+      Posted on Tue 02 September 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/howto.html">howto</a>,              <a href="https://www.andreagrandi.it/tag/linux.html">linux</a>,              <a href="https://www.andreagrandi.it/tag/dns.html">dns</a>
+    </p>
+  </header>
+  <div>
+      <p><a href="http://noip.com"><strong>noip.com</strong></a> is one of the few dynamic DNS free
+services that are reliable to use. If you have, like in my situation, a
+RaspberryPi connected to your home DSL and you want it to be always
+reachable without knowing the current IP address (the IP could change if
+you have a normal DSL service at home), you need a dynamic DNS service.</p>
+<p>To update the noip.com one you just need <strong>ddclient</strong> a tool that is
+available in Raspbian/Debian repository. You can install it with this
+command:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>ddclient
+</code></pre></div>
+
+<p>then you just need to edit <strong>/etc/ddclient.conf</strong></p>
+<div class="highlight"><pre><span></span><code><span class="nv">protocol</span><span class="o">=</span>dyndns2
+<span class="nv">use</span><span class="o">=</span>web,<span class="w"> </span><span class="nv">web</span><span class="o">=</span>checkip.dyndns.com/,<span class="w"> </span>web-skip<span class="o">=</span><span class="s1">&#39;IP Address&#39;</span>
+<span class="nv">server</span><span class="o">=</span>dynupdate.no-ip.com
+<span class="nv">login</span><span class="o">=</span>yourusername
+<span class="nv">password</span><span class="o">=</span>yourpassword
+yourhostname.no-ip.org
+</code></pre></div>
+
+<p>and restart the client:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/etc/init.d/ddclient<span class="w"> </span>restart
+</code></pre></div>
+
+<p>That's all! Please remember that noip.com <strong>free accounts</strong> have a
+<strong>limitation</strong>: they need to be confirmed every 30 days (you will
+receive an email and you need to click on the link contained to update
+your DNS).</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2014/08/31/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/">Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</a></h2>
     <p>
       Posted on Sun 31 August 2014 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
@@ -321,26 +363,6 @@ non trovate?</p>
 come preparare le <strong>crepes alla Nutella</strong>!</p>
 <p>Gustatevi il video... e le crepes!</p>
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="425" height="344" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="allowFullScreen" value="true"></param><param name="src" value="http://www.youtube.com/v/4aGWrHaD__o&amp;hl=it&amp;fs=1&amp;rel=0"></param><embed type="application/x-shockwave-flash" width="425" height="344" src="http://www.youtube.com/v/4aGWrHaD__o&amp;hl=it&amp;fs=1&amp;rel=0" allowfullscreen="true"></embed></object>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2008/04/17/installing-maemo-sdk-4-howto-updated/">Installing Maemo SDK 4 HowTo Updated</a></h2>
-    <p>
-      Posted on Thu 17 April 2008 in <a href="https://www.andreagrandi.it/category/maemo-en.html">Maemo (EN)</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/chinook.html">chinook</a>,              <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>,              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
-    </p>
-  </header>
-  <div>
-      <p>I've updated my previous howto that explain how to install <strong>Maemo SDK 4 (Chinook)</strong>.
-The other howto was written when Maemo SDK 4 Beta was out, now it's updated to
-<strong>4.0.1</strong> version of the SDK.</p>
-<p>You can find it, as usual, on this wiki: <a href="http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4">http://www.ptlug.org/wiki/Howto_Installing_Maemo_SDK_4</a></p>
-<p>If you have any suggestion or if you want to give me any idea to improve
-this howto, please leave me a comment.</p>
   </div>
 </article>
 
