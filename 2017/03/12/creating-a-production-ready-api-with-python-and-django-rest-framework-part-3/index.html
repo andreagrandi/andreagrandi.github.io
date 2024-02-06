@@ -1,175 +1,131 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="In the previous part we implemented authentication, permissions and the possibility to POST new products for admins. In this new episode we will see how to implement details management, relations between models, nested APIs and a different level of permissions. If you haven&#39;t completed the previous parts or if you want to begin from this one, checkout the right code first: git checkout tutorial-1.10 Handling Product Details Our current API methods allow us to list all the products we have in our catalog and to create a new one (if we have admin permissions), but what if we wanted to delete or update a single one? What if we wanted to get only a specific product? We need to handle details. As first thing we need to change the ProductSerializer to return the id of the product. Edit catalog/serializers.py and change the class in this way: class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = (&#39;id&#39;, &#39;name&#39;, &#39;description&#39;, &#39;price&#39;) After changing the serializer we need to implement a new view called ProductDetail. Edit catalog/views.py and add the following imports: from django.http import Http404 from rest_framework.response import Response from rest_framework.views import APIView from rest_framework import status and the following class: class ProductDetail(APIView): def get_object(self, pk): try: return Product.objects.get(pk=pk) except Product.DoesNotExist: raise Http404 def get(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product) return Response(serializer.data) def put(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product, data=request.data) if serializer.is_valid(): serializer.save() return Response(serializer.data) return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) def delete(self, request, pk, format=None): product = self.get_object(pk) product.delete() return Response(status=status.HTTP_204_NO_CONTENT) let&#39;s connect the new view to the urls, editing catalog/urls.py and changing the code in this way: urlpatterns = [ url(r&#39;^products/$&#39;, views.ProductList.as_view()), url(r&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;, views.ProductDetail.as_view()), ] If we try to PUT, DELETE or GET a product like /products/1/ we can now update, delete or retrieve an existing item, but there is a little problem: we haven&#39;t set any permission on this class, so anyone can do it. The previous view was also more compact, why don&#39;t we use a generic view to perform these basic operations? Let&#39;s refactor ProductDetail with a RetrieveUpdateDestroyAPIView generic class. Open catalog/views.py and change the class code in this way: class ProductDetail(generics.RetrieveUpdateDestroyAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer permission_classes = (IsAdminOrReadOnly, ) That&#39;s it! With just three lines of code we have now implemented the same feature of the previous class, plus we have set the correct permissions. To checkout the code at this point: git checkout tutorial-1.12 Reviews - Relations between models As many online catalogs already have, it would be nice if our API had an endpoint where it is possible to leave a review for a product and get a list of reviews for a specific product. To implement this feature we need to add a new model to our application. Edit catalog/models.py adding this import: from django.contrib.auth.models import User and this Django model: class Review(models.Model): product = models.ForeignKey(Product, related_name=&#39;reviews&#39;) title = models.CharField(max_length=255) review = models.TextField() rating = models.IntegerField() created_by = models.ForeignKey(User) after creating the model, please remember to create the related DB migration: $ ./manage.py makemigrations catalog When the model is ready, we have to do some changes to the serializers. First of all we need to write a new one, for our new Review model. Then we have to change our ProductSerializer so that it will return its related reviews. Each Product can have multiple Review. And each Review will be always linked to a specific Product. Edit catalog/serializers.py and change it in this way: from .models import Product, Review from rest_framework import serializers class ReviewSerializer(serializers.ModelSerializer): created_by = serializers.ReadOnlyField(source=&#39;created_by.username&#39;) class Meta: model = Review fields = (&#39;id&#39;, &#39;title&#39;, &#39;review&#39;, &#39;rating&#39;, &#39;created_by&#39;) class ProductSerializer(serializers.ModelSerializer): reviews = ReviewSerializer(many=True, read_only=True) class Meta: model = Product fields = (&#39;id&#39;, &#39;name&#39;, &#39;description&#39;, &#39;price&#39;, &#39;reviews&#39;) Note: in ReviewSerializer when we serialise the user contained in created_by field, return the username instead of the id (to make it more human readable). Another important thing to notice is that the value of the related_name we have set in the Review model must match with the field name we have added in ProductSerializer fields property. In this case we have set it to reviews. At this point we need to add a new view. Edit catalog/views.py and add the following imports: from rest_framework.permissions import IsAuthenticatedOrReadOnly from .models import Product, Review from .serializers import ProductSerializer, ReviewSerializer then add this class: class ReviewList(generics.ListCreateAPIView): queryset = Review.objects.all() serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, ) def perform_create(self, serializer): serializer.save( created_by=self.request.user, product_id=self.kwargs[&#39;pk&#39;]) As you can notice, I had to customise the perform_create method because the default one doesn&#39;t know anything about the fact we want to set the created_by and product_id fields. Finally we need to bind this new view to a specific url, so we need to edit catalog/urls.py and add this: ... url(r&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;, views.ReviewList.as_view()), ] At this point any authenticated user should be able to POST a review for a product and anyone should be able to get the list of reviews for each product. If you have any problem with the code and want to move to this point, please checkout this: git checkout tutorial-1.13 Nested APIs details To complete our API endpoints for Review, we need to add an additional feature that will let users to edit/delete their own review. Before implementing the new view, we need a little bit of refactoring and a new permission class. Edit catalog/permissions.py and add this new class: class IsOwnerOrReadOnly(BasePermission): def has_object_permission(self, request, view, obj): if request.method in SAFE_METHODS: return True return obj.created_by == request.user Basically this will permit changes to the review only to its author. Now we are going to add new urls and doing some refactoring at the same time. Edit catalog/urls.py and change the urls in this way: urlpatterns = [ url(r&#39;^products/$&#39;, views.ProductList.as_view()), url(r&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;, views.ProductDetail.as_view()), url( r&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;, views.ReviewList.as_view() ), url( r&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;, views.ReviewDetail.as_view() ), ] You may have noticed that I substituted pk with product_id. In the latest url I added, we need to be able to identify two primary keys: the one for the product and the one for the review. I renamed the previous ones for consistency. Now it&#39;s time to add the new view for Review details. Edit catalog/view.py and add this class: class ReviewDetail(generics.RetrieveUpdateDestroyAPIView): serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly) lookup_url_kwarg = &#39;review_id&#39; def get_queryset(self): review = self.kwargs[&#39;review_id&#39;] return Review.objects.filter(id=review) What are we doing here? You may have noticed that we set a new property called lookup_url_kwarg. That property is being used to determine the keyword in urls.py to be used for the primary key lookup. You will also need to do some refactoring to the other views, to adapt them to the changes we just did to the urls. I suggest you to have a look at the diffs here: https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14 or you can have a look at the whole file here https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py In alternative, you can fetch the whole source code at this point: git checkout tutorial-1.14 Wrapping Up In this third part of the tutorial you learned how to handle model details in the API and how relations between different model work. In the next part of the tutorial we will do something we should have done since the beginning: adding tests to our code and learn how to properly test the API. Feedback Please If you enjoyed this tutorial, please leave me some feedback! I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!" />
-<meta name="keywords" content="API, Django, framework, Python, rest, tutorial">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Creating a production ready API with Python and Django Rest Framework – part 3"/>
-<meta property="og:description" content="In the previous part we implemented authentication, permissions and the possibility to POST new products for admins. In this new episode we will see how to implement details management, relations between models, nested APIs and a different level of permissions. If you haven&#39;t completed the previous parts or if you want to begin from this one, checkout the right code first: git checkout tutorial-1.10 Handling Product Details Our current API methods allow us to list all the products we have in our catalog and to create a new one (if we have admin permissions), but what if we wanted to delete or update a single one? What if we wanted to get only a specific product? We need to handle details. As first thing we need to change the ProductSerializer to return the id of the product. Edit catalog/serializers.py and change the class in this way: class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = (&#39;id&#39;, &#39;name&#39;, &#39;description&#39;, &#39;price&#39;) After changing the serializer we need to implement a new view called ProductDetail. Edit catalog/views.py and add the following imports: from django.http import Http404 from rest_framework.response import Response from rest_framework.views import APIView from rest_framework import status and the following class: class ProductDetail(APIView): def get_object(self, pk): try: return Product.objects.get(pk=pk) except Product.DoesNotExist: raise Http404 def get(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product) return Response(serializer.data) def put(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product, data=request.data) if serializer.is_valid(): serializer.save() return Response(serializer.data) return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) def delete(self, request, pk, format=None): product = self.get_object(pk) product.delete() return Response(status=status.HTTP_204_NO_CONTENT) let&#39;s connect the new view to the urls, editing catalog/urls.py and changing the code in this way: urlpatterns = [ url(r&#39;^products/$&#39;, views.ProductList.as_view()), url(r&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;, views.ProductDetail.as_view()), ] If we try to PUT, DELETE or GET a product like /products/1/ we can now update, delete or retrieve an existing item, but there is a little problem: we haven&#39;t set any permission on this class, so anyone can do it. The previous view was also more compact, why don&#39;t we use a generic view to perform these basic operations? Let&#39;s refactor ProductDetail with a RetrieveUpdateDestroyAPIView generic class. Open catalog/views.py and change the class code in this way: class ProductDetail(generics.RetrieveUpdateDestroyAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer permission_classes = (IsAdminOrReadOnly, ) That&#39;s it! With just three lines of code we have now implemented the same feature of the previous class, plus we have set the correct permissions. To checkout the code at this point: git checkout tutorial-1.12 Reviews - Relations between models As many online catalogs already have, it would be nice if our API had an endpoint where it is possible to leave a review for a product and get a list of reviews for a specific product. To implement this feature we need to add a new model to our application. Edit catalog/models.py adding this import: from django.contrib.auth.models import User and this Django model: class Review(models.Model): product = models.ForeignKey(Product, related_name=&#39;reviews&#39;) title = models.CharField(max_length=255) review = models.TextField() rating = models.IntegerField() created_by = models.ForeignKey(User) after creating the model, please remember to create the related DB migration: $ ./manage.py makemigrations catalog When the model is ready, we have to do some changes to the serializers. First of all we need to write a new one, for our new Review model. Then we have to change our ProductSerializer so that it will return its related reviews. Each Product can have multiple Review. And each Review will be always linked to a specific Product. Edit catalog/serializers.py and change it in this way: from .models import Product, Review from rest_framework import serializers class ReviewSerializer(serializers.ModelSerializer): created_by = serializers.ReadOnlyField(source=&#39;created_by.username&#39;) class Meta: model = Review fields = (&#39;id&#39;, &#39;title&#39;, &#39;review&#39;, &#39;rating&#39;, &#39;created_by&#39;) class ProductSerializer(serializers.ModelSerializer): reviews = ReviewSerializer(many=True, read_only=True) class Meta: model = Product fields = (&#39;id&#39;, &#39;name&#39;, &#39;description&#39;, &#39;price&#39;, &#39;reviews&#39;) Note: in ReviewSerializer when we serialise the user contained in created_by field, return the username instead of the id (to make it more human readable). Another important thing to notice is that the value of the related_name we have set in the Review model must match with the field name we have added in ProductSerializer fields property. In this case we have set it to reviews. At this point we need to add a new view. Edit catalog/views.py and add the following imports: from rest_framework.permissions import IsAuthenticatedOrReadOnly from .models import Product, Review from .serializers import ProductSerializer, ReviewSerializer then add this class: class ReviewList(generics.ListCreateAPIView): queryset = Review.objects.all() serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, ) def perform_create(self, serializer): serializer.save( created_by=self.request.user, product_id=self.kwargs[&#39;pk&#39;]) As you can notice, I had to customise the perform_create method because the default one doesn&#39;t know anything about the fact we want to set the created_by and product_id fields. Finally we need to bind this new view to a specific url, so we need to edit catalog/urls.py and add this: ... url(r&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;, views.ReviewList.as_view()), ] At this point any authenticated user should be able to POST a review for a product and anyone should be able to get the list of reviews for each product. If you have any problem with the code and want to move to this point, please checkout this: git checkout tutorial-1.13 Nested APIs details To complete our API endpoints for Review, we need to add an additional feature that will let users to edit/delete their own review. Before implementing the new view, we need a little bit of refactoring and a new permission class. Edit catalog/permissions.py and add this new class: class IsOwnerOrReadOnly(BasePermission): def has_object_permission(self, request, view, obj): if request.method in SAFE_METHODS: return True return obj.created_by == request.user Basically this will permit changes to the review only to its author. Now we are going to add new urls and doing some refactoring at the same time. Edit catalog/urls.py and change the urls in this way: urlpatterns = [ url(r&#39;^products/$&#39;, views.ProductList.as_view()), url(r&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;, views.ProductDetail.as_view()), url( r&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;, views.ReviewList.as_view() ), url( r&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;, views.ReviewDetail.as_view() ), ] You may have noticed that I substituted pk with product_id. In the latest url I added, we need to be able to identify two primary keys: the one for the product and the one for the review. I renamed the previous ones for consistency. Now it&#39;s time to add the new view for Review details. Edit catalog/view.py and add this class: class ReviewDetail(generics.RetrieveUpdateDestroyAPIView): serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly) lookup_url_kwarg = &#39;review_id&#39; def get_queryset(self): review = self.kwargs[&#39;review_id&#39;] return Review.objects.filter(id=review) What are we doing here? You may have noticed that we set a new property called lookup_url_kwarg. That property is being used to determine the keyword in urls.py to be used for the primary key lookup. You will also need to do some refactoring to the other views, to adapt them to the changes we just did to the urls. I suggest you to have a look at the diffs here: https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14 or you can have a look at the whole file here https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py In alternative, you can fetch the whole source code at this point: git checkout tutorial-1.14 Wrapping Up In this third part of the tutorial you learned how to handle model details in the API and how relations between different model work. In the next part of the tutorial we will do something we should have done since the beginning: adding tests to our code and learn how to properly test the API. Feedback Please If you enjoyed this tutorial, please leave me some feedback! I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2017-03-12 11:21:00+01:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="Development"/>
-<meta property="article:tag" content="API"/>
-<meta property="article:tag" content="Django"/>
-<meta property="article:tag" content="framework"/>
-<meta property="article:tag" content="Python"/>
-<meta property="article:tag" content="rest"/>
-<meta property="article:tag" content="tutorial"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Creating a production ready API with Python and Django Rest Framework – part 3</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="In the previous part we implemented authentication, permissions and the possibility to POST new products for admins. In this new episode we will see how to implement details management, relations between models, nested APIs and a different level of permissions. If you haven't completed the previous parts or if you want to begin from this one, checkout the right code first: git checkout tutorial-1.10 Handling Product Details Our current API methods allow us to list all the products we have in our catalog and to create a new one (if we have admin permissions), but what if we wanted to delete or update a single one? What if we wanted to get only a specific product? We need to handle details. As first thing we need to change the ProductSerializer to return the id of the product. Edit catalog/serializers.py and change the class in this way: class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = ('id', 'name', 'description', 'price') After changing the serializer we need to implement a new view called ProductDetail. Edit catalog/views.py and add the following imports: from django.http import Http404 from rest_framework.response import Response from rest_framework.views import APIView from rest_framework import status and the following class: class ProductDetail(APIView): def get_object(self, pk): try: return Product.objects.get(pk=pk) except Product.DoesNotExist: raise Http404 def get(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product) return Response(serializer.data) def put(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product, data=request.data) if serializer.is_valid(): serializer.save() return Response(serializer.data) return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) def delete(self, request, pk, format=None): product = self.get_object(pk) product.delete() return Response(status=status.HTTP_204_NO_CONTENT) let's connect the new view to the urls, editing catalog/urls.py and changing the code in this way: urlpatterns = [ url(r'^products/$', views.ProductList.as_view()), url(r'^products/(?P&lt;pk&gt;[0-9]+)/$', views.ProductDetail.as_view()), ] If we try to PUT, DELETE or GET a product like /products/1/ we can now update, delete or retrieve an existing item, but there is a little problem: we haven't set any permission on this class, so anyone can do it. The previous view was also more compact, why don't we use a generic view to perform these basic operations? Let's refactor ProductDetail with a RetrieveUpdateDestroyAPIView generic class. Open catalog/views.py and change the class code in this way: class ProductDetail(generics.RetrieveUpdateDestroyAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer permission_classes = (IsAdminOrReadOnly, ) That's it! With just three lines of code we have now implemented the same feature of the previous class, plus we have set the correct permissions. To checkout the code at this point: git checkout tutorial-1.12 Reviews - Relations between models As many online catalogs already have, it would be nice if our API had an endpoint where it is possible to leave a review for a product and get a list of reviews for a specific product. To implement this feature we need to add a new model to our application. Edit catalog/models.py adding this import: from django.contrib.auth.models import User and this Django model: class Review(models.Model): product = models.ForeignKey(Product, related_name='reviews') title = models.CharField(max_length=255) review = models.TextField() rating = models.IntegerField() created_by = models.ForeignKey(User) after creating the model, please remember to create the related DB migration: $ ./manage.py makemigrations catalog When the model is ready, we have to do some changes to the serializers. First of all we need to write a new one, for our new Review model. Then we have to change our ProductSerializer so that it will return its related reviews. Each Product can have multiple Review. And each Review will be always linked to a specific Product. Edit catalog/serializers.py and change it in this way: from .models import Product, Review from rest_framework import serializers class ReviewSerializer(serializers.ModelSerializer): created_by = serializers.ReadOnlyField(source='created_by.username') class Meta: model = Review fields = ('id', 'title', 'review', 'rating', 'created_by') class ProductSerializer(serializers.ModelSerializer): reviews = ReviewSerializer(many=True, read_only=True) class Meta: model = Product fields = ('id', 'name', 'description', 'price', 'reviews') Note: in ReviewSerializer when we serialise the user contained in created_by field, return the username instead of the id (to make it more human readable). Another important thing to notice is that the value of the related_name we have set in the Review model must match with the field name we have added in ProductSerializer fields property. In this case we have set it to reviews. At this point we need to add a new view. Edit catalog/views.py and add the following imports: from rest_framework.permissions import IsAuthenticatedOrReadOnly from .models import Product, Review from .serializers import ProductSerializer, ReviewSerializer then add this class: class ReviewList(generics.ListCreateAPIView): queryset = Review.objects.all() serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, ) def perform_create(self, serializer): serializer.save( created_by=self.request.user, product_id=self.kwargs['pk']) As you can notice, I had to customise the perform_create method because the default one doesn't know anything about the fact we want to set the created_by and product_id fields. Finally we need to bind this new view to a specific url, so we need to edit catalog/urls.py and add this: ... url(r'^products/(?P&lt;pk&gt;[0-9]+)/reviews/$', views.ReviewList.as_view()), ] At this point any authenticated user should be able to POST a review for a product and anyone should be able to get the list of reviews for each product. If you have any problem with the code and want to move to this point, please checkout this: git checkout tutorial-1.13 Nested APIs details To complete our API endpoints for Review, we need to add an additional feature that will let users to edit/delete their own review. Before implementing the new view, we need a little bit of refactoring and a new permission class. Edit catalog/permissions.py and add this new class: class IsOwnerOrReadOnly(BasePermission): def has_object_permission(self, request, view, obj): if request.method in SAFE_METHODS: return True return obj.created_by == request.user Basically this will permit changes to the review only to its author. Now we are going to add new urls and doing some refactoring at the same time. Edit catalog/urls.py and change the urls in this way: urlpatterns = [ url(r'^products/$', views.ProductList.as_view()), url(r'^products/(?P&lt;product_id&gt;[0-9]+)/$', views.ProductDetail.as_view()), url( r'^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$', views.ReviewList.as_view() ), url( r'^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$', views.ReviewDetail.as_view() ), ] You may have noticed that I substituted pk with product_id. In the latest url I added, we need to be able to identify two primary keys: the one for the product and the one for the review. I renamed the previous ones for consistency. Now it's time to add the new view for Review details. Edit catalog/view.py and add this class: class ReviewDetail(generics.RetrieveUpdateDestroyAPIView): serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly) lookup_url_kwarg = 'review_id' def get_queryset(self): review = self.kwargs['review_id'] return Review.objects.filter(id=review) What are we doing here? You may have noticed that we set a new property called lookup_url_kwarg. That property is being used to determine the keyword in urls.py to be used for the primary key lookup. You will also need to do some refactoring to the other views, to adapt them to the changes we just did to the urls. I suggest you to have a look at the diffs here: https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14 or you can have a look at the whole file here https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py In alternative, you can fetch the whole source code at this point: git checkout tutorial-1.14 Wrapping Up In this third part of the tutorial you learned how to handle model details in the API and how relations between different model work. In the next part of the tutorial we will do something we should have done since the beginning: adding tests to our code and learn how to properly test the API. Feedback Please If you enjoyed this tutorial, please leave me some feedback! I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!" name="description">
+<meta content="API, Django, framework, Python, rest, tutorial" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Creating a production ready API with Python and Django Rest Framework – part 3" property="og:title">
+<meta content="In the previous part we implemented authentication, permissions and the possibility to POST new products for admins. In this new episode we will see how to implement details management, relations between models, nested APIs and a different level of permissions. If you haven't completed the previous parts or if you want to begin from this one, checkout the right code first: git checkout tutorial-1.10 Handling Product Details Our current API methods allow us to list all the products we have in our catalog and to create a new one (if we have admin permissions), but what if we wanted to delete or update a single one? What if we wanted to get only a specific product? We need to handle details. As first thing we need to change the ProductSerializer to return the id of the product. Edit catalog/serializers.py and change the class in this way: class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = ('id', 'name', 'description', 'price') After changing the serializer we need to implement a new view called ProductDetail. Edit catalog/views.py and add the following imports: from django.http import Http404 from rest_framework.response import Response from rest_framework.views import APIView from rest_framework import status and the following class: class ProductDetail(APIView): def get_object(self, pk): try: return Product.objects.get(pk=pk) except Product.DoesNotExist: raise Http404 def get(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product) return Response(serializer.data) def put(self, request, pk, format=None): product = self.get_object(pk) serializer = ProductSerializer(product, data=request.data) if serializer.is_valid(): serializer.save() return Response(serializer.data) return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) def delete(self, request, pk, format=None): product = self.get_object(pk) product.delete() return Response(status=status.HTTP_204_NO_CONTENT) let's connect the new view to the urls, editing catalog/urls.py and changing the code in this way: urlpatterns = [ url(r'^products/$', views.ProductList.as_view()), url(r'^products/(?P&lt;pk&gt;[0-9]+)/$', views.ProductDetail.as_view()), ] If we try to PUT, DELETE or GET a product like /products/1/ we can now update, delete or retrieve an existing item, but there is a little problem: we haven't set any permission on this class, so anyone can do it. The previous view was also more compact, why don't we use a generic view to perform these basic operations? Let's refactor ProductDetail with a RetrieveUpdateDestroyAPIView generic class. Open catalog/views.py and change the class code in this way: class ProductDetail(generics.RetrieveUpdateDestroyAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer permission_classes = (IsAdminOrReadOnly, ) That's it! With just three lines of code we have now implemented the same feature of the previous class, plus we have set the correct permissions. To checkout the code at this point: git checkout tutorial-1.12 Reviews - Relations between models As many online catalogs already have, it would be nice if our API had an endpoint where it is possible to leave a review for a product and get a list of reviews for a specific product. To implement this feature we need to add a new model to our application. Edit catalog/models.py adding this import: from django.contrib.auth.models import User and this Django model: class Review(models.Model): product = models.ForeignKey(Product, related_name='reviews') title = models.CharField(max_length=255) review = models.TextField() rating = models.IntegerField() created_by = models.ForeignKey(User) after creating the model, please remember to create the related DB migration: $ ./manage.py makemigrations catalog When the model is ready, we have to do some changes to the serializers. First of all we need to write a new one, for our new Review model. Then we have to change our ProductSerializer so that it will return its related reviews. Each Product can have multiple Review. And each Review will be always linked to a specific Product. Edit catalog/serializers.py and change it in this way: from .models import Product, Review from rest_framework import serializers class ReviewSerializer(serializers.ModelSerializer): created_by = serializers.ReadOnlyField(source='created_by.username') class Meta: model = Review fields = ('id', 'title', 'review', 'rating', 'created_by') class ProductSerializer(serializers.ModelSerializer): reviews = ReviewSerializer(many=True, read_only=True) class Meta: model = Product fields = ('id', 'name', 'description', 'price', 'reviews') Note: in ReviewSerializer when we serialise the user contained in created_by field, return the username instead of the id (to make it more human readable). Another important thing to notice is that the value of the related_name we have set in the Review model must match with the field name we have added in ProductSerializer fields property. In this case we have set it to reviews. At this point we need to add a new view. Edit catalog/views.py and add the following imports: from rest_framework.permissions import IsAuthenticatedOrReadOnly from .models import Product, Review from .serializers import ProductSerializer, ReviewSerializer then add this class: class ReviewList(generics.ListCreateAPIView): queryset = Review.objects.all() serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, ) def perform_create(self, serializer): serializer.save( created_by=self.request.user, product_id=self.kwargs['pk']) As you can notice, I had to customise the perform_create method because the default one doesn't know anything about the fact we want to set the created_by and product_id fields. Finally we need to bind this new view to a specific url, so we need to edit catalog/urls.py and add this: ... url(r'^products/(?P&lt;pk&gt;[0-9]+)/reviews/$', views.ReviewList.as_view()), ] At this point any authenticated user should be able to POST a review for a product and anyone should be able to get the list of reviews for each product. If you have any problem with the code and want to move to this point, please checkout this: git checkout tutorial-1.13 Nested APIs details To complete our API endpoints for Review, we need to add an additional feature that will let users to edit/delete their own review. Before implementing the new view, we need a little bit of refactoring and a new permission class. Edit catalog/permissions.py and add this new class: class IsOwnerOrReadOnly(BasePermission): def has_object_permission(self, request, view, obj): if request.method in SAFE_METHODS: return True return obj.created_by == request.user Basically this will permit changes to the review only to its author. Now we are going to add new urls and doing some refactoring at the same time. Edit catalog/urls.py and change the urls in this way: urlpatterns = [ url(r'^products/$', views.ProductList.as_view()), url(r'^products/(?P&lt;product_id&gt;[0-9]+)/$', views.ProductDetail.as_view()), url( r'^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$', views.ReviewList.as_view() ), url( r'^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$', views.ReviewDetail.as_view() ), ] You may have noticed that I substituted pk with product_id. In the latest url I added, we need to be able to identify two primary keys: the one for the product and the one for the review. I renamed the previous ones for consistency. Now it's time to add the new view for Review details. Edit catalog/view.py and add this class: class ReviewDetail(generics.RetrieveUpdateDestroyAPIView): serializer_class = ReviewSerializer permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly) lookup_url_kwarg = 'review_id' def get_queryset(self): review = self.kwargs['review_id'] return Review.objects.filter(id=review) What are we doing here? You may have noticed that we set a new property called lookup_url_kwarg. That property is being used to determine the keyword in urls.py to be used for the primary key lookup. You will also need to do some refactoring to the other views, to adapt them to the changes we just did to the urls. I suggest you to have a look at the diffs here: https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14 or you can have a look at the whole file here https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py In alternative, you can fetch the whole source code at this point: git checkout tutorial-1.14 Wrapping Up In this third part of the tutorial you learned how to handle model details in the API and how relations between different model work. In the next part of the tutorial we will do something we should have done since the beginning: adding tests to our code and learn how to properly test the API. Feedback Please If you enjoyed this tutorial, please leave me some feedback! I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-03-12 11:21:00+01:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="Development" property="article:section">
+<meta content="API" property="article:tag"/>
+<meta content="Django" property="article:tag"/>
+<meta content="framework" property="article:tag"/>
+<meta content="Python" property="article:tag"/>
+<meta content="rest" property="article:tag"/>
+<meta content="tutorial" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Creating a production ready API with Python and Django Rest Framework – part 3</title>
+<link href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2017", "item": "https://www.andreagrandi.it/2017"}, {"@type": "ListItem", "position": 3, "name": "03", "item": "https://www.andreagrandi.it/2017/03"}, {"@type": "ListItem", "position": 4, "name": "12", "item": "https://www.andreagrandi.it/2017/03/12"}, {"@type": "ListItem", "position": 5, "name": "Creating a production ready api with python and django rest framework part 3", "item": "https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Creating a production ready API with Python and Django Rest Framework – part 3", "about": "Development", "datePublished": "2017-03-12 11:21"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="creating-a-production-ready-api-with-python-and-django-rest-framework-part-3">Creating a production ready API with Python and Django Rest Framework – part 3</h1>
-    <p>
+<header>
+<h1 id="creating-a-production-ready-api-with-python-and-django-rest-framework-part-3">Creating a production ready API with Python and Django Rest Framework – part 3</h1>
+<p>
       Posted on Sun 12 March 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>In the <a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">previous
+</p>
+</header>
+<div>
+<p>In the <a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">previous
 part</a>
 we implemented authentication, permissions and the possibility to POST
 new products for admins. In this new episode we will see how to
@@ -179,7 +135,6 @@ APIs</strong> and a different level of permissions.</p>
 this one, checkout the right code first:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.10
 </code></pre></div>
-
 <h3>Handling Product Details</h3>
 <p>Our current API methods allow us to list all the products we have in our
 catalog and to create a new one (if we have admin permissions), but what
@@ -191,9 +146,8 @@ in this way:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">,</span> <span class="s1">'description'</span><span class="p">,</span> <span class="s1">'price'</span><span class="p">)</span>
 </code></pre></div>
-
 <p>After changing the serializer we need to implement a new view called
 <strong>ProductDetail</strong>. Edit <strong>catalog/views.py</strong> and add the following
 imports:</p>
@@ -202,7 +156,6 @@ imports:</p>
 <span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
 <span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
 </code></pre></div>
-
 <p>and the following class:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
@@ -229,15 +182,13 @@ imports:</p>
         <span class="n">product</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_204_NO_CONTENT</span><span class="p">)</span>
 </code></pre></div>
-
 <p>let's connect the new view to the urls, editing catalog/urls.py and
 changing the code in this way:</p>
 <div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/(?P&lt;pk&gt;[0-9]+)/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>If we try to <strong>PUT</strong>, <strong>DELETE</strong> or <strong>GET</strong> a product like
 <strong>/products/1/</strong> we can now update, delete or retrieve an existing item,
 but there is a little problem: we haven't set any permission on this
@@ -252,14 +203,12 @@ this way:</p>
     <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
 </code></pre></div>
-
 <p>That's it! With just three lines of code we have now implemented the
 same feature of the previous class, plus we have set the correct
 permissions.</p>
 <p>To checkout the code at this point:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.12
 </code></pre></div>
-
 <h3>Reviews - Relations between models</h3>
 <p>As many online catalogs already have, it would be nice if our API had an
 endpoint where it is possible to leave a review for a product and get a
@@ -268,21 +217,18 @@ need to add a new model to our application. Edit <strong>catalog/models.py</stro
 adding this import:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
 </code></pre></div>
-
 <p>and this Django model:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Review</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">'reviews'</span><span class="p">)</span>
     <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
     <span class="n">review</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
     <span class="n">rating</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
     <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
 </code></pre></div>
-
 <p>after creating the model, please remember to create the related DB
 <strong>migration</strong>:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>catalog
 </code></pre></div>
-
 <p>When the model is ready, we have to do some changes to the serializers.
 First of all we need to write a new one, for our new <strong>Review</strong> model.
 Then we have to change our <strong>ProductSerializer</strong> so that it will return
@@ -294,11 +240,11 @@ Review will be always linked to a specific Product. Edit
 
 
 <span class="k">class</span> <span class="nc">ReviewSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="n">created_by</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ReadOnlyField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">&#39;created_by.username&#39;</span><span class="p">)</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ReadOnlyField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">'created_by.username'</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Review</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;review&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;created_by&#39;</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'title'</span><span class="p">,</span> <span class="s1">'review'</span><span class="p">,</span> <span class="s1">'rating'</span><span class="p">,</span> <span class="s1">'created_by'</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
@@ -306,9 +252,8 @@ Review will be always linked to a specific Product. Edit
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">,</span> <span class="s1">'description'</span><span class="p">,</span> <span class="s1">'price'</span><span class="p">,</span> <span class="s1">'reviews'</span><span class="p">)</span>
 </code></pre></div>
-
 <p><strong>Note:</strong> in <strong>ReviewSerializer</strong> when we serialise the user contained
 in <strong>created_by</strong> field, return the username instead of the id (to make
 it more human readable). Another important thing to notice is that the
@@ -321,7 +266,6 @@ add the following imports:</p>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
 <span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span><span class="p">,</span> <span class="n">ReviewSerializer</span>
 </code></pre></div>
-
 <p>then add this class:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -331,26 +275,23 @@ add the following imports:</p>
     <span class="k">def</span> <span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
         <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
             <span class="n">created_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
-            <span class="n">product_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
+            <span class="n">product_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">'pk'</span><span class="p">])</span>
 </code></pre></div>
-
 <p>As you can notice, I had to customise the <strong>perform_create</strong> method
 because the default one doesn't know anything about the fact we want to
 set the <strong>created_by</strong> and <strong>product_id</strong> fields. Finally we need to
 bind this new view to a specific url, so we need to edit
 <strong>catalog/urls.py</strong> and add this:</p>
 <div class="highlight"><pre><span></span><code><span class="o">...</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/(?P&lt;pk&gt;[0-9]+)/reviews/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>At this point any authenticated user should be able to <strong>POST a review</strong>
 for a product and anyone should be able to get the <strong>list of reviews</strong>
 for each product. If you have any problem with the code and want to move
 to this point, please checkout this:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.13
 </code></pre></div>
-
 <h3>Nested APIs details</h3>
 <p>To complete our API endpoints for Review, we need to add an additional
 feature that will let users to edit/delete their own review. Before
@@ -364,24 +305,22 @@ class:</p>
 
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">created_by</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
 </code></pre></div>
-
 <p>Basically this will permit changes to the review only to its author. Now
 we are going to add new urls and doing some refactoring at the same
 time. Edit <strong>catalog/urls.py</strong> and change the urls in this way:</p>
 <div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/(?P&lt;product_id&gt;[0-9]+)/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
     <span class="n">url</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">'^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$'</span><span class="p">,</span>
         <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
     <span class="p">),</span>
     <span class="n">url</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">'^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$'</span><span class="p">,</span>
         <span class="n">views</span><span class="o">.</span><span class="n">ReviewDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
     <span class="p">),</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>You may have noticed that I substituted <strong>pk</strong> with <strong>product_id</strong>. In
 the latest url I added, we need to be able to identify two primary keys:
 the one for the product and the one for the review. I renamed the
@@ -390,13 +329,12 @@ Review details. Edit <strong>catalog/view.py</strong> and add this class:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
     <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="n">IsOwnerOrReadOnly</span><span class="p">)</span>
-    <span class="n">lookup_url_kwarg</span> <span class="o">=</span> <span class="s1">&#39;review_id&#39;</span>
+    <span class="n">lookup_url_kwarg</span> <span class="o">=</span> <span class="s1">'review_id'</span>
 
     <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;review_id&#39;</span><span class="p">]</span>
+        <span class="n">review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">'review_id'</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">review</span><span class="p">)</span>
 </code></pre></div>
-
 <p>What are we doing here? You may have noticed that we set a new property
 called <strong>lookup_url_kwarg</strong>. That property is being used to determine
 the keyword in <strong>urls.py</strong> to be used for the primary key lookup.</p>
@@ -409,7 +347,6 @@ here <a href="https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1db
 <p>In alternative, you can fetch the whole source code at this point:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.14
 </code></pre></div>
-
 <h3>Wrapping Up</h3>
 <p>In this third part of the tutorial you learned how to handle model
 details in the API and how relations between different model work. In
@@ -420,22 +357,17 @@ test the API.</p>
 <h3>Feedback Please</h3>
 <p>If you enjoyed this tutorial, please leave me some feedback!
 I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!</p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/api.html">API</a>
-      <a href="https://www.andreagrandi.it/tag/django.html">Django</a>
-      <a href="https://www.andreagrandi.it/tag/framework.html">framework</a>
-      <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-      <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>
-      <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/api.html">API</a>
+<a href="https://www.andreagrandi.it/tag/django.html">Django</a>
+<a href="https://www.andreagrandi.it/tag/framework.html">framework</a>
+<a href="https://www.andreagrandi.it/tag/python.html">Python</a>
+<a href="https://www.andreagrandi.it/tag/rest.html">rest</a>
+<a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -451,30 +383,18 @@ I really want to improve my work, based on the users feedback so any little advi
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -485,13 +405,10 @@ I really want to improve my work, based on the users feedback so any little advi
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

@@ -1,175 +1,131 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su Google) abbastanza bene su Linux. Dopo aver provato una Logitech Quickcam for Notebook mi ero quasi perso d&#39;animo, poi ho deciso di fare un ultimo tentativo con la Creative Live! Cam Notebook. Prima di proseguire nella lettura di questa guida, vi consiglio di verificare che il modello di &#34;Creative Live Cam&#34; che state cercando di installare, sia lo stesso che ho testato io. Potete verificarlo scrivendo in un terminale il comando lsusb: lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000` Ovvero dovrete verificare che l&#39;identificativo del vostro modello sia esattamente 041e:4068 Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio notebook e sperando che funzionasse) non ci sono riuscito, quindi mi sono deciso a fare una piccola ricerca su Google. Ho notato che molte persone hanno tentato (senza alcun successo) di far funzionare questa webcam con i driver spca5xx che solitamente supportano un gran numero di webcam. Proseguendo nella mia ricerca ho trovato i driver ov51x-JPEG che invece supportano il mio modello di webcam. L&#39;installazione non è difficile, dobbiamo però assicurarci di aver installato sulla nostra macchina tutto il necessario per poter ricompilare il modulo, quindi dovrete eseguire (da utente root oppure utilizzando sudo) questo comando: apt-get install build-essential linux-headers-$(uname -r) A questo punto dovrete scaricare i sorgenti del driver, da questo indirizzo: http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz Dobbiamo poi scompattarli con il seguente comando: tar xfvz ov51x-jpeg-1.5.7.tar.gz Infine dobbiamo compilare il modulo ed installarlo: cd ov51x-jpeg-1.5.7 make make install Se la compilazione e l&#39;installazione del modulo sono andati a buon fine, possiamo finalmente caricare il modulo: modprobe ov51x-jpeg Prima di poter utilizzare la webcam con Skype, c&#39;è ancora una piccola cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo modificare il file /etc/modprobe.d/options ed aggiungere la seguente riga: options ov51x-jpeg forceblock=1 ovviamente prima di caricare il modulo. A questo punto l&#39;installazione dovrebbe essere completa. Se ci fossero problemi o difficoltà potete scrivere lasciando un commento a questo post, in modo che anche altri possano poi leggere la domanda/risposta." />
-<meta name="keywords" content="cam, creative, Linux, live, Ubuntu (EN), webcam">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Creative Live Cam Notebook su Ubuntu Linux"/>
-<meta property="og:description" content="Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su Google) abbastanza bene su Linux. Dopo aver provato una Logitech Quickcam for Notebook mi ero quasi perso d&#39;animo, poi ho deciso di fare un ultimo tentativo con la Creative Live! Cam Notebook. Prima di proseguire nella lettura di questa guida, vi consiglio di verificare che il modello di &#34;Creative Live Cam&#34; che state cercando di installare, sia lo stesso che ho testato io. Potete verificarlo scrivendo in un terminale il comando lsusb: lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000` Ovvero dovrete verificare che l&#39;identificativo del vostro modello sia esattamente 041e:4068 Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio notebook e sperando che funzionasse) non ci sono riuscito, quindi mi sono deciso a fare una piccola ricerca su Google. Ho notato che molte persone hanno tentato (senza alcun successo) di far funzionare questa webcam con i driver spca5xx che solitamente supportano un gran numero di webcam. Proseguendo nella mia ricerca ho trovato i driver ov51x-JPEG che invece supportano il mio modello di webcam. L&#39;installazione non è difficile, dobbiamo però assicurarci di aver installato sulla nostra macchina tutto il necessario per poter ricompilare il modulo, quindi dovrete eseguire (da utente root oppure utilizzando sudo) questo comando: apt-get install build-essential linux-headers-$(uname -r) A questo punto dovrete scaricare i sorgenti del driver, da questo indirizzo: http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz Dobbiamo poi scompattarli con il seguente comando: tar xfvz ov51x-jpeg-1.5.7.tar.gz Infine dobbiamo compilare il modulo ed installarlo: cd ov51x-jpeg-1.5.7 make make install Se la compilazione e l&#39;installazione del modulo sono andati a buon fine, possiamo finalmente caricare il modulo: modprobe ov51x-jpeg Prima di poter utilizzare la webcam con Skype, c&#39;è ancora una piccola cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo modificare il file /etc/modprobe.d/options ed aggiungere la seguente riga: options ov51x-jpeg forceblock=1 ovviamente prima di caricare il modulo. A questo punto l&#39;installazione dovrebbe essere completa. Se ci fossero problemi o difficoltà potete scrivere lasciando un commento a questo post, in modo che anche altri possano poi leggere la domanda/risposta."/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2008-06-05 19:21:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="Linux, Ubuntu (IT)"/>
-<meta property="article:tag" content="cam"/>
-<meta property="article:tag" content="creative"/>
-<meta property="article:tag" content="Linux"/>
-<meta property="article:tag" content="live"/>
-<meta property="article:tag" content="Ubuntu (EN)"/>
-<meta property="article:tag" content="webcam"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Creative Live Cam Notebook su Ubuntu Linux</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su Google) abbastanza bene su Linux. Dopo aver provato una Logitech Quickcam for Notebook mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo con la Creative Live! Cam Notebook. Prima di proseguire nella lettura di questa guida, vi consiglio di verificare che il modello di &quot;Creative Live Cam&quot; che state cercando di installare, sia lo stesso che ho testato io. Potete verificarlo scrivendo in un terminale il comando lsusb: lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000` Ovvero dovrete verificare che l'identificativo del vostro modello sia esattamente 041e:4068 Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio notebook e sperando che funzionasse) non ci sono riuscito, quindi mi sono deciso a fare una piccola ricerca su Google. Ho notato che molte persone hanno tentato (senza alcun successo) di far funzionare questa webcam con i driver spca5xx che solitamente supportano un gran numero di webcam. Proseguendo nella mia ricerca ho trovato i driver ov51x-JPEG che invece supportano il mio modello di webcam. L'installazione non è difficile, dobbiamo però assicurarci di aver installato sulla nostra macchina tutto il necessario per poter ricompilare il modulo, quindi dovrete eseguire (da utente root oppure utilizzando sudo) questo comando: apt-get install build-essential linux-headers-$(uname -r) A questo punto dovrete scaricare i sorgenti del driver, da questo indirizzo: http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz Dobbiamo poi scompattarli con il seguente comando: tar xfvz ov51x-jpeg-1.5.7.tar.gz Infine dobbiamo compilare il modulo ed installarlo: cd ov51x-jpeg-1.5.7 make make install Se la compilazione e l'installazione del modulo sono andati a buon fine, possiamo finalmente caricare il modulo: modprobe ov51x-jpeg Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo modificare il file /etc/modprobe.d/options ed aggiungere la seguente riga: options ov51x-jpeg forceblock=1 ovviamente prima di caricare il modulo. A questo punto l'installazione dovrebbe essere completa. Se ci fossero problemi o difficoltà potete scrivere lasciando un commento a questo post, in modo che anche altri possano poi leggere la domanda/risposta." name="description">
+<meta content="cam, creative, Linux, live, Ubuntu (EN), webcam" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Creative Live Cam Notebook su Ubuntu Linux" property="og:title">
+<meta content="Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su Google) abbastanza bene su Linux. Dopo aver provato una Logitech Quickcam for Notebook mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo con la Creative Live! Cam Notebook. Prima di proseguire nella lettura di questa guida, vi consiglio di verificare che il modello di &quot;Creative Live Cam&quot; che state cercando di installare, sia lo stesso che ho testato io. Potete verificarlo scrivendo in un terminale il comando lsusb: lsusb Bus 003 Device 001: ID 0000:0000 Bus 002 Device 001: ID 0000:0000 Bus 001 Device 018: ID 041e:4068 Creative Technology, Ltd Bus 001 Device 001: ID 0000:0000` Ovvero dovrete verificare che l'identificativo del vostro modello sia esattamente 041e:4068 Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio notebook e sperando che funzionasse) non ci sono riuscito, quindi mi sono deciso a fare una piccola ricerca su Google. Ho notato che molte persone hanno tentato (senza alcun successo) di far funzionare questa webcam con i driver spca5xx che solitamente supportano un gran numero di webcam. Proseguendo nella mia ricerca ho trovato i driver ov51x-JPEG che invece supportano il mio modello di webcam. L'installazione non è difficile, dobbiamo però assicurarci di aver installato sulla nostra macchina tutto il necessario per poter ricompilare il modulo, quindi dovrete eseguire (da utente root oppure utilizzando sudo) questo comando: apt-get install build-essential linux-headers-$(uname -r) A questo punto dovrete scaricare i sorgenti del driver, da questo indirizzo: http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz wget http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz Dobbiamo poi scompattarli con il seguente comando: tar xfvz ov51x-jpeg-1.5.7.tar.gz Infine dobbiamo compilare il modulo ed installarlo: cd ov51x-jpeg-1.5.7 make make install Se la compilazione e l'installazione del modulo sono andati a buon fine, possiamo finalmente caricare il modulo: modprobe ov51x-jpeg Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo modificare il file /etc/modprobe.d/options ed aggiungere la seguente riga: options ov51x-jpeg forceblock=1 ovviamente prima di caricare il modulo. A questo punto l'installazione dovrebbe essere completa. Se ci fossero problemi o difficoltà potete scrivere lasciando un commento a questo post, in modo che anche altri possano poi leggere la domanda/risposta." property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2008-06-05 19:21:00+02:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="Linux, Ubuntu (IT)" property="article:section">
+<meta content="cam" property="article:tag"/>
+<meta content="creative" property="article:tag"/>
+<meta content="Linux" property="article:tag"/>
+<meta content="live" property="article:tag"/>
+<meta content="Ubuntu (EN)" property="article:tag"/>
+<meta content="webcam" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Creative Live Cam Notebook su Ubuntu Linux</title>
+<link href="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2008", "item": "https://www.andreagrandi.it/2008"}, {"@type": "ListItem", "position": 3, "name": "06", "item": "https://www.andreagrandi.it/2008/06"}, {"@type": "ListItem", "position": 4, "name": "05", "item": "https://www.andreagrandi.it/2008/06/05"}, {"@type": "ListItem", "position": 5, "name": "Creative live cam notebook su ubuntu linux", "item": "https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2008/06/05/creative-live-cam-notebook-su-ubuntu-linux/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Creative Live Cam Notebook su Ubuntu Linux", "about": "Linux, Ubuntu (IT)", "datePublished": "2008-06-05 19:21"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="creative-live-cam-notebook-su-ubuntu-linux">Creative Live Cam Notebook su Ubuntu Linux</h1>
-    <p>
+<header>
+<h1 id="creative-live-cam-notebook-su-ubuntu-linux">Creative Live Cam Notebook su Ubuntu Linux</h1>
+<p>
       Posted on Thu 05 June 2008 in <a href="https://www.andreagrandi.it/category/linux-ubuntu-it.html">Linux, Ubuntu (IT)</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p><a href=""><img alt="Creative" src="https://www.andreagrandi.it/images/2008/06/creative_live_cam_trasparente1.png"></a></p>
+</p>
+</header>
+<div>
+<p><a href=""><img alt="Creative" src="https://www.andreagrandi.it/images/2008/06/creative_live_cam_trasparente1.png"/></a></p>
 <p>Finalmente sono riuscito a trovare una webcam che funzioni (dopo qualche ricerca su
 Google) abbastanza bene su Linux. Dopo aver provato una <strong><a href="http://www.logitech.com/index.cfm/webcam_communications/webcams/devices/2989&amp;cl=it,it">Logitech Quickcam for Notebook</a></strong>
 mi ero quasi perso d'animo, poi ho deciso di fare un ultimo tentativo
@@ -184,7 +140,6 @@ Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Dev
 Bus<span class="w"> </span><span class="m">001</span><span class="w"> </span>Device<span class="w"> </span><span class="m">018</span>:<span class="w"> </span>ID<span class="w"> </span>041e:4068<span class="w"> </span>Creative<span class="w"> </span>Technology,<span class="w"> </span>Ltd<span class="w"> </span>
 Bus<span class="w"> </span><span class="m">001</span><span class="w"> </span>Device<span class="w"> </span><span class="m">001</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">0000</span>:0000<span class="sb">`</span>
 </code></pre></div>
-
 <p>Ovvero dovrete verificare che l'identificativo del vostro modello sia
 esattamente <strong>041e:4068</strong></p>
 <p>Devo dire che al primo tentativo (ovvero inserendo il cavo USB nel mio
@@ -202,54 +157,43 @@ ricompilare il modulo, quindi dovrete eseguire (da utente root oppure
 utilizzando sudo) questo comando:</p>
 <div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>linux-headers-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
 </code></pre></div>
-
 <p>A questo punto dovrete scaricare i sorgenti del driver, da questo
 indirizzo: <a href="http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz"><strong>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz</strong></a></p>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>http://www.rastageeks.org/downloads/ov51x-jpeg/ov51x-jpeg-1.5.7.tar.gz
 </code></pre></div>
-
 <p>Dobbiamo poi scompattarli con il seguente comando:</p>
 <div class="highlight"><pre><span></span><code>tar<span class="w"> </span>xfvz<span class="w"> </span>ov51x-jpeg-1.5.7.tar.gz
 </code></pre></div>
-
 <p>Infine dobbiamo compilare il modulo ed installarlo:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>ov51x-jpeg-1.5.7<span class="w"> </span>
 make
 make<span class="w"> </span>install
 </code></pre></div>
-
 <p>Se la compilazione e l'installazione del modulo sono andati a buon fine,
 possiamo finalmente caricare il modulo:</p>
 <div class="highlight"><pre><span></span><code>modprobe<span class="w"> </span>ov51x-jpeg
 </code></pre></div>
-
 <p>Prima di poter utilizzare la webcam con Skype, c'è ancora una piccola
 cosa da aggiustare, per evitare problemi di incompatibilità. Dobbiamo
 modificare il file <code>/etc/modprobe.d/options</code> ed aggiungere la seguente
 riga:</p>
 <div class="highlight"><pre><span></span><code>options<span class="w"> </span>ov51x-jpeg<span class="w"> </span><span class="nv">forceblock</span><span class="o">=</span><span class="m">1</span>
 </code></pre></div>
-
 <p>ovviamente prima di caricare il modulo. A questo punto l'installazione
 dovrebbe essere completa. Se ci fossero problemi o difficoltà potete
 scrivere lasciando un commento a questo post, in modo che anche altri
 possano poi leggere la domanda/risposta.</p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/cam.html">cam</a>
-      <a href="https://www.andreagrandi.it/tag/creative.html">creative</a>
-      <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
-      <a href="https://www.andreagrandi.it/tag/live.html">live</a>
-      <a href="https://www.andreagrandi.it/tag/ubuntu-en.html">Ubuntu (EN)</a>
-      <a href="https://www.andreagrandi.it/tag/webcam.html">webcam</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/cam.html">cam</a>
+<a href="https://www.andreagrandi.it/tag/creative.html">creative</a>
+<a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
+<a href="https://www.andreagrandi.it/tag/live.html">live</a>
+<a href="https://www.andreagrandi.it/tag/ubuntu-en.html">Ubuntu (EN)</a>
+<a href="https://www.andreagrandi.it/tag/webcam.html">webcam</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -265,30 +209,18 @@ possano poi leggere la domanda/risposta.</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -299,13 +231,10 @@ possano poi leggere la domanda/risposta.</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

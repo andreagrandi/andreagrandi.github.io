@@ -1,175 +1,131 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @decorator_name in the line before its definition, like this example: @foo def hello(): print &#39;Hello World&#39; This decorator doesn&#39;t do anything, so let&#39;s think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What&#39;s the problem with this implementation? The code works as expected, but it&#39;s very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let&#39;s implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let&#39;s try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don&#39;t you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!" />
-<meta name="keywords" content="decorators, fibonacci, memoization, memoize, optimization, Python">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Understanding Python decorators optimizing a recursive Fibonacci implementation"/>
-<meta property="og:description" content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @decorator_name in the line before its definition, like this example: @foo def hello(): print &#39;Hello World&#39; This decorator doesn&#39;t do anything, so let&#39;s think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What&#39;s the problem with this implementation? The code works as expected, but it&#39;s very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let&#39;s implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let&#39;s try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&#34;fib(35)&#34;, &#34;from __main__ import fib&#34;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don&#39;t you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2015-08-31 19:32:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="Programmazione, Python"/>
-<meta property="article:tag" content="decorators"/>
-<meta property="article:tag" content="fibonacci"/>
-<meta property="article:tag" content="memoization"/>
-<meta property="article:tag" content="memoize"/>
-<meta property="article:tag" content="optimization"/>
-<meta property="article:tag" content="Python"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Understanding Python decorators optimizing a recursive Fibonacci implementation</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @decorator_name in the line before its definition, like this example: @foo def hello(): print 'Hello World' This decorator doesn't do anything, so let's think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What's the problem with this implementation? The code works as expected, but it's very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let's implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let's try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&quot;fib(35)&quot;, &quot;from __main__ import fib&quot;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&quot;fib(35)&quot;, &quot;from __main__ import fib&quot;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don't you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!" name="description">
+<meta content="decorators, fibonacci, memoization, memoize, optimization, Python" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Understanding Python decorators optimizing a recursive Fibonacci implementation" property="og:title">
+<meta content="A decorator is a Python function that takes a function object as an argument and returns a function as a value. Here is an example of decorator definition: def foo(function): # make a new function def new_function(): # some code return new_function To apply a decorator to an existing function, you just need to put @decorator_name in the line before its definition, like this example: @foo def hello(): print 'Hello World' This decorator doesn't do anything, so let's think about a more concrete problem we could solve using decorators. Fibonacci sequence By definition, the first two numbers in the Fibonacci sequence are either 1 and 1 or 0 and 1. All the other numbers are the sum of the previous two numbers of the sequence. Example: 0, 1: the third number is 1 0, 1, 1: the fourth number is 2 0, 1, 1, 2: the fifth number is 3 0, 1, 1, 2, 3: the sixth number is 5 etc... If we wanted to give a math definition of the sequence, we could describe it in this way: F(0): 0 F(1): 1 F(n): F(n-1) + F(n-2) In Python we could have a recursive function like the following one: def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) What's the problem with this implementation? The code works as expected, but it's very inefficient. The next picture will explain what happens when we will try, for example, to calculate the 5th number of the sequence: Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and... the picture just tell us that we have calculated Fib(3) 2 times, Fib(2) 3 times, Fib(1) 5 times! Why are we repeating the same operation every time if we already calculated the result? Memoization In computing, memoization is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again. We need to store values of the sequence we have already calculated and get them later when we need them. Let's implement a simple memoization decorator: def memoize(function): cache = {} def decorated_function(*args): if args in cache: return cache[args] else: val = function(*args) cache[args] = val return val return decorated_function The decorator defines a dict at the beginning that is used as a cache. When we want to find the n number of the sequence, it first checks if the value was already calculated and that value is returned instead of being calculated again. If the value is not found, then the original function is being called and then the value is store in the cache, then returned to the caller. Using the memoize decorator How much this decorator can speed up our fib method? Let's try to benchmark the execution using Python timeit module. # First example, not using the memoize decorator import timeit def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&quot;fib(35)&quot;, &quot;from __main__ import fib&quot;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 4.73480010033 # Second example, using the memoize decorator import timeit from memoize import memoize # For convenience I put my decorator # in a module named memoize.py @memoize def fib(n): if n &lt; 2: return n else: return fib(n-1) + fib(n-2) t1 = timeit.Timer(&quot;fib(35)&quot;, &quot;from __main__ import fib&quot;) print t1.timeit(1) The required time to calculate the 35th number of the Fibonacci sequence on my laptop is: 0.000133037567139 Quite faster, don't you think? I will let you try how long does it take to calculate the 60th number of the sequence with and without using the decorator. Hint: grab a cup of coffee before beginning!" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2015-08-31 19:32:00+02:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="Programmazione, Python" property="article:section">
+<meta content="decorators" property="article:tag"/>
+<meta content="fibonacci" property="article:tag"/>
+<meta content="memoization" property="article:tag"/>
+<meta content="memoize" property="article:tag"/>
+<meta content="optimization" property="article:tag"/>
+<meta content="Python" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Understanding Python decorators optimizing a recursive Fibonacci implementation</title>
+<link href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2015", "item": "https://www.andreagrandi.it/2015"}, {"@type": "ListItem", "position": 3, "name": "08", "item": "https://www.andreagrandi.it/2015/08"}, {"@type": "ListItem", "position": 4, "name": "31", "item": "https://www.andreagrandi.it/2015/08/31"}, {"@type": "ListItem", "position": 5, "name": "Understanding python decorators optimizing a recursive fibonacci implementation", "item": "https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2015/08/31/understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Understanding Python decorators optimizing a recursive Fibonacci implementation", "about": "Programmazione, Python", "datePublished": "2015-08-31 19:32"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation">Understanding Python decorators optimizing a recursive Fibonacci implementation</h1>
-    <p>
+<header>
+<h1 id="understanding-python-decorators-optimizing-a-recursive-fibonacci-implementation">Understanding Python decorators optimizing a recursive Fibonacci implementation</h1>
+<p>
       Posted on Mon 31 August 2015 in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
+</p>
+</header>
+<div>
+<p>A <strong>decorator</strong> is a Python function that takes a <em>function object</em> as
 an argument and returns a function as a <em>value</em>. Here is an example of
 decorator definition:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
@@ -179,15 +135,13 @@ decorator definition:</p>
 
     <span class="k">return</span> <span class="n">new_function</span>
 </code></pre></div>
-
 <p>To apply a decorator to an existing function, you just need to put
 <strong>@<em>decorator_name</em></strong> in the line before its definition, like this
 example:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@foo</span>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
-    <span class="nb">print</span> <span class="s1">&#39;Hello World&#39;</span>
+    <span class="nb">print</span> <span class="s1">'Hello World'</span>
 </code></pre></div>
-
 <p>This decorator doesn't do anything, so let's think about a more concrete
 problem we could solve using decorators.</p>
 <h2>Fibonacci sequence</h2>
@@ -217,12 +171,11 @@ one:</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 </code></pre></div>
-
 <p>What's the problem with this implementation? The code works as expected,
 but it's very <strong>inefficient</strong>. The next picture will explain what
 happens when we will try, for example, to calculate the 5th number of
 the sequence:</p>
-<p><a href="https://www.andreagrandi.it/images/2015/08/fibo.png"><img alt="fibo" src="https://www.andreagrandi.it/images/2015/08/fibo.png" width="60%"></a></p>
+<p><a href="https://www.andreagrandi.it/images/2015/08/fibo.png"><img alt="fibo" src="https://www.andreagrandi.it/images/2015/08/fibo.png" width="60%"/></a></p>
 <p>Fib(5) is Fib(4) + Fib(3), but Fib(4) itself is Fib(3) + Fib(2), and...
 the picture just tell us that we have calculated Fib(3) 2 times, Fib(2)
 3 times, Fib(1) 5 times! Why are we repeating the same operation every
@@ -249,7 +202,6 @@ decorator:</p>
             <span class="k">return</span> <span class="n">val</span>
     <span class="k">return</span> <span class="n">decorated_function</span>
 </code></pre></div>
-
 <p>The decorator defines a dict at the beginning that is used as a cache.
 When we want to find the n number of the sequence, it first checks if
 the value was already calculated and that value is returned instead of
@@ -270,10 +222,9 @@ benchmark the execution using Python
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">"fib(35)"</span><span class="p">,</span> <span class="s2">"from __main__ import fib"</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>4.73480010033</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Second example, using the memoize decorator</span>
@@ -289,31 +240,25 @@ on my laptop is: <strong>4.73480010033</strong></p>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;fib(35)&quot;</span><span class="p">,</span> <span class="s2">&quot;from __main__ import fib&quot;</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="s2">"fib(35)"</span><span class="p">,</span> <span class="s2">"from __main__ import fib"</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t1</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-
 <p>The required time to calculate the 35th number of the Fibonacci sequence
 on my laptop is: <strong>0.000133037567139</strong></p>
 <p>Quite faster, don't you think? I will let you try how long does it take
 to calculate the 60th number of the sequence with and without using the
 decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/decorators.html">decorators</a>
-      <a href="https://www.andreagrandi.it/tag/fibonacci.html">fibonacci</a>
-      <a href="https://www.andreagrandi.it/tag/memoization.html">memoization</a>
-      <a href="https://www.andreagrandi.it/tag/memoize.html">memoize</a>
-      <a href="https://www.andreagrandi.it/tag/optimization.html">optimization</a>
-      <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/decorators.html">decorators</a>
+<a href="https://www.andreagrandi.it/tag/fibonacci.html">fibonacci</a>
+<a href="https://www.andreagrandi.it/tag/memoization.html">memoization</a>
+<a href="https://www.andreagrandi.it/tag/memoize.html">memoize</a>
+<a href="https://www.andreagrandi.it/tag/optimization.html">optimization</a>
+<a href="https://www.andreagrandi.it/tag/python.html">Python</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -329,30 +274,18 @@ decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -363,13 +296,10 @@ decorator. <strong>Hint:</strong> grab a cup of coffee before beginning!</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

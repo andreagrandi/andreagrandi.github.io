@@ -1,178 +1,133 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="Using Scratchbox and in particular the Maemo SDK with ARMEL target, very often when we try to execute some application we can get into this kind of errors (for example): sem_post: Function not implemented This happens because not all the functions have been implemented in the emulated environment.[ Lauro Venâncio]{style=&#34;font-weight: bold;&#34;} has created a patched version of qemu-arm called [qemu-arm-eabi]. Thanks to Marcelo Lira, we have a simple howto to install the patch into the Scratchbox environment. Note: you have to execute these commands from outside the Scratchbox environment and you should not be logged into the environment at the same time. You need gcc 3.4, SDL dev library andZlib dev: sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev Get the patched qemu-arm. Notice that the patches are already applied, everything is here, and you don&#39;t need to get the qemu sources. svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make Copy qemu to the cputransp dir on scratchbox: sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 Add it to the list of cputransp methods. Open the file: sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods and add this line: qemu-arm-eabi-sb2 Configure the target to use the patched qemu as transparency method. Edit the file: vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config and change this line: SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 That&#39;s all! You&#39;re now ready to log again into your Scratchbox environment." />
-<meta name="keywords" content="maemo, qemu, scratchbox, SDK">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Installing qemu-arm-eabi patch into Scratchbox"/>
-<meta property="og:description" content="Using Scratchbox and in particular the Maemo SDK with ARMEL target, very often when we try to execute some application we can get into this kind of errors (for example): sem_post: Function not implemented This happens because not all the functions have been implemented in the emulated environment.[ Lauro Venâncio]{style=&#34;font-weight: bold;&#34;} has created a patched version of qemu-arm called [qemu-arm-eabi]. Thanks to Marcelo Lira, we have a simple howto to install the patch into the Scratchbox environment. Note: you have to execute these commands from outside the Scratchbox environment and you should not be logged into the environment at the same time. You need gcc 3.4, SDL dev library andZlib dev: sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev Get the patched qemu-arm. Notice that the patches are already applied, everything is here, and you don&#39;t need to get the qemu sources. svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make Copy qemu to the cputransp dir on scratchbox: sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 Add it to the list of cputransp methods. Open the file: sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods and add this line: qemu-arm-eabi-sb2 Configure the target to use the patched qemu as transparency method. Edit the file: vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config and change this line: SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 That&#39;s all! You&#39;re now ready to log again into your Scratchbox environment."/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2007-11-16 15:49:00+01:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="HowTo, Linux, Maemo (EN), Programmazione"/>
-<meta property="article:tag" content="maemo"/>
-<meta property="article:tag" content="qemu"/>
-<meta property="article:tag" content="scratchbox"/>
-<meta property="article:tag" content="SDK"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Installing qemu-arm-eabi patch into Scratchbox</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="Using Scratchbox and in particular the Maemo SDK with ARMEL target, very often when we try to execute some application we can get into this kind of errors (for example): sem_post: Function not implemented This happens because not all the functions have been implemented in the emulated environment.[ Lauro Venâncio]{style=&quot;font-weight: bold;&quot;} has created a patched version of qemu-arm called [qemu-arm-eabi]. Thanks to Marcelo Lira, we have a simple howto to install the patch into the Scratchbox environment. Note: you have to execute these commands from outside the Scratchbox environment and you should not be logged into the environment at the same time. You need gcc 3.4, SDL dev library andZlib dev: sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev Get the patched qemu-arm. Notice that the patches are already applied, everything is here, and you don't need to get the qemu sources. svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make Copy qemu to the cputransp dir on scratchbox: sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 Add it to the list of cputransp methods. Open the file: sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods and add this line: qemu-arm-eabi-sb2 Configure the target to use the patched qemu as transparency method. Edit the file: vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config and change this line: SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 That's all! You're now ready to log again into your Scratchbox environment." name="description">
+<meta content="maemo, qemu, scratchbox, SDK" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Installing qemu-arm-eabi patch into Scratchbox" property="og:title">
+<meta content="Using Scratchbox and in particular the Maemo SDK with ARMEL target, very often when we try to execute some application we can get into this kind of errors (for example): sem_post: Function not implemented This happens because not all the functions have been implemented in the emulated environment.[ Lauro Venâncio]{style=&quot;font-weight: bold;&quot;} has created a patched version of qemu-arm called [qemu-arm-eabi]. Thanks to Marcelo Lira, we have a simple howto to install the patch into the Scratchbox environment. Note: you have to execute these commands from outside the Scratchbox environment and you should not be logged into the environment at the same time. You need gcc 3.4, SDL dev library andZlib dev: sudo apt-get install gcc-3.4 libsdl1.2-dev zlib1g-dev Get the patched qemu-arm. Notice that the patches are already applied, everything is here, and you don't need to get the qemu sources. svn co https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi qemu-arm-eabi cd qemu-arm-eabi ./configure --target-list=arm-linux-user --static make Copy qemu to the cputransp dir on scratchbox: sudo cp arm-linux-user/qemu-arm /scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 Add it to the list of cputransp methods. Open the file: sudo vim /scratchbox/devkits/cputransp/etc/cputransp-methods and add this line: qemu-arm-eabi-sb2 Configure the target to use the patched qemu as transparency method. Edit the file: vim /scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config and change this line: SBOX_CPUTRANSPARENCY_METHOD=/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2 That's all! You're now ready to log again into your Scratchbox environment." property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2007-11-16 15:49:00+01:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="HowTo, Linux, Maemo (EN), Programmazione" property="article:section">
+<meta content="maemo" property="article:tag"/>
+<meta content="qemu" property="article:tag"/>
+<meta content="scratchbox" property="article:tag"/>
+<meta content="SDK" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Installing qemu-arm-eabi patch into Scratchbox</title>
+<link href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2007", "item": "https://www.andreagrandi.it/2007"}, {"@type": "ListItem", "position": 3, "name": "11", "item": "https://www.andreagrandi.it/2007/11"}, {"@type": "ListItem", "position": 4, "name": "16", "item": "https://www.andreagrandi.it/2007/11/16"}, {"@type": "ListItem", "position": 5, "name": "Installing qemu arm eabi patch into scratchbox", "item": "https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Installing qemu-arm-eabi patch into Scratchbox", "about": "HowTo, Linux, Maemo (EN), Programmazione", "datePublished": "2007-11-16 15:49"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="installing-qemu-arm-eabi-patch-into-scratchbox">Installing qemu-arm-eabi patch into Scratchbox</h1>
-    <p>
+<header>
+<h1 id="installing-qemu-arm-eabi-patch-into-scratchbox">Installing qemu-arm-eabi patch into Scratchbox</h1>
+<p>
       Posted on Fri 16 November 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
+</p>
+</header>
+<div>
+<p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
 often when we try to execute some application we can get into this kind
 of errors (for example):</p>
 <div class="highlight"><pre><span></span><code>sem_post:<span class="w"> </span>Function<span class="w"> </span>not<span class="w"> </span>implemented
 </code></pre></div>
-
 <p>This happens because not all the functions have been implemented in the
 emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
 created a <a href="http://sourceforge.net/projects/qemu-arm-eabi/">patched</a>
@@ -185,7 +140,6 @@ into the environment at the same time.</p>
 <p>You need gcc 3.4, SDL dev library andZlib dev:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gcc-3.4<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>zlib1g-dev
 </code></pre></div>
-
 <p>Get the patched qemu-arm. Notice that
 the patches are already applied, everything is here, and you don't need
 to get the qemu sources.</p>
@@ -193,43 +147,32 @@ to get the qemu sources.</p>
 <span class="nb">cd</span><span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
 ./configure<span class="w"> </span>--target-list<span class="o">=</span>arm-linux-user<span class="w"> </span>--static<span class="w"> </span>make
 </code></pre></div>
-
 <p>Copy qemu to the cputransp dir on scratchbox:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>arm-linux-user/qemu-arm<span class="w"> </span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
 </code></pre></div>
-
 <p>Add it to the list of cputransp methods. Open the file:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/scratchbox/devkits/cputransp/etc/cputransp-methods
 </code></pre></div>
-
 <p>and add this line:</p>
 <div class="highlight"><pre><span></span><code>qemu-arm-eabi-sb2
 </code></pre></div>
-
 <p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
 <div class="highlight"><pre><span></span><code>vim<span class="w"> </span>/scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
 </code></pre></div>
-
 <p>and change this line:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
 </code></pre></div>
-
 <p>That's all! You're now ready to log again into your Scratchbox
 environment.</p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>
-      <a href="https://www.andreagrandi.it/tag/qemu.html">qemu</a>
-      <a href="https://www.andreagrandi.it/tag/scratchbox.html">scratchbox</a>
-      <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>
+<a href="https://www.andreagrandi.it/tag/qemu.html">qemu</a>
+<a href="https://www.andreagrandi.it/tag/scratchbox.html">scratchbox</a>
+<a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -245,30 +188,18 @@ environment.</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -279,13 +210,10 @@ environment.</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

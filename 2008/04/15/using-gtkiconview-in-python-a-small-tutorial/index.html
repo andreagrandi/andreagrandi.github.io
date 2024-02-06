@@ -1,176 +1,132 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&#34;destroy&#34;, gtk.main_quit) window.set_title(&#34;Python GtkIconView Test&#34;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = ( &#34;BD786-TFR.jpg&#34;, &#34;guido_sottozero.jpg&#34;, &#34;IMG_0056.JPG&#34;, &#34;movies_card.jpg&#34; ) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple( DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES ) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &#34;model&#34; parameter. I hope this example is clear. If you have any question, please comment this post and I&#39;ll try to answer. This is a screenshot of this example:" />
-<meta name="keywords" content="gtk, gtkiconview, gtkliststore, HowTo, programming, Python, tutorial">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Using GtkIconView in Python: a small tutorial"/>
-<meta property="og:description" content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&#34;destroy&#34;, gtk.main_quit) window.set_title(&#34;Python GtkIconView Test&#34;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = ( &#34;BD786-TFR.jpg&#34;, &#34;guido_sottozero.jpg&#34;, &#34;IMG_0056.JPG&#34;, &#34;movies_card.jpg&#34; ) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple( DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES ) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &#34;model&#34; parameter. I hope this example is clear. If you have any question, please comment this post and I&#39;ll try to answer. This is a screenshot of this example:"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2008-04-15 15:24:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="Linux, Programmazione, Python"/>
-<meta property="article:tag" content="gtk"/>
-<meta property="article:tag" content="gtkiconview"/>
-<meta property="article:tag" content="gtkliststore"/>
-<meta property="article:tag" content="HowTo"/>
-<meta property="article:tag" content="programming"/>
-<meta property="article:tag" content="Python"/>
-<meta property="article:tag" content="tutorial"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Using GtkIconView in Python: a small tutorial</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&quot;destroy&quot;, gtk.main_quit) window.set_title(&quot;Python GtkIconView Test&quot;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = ( &quot;BD786-TFR.jpg&quot;, &quot;guido_sottozero.jpg&quot;, &quot;IMG_0056.JPG&quot;, &quot;movies_card.jpg&quot; ) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple( DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES ) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &quot;model&quot; parameter. I hope this example is clear. If you have any question, please comment this post and I'll try to answer. This is a screenshot of this example:" name="description">
+<meta content="gtk, gtkiconview, gtkliststore, HowTo, programming, Python, tutorial" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Using GtkIconView in Python: a small tutorial" property="og:title">
+<meta content="In these days I was looking for a simple tutorial to understand how to use GtkIconView, but the only thing I was able to find was an example in PHP-Gtk. So I decided to translate it in Python language, thinking it would be useful for other people trying to use that Gtk control. You can find the code here: import gtk import gobject DEFAULT_IMAGE_WIDTH = 100 # Main Window setup window = gtk.Window(gtk.WINDOW_TOPLEVEL) window.set_size_request(400, 240) window.connect(&quot;destroy&quot;, gtk.main_quit) window.set_title(&quot;Python GtkIconView Test&quot;) # Add a VBox vbox = gtk.VBox() window.add(vbox) # Setup Scrolled Window scrolled_win = gtk.ScrolledWindow() scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC) # Setup ListStore to contain images and description model = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_STRING) # Create a tuple with image files immagini = ( &quot;BD786-TFR.jpg&quot;, &quot;guido_sottozero.jpg&quot;, &quot;IMG_0056.JPG&quot;, &quot;movies_card.jpg&quot; ) for im in immagini: try: pixbuf = gtk.gdk.pixbuf_new_from_file(im) pix_w = pixbuf.get_width() pix_h = pixbuf.get_height() new_h = (pix_h * DEFAULT_IMAGE_WIDTH) / pix_w # Calculate the scaled height before resizing image scaled_pix = pixbuf.scale_simple( DEFAULT_IMAGE_WIDTH, new_h, gtk.gdk.INTERP_TILES ) model.append((scaled_pix, im)) except: pass # Setup GtkIconView view = gtk.IconView(model) # Pass the model stored in a ListStore to the GtkIconView view.set_pixbuf_column(0) view.set_text_column(1) view.set_selection_mode(gtk.SELECTION_MULTIPLE) view.set_columns(0) view.set_item_width(150) # Pack objects and show them all scrolled_win.add(view) vbox.pack_start(scrolled_win) window.show_all() gtk.main() The important thing to notice is that you have to store all the images in a GtkListStore and pass it to the GtkIconView as &quot;model&quot; parameter. I hope this example is clear. If you have any question, please comment this post and I'll try to answer. This is a screenshot of this example:" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2008-04-15 15:24:00+02:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="Linux, Programmazione, Python" property="article:section">
+<meta content="gtk" property="article:tag"/>
+<meta content="gtkiconview" property="article:tag"/>
+<meta content="gtkliststore" property="article:tag"/>
+<meta content="HowTo" property="article:tag"/>
+<meta content="programming" property="article:tag"/>
+<meta content="Python" property="article:tag"/>
+<meta content="tutorial" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Using GtkIconView in Python: a small tutorial</title>
+<link href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2008", "item": "https://www.andreagrandi.it/2008"}, {"@type": "ListItem", "position": 3, "name": "04", "item": "https://www.andreagrandi.it/2008/04"}, {"@type": "ListItem", "position": 4, "name": "15", "item": "https://www.andreagrandi.it/2008/04/15"}, {"@type": "ListItem", "position": 5, "name": "Using gtkiconview in python a small tutorial", "item": "https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2008/04/15/using-gtkiconview-in-python-a-small-tutorial/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Using GtkIconView in Python: a small tutorial", "about": "Linux, Programmazione, Python", "datePublished": "2008-04-15 15:24"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="using-gtkiconview-in-python-a-small-tutorial">Using GtkIconView in Python: a small tutorial</h1>
-    <p>
+<header>
+<h1 id="using-gtkiconview-in-python-a-small-tutorial">Using GtkIconView in Python: a small tutorial</h1>
+<p>
       Posted on Tue 15 April 2008 in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>In these days I was looking for a simple tutorial to understand how to
+</p>
+</header>
+<div>
+<p>In these days I was looking for a simple tutorial to understand how to
 use <strong>GtkIconView</strong>, but the only thing I was able to find was an
 example in PHP-Gtk. So I decided to translate it in <strong>Python</strong> language,
 thinking it would be useful for other people trying to use that Gtk
@@ -183,8 +139,8 @@ control. You can find the code here:</p>
 <span class="c1"># Main Window setup  </span>
 <span class="n">window</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">gtk</span><span class="o">.</span><span class="n">WINDOW_TOPLEVEL</span><span class="p">)</span>
 <span class="n">window</span><span class="o">.</span><span class="n">set_size_request</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
-<span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;destroy&quot;</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">)</span>
-<span class="n">window</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Python GtkIconView Test&quot;</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"destroy"</span><span class="p">,</span> <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Python GtkIconView Test"</span><span class="p">)</span>
 
 <span class="c1"># Add a VBox  </span>
 <span class="n">vbox</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>  
@@ -199,7 +155,7 @@ control. You can find the code here:</p>
 
 <span class="c1"># Create a tuple with image files</span>
 <span class="n">immagini</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;BD786-TFR.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;guido_sottozero.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;IMG_0056.JPG&quot;</span><span class="p">,</span> <span class="s2">&quot;movies_card.jpg&quot;</span>
+    <span class="s2">"BD786-TFR.jpg"</span><span class="p">,</span> <span class="s2">"guido_sottozero.jpg"</span><span class="p">,</span> <span class="s2">"IMG_0056.JPG"</span><span class="p">,</span> <span class="s2">"movies_card.jpg"</span>
 <span class="p">)</span>
 
 <span class="k">for</span> <span class="n">im</span> <span class="ow">in</span> <span class="n">immagini</span><span class="p">:</span>
@@ -230,30 +186,24 @@ control. You can find the code here:</p>
 
 <span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-
 <p>The important thing to notice is that you have to store all the images
 in a <strong>GtkListStore</strong> and pass it to the <strong>GtkIconView</strong> as <em>"model"</em>
 parameter. I hope this example is clear. If you have any question,
 please comment this post and I'll try to answer.</p>
 <p>This is a screenshot of this example:</p>
-<p><a href=""><img alt="gtkiconview" src="https://www.andreagrandi.it/images/2008/04/gtkiconview_sample.png"></a></p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/gtk.html">gtk</a>
-      <a href="https://www.andreagrandi.it/tag/gtkiconview.html">gtkiconview</a>
-      <a href="https://www.andreagrandi.it/tag/gtkliststore.html">gtkliststore</a>
-      <a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>
-      <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>
-      <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-      <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </div>
-
-
-
-
-
+<p><a href=""><img alt="gtkiconview" src="https://www.andreagrandi.it/images/2008/04/gtkiconview_sample.png"/></a></p>
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/gtk.html">gtk</a>
+<a href="https://www.andreagrandi.it/tag/gtkiconview.html">gtkiconview</a>
+<a href="https://www.andreagrandi.it/tag/gtkliststore.html">gtkliststore</a>
+<a href="https://www.andreagrandi.it/tag/howto.html">HowTo</a>
+<a href="https://www.andreagrandi.it/tag/programming.html">programming</a>
+<a href="https://www.andreagrandi.it/tag/python.html">Python</a>
+<a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -269,30 +219,18 @@ please comment this post and I'll try to answer.</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -303,13 +241,10 @@ please comment this post and I'll try to answer.</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

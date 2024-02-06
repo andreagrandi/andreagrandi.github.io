@@ -1,173 +1,129 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="Introduction As I promised in the preceding post, I&#39;ll provide a very easy example of a python binding. Let&#39;s suppose we don&#39;t want to use the methods included in Python to sum two integer values and we want to do it in C and then call the add method from a python script. I&#39;ll write the complete source code first and then I&#39;ll explain all the parts of it. Source Code #include &lt;Python.h&gt; static PyObject *foo_add(PyObject *self, PyObject *args) { int a; int b; if (!PyArg_ParseTuple(args, &#34;ii&#34;, &amp;a, &amp;b)) { return NULL; } return Py_BuildValue(&#34;i&#34;, a + b); } static PyMethodDef foo_methods[] = { { &#34;add&#34;, (PyCFunction)foo_add, METH_VARARGS, NULL }, { NULL, NULL, 0, NULL } }; PyMODINIT_FUNC initfoo() { Py_InitModule3(&#34;foo&#34;, foo_methods, &#34;My first extension module.&#34;); } How it works First of all we have to include Python.h in our C file. This allows us to write an extension for Python language. To be able to include this header, we must have the python development packages installed in our system. For example in Debian based distributions we can install them with this command: sudo apt-get install python2.5-dev Every module has at least three parts. In the first part we write methods we want to call from the final python module: in this case we have a method called foo_add where &#34;foo&#34; is the name of the module and &#34;add&#34; the name of the method. Every method is declared as static PyObject. The method does anything particular except calling PyArg_ParseTuple to validate the input (we&#39;ll discuss this later), adding the two passed numbers and returning the result. In the second part we have something like a dictionary, defined as static PyMethodDef and called foo_methods (where &#34;foo&#34; again is the name of the module). For each method we want to expose in our python module, we have to add something like this: {&#34;add&#34;, (PyCFunction)foo_add, METH_VARARGS, NULL} where &#34;add&#34; is the name of the method we want to be visible in our module, (PyCFunction)foo_add is a pointer to our foo_add method, implemented in the C module, METH_VARARGS means that we want to pass some parameters to the function and the last one would be the description of the method (we can leave it NULL if we want). Third part allows us to register the defined method/s and the module: Py_InitModule3(&#34;foo&#34;, foo_methods, &#34;My first extension module.&#34;); Parsing Parameters The PyArg_ParseTuple function extracts arguments from the PyObject passed as parameter to the current method and follows almost the sscanf syntax to parse parameters (in this case we had &#34;ii&#34; for two integers). You can fin the complete reference here: http://docs.python.org/c-api/arg.html Building and installing To build the module, we have to be in the source directory and execute this command: gcc -shared -I/usr/include/python2.5 foo.c -o foo.so then we&#39;ve to copy the generated module to the python&#39;s modules directory: cp foo.so /usr/lib/python2.5/site-packages/ Testing our module Testing the module is really easy. We&#39;ve to start a python shell or create a python script with the following source code: import foo print foo.add(2, 3) if all is working fine, the printed result should be 5 References http://docs.python.org/extending/extending.html http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html" />
-<meta name="keywords" content="binding, Igalia, maemo, Python">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Writing Python bindings of existing C libraries – (2) – A simple example of binding"/>
-<meta property="og:description" content="Introduction As I promised in the preceding post, I&#39;ll provide a very easy example of a python binding. Let&#39;s suppose we don&#39;t want to use the methods included in Python to sum two integer values and we want to do it in C and then call the add method from a python script. I&#39;ll write the complete source code first and then I&#39;ll explain all the parts of it. Source Code #include &lt;Python.h&gt; static PyObject *foo_add(PyObject *self, PyObject *args) { int a; int b; if (!PyArg_ParseTuple(args, &#34;ii&#34;, &amp;a, &amp;b)) { return NULL; } return Py_BuildValue(&#34;i&#34;, a + b); } static PyMethodDef foo_methods[] = { { &#34;add&#34;, (PyCFunction)foo_add, METH_VARARGS, NULL }, { NULL, NULL, 0, NULL } }; PyMODINIT_FUNC initfoo() { Py_InitModule3(&#34;foo&#34;, foo_methods, &#34;My first extension module.&#34;); } How it works First of all we have to include Python.h in our C file. This allows us to write an extension for Python language. To be able to include this header, we must have the python development packages installed in our system. For example in Debian based distributions we can install them with this command: sudo apt-get install python2.5-dev Every module has at least three parts. In the first part we write methods we want to call from the final python module: in this case we have a method called foo_add where &#34;foo&#34; is the name of the module and &#34;add&#34; the name of the method. Every method is declared as static PyObject. The method does anything particular except calling PyArg_ParseTuple to validate the input (we&#39;ll discuss this later), adding the two passed numbers and returning the result. In the second part we have something like a dictionary, defined as static PyMethodDef and called foo_methods (where &#34;foo&#34; again is the name of the module). For each method we want to expose in our python module, we have to add something like this: {&#34;add&#34;, (PyCFunction)foo_add, METH_VARARGS, NULL} where &#34;add&#34; is the name of the method we want to be visible in our module, (PyCFunction)foo_add is a pointer to our foo_add method, implemented in the C module, METH_VARARGS means that we want to pass some parameters to the function and the last one would be the description of the method (we can leave it NULL if we want). Third part allows us to register the defined method/s and the module: Py_InitModule3(&#34;foo&#34;, foo_methods, &#34;My first extension module.&#34;); Parsing Parameters The PyArg_ParseTuple function extracts arguments from the PyObject passed as parameter to the current method and follows almost the sscanf syntax to parse parameters (in this case we had &#34;ii&#34; for two integers). You can fin the complete reference here: http://docs.python.org/c-api/arg.html Building and installing To build the module, we have to be in the source directory and execute this command: gcc -shared -I/usr/include/python2.5 foo.c -o foo.so then we&#39;ve to copy the generated module to the python&#39;s modules directory: cp foo.so /usr/lib/python2.5/site-packages/ Testing our module Testing the module is really easy. We&#39;ve to start a python shell or create a python script with the following source code: import foo print foo.add(2, 3) if all is working fine, the printed result should be 5 References http://docs.python.org/extending/extending.html http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2009-08-06 15:44:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python"/>
-<meta property="article:tag" content="binding"/>
-<meta property="article:tag" content="Igalia"/>
-<meta property="article:tag" content="maemo"/>
-<meta property="article:tag" content="Python"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Writing Python bindings of existing C libraries – (2) – A simple example of binding</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="Introduction As I promised in the preceding post, I'll provide a very easy example of a python binding. Let's suppose we don't want to use the methods included in Python to sum two integer values and we want to do it in C and then call the add method from a python script. I'll write the complete source code first and then I'll explain all the parts of it. Source Code #include &lt;Python.h&gt; static PyObject *foo_add(PyObject *self, PyObject *args) { int a; int b; if (!PyArg_ParseTuple(args, &quot;ii&quot;, &amp;a, &amp;b)) { return NULL; } return Py_BuildValue(&quot;i&quot;, a + b); } static PyMethodDef foo_methods[] = { { &quot;add&quot;, (PyCFunction)foo_add, METH_VARARGS, NULL }, { NULL, NULL, 0, NULL } }; PyMODINIT_FUNC initfoo() { Py_InitModule3(&quot;foo&quot;, foo_methods, &quot;My first extension module.&quot;); } How it works First of all we have to include Python.h in our C file. This allows us to write an extension for Python language. To be able to include this header, we must have the python development packages installed in our system. For example in Debian based distributions we can install them with this command: sudo apt-get install python2.5-dev Every module has at least three parts. In the first part we write methods we want to call from the final python module: in this case we have a method called foo_add where &quot;foo&quot; is the name of the module and &quot;add&quot; the name of the method. Every method is declared as static PyObject. The method does anything particular except calling PyArg_ParseTuple to validate the input (we'll discuss this later), adding the two passed numbers and returning the result. In the second part we have something like a dictionary, defined as static PyMethodDef and called foo_methods (where &quot;foo&quot; again is the name of the module). For each method we want to expose in our python module, we have to add something like this: {&quot;add&quot;, (PyCFunction)foo_add, METH_VARARGS, NULL} where &quot;add&quot; is the name of the method we want to be visible in our module, (PyCFunction)foo_add is a pointer to our foo_add method, implemented in the C module, METH_VARARGS means that we want to pass some parameters to the function and the last one would be the description of the method (we can leave it NULL if we want). Third part allows us to register the defined method/s and the module: Py_InitModule3(&quot;foo&quot;, foo_methods, &quot;My first extension module.&quot;); Parsing Parameters The PyArg_ParseTuple function extracts arguments from the PyObject passed as parameter to the current method and follows almost the sscanf syntax to parse parameters (in this case we had &quot;ii&quot; for two integers). You can fin the complete reference here: http://docs.python.org/c-api/arg.html Building and installing To build the module, we have to be in the source directory and execute this command: gcc -shared -I/usr/include/python2.5 foo.c -o foo.so then we've to copy the generated module to the python's modules directory: cp foo.so /usr/lib/python2.5/site-packages/ Testing our module Testing the module is really easy. We've to start a python shell or create a python script with the following source code: import foo print foo.add(2, 3) if all is working fine, the printed result should be 5 References http://docs.python.org/extending/extending.html http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html" name="description">
+<meta content="binding, Igalia, maemo, Python" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Writing Python bindings of existing C libraries – (2) – A simple example of binding" property="og:title">
+<meta content="Introduction As I promised in the preceding post, I'll provide a very easy example of a python binding. Let's suppose we don't want to use the methods included in Python to sum two integer values and we want to do it in C and then call the add method from a python script. I'll write the complete source code first and then I'll explain all the parts of it. Source Code #include &lt;Python.h&gt; static PyObject *foo_add(PyObject *self, PyObject *args) { int a; int b; if (!PyArg_ParseTuple(args, &quot;ii&quot;, &amp;a, &amp;b)) { return NULL; } return Py_BuildValue(&quot;i&quot;, a + b); } static PyMethodDef foo_methods[] = { { &quot;add&quot;, (PyCFunction)foo_add, METH_VARARGS, NULL }, { NULL, NULL, 0, NULL } }; PyMODINIT_FUNC initfoo() { Py_InitModule3(&quot;foo&quot;, foo_methods, &quot;My first extension module.&quot;); } How it works First of all we have to include Python.h in our C file. This allows us to write an extension for Python language. To be able to include this header, we must have the python development packages installed in our system. For example in Debian based distributions we can install them with this command: sudo apt-get install python2.5-dev Every module has at least three parts. In the first part we write methods we want to call from the final python module: in this case we have a method called foo_add where &quot;foo&quot; is the name of the module and &quot;add&quot; the name of the method. Every method is declared as static PyObject. The method does anything particular except calling PyArg_ParseTuple to validate the input (we'll discuss this later), adding the two passed numbers and returning the result. In the second part we have something like a dictionary, defined as static PyMethodDef and called foo_methods (where &quot;foo&quot; again is the name of the module). For each method we want to expose in our python module, we have to add something like this: {&quot;add&quot;, (PyCFunction)foo_add, METH_VARARGS, NULL} where &quot;add&quot; is the name of the method we want to be visible in our module, (PyCFunction)foo_add is a pointer to our foo_add method, implemented in the C module, METH_VARARGS means that we want to pass some parameters to the function and the last one would be the description of the method (we can leave it NULL if we want). Third part allows us to register the defined method/s and the module: Py_InitModule3(&quot;foo&quot;, foo_methods, &quot;My first extension module.&quot;); Parsing Parameters The PyArg_ParseTuple function extracts arguments from the PyObject passed as parameter to the current method and follows almost the sscanf syntax to parse parameters (in this case we had &quot;ii&quot; for two integers). You can fin the complete reference here: http://docs.python.org/c-api/arg.html Building and installing To build the module, we have to be in the source directory and execute this command: gcc -shared -I/usr/include/python2.5 foo.c -o foo.so then we've to copy the generated module to the python's modules directory: cp foo.so /usr/lib/python2.5/site-packages/ Testing our module Testing the module is really easy. We've to start a python shell or create a python script with the following source code: import foo print foo.add(2, 3) if all is working fine, the printed result should be 5 References http://docs.python.org/extending/extending.html http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2009-08-06 15:44:00+02:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python" property="article:section">
+<meta content="binding" property="article:tag"/>
+<meta content="Igalia" property="article:tag"/>
+<meta content="maemo" property="article:tag"/>
+<meta content="Python" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Writing Python bindings of existing C libraries – (2) – A simple example of binding</title>
+<link href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2009", "item": "https://www.andreagrandi.it/2009"}, {"@type": "ListItem", "position": 3, "name": "08", "item": "https://www.andreagrandi.it/2009/08"}, {"@type": "ListItem", "position": 4, "name": "06", "item": "https://www.andreagrandi.it/2009/08/06"}, {"@type": "ListItem", "position": 5, "name": "Writing python bindings of existing c libraries a simple example of binding", "item": "https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2009/08/06/writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Writing Python bindings of existing C libraries – (2) – A simple example of binding", "about": "HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python", "datePublished": "2009-08-06 15:44"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</h1>
-    <p>
+<header>
+<h1 id="writing-python-bindings-of-existing-c-libraries-a-simple-example-of-binding">Writing Python bindings of existing C libraries – (2) – A simple example of binding</h1>
+<p>
       Posted on Thu 06 August 2009 in <a href="https://www.andreagrandi.it/category/howto-igalia-linux-maemo-en-programmazione-python.html">HowTo, Igalia, Linux, Maemo (EN), Programmazione, Python</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <h2>Introduction</h2>
+</p>
+</header>
+<div>
+<h2>Introduction</h2>
 <p>As I promised in the preceding post, I'll provide a very easy example of
 a python binding. Let's suppose we don't want to use the methods
 included in Python to sum two integer values and we want to do it in C
@@ -181,25 +137,24 @@ complete source code first and then I'll explain all the parts of it.</p>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">  </span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ii&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">b</span><span class="p">))</span><span class="w">  </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">"ii"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">b</span><span class="p">))</span><span class="w">  </span>
 <span class="w">    </span><span class="p">{</span><span class="w">  </span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w">  </span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">"i"</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w">  </span>
 <span class="p">}</span>
 
 <span class="k">static</span><span class="w"> </span><span class="n">PyMethodDef</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span><span class="w"> </span><span class="n">METH_VARARGS</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">},</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s">"add"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span><span class="w"> </span><span class="n">METH_VARARGS</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">},</span><span class="w">  </span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">}</span><span class="w">  </span>
 <span class="p">};</span>
 
 <span class="n">PyMODINIT_FUNC</span><span class="w"> </span><span class="nf">initfoo</span><span class="p">()</span>
 <span class="p">{</span><span class="w">  </span>
-<span class="w">    </span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">"foo"</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">"My first extension module."</span><span class="p">);</span><span class="w">  </span>
 <span class="p">}</span>
 </code></pre></div>
-
 <h2>How it works</h2>
 <p>First of all we have to include <strong>Python.h</strong> in our C file. This allows
 us to write an extension for Python language. To be able to include this
@@ -208,7 +163,6 @@ system. For example in Debian based distributions we can install them
 with this command:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python2.5-dev
 </code></pre></div>
-
 <p>Every module has at least three parts. In the first part we write
 methods we want to call from the final python module: in this case we
 have a method called <strong>foo_add</strong> where "<em>foo</em>" is the name of the
@@ -220,18 +174,16 @@ adding the two passed numbers and returning the result.</p>
 static <strong>PyMethodDef</strong> and called foo_methods (where "foo" again is the
 name of the module). For each method we want to expose in our python
 module, we have to add something like this:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">"add"</span><span class="p">,</span> <span class="p">(</span><span class="n">PyCFunction</span><span class="p">)</span><span class="n">foo_add</span><span class="p">,</span> <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">NULL</span><span class="p">}</span>
 </code></pre></div>
-
 <p>where "<em>add</em>" is the name of the method we want to be visible in our
 module, <em>(PyCFunction)foo_add</em> is a pointer to our foo_add method,
 implemented in the C module, METH_VARARGS means that we want to pass
 some parameters to the function and the last one would be the
 description of the method (we can leave it NULL if we want).</p>
 <p>Third part allows us to register the defined method/s and the module:</p>
-<div class="highlight"><pre><span></span><code><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My first extension module.&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="n">Py_InitModule3</span><span class="p">(</span><span class="s">"foo"</span><span class="p">,</span><span class="w"> </span><span class="n">foo_methods</span><span class="p">,</span><span class="w"> </span><span class="s">"My first extension module."</span><span class="p">);</span>
 </code></pre></div>
-
 <h3>Parsing Parameters</h3>
 <p>The <strong>PyArg_ParseTuple</strong> function extracts arguments from the
 <strong>PyObject</strong> passed as parameter to the current method and follows
@@ -243,39 +195,31 @@ for two integers). You can fin the complete reference here:
 this command:</p>
 <div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-shared<span class="w"> </span>-I/usr/include/python2.5<span class="w"> </span>foo.c<span class="w"> </span>-o<span class="w"> </span>foo.so
 </code></pre></div>
-
 <p>then we've to copy the generated module to the python's modules
 directory:</p>
 <div class="highlight"><pre><span></span><code>cp<span class="w"> </span>foo.so<span class="w"> </span>/usr/lib/python2.5/site-packages/
 </code></pre></div>
-
 <h2>Testing our module</h2>
 <p>Testing the module is really easy. We've to start a python shell or
 create a python script with the following source code:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">foo</span>
 <span class="nb">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
-
 <p>if all is working fine, the printed result should be <strong>5</strong></p>
 <h2>References</h2>
 <ul>
 <li><a href="http://docs.python.org/extending/extending.html">http://docs.python.org/extending/extending.html</a></li>
 <li><a href="http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html">http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764596543.html</a></li>
 </ul>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/binding.html">binding</a>
-      <a href="https://www.andreagrandi.it/tag/igalia.html">Igalia</a>
-      <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>
-      <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/binding.html">binding</a>
+<a href="https://www.andreagrandi.it/tag/igalia.html">Igalia</a>
+<a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>
+<a href="https://www.andreagrandi.it/tag/python.html">Python</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -291,30 +235,18 @@ create a python script with the following source code:</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -325,13 +257,10 @@ create a python script with the following source code:</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

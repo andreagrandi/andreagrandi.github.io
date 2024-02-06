@@ -1,173 +1,129 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="Introduction Maemo is an opensource development platform for Linux based devices. Actually is the base for the operating system installed on Nokia N770, N800 and the upcoming N810 but it could be adopted, with few changes, even by other similar devices. In particular, this version of Maemo SDK is the only one that allow developers to develop new applications for N810 and to start porting old application to this new platform. The SDK is not only a set of libraries and compiler, it gives you a real environment that emulates the Nokia device, so the developer can write applications, debug them and test them. Both command line and gui application are supported in emulator. Graphical environment is based on a real X server, a window manager and on GTK libraries, with a particular extension called Hildon. With Maemo SDK you can: Test Maemo applications using a normal PC with Linux. Write and debug applications written by you. Port existing applications written for Linux/GTK and verify if they work correctly. Compile and build ARMEL package so you can install them in the device. Requirements These are the minimum requirements to work with Maemo SDK: Intel compatible processor (x86), at least 500 Mhz 256 Mb RAM 2 Gb space on hard disk A Linux distribution (I suggest Debian or Ubuntu) You need the following software packages: Scratchbox: a cross-compiling toolkit that allows you to compile applications for different platform Maemo SDK: you can find it at this address: http://www.maemo.org/downloads/download-sdk.html Xephyr Xserver: Starting from 4.x version, Maemo has a simple installer script, so all you need are these two files: maemo-scratchbox-install_4.0beta.sh maemo-sdk-install_4.0beta.sh Installing Scratchbox The first tool you have to install is Scratchbox. I suggest you to use the script provided but you could choose also to install it manually (in this case please refer to this site for detailed instructions). Before beginning the installation of Scratchbox, you have to become root. First of all set the permission of the script file: chmod +x maemo-scratchbox-install_4.0beta.sh Then run it with these parameters: ./maemo-scratchbox-install_4.0beta.sh -d -u andy80 Please note that -d tells the installer to install from Debian dpkg packages while -u specifies your username (in my case is andy80, you have to change it using your local username). Scratchbox environment will be installed in /scratchbox/ Please note that you&#39;ll have to logout and login again to be able to log into you new Scratchbox environment. To test it you simply have to start Scratchbox from your local user: /scratchbox/login Welcome to Scratchbox, the cross-compilation toolkit! Use &#39;sb-menu&#39; to change your compilation target. See /scratchbox/doc/ for documentation. Installing Maemo SDK When Scratchbox is correctly installed on your system, you can install the Maemo SDK. Please note that you have to do it from normal user (the user you specified in the installation of Scratchbox). Simply run this command and follow instructions: bash maemo-sdk-install_4.0beta.sh At the end you should get this message: Installation was successful! ---------------------------- IMPORTANT! Please read this. You now have the maemo 4.0beta &#39;chinook&#39; installed on your computer. You can now start your maemo SDK session with /scratchbox/login and then select your target with &#39;sb-conf select SDK\_BETA\_ARMEL&#39; for the armel target or &#39;sb-conf select SDK\_BETA\_X86&#39; for the i386 target. If you have any problems with targets&#39; package databases, you can try running &#39;fakeroot apt-get -f install&#39; on your scratchbox target. This command will try to fix any problems with the package database. Happy hacking! Installing Xephyr Xephyr is an X11 server that provides a device screen for the developer so that you can see all the maemo application windows and visuals on your computer. To install it in a Debian based distribution, simply execute this (from root): apt-get install xserver-xephyr Running Xephyr To see if all works fine, you should start Xephyr and Maemo environment. Execute this from outside the Scratchbox environment: Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac -extension Composite Now, from another shell, log into Scratchbox and execute this: [sbox-SDK_BETA_X86:~] &gt; export DISPLAY=:2 [sbox-SDK_BETA_X86:~] &gt; af-sb-init.sh start This should start the Hildon Application Framework inside the Xephyr window. That&#39;s all! References Here you can find a list of website where I took information from to write this guide: http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt http://www.maemo.org" />
-<meta name="keywords" content="maemo, nokia, SDK, tablet">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Installing Maemo SDK 4 Beta"/>
-<meta property="og:description" content="Introduction Maemo is an opensource development platform for Linux based devices. Actually is the base for the operating system installed on Nokia N770, N800 and the upcoming N810 but it could be adopted, with few changes, even by other similar devices. In particular, this version of Maemo SDK is the only one that allow developers to develop new applications for N810 and to start porting old application to this new platform. The SDK is not only a set of libraries and compiler, it gives you a real environment that emulates the Nokia device, so the developer can write applications, debug them and test them. Both command line and gui application are supported in emulator. Graphical environment is based on a real X server, a window manager and on GTK libraries, with a particular extension called Hildon. With Maemo SDK you can: Test Maemo applications using a normal PC with Linux. Write and debug applications written by you. Port existing applications written for Linux/GTK and verify if they work correctly. Compile and build ARMEL package so you can install them in the device. Requirements These are the minimum requirements to work with Maemo SDK: Intel compatible processor (x86), at least 500 Mhz 256 Mb RAM 2 Gb space on hard disk A Linux distribution (I suggest Debian or Ubuntu) You need the following software packages: Scratchbox: a cross-compiling toolkit that allows you to compile applications for different platform Maemo SDK: you can find it at this address: http://www.maemo.org/downloads/download-sdk.html Xephyr Xserver: Starting from 4.x version, Maemo has a simple installer script, so all you need are these two files: maemo-scratchbox-install_4.0beta.sh maemo-sdk-install_4.0beta.sh Installing Scratchbox The first tool you have to install is Scratchbox. I suggest you to use the script provided but you could choose also to install it manually (in this case please refer to this site for detailed instructions). Before beginning the installation of Scratchbox, you have to become root. First of all set the permission of the script file: chmod +x maemo-scratchbox-install_4.0beta.sh Then run it with these parameters: ./maemo-scratchbox-install_4.0beta.sh -d -u andy80 Please note that -d tells the installer to install from Debian dpkg packages while -u specifies your username (in my case is andy80, you have to change it using your local username). Scratchbox environment will be installed in /scratchbox/ Please note that you&#39;ll have to logout and login again to be able to log into you new Scratchbox environment. To test it you simply have to start Scratchbox from your local user: /scratchbox/login Welcome to Scratchbox, the cross-compilation toolkit! Use &#39;sb-menu&#39; to change your compilation target. See /scratchbox/doc/ for documentation. Installing Maemo SDK When Scratchbox is correctly installed on your system, you can install the Maemo SDK. Please note that you have to do it from normal user (the user you specified in the installation of Scratchbox). Simply run this command and follow instructions: bash maemo-sdk-install_4.0beta.sh At the end you should get this message: Installation was successful! ---------------------------- IMPORTANT! Please read this. You now have the maemo 4.0beta &#39;chinook&#39; installed on your computer. You can now start your maemo SDK session with /scratchbox/login and then select your target with &#39;sb-conf select SDK\_BETA\_ARMEL&#39; for the armel target or &#39;sb-conf select SDK\_BETA\_X86&#39; for the i386 target. If you have any problems with targets&#39; package databases, you can try running &#39;fakeroot apt-get -f install&#39; on your scratchbox target. This command will try to fix any problems with the package database. Happy hacking! Installing Xephyr Xephyr is an X11 server that provides a device screen for the developer so that you can see all the maemo application windows and visuals on your computer. To install it in a Debian based distribution, simply execute this (from root): apt-get install xserver-xephyr Running Xephyr To see if all works fine, you should start Xephyr and Maemo environment. Execute this from outside the Scratchbox environment: Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac -extension Composite Now, from another shell, log into Scratchbox and execute this: [sbox-SDK_BETA_X86:~] &gt; export DISPLAY=:2 [sbox-SDK_BETA_X86:~] &gt; af-sb-init.sh start This should start the Hildon Application Framework inside the Xephyr window. That&#39;s all! References Here you can find a list of website where I took information from to write this guide: http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt http://www.maemo.org"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2007-10-25 16:24:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="HowTo, Linux, Maemo (EN), Programmazione"/>
-<meta property="article:tag" content="maemo"/>
-<meta property="article:tag" content="nokia"/>
-<meta property="article:tag" content="SDK"/>
-<meta property="article:tag" content="tablet"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Installing Maemo SDK 4 Beta</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="Introduction Maemo is an opensource development platform for Linux based devices. Actually is the base for the operating system installed on Nokia N770, N800 and the upcoming N810 but it could be adopted, with few changes, even by other similar devices. In particular, this version of Maemo SDK is the only one that allow developers to develop new applications for N810 and to start porting old application to this new platform. The SDK is not only a set of libraries and compiler, it gives you a real environment that emulates the Nokia device, so the developer can write applications, debug them and test them. Both command line and gui application are supported in emulator. Graphical environment is based on a real X server, a window manager and on GTK libraries, with a particular extension called Hildon. With Maemo SDK you can: Test Maemo applications using a normal PC with Linux. Write and debug applications written by you. Port existing applications written for Linux/GTK and verify if they work correctly. Compile and build ARMEL package so you can install them in the device. Requirements These are the minimum requirements to work with Maemo SDK: Intel compatible processor (x86), at least 500 Mhz 256 Mb RAM 2 Gb space on hard disk A Linux distribution (I suggest Debian or Ubuntu) You need the following software packages: Scratchbox: a cross-compiling toolkit that allows you to compile applications for different platform Maemo SDK: you can find it at this address: http://www.maemo.org/downloads/download-sdk.html Xephyr Xserver: Starting from 4.x version, Maemo has a simple installer script, so all you need are these two files: maemo-scratchbox-install_4.0beta.sh maemo-sdk-install_4.0beta.sh Installing Scratchbox The first tool you have to install is Scratchbox. I suggest you to use the script provided but you could choose also to install it manually (in this case please refer to this site for detailed instructions). Before beginning the installation of Scratchbox, you have to become root. First of all set the permission of the script file: chmod +x maemo-scratchbox-install_4.0beta.sh Then run it with these parameters: ./maemo-scratchbox-install_4.0beta.sh -d -u andy80 Please note that -d tells the installer to install from Debian dpkg packages while -u specifies your username (in my case is andy80, you have to change it using your local username). Scratchbox environment will be installed in /scratchbox/ Please note that you'll have to logout and login again to be able to log into you new Scratchbox environment. To test it you simply have to start Scratchbox from your local user: /scratchbox/login Welcome to Scratchbox, the cross-compilation toolkit! Use 'sb-menu' to change your compilation target. See /scratchbox/doc/ for documentation. Installing Maemo SDK When Scratchbox is correctly installed on your system, you can install the Maemo SDK. Please note that you have to do it from normal user (the user you specified in the installation of Scratchbox). Simply run this command and follow instructions: bash maemo-sdk-install_4.0beta.sh At the end you should get this message: Installation was successful! ---------------------------- IMPORTANT! Please read this. You now have the maemo 4.0beta 'chinook' installed on your computer. You can now start your maemo SDK session with /scratchbox/login and then select your target with 'sb-conf select SDK\_BETA\_ARMEL' for the armel target or 'sb-conf select SDK\_BETA\_X86' for the i386 target. If you have any problems with targets' package databases, you can try running 'fakeroot apt-get -f install' on your scratchbox target. This command will try to fix any problems with the package database. Happy hacking! Installing Xephyr Xephyr is an X11 server that provides a device screen for the developer so that you can see all the maemo application windows and visuals on your computer. To install it in a Debian based distribution, simply execute this (from root): apt-get install xserver-xephyr Running Xephyr To see if all works fine, you should start Xephyr and Maemo environment. Execute this from outside the Scratchbox environment: Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac -extension Composite Now, from another shell, log into Scratchbox and execute this: [sbox-SDK_BETA_X86:~] &gt; export DISPLAY=:2 [sbox-SDK_BETA_X86:~] &gt; af-sb-init.sh start This should start the Hildon Application Framework inside the Xephyr window. That's all! References Here you can find a list of website where I took information from to write this guide: http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt http://www.maemo.org" name="description">
+<meta content="maemo, nokia, SDK, tablet" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Installing Maemo SDK 4 Beta" property="og:title">
+<meta content="Introduction Maemo is an opensource development platform for Linux based devices. Actually is the base for the operating system installed on Nokia N770, N800 and the upcoming N810 but it could be adopted, with few changes, even by other similar devices. In particular, this version of Maemo SDK is the only one that allow developers to develop new applications for N810 and to start porting old application to this new platform. The SDK is not only a set of libraries and compiler, it gives you a real environment that emulates the Nokia device, so the developer can write applications, debug them and test them. Both command line and gui application are supported in emulator. Graphical environment is based on a real X server, a window manager and on GTK libraries, with a particular extension called Hildon. With Maemo SDK you can: Test Maemo applications using a normal PC with Linux. Write and debug applications written by you. Port existing applications written for Linux/GTK and verify if they work correctly. Compile and build ARMEL package so you can install them in the device. Requirements These are the minimum requirements to work with Maemo SDK: Intel compatible processor (x86), at least 500 Mhz 256 Mb RAM 2 Gb space on hard disk A Linux distribution (I suggest Debian or Ubuntu) You need the following software packages: Scratchbox: a cross-compiling toolkit that allows you to compile applications for different platform Maemo SDK: you can find it at this address: http://www.maemo.org/downloads/download-sdk.html Xephyr Xserver: Starting from 4.x version, Maemo has a simple installer script, so all you need are these two files: maemo-scratchbox-install_4.0beta.sh maemo-sdk-install_4.0beta.sh Installing Scratchbox The first tool you have to install is Scratchbox. I suggest you to use the script provided but you could choose also to install it manually (in this case please refer to this site for detailed instructions). Before beginning the installation of Scratchbox, you have to become root. First of all set the permission of the script file: chmod +x maemo-scratchbox-install_4.0beta.sh Then run it with these parameters: ./maemo-scratchbox-install_4.0beta.sh -d -u andy80 Please note that -d tells the installer to install from Debian dpkg packages while -u specifies your username (in my case is andy80, you have to change it using your local username). Scratchbox environment will be installed in /scratchbox/ Please note that you'll have to logout and login again to be able to log into you new Scratchbox environment. To test it you simply have to start Scratchbox from your local user: /scratchbox/login Welcome to Scratchbox, the cross-compilation toolkit! Use 'sb-menu' to change your compilation target. See /scratchbox/doc/ for documentation. Installing Maemo SDK When Scratchbox is correctly installed on your system, you can install the Maemo SDK. Please note that you have to do it from normal user (the user you specified in the installation of Scratchbox). Simply run this command and follow instructions: bash maemo-sdk-install_4.0beta.sh At the end you should get this message: Installation was successful! ---------------------------- IMPORTANT! Please read this. You now have the maemo 4.0beta 'chinook' installed on your computer. You can now start your maemo SDK session with /scratchbox/login and then select your target with 'sb-conf select SDK\_BETA\_ARMEL' for the armel target or 'sb-conf select SDK\_BETA\_X86' for the i386 target. If you have any problems with targets' package databases, you can try running 'fakeroot apt-get -f install' on your scratchbox target. This command will try to fix any problems with the package database. Happy hacking! Installing Xephyr Xephyr is an X11 server that provides a device screen for the developer so that you can see all the maemo application windows and visuals on your computer. To install it in a Debian based distribution, simply execute this (from root): apt-get install xserver-xephyr Running Xephyr To see if all works fine, you should start Xephyr and Maemo environment. Execute this from outside the Scratchbox environment: Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac -extension Composite Now, from another shell, log into Scratchbox and execute this: [sbox-SDK_BETA_X86:~] &gt; export DISPLAY=:2 [sbox-SDK_BETA_X86:~] &gt; af-sb-init.sh start This should start the Hildon Application Framework inside the Xephyr window. That's all! References Here you can find a list of website where I took information from to write this guide: http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt http://www.maemo.org" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2007-10-25 16:24:00+02:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="HowTo, Linux, Maemo (EN), Programmazione" property="article:section">
+<meta content="maemo" property="article:tag"/>
+<meta content="nokia" property="article:tag"/>
+<meta content="SDK" property="article:tag"/>
+<meta content="tablet" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Installing Maemo SDK 4 Beta</title>
+<link href="https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2007", "item": "https://www.andreagrandi.it/2007"}, {"@type": "ListItem", "position": 3, "name": "10", "item": "https://www.andreagrandi.it/2007/10"}, {"@type": "ListItem", "position": 4, "name": "25", "item": "https://www.andreagrandi.it/2007/10/25"}, {"@type": "ListItem", "position": 5, "name": "Installing maemo sdk 4 beta", "item": "https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2007/10/25/installing-maemo-sdk-4-beta/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Installing Maemo SDK 4 Beta", "about": "HowTo, Linux, Maemo (EN), Programmazione", "datePublished": "2007-10-25 16:24"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="installing-maemo-sdk-4-beta">Installing Maemo SDK 4 Beta</h1>
-    <p>
+<header>
+<h1 id="installing-maemo-sdk-4-beta">Installing Maemo SDK 4 Beta</h1>
+<p>
       Posted on Thu 25 October 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <h2>Introduction</h2>
+</p>
+</header>
+<div>
+<h2>Introduction</h2>
 <p><strong>Maemo</strong> is an opensource development platform for <strong>Linux</strong> based
 devices. Actually is the base for the operating system installed on
 <strong>Nokia</strong>
@@ -224,11 +180,9 @@ use the script provided but you could choose also to install it manually
 <p>First of all set the permission of the script file:</p>
 <div class="highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>maemo-scratchbox-install_4.0beta.sh
 </code></pre></div>
-
 <p>Then run it with these parameters:</p>
 <div class="highlight"><pre><span></span><code>./maemo-scratchbox-install_4.0beta.sh<span class="w"> </span>-d<span class="w"> </span>-u<span class="w"> </span>andy80
 </code></pre></div>
-
 <p>Please note that <strong>-d</strong> tells the installer to install from Debian dpkg
 packages while <strong>-u</strong> specifies your username (in my case is andy80, you
 have to change it using your local username).</p>
@@ -240,10 +194,9 @@ Scratchbox from your local user:</p>
 
 Welcome<span class="w"> </span>to<span class="w"> </span>Scratchbox,<span class="w"> </span>the<span class="w"> </span>cross-compilation<span class="w"> </span>toolkit!
 
-Use<span class="w"> </span><span class="s1">&#39;sb-menu&#39;</span><span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>your<span class="w"> </span>compilation<span class="w"> </span>target.<span class="w">  </span>
+Use<span class="w"> </span><span class="s1">'sb-menu'</span><span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>your<span class="w"> </span>compilation<span class="w"> </span>target.<span class="w">  </span>
 See<span class="w"> </span>/scratchbox/doc/<span class="w"> </span><span class="k">for</span><span class="w"> </span>documentation.
 </code></pre></div>
-
 <h2>Installing Maemo SDK</h2>
 <p>When Scratchbox is correctly installed on your system, you can install
 the <strong>Maemo SDK</strong>. Please note that you have to do it from <strong>normal
@@ -251,24 +204,22 @@ user</strong> (the user you specified in the installation of Scratchbox).</p>
 <p>Simply run this command and follow instructions:</p>
 <div class="highlight"><pre><span></span><code>bash<span class="w"> </span>maemo-sdk-install_4.0beta.sh
 </code></pre></div>
-
 <p>At the end you should get this message:</p>
 <div class="highlight"><pre><span></span><code>Installation<span class="w"> </span>was<span class="w"> </span>successful!<span class="w"> </span>----------------------------
 
 IMPORTANT!<span class="w"> </span>Please<span class="w"> </span><span class="nb">read</span><span class="w"> </span>this.
 
-You<span class="w"> </span>now<span class="w"> </span>have<span class="w"> </span>the<span class="w"> </span>maemo<span class="w"> </span><span class="m">4</span>.0beta<span class="w"> </span><span class="s1">&#39;chinook&#39;</span><span class="w"> </span>installed<span class="w"> </span>on<span class="w"> </span>your<span class="w"> </span>computer.<span class="w">  </span>
+You<span class="w"> </span>now<span class="w"> </span>have<span class="w"> </span>the<span class="w"> </span>maemo<span class="w"> </span><span class="m">4</span>.0beta<span class="w"> </span><span class="s1">'chinook'</span><span class="w"> </span>installed<span class="w"> </span>on<span class="w"> </span>your<span class="w"> </span>computer.<span class="w">  </span>
 You<span class="w"> </span>can<span class="w"> </span>now<span class="w"> </span>start<span class="w"> </span>your<span class="w"> </span>maemo<span class="w"> </span>SDK<span class="w"> </span>session<span class="w"> </span>with<span class="w"> </span>/scratchbox/login<span class="w"> </span>and<span class="w">  </span>
-<span class="k">then</span><span class="w"> </span><span class="k">select</span><span class="w"> </span>your<span class="w"> </span>target<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;sb-conf select SDK\_BETA\_ARMEL&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w">  </span>
-armel<span class="w"> </span>target<span class="w"> </span>or<span class="w"> </span><span class="s1">&#39;sb-conf select SDK\_BETA\_X86&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>i386<span class="w"> </span>target.
+<span class="k">then</span><span class="w"> </span><span class="k">select</span><span class="w"> </span>your<span class="w"> </span>target<span class="w"> </span>with<span class="w"> </span><span class="s1">'sb-conf select SDK\_BETA\_ARMEL'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w">  </span>
+armel<span class="w"> </span>target<span class="w"> </span>or<span class="w"> </span><span class="s1">'sb-conf select SDK\_BETA\_X86'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>i386<span class="w"> </span>target.
 
-If<span class="w"> </span>you<span class="w"> </span>have<span class="w"> </span>any<span class="w"> </span>problems<span class="w"> </span>with<span class="w"> </span>targets<span class="s1">&#39; package databases, you can try  </span>
-<span class="s1">running &#39;</span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>-f<span class="w"> </span>install<span class="err">&#39;</span><span class="w"> </span>on<span class="w"> </span>your<span class="w"> </span>scratchbox<span class="w"> </span>target.<span class="w">  </span>
+If<span class="w"> </span>you<span class="w"> </span>have<span class="w"> </span>any<span class="w"> </span>problems<span class="w"> </span>with<span class="w"> </span>targets<span class="s1">' package databases, you can try  </span>
+<span class="s1">running '</span>fakeroot<span class="w"> </span>apt-get<span class="w"> </span>-f<span class="w"> </span>install<span class="err">'</span><span class="w"> </span>on<span class="w"> </span>your<span class="w"> </span>scratchbox<span class="w"> </span>target.<span class="w">  </span>
 This<span class="w"> </span><span class="nb">command</span><span class="w"> </span>will<span class="w"> </span>try<span class="w"> </span>to<span class="w"> </span>fix<span class="w"> </span>any<span class="w"> </span>problems<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>package<span class="w"> </span>database.
 
 Happy<span class="w"> </span>hacking!
 </code></pre></div>
-
 <h2>Installing Xephyr</h2>
 <p>Xephyr is an X11 server that provides a device screen for the developer
 so that you can see all the maemo application windows and visuals on
@@ -277,18 +228,15 @@ your computer.</p>
 root):</p>
 <div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>xserver-xephyr
 </code></pre></div>
-
 <h2>Running Xephyr</h2>
 <p>To see if all works fine, you should start Xephyr and Maemo environment.
 Execute this from outside the Scratchbox environment:</p>
 <div class="highlight"><pre><span></span><code>Xephyr<span class="w"> </span>:2<span class="w"> </span>-host-cursor<span class="w"> </span>-screen<span class="w"> </span>800x480x16<span class="w"> </span>-dpi<span class="w"> </span><span class="m">96</span><span class="w"> </span>-ac<span class="w"> </span>-extension<span class="w"> </span>Composite
 </code></pre></div>
-
 <p>Now, from another shell, log into Scratchbox and execute this:</p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">DISPLAY</span><span class="o">=</span>:2<span class="w"> </span>
 <span class="o">[</span>sbox-SDK_BETA_X86:~<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>af-sb-init.sh<span class="w"> </span>start
 </code></pre></div>
-
 <p>This should start the Hildon Application Framework inside the Xephyr
 window. That's all!</p>
 <h2>References</h2>
@@ -298,20 +246,15 @@ write this guide:</p>
 <li><a href="http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt">http://tabletsdev.maemo.org/unstable/chinook-beta/INSTALL.txt</a></li>
 <li><a href="http://www.maemo.org/" title="http://www.maemo.org">http://www.maemo.org</a></li>
 </ul>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>
-      <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>
-      <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
-      <a href="https://www.andreagrandi.it/tag/tablet.html">tablet</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>
+<a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>
+<a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
+<a href="https://www.andreagrandi.it/tag/tablet.html">tablet</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -327,30 +270,18 @@ write this guide:</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -361,13 +292,10 @@ write this guide:</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

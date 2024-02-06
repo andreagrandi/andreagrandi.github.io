@@ -1,175 +1,131 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="QtCreator is a very flexible IDE and can really be adapted for a lot of things. I usually use it to develop mobile applications for Nokia N9 and BlackBerry 10, but it can be used for more generic tasks. In my case I wanted to be able to develop a Qt application using my desktop PC, deploy it and run on a remote (actually it&#39;s on the same desk) Linux machine running Xubuntu. Doing this is quite easy and you don&#39;t need any specific plugin on QtCreator, but be sure to have at least version 2.6.x. Other than QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my development machine and Xubuntu 12.10 for the remote netbook) and an SSH account on the remote PC. Add the remote device to QtCreator To add the remote Linux device on QtCreator, use the Tools-&gt;Options menu and click on &#34;Devices&#34; item. At this point click on &#34;Add&#34; button and fill the fields using values similar to the screenshot. In particular specify a name for the device, the IP of the remote machine and a username and password that must already exist (I just created the user &#34;andrea&#34; on the Xubuntu machine and used the same password). I also had to set the timeout to 20 seconds, because I had some connection problems and the connection kept dropping after 10 seconds trying. To verify if everything is working fine, just click on Test button. Add a specific Qt version To write your application you may need a specific Qt version that is different from the one distributed by your Linux distribution. There&#39;s no problem, QtCreator let you add different Qt versions without any conflict. In my case I installed the Qt5 version distributed by Canonical Qt5 Edgers Team: https://launchpad.net/~canonical-qt5-edgers Once it&#39;s installed, just click on &#34;Add&#34; button and select the qmake specific to the version you want to add (in my case it was in /opt/qt5/bin/qmake ). Add a Qt Kit QtCreator permits to add new Kit (development configurations) and these kits are used during project creation to specify what you want to target. In my example I added a new kit choosing an appropriate name &#34;Qt5 Ubuntu&#34;, the device type, the actual device previously configured and finally the Qt version that we added before. With a kit I have a complete &#34;toolchain&#34; that allow me to write applications for a particular device, with a specific Qt version. Putting the pieces together At this point you just have to create a new &#34;Qt Quick 2&#34; application, and select the new kit you just created instead of the &#34;Desktop&#34; one. Please note that there is a little problem that I haven&#39;t fixed yet (but I&#39;m working on it): if you create, for example, a project named &#34;QtTest1&#34; it will be deployed to the folder /opt/QtTest1/ on the remote machine. By default your user doesn&#39;t have read+write permissions for that folder so I manualy created the folder and I gave a chmod 777 on it, just for testing. There are two possible ways to fix this: you could create a specific user that has read+write permissions on /opt/ or you could modify the deployment configuration to have the app deployed to the user /home (I will investigate on this possibility and I will write something in one of the next posts). Final thoughts What all of this could be useful for? Well, do 2+2 and you&#39;ll easily guess ;) In the next weeks I will post more specific informations and I will update everyone with my progresses. Any comment is welcome! If you want to contribute to this you&#39;re welcome too of course." />
-<meta name="keywords" content="deploy, Linux, Qt, QtCreator, SDK, Ubuntu">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Using QtCreator to deploy and run a Qt application to a remote Linux device"/>
-<meta property="og:description" content="QtCreator is a very flexible IDE and can really be adapted for a lot of things. I usually use it to develop mobile applications for Nokia N9 and BlackBerry 10, but it can be used for more generic tasks. In my case I wanted to be able to develop a Qt application using my desktop PC, deploy it and run on a remote (actually it&#39;s on the same desk) Linux machine running Xubuntu. Doing this is quite easy and you don&#39;t need any specific plugin on QtCreator, but be sure to have at least version 2.6.x. Other than QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my development machine and Xubuntu 12.10 for the remote netbook) and an SSH account on the remote PC. Add the remote device to QtCreator To add the remote Linux device on QtCreator, use the Tools-&gt;Options menu and click on &#34;Devices&#34; item. At this point click on &#34;Add&#34; button and fill the fields using values similar to the screenshot. In particular specify a name for the device, the IP of the remote machine and a username and password that must already exist (I just created the user &#34;andrea&#34; on the Xubuntu machine and used the same password). I also had to set the timeout to 20 seconds, because I had some connection problems and the connection kept dropping after 10 seconds trying. To verify if everything is working fine, just click on Test button. Add a specific Qt version To write your application you may need a specific Qt version that is different from the one distributed by your Linux distribution. There&#39;s no problem, QtCreator let you add different Qt versions without any conflict. In my case I installed the Qt5 version distributed by Canonical Qt5 Edgers Team: https://launchpad.net/~canonical-qt5-edgers Once it&#39;s installed, just click on &#34;Add&#34; button and select the qmake specific to the version you want to add (in my case it was in /opt/qt5/bin/qmake ). Add a Qt Kit QtCreator permits to add new Kit (development configurations) and these kits are used during project creation to specify what you want to target. In my example I added a new kit choosing an appropriate name &#34;Qt5 Ubuntu&#34;, the device type, the actual device previously configured and finally the Qt version that we added before. With a kit I have a complete &#34;toolchain&#34; that allow me to write applications for a particular device, with a specific Qt version. Putting the pieces together At this point you just have to create a new &#34;Qt Quick 2&#34; application, and select the new kit you just created instead of the &#34;Desktop&#34; one. Please note that there is a little problem that I haven&#39;t fixed yet (but I&#39;m working on it): if you create, for example, a project named &#34;QtTest1&#34; it will be deployed to the folder /opt/QtTest1/ on the remote machine. By default your user doesn&#39;t have read+write permissions for that folder so I manualy created the folder and I gave a chmod 777 on it, just for testing. There are two possible ways to fix this: you could create a specific user that has read+write permissions on /opt/ or you could modify the deployment configuration to have the app deployed to the user /home (I will investigate on this possibility and I will write something in one of the next posts). Final thoughts What all of this could be useful for? Well, do 2+2 and you&#39;ll easily guess ;) In the next weeks I will post more specific informations and I will update everyone with my progresses. Any comment is welcome! If you want to contribute to this you&#39;re welcome too of course."/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2013-01-17 18:49:00+01:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="HowTo"/>
-<meta property="article:tag" content="deploy"/>
-<meta property="article:tag" content="Linux"/>
-<meta property="article:tag" content="Qt"/>
-<meta property="article:tag" content="QtCreator"/>
-<meta property="article:tag" content="SDK"/>
-<meta property="article:tag" content="Ubuntu"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Using QtCreator to deploy and run a Qt application to a remote Linux device</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="QtCreator is a very flexible IDE and can really be adapted for a lot of things. I usually use it to develop mobile applications for Nokia N9 and BlackBerry 10, but it can be used for more generic tasks. In my case I wanted to be able to develop a Qt application using my desktop PC, deploy it and run on a remote (actually it's on the same desk) Linux machine running Xubuntu. Doing this is quite easy and you don't need any specific plugin on QtCreator, but be sure to have at least version 2.6.x. Other than QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my development machine and Xubuntu 12.10 for the remote netbook) and an SSH account on the remote PC. Add the remote device to QtCreator To add the remote Linux device on QtCreator, use the Tools-&gt;Options menu and click on &quot;Devices&quot; item. At this point click on &quot;Add&quot; button and fill the fields using values similar to the screenshot. In particular specify a name for the device, the IP of the remote machine and a username and password that must already exist (I just created the user &quot;andrea&quot; on the Xubuntu machine and used the same password). I also had to set the timeout to 20 seconds, because I had some connection problems and the connection kept dropping after 10 seconds trying. To verify if everything is working fine, just click on Test button. Add a specific Qt version To write your application you may need a specific Qt version that is different from the one distributed by your Linux distribution. There's no problem, QtCreator let you add different Qt versions without any conflict. In my case I installed the Qt5 version distributed by Canonical Qt5 Edgers Team: https://launchpad.net/~canonical-qt5-edgers Once it's installed, just click on &quot;Add&quot; button and select the qmake specific to the version you want to add (in my case it was in /opt/qt5/bin/qmake ). Add a Qt Kit QtCreator permits to add new Kit (development configurations) and these kits are used during project creation to specify what you want to target. In my example I added a new kit choosing an appropriate name &quot;Qt5 Ubuntu&quot;, the device type, the actual device previously configured and finally the Qt version that we added before. With a kit I have a complete &quot;toolchain&quot; that allow me to write applications for a particular device, with a specific Qt version. Putting the pieces together At this point you just have to create a new &quot;Qt Quick 2&quot; application, and select the new kit you just created instead of the &quot;Desktop&quot; one. Please note that there is a little problem that I haven't fixed yet (but I'm working on it): if you create, for example, a project named &quot;QtTest1&quot; it will be deployed to the folder /opt/QtTest1/ on the remote machine. By default your user doesn't have read+write permissions for that folder so I manualy created the folder and I gave a chmod 777 on it, just for testing. There are two possible ways to fix this: you could create a specific user that has read+write permissions on /opt/ or you could modify the deployment configuration to have the app deployed to the user /home (I will investigate on this possibility and I will write something in one of the next posts). Final thoughts What all of this could be useful for? Well, do 2+2 and you'll easily guess ;) In the next weeks I will post more specific informations and I will update everyone with my progresses. Any comment is welcome! If you want to contribute to this you're welcome too of course." name="description">
+<meta content="deploy, Linux, Qt, QtCreator, SDK, Ubuntu" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Using QtCreator to deploy and run a Qt application to a remote Linux device" property="og:title">
+<meta content="QtCreator is a very flexible IDE and can really be adapted for a lot of things. I usually use it to develop mobile applications for Nokia N9 and BlackBerry 10, but it can be used for more generic tasks. In my case I wanted to be able to develop a Qt application using my desktop PC, deploy it and run on a remote (actually it's on the same desk) Linux machine running Xubuntu. Doing this is quite easy and you don't need any specific plugin on QtCreator, but be sure to have at least version 2.6.x. Other than QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my development machine and Xubuntu 12.10 for the remote netbook) and an SSH account on the remote PC. Add the remote device to QtCreator To add the remote Linux device on QtCreator, use the Tools-&gt;Options menu and click on &quot;Devices&quot; item. At this point click on &quot;Add&quot; button and fill the fields using values similar to the screenshot. In particular specify a name for the device, the IP of the remote machine and a username and password that must already exist (I just created the user &quot;andrea&quot; on the Xubuntu machine and used the same password). I also had to set the timeout to 20 seconds, because I had some connection problems and the connection kept dropping after 10 seconds trying. To verify if everything is working fine, just click on Test button. Add a specific Qt version To write your application you may need a specific Qt version that is different from the one distributed by your Linux distribution. There's no problem, QtCreator let you add different Qt versions without any conflict. In my case I installed the Qt5 version distributed by Canonical Qt5 Edgers Team: https://launchpad.net/~canonical-qt5-edgers Once it's installed, just click on &quot;Add&quot; button and select the qmake specific to the version you want to add (in my case it was in /opt/qt5/bin/qmake ). Add a Qt Kit QtCreator permits to add new Kit (development configurations) and these kits are used during project creation to specify what you want to target. In my example I added a new kit choosing an appropriate name &quot;Qt5 Ubuntu&quot;, the device type, the actual device previously configured and finally the Qt version that we added before. With a kit I have a complete &quot;toolchain&quot; that allow me to write applications for a particular device, with a specific Qt version. Putting the pieces together At this point you just have to create a new &quot;Qt Quick 2&quot; application, and select the new kit you just created instead of the &quot;Desktop&quot; one. Please note that there is a little problem that I haven't fixed yet (but I'm working on it): if you create, for example, a project named &quot;QtTest1&quot; it will be deployed to the folder /opt/QtTest1/ on the remote machine. By default your user doesn't have read+write permissions for that folder so I manualy created the folder and I gave a chmod 777 on it, just for testing. There are two possible ways to fix this: you could create a specific user that has read+write permissions on /opt/ or you could modify the deployment configuration to have the app deployed to the user /home (I will investigate on this possibility and I will write something in one of the next posts). Final thoughts What all of this could be useful for? Well, do 2+2 and you'll easily guess ;) In the next weeks I will post more specific informations and I will update everyone with my progresses. Any comment is welcome! If you want to contribute to this you're welcome too of course." property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2013-01-17 18:49:00+01:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="HowTo" property="article:section">
+<meta content="deploy" property="article:tag"/>
+<meta content="Linux" property="article:tag"/>
+<meta content="Qt" property="article:tag"/>
+<meta content="QtCreator" property="article:tag"/>
+<meta content="SDK" property="article:tag"/>
+<meta content="Ubuntu" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Using QtCreator to deploy and run a Qt application to a remote Linux device</title>
+<link href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2013", "item": "https://www.andreagrandi.it/2013"}, {"@type": "ListItem", "position": 3, "name": "01", "item": "https://www.andreagrandi.it/2013/01"}, {"@type": "ListItem", "position": 4, "name": "17", "item": "https://www.andreagrandi.it/2013/01/17"}, {"@type": "ListItem", "position": 5, "name": "Using qtcreator to deploy and run a qt application to a remote linux device", "item": "https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2013/01/17/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Using QtCreator to deploy and run a Qt application to a remote Linux device", "about": "HowTo", "datePublished": "2013-01-17 18:49"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device">Using QtCreator to deploy and run a Qt application to a remote Linux device</h1>
-    <p>
+<header>
+<h1 id="using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device">Using QtCreator to deploy and run a Qt application to a remote Linux device</h1>
+<p>
       Posted on Thu 17 January 2013 in <a href="https://www.andreagrandi.it/category/howto.html">HowTo</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>QtCreator is a very flexible IDE and can really be adapted for a lot of
+</p>
+</header>
+<div>
+<p>QtCreator is a very flexible IDE and can really be adapted for a lot of
 things. I usually use it to develop mobile applications for Nokia N9 and
 BlackBerry 10, but it can be used for more generic tasks. In my case I
 wanted to be able to develop a Qt application using my desktop PC,
@@ -181,7 +137,7 @@ QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
 development machine and Xubuntu 12.10 for the remote netbook) and an SSH
 account on the remote PC.</p>
 <h2>Add the remote device to QtCreator</h2>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png"><img alt="QtCreatorDevice" src="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png" width="100%"></a></p>
+<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png"><img alt="QtCreatorDevice" src="https://www.andreagrandi.it/images/2013/01/QtCreatorDevice.png" width="100%"/></a></p>
 <p>To add the remote Linux device on QtCreator, use the
 <strong>Tools-&gt;Options</strong> menu and click on "<strong>Devices</strong>" item. At this
 point click on "<strong>Add</strong>" button and fill the fields using values similar
@@ -193,18 +149,18 @@ to 20 seconds, because I had some connection problems and the connection
 kept dropping after 10 seconds trying. To verify if everything is
 working fine, just click on <strong>Test</strong> button.</p>
 <h2>Add a specific Qt version</h2>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png"><img alt="QtCreatorQtVersion" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png" width="100%"></a></p>
+<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png"><img alt="QtCreatorQtVersion" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtVersion.png" width="100%"/></a></p>
 <p>To write your application you may need a specific Qt version that is
 different from the one distributed by your Linux distribution. There's
 no problem, QtCreator let you add different Qt versions without any
 conflict. In my case I installed the Qt5 version distributed by
 <strong>Canonical Qt5 Edgers
-Team</strong>: <a href="https://launchpad.net/~canonical-qt5-edgers">https://launchpad.net/~canonical-qt5-edgers</a><br>
+Team</strong>: <a href="https://launchpad.net/~canonical-qt5-edgers">https://launchpad.net/~canonical-qt5-edgers</a><br/>
 Once it's installed, just click on "<strong>Add</strong>" button and select the qmake
 specific to the version you want to add (in my case it was in
 <strong>/opt/qt5/bin/qmake</strong> ).</p>
 <h2>Add a Qt Kit</h2>
-<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png"><img alt="QtCreatorQtKits" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png" width="100%"></a></p>
+<p><a href="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png"><img alt="QtCreatorQtKits" src="https://www.andreagrandi.it/images/2013/01/QtCreatorQtKits.png" width="100%"/></a></p>
 <p>QtCreator permits to add new <strong>Kit</strong> (development configurations) and
 these kits are used during project creation to specify what you want to
 target. In my example I added a new kit choosing an appropriate <strong>name</strong>
@@ -230,22 +186,17 @@ and I will write something in one of the next posts).</p>
 guess ;) In the next weeks I will post more specific informations and I
 will update everyone with my progresses. Any comment is welcome! If you
 want to contribute to this you're welcome too of course.</p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/deploy.html">deploy</a>
-      <a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
-      <a href="https://www.andreagrandi.it/tag/qt.html">Qt</a>
-      <a href="https://www.andreagrandi.it/tag/qtcreator.html">QtCreator</a>
-      <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
-      <a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/deploy.html">deploy</a>
+<a href="https://www.andreagrandi.it/tag/linux.html">Linux</a>
+<a href="https://www.andreagrandi.it/tag/qt.html">Qt</a>
+<a href="https://www.andreagrandi.it/tag/qtcreator.html">QtCreator</a>
+<a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
+<a href="https://www.andreagrandi.it/tag/ubuntu.html">Ubuntu</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -261,30 +212,18 @@ want to contribute to this you're welcome too of course.</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -295,13 +234,10 @@ want to contribute to this you're welcome too of course.</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

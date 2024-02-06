@@ -1,175 +1,131 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API Add Authentication and POST methods Handling details and changes to existing data Testing the API Switching from Sqlite to PostgreSQL Hosting the API on Heroku Add an Image field and save images to S3 Create the basic structure for the API For this tutorial I will assume you have correctly installed at least Python (I will use Python 2.7.x), virtualenv and virtualenvwrapper on your system and I will explain how to create everything else step by step. Note: at the time of writing, the tutorial has been based on Django 1.10.1 and Django Rest Framework 3.4.7 Creating the main project structure mkdir drf-tutorial mkvirtualenv drf-tutorial cd drf-tutorial pip install django djangorestframework django-admin.py startproject drftutorial . cd drftutorial django-admin.py startapp catalog Data Model We will create the API for a generic products catalog, using a very simple structure (to keep things simple). Edit the file catalog/models.py adding these lines: from __future__ import unicode_literals from django.db import models class Product(models.Model): name = models.CharField(max_length=255) description = models.TextField() price = models.DecimalField(decimal_places=2, max_digits=20) after creating the model, we need to add &#39;catalog&#39; application to INSTALLED_APPS. Edit settings.py and add the app at the end of the list: INSTALLED_APPS = [ &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;catalog&#39;, ] at this point the Django application will be recognised by the project and we can create and apply the schema migration: (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py makemigrations Migrations for &#39;catalog&#39;: catalog/migrations/0001_initial.py: - Create model Product (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py migrate Operations to perform: Apply all migrations: admin, auth, catalog, contenttypes, sessions Running migrations: Applying contenttypes.0001_initial... OK Applying auth.0001_initial... OK Applying admin.0001_initial... OK Applying admin.0002_logentry_remove_auto_add... OK Applying contenttypes.0002_remove_content_type_name... OK Applying auth.0002_alter_permission_name_max_length... OK Applying auth.0003_alter_user_email_max_length... OK Applying auth.0004_alter_user_username_opts... OK Applying auth.0005_alter_user_last_login_null... OK Applying auth.0006_require_contenttypes_0002... OK Applying auth.0007_alter_validators_add_error_messages... OK Applying auth.0008_alter_user_username_max_length... OK Applying catalog.0001_initial... OK Applying sessions.0001_initial... OK API Serializer Serializers are those components used to convert the received data from JSON format to the relative Django model and viceversa. Create the new file catalog/serializers.py and place this code inside: from .models import Product from rest_framework import serializers class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = (&#39;name&#39;, &#39;description&#39;, &#39;price&#39;) In this case we are using a ModelSerializer. We need to create a new class from it, and specify the model attribute, that&#39;s it. In this case we also specify the fields we want to return. API View The serializer alone is not able to respond to an API request, that&#39;s why we need to implement a view. In this first version of the view (that we will improve soon) we will &#34;manually&#34; transform the data available in the serializer dictionary to a JSON response. In catalog/views.py add this code: from django.http import HttpResponse from rest_framework.renderers import JSONRenderer from rest_framework.parsers import JSONParser from .models import Product from .serializers import ProductSerializer class JSONResponse(HttpResponse): &#34;&#34;&#34; An HttpResponse that renders its content into JSON. &#34;&#34;&#34; def __init__(self, data, **kwargs): content = JSONRenderer().render(data) kwargs[&#39;content_type&#39;] = &#39;application/json&#39; super(JSONResponse, self).__init__(content, **kwargs) def product_list(request): if request.method == &#39;GET&#39;: products = Product.objects.all() serializer = ProductSerializer(products, many=True) return JSONResponse(serializer.data) At this point we need to tell our Django app to use this API view when a certain URL is requested. We first need to add this code in catalog/urls.py from django.conf.urls import url from . import views urlpatterns = [ url(r&#39;^products/$&#39;, views.product_list), ] and finally we need to add this to drftutorial/urls.py from django.conf.urls import url, include from django.contrib import admin urlpatterns = [ url(r&#39;^admin/&#39;, admin.site.urls), url(r&#39;^&#39;, include(&#39;catalog.urls&#39;)), ] Testing our work At this point we should be able to start our Django app: ./manage.py runserver Let&#39;s install a tool that will help us to test the API: pip install httpie now we can use it to call our URL: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Content-Type: application/json Date: Wed, 28 Sep 2016 09:54:50 GMT Server: WSGIServer/0.1 Python/2.7.11 X-Frame-Options: SAMEORIGIN [] It works! It&#39;s an empty response of course, because we still don&#39;t have any data to show, but we will see later how to load some example data in our database. If you have been able to follow the tutorial up to this point, that&#39;s good. If not, don&#39;t worry. You can checkout the code at exactly this point of the tutorial doing: git checkout tutorial-1.0 Improving the API View There is a quicker and more efficient way of implementing the same API view we have seen before. We can use a class based view, in particular the APIView class and also have the JSON response implemented automatically. Change the code inside catalog/views.py with this one: from django.http import HttpResponse from rest_framework.views import APIView from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(APIView): def get(self, request, format=None): products = Product.objects.all() serializer = ProductSerializer(products, many=True) return Response(serializer.data) You will also have to change catalog/urls.py in this way: urlpatterns = [ url(r&#39;^products/$&#39;, views.ProductList.as_view()), ] You can check the source code for this step of the tutorial with: git checkout tutorial-1.1 There is also another way of writing the same view. Let&#39;s try it with ListAPIView. Edit catalog/views.py again and substitute the code with this one: from django.http import HttpResponse from rest_framework import generics from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(generics.ListAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer With a ListAPIView we are basically creating a read-only API that is supposed to return a list of items. We need to specify a queryset and the serializer_class parameters. Once again, you can get up to this point, checking out the related git tag: git checkout tutorial-1.2 Creating Initial Data An API that doesn&#39;t return any data is not very useful, right? Also, at the moment we haven&#39;t implemented yet any feature that let us insert any data. That&#39;s why I&#39;ve created a data migration for you that will insert some data for you. You may notice that the example data contains some Italian products... out of the scope of this tutorial, I strongly advise you to google this products and if you ever happen to visit Italy, try them. You won&#39;t regret! Going back to our data migration, you first have to create an empty one with: ./manage.py makemigrations --empty catalog and then open the file that has been created under catalog/migrations/ named 0002_..... (your name will be different from mine, so just edit the one starting with 0002 and you will be fine) and fill it with this code: from __future__ import unicode_literals from django.db import migrations def create_initial_products(apps, schema_editor): Product = apps.get_model(&#39;catalog&#39;, &#39;Product&#39;) Product(name=&#39;Salame&#39;, description=&#39;Salame Toscano&#39;, price=12).save() Product(name=&#39;Olio Balsamico&#39;, description=&#39;Olio balsamico di Modena&#39;, price=10).save() Product(name=&#39;Parmigiano&#39;, description=&#39;Parmigiano Reggiano&#39;, price=8.50).save() Product(name=&#39;Olio&#39;, description=&#39;Olio Oliva Toscano&#39;, price=13).save() Product(name=&#39;Porchetta&#39;, description=&#39;Porchetta toscana cotta a legna&#39;, price=7.50).save() Product(name=&#39;Cantucci&#39;, description=&#39;Cantucci di Prato&#39;, price=4).save() Product(name=&#39;Vino Rosso&#39;, description=&#39;Vino Rosso del Chianti&#39;, price=9.50).save() Product(name=&#39;Brigidini&#39;, description=&#39;Brigidini di Lamporecchio&#39;, price=3.50).save() class Migration(migrations.Migration): dependencies = [ (&#39;catalog&#39;, &#39;0001_initial&#39;), ] operations = [ migrations.RunPython(create_initial_products), ] to apply the migration we just created, just do: ./manage.py migrate If you try to test the API again from the command line, you will get these products back: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Allow: GET, HEAD, OPTIONS Content-Type: application/json Date: Wed, 28 Sep 2016 12:29:36 GMT Server: WSGIServer/0.1 Python/2.7.11 Vary: Accept, Cookie X-Frame-Options: SAMEORIGIN [ { &#34;description&#34;: &#34;Salame Toscano&#34;, &#34;name&#34;: &#34;Salame&#34;, &#34;price&#34;: &#34;12.00&#34; }, { &#34;description&#34;: &#34;Olio balsamico di Modena&#34;, &#34;name&#34;: &#34;Olio Balsamico&#34;, &#34;price&#34;: &#34;10.00&#34; }, { &#34;description&#34;: &#34;Parmigiano Reggiano&#34;, &#34;name&#34;: &#34;Parmigiano&#34;, &#34;price&#34;: &#34;8.50&#34; }, { &#34;description&#34;: &#34;Olio Oliva Toscano&#34;, &#34;name&#34;: &#34;Olio&#34;, &#34;price&#34;: &#34;13.00&#34; }, { &#34;description&#34;: &#34;Porchetta toscana cotta a legna&#34;, &#34;name&#34;: &#34;Porchetta&#34;, &#34;price&#34;: &#34;7.50&#34; }, { &#34;description&#34;: &#34;Cantucci di Prato&#34;, &#34;name&#34;: &#34;Cantucci&#34;, &#34;price&#34;: &#34;4.00&#34; }, { &#34;description&#34;: &#34;Vino Rosso del Chianti&#34;, &#34;name&#34;: &#34;Vino Rosso&#34;, &#34;price&#34;: &#34;9.50&#34; }, { &#34;description&#34;: &#34;Brigidini di Lamporecchio&#34;, &#34;name&#34;: &#34;Brigidini&#34;, &#34;price&#34;: &#34;3.50&#34; } ] Again, you can get up to this point with: git checkout tutorial-1.3 One more thing... No, we are not going to present a new amazing device, I&#39;m sorry, but I want to show you a nice Django Rest Framework feature you can have without much additional work. Edit settings.py and add rest_framework to the list of INSTALLED_APPS: INSTALLED_APPS = [ &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;rest_framework&#39;, &#39;catalog&#39;, ] Now, if you are still running the Django app, try to visit this url from your browser: http://127.0.0.1:8000/products/ That&#39;s very nice, isn&#39;t it? You can have browsable APIs at no cost. Wrapping Up I&#39;ve mentioned at the beginning that this is just the first part of my API tutorial. In the next part I will show you how to let the consumer of your API add some products and leave reviews (we will introduce a new model for this). Also, we will see how to set proper permissions to these new API methods so that only admin users will be able to add products while normal users will be able to add reviews. So, if you feel ready, you can begin to follow the second part of this tutorial References Some parts of this tutorial and a few examples have been taken directly from the original Django Rest Framework tutorial." />
-<meta name="keywords" content="API, Django, framework, Python, rest, tutorial">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Creating a production ready API with Python and Django Rest Framework - part 1"/>
-<meta property="og:description" content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API Add Authentication and POST methods Handling details and changes to existing data Testing the API Switching from Sqlite to PostgreSQL Hosting the API on Heroku Add an Image field and save images to S3 Create the basic structure for the API For this tutorial I will assume you have correctly installed at least Python (I will use Python 2.7.x), virtualenv and virtualenvwrapper on your system and I will explain how to create everything else step by step. Note: at the time of writing, the tutorial has been based on Django 1.10.1 and Django Rest Framework 3.4.7 Creating the main project structure mkdir drf-tutorial mkvirtualenv drf-tutorial cd drf-tutorial pip install django djangorestframework django-admin.py startproject drftutorial . cd drftutorial django-admin.py startapp catalog Data Model We will create the API for a generic products catalog, using a very simple structure (to keep things simple). Edit the file catalog/models.py adding these lines: from __future__ import unicode_literals from django.db import models class Product(models.Model): name = models.CharField(max_length=255) description = models.TextField() price = models.DecimalField(decimal_places=2, max_digits=20) after creating the model, we need to add &#39;catalog&#39; application to INSTALLED_APPS. Edit settings.py and add the app at the end of the list: INSTALLED_APPS = [ &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;catalog&#39;, ] at this point the Django application will be recognised by the project and we can create and apply the schema migration: (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py makemigrations Migrations for &#39;catalog&#39;: catalog/migrations/0001_initial.py: - Create model Product (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py migrate Operations to perform: Apply all migrations: admin, auth, catalog, contenttypes, sessions Running migrations: Applying contenttypes.0001_initial... OK Applying auth.0001_initial... OK Applying admin.0001_initial... OK Applying admin.0002_logentry_remove_auto_add... OK Applying contenttypes.0002_remove_content_type_name... OK Applying auth.0002_alter_permission_name_max_length... OK Applying auth.0003_alter_user_email_max_length... OK Applying auth.0004_alter_user_username_opts... OK Applying auth.0005_alter_user_last_login_null... OK Applying auth.0006_require_contenttypes_0002... OK Applying auth.0007_alter_validators_add_error_messages... OK Applying auth.0008_alter_user_username_max_length... OK Applying catalog.0001_initial... OK Applying sessions.0001_initial... OK API Serializer Serializers are those components used to convert the received data from JSON format to the relative Django model and viceversa. Create the new file catalog/serializers.py and place this code inside: from .models import Product from rest_framework import serializers class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = (&#39;name&#39;, &#39;description&#39;, &#39;price&#39;) In this case we are using a ModelSerializer. We need to create a new class from it, and specify the model attribute, that&#39;s it. In this case we also specify the fields we want to return. API View The serializer alone is not able to respond to an API request, that&#39;s why we need to implement a view. In this first version of the view (that we will improve soon) we will &#34;manually&#34; transform the data available in the serializer dictionary to a JSON response. In catalog/views.py add this code: from django.http import HttpResponse from rest_framework.renderers import JSONRenderer from rest_framework.parsers import JSONParser from .models import Product from .serializers import ProductSerializer class JSONResponse(HttpResponse): &#34;&#34;&#34; An HttpResponse that renders its content into JSON. &#34;&#34;&#34; def __init__(self, data, **kwargs): content = JSONRenderer().render(data) kwargs[&#39;content_type&#39;] = &#39;application/json&#39; super(JSONResponse, self).__init__(content, **kwargs) def product_list(request): if request.method == &#39;GET&#39;: products = Product.objects.all() serializer = ProductSerializer(products, many=True) return JSONResponse(serializer.data) At this point we need to tell our Django app to use this API view when a certain URL is requested. We first need to add this code in catalog/urls.py from django.conf.urls import url from . import views urlpatterns = [ url(r&#39;^products/$&#39;, views.product_list), ] and finally we need to add this to drftutorial/urls.py from django.conf.urls import url, include from django.contrib import admin urlpatterns = [ url(r&#39;^admin/&#39;, admin.site.urls), url(r&#39;^&#39;, include(&#39;catalog.urls&#39;)), ] Testing our work At this point we should be able to start our Django app: ./manage.py runserver Let&#39;s install a tool that will help us to test the API: pip install httpie now we can use it to call our URL: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Content-Type: application/json Date: Wed, 28 Sep 2016 09:54:50 GMT Server: WSGIServer/0.1 Python/2.7.11 X-Frame-Options: SAMEORIGIN [] It works! It&#39;s an empty response of course, because we still don&#39;t have any data to show, but we will see later how to load some example data in our database. If you have been able to follow the tutorial up to this point, that&#39;s good. If not, don&#39;t worry. You can checkout the code at exactly this point of the tutorial doing: git checkout tutorial-1.0 Improving the API View There is a quicker and more efficient way of implementing the same API view we have seen before. We can use a class based view, in particular the APIView class and also have the JSON response implemented automatically. Change the code inside catalog/views.py with this one: from django.http import HttpResponse from rest_framework.views import APIView from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(APIView): def get(self, request, format=None): products = Product.objects.all() serializer = ProductSerializer(products, many=True) return Response(serializer.data) You will also have to change catalog/urls.py in this way: urlpatterns = [ url(r&#39;^products/$&#39;, views.ProductList.as_view()), ] You can check the source code for this step of the tutorial with: git checkout tutorial-1.1 There is also another way of writing the same view. Let&#39;s try it with ListAPIView. Edit catalog/views.py again and substitute the code with this one: from django.http import HttpResponse from rest_framework import generics from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(generics.ListAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer With a ListAPIView we are basically creating a read-only API that is supposed to return a list of items. We need to specify a queryset and the serializer_class parameters. Once again, you can get up to this point, checking out the related git tag: git checkout tutorial-1.2 Creating Initial Data An API that doesn&#39;t return any data is not very useful, right? Also, at the moment we haven&#39;t implemented yet any feature that let us insert any data. That&#39;s why I&#39;ve created a data migration for you that will insert some data for you. You may notice that the example data contains some Italian products... out of the scope of this tutorial, I strongly advise you to google this products and if you ever happen to visit Italy, try them. You won&#39;t regret! Going back to our data migration, you first have to create an empty one with: ./manage.py makemigrations --empty catalog and then open the file that has been created under catalog/migrations/ named 0002_..... (your name will be different from mine, so just edit the one starting with 0002 and you will be fine) and fill it with this code: from __future__ import unicode_literals from django.db import migrations def create_initial_products(apps, schema_editor): Product = apps.get_model(&#39;catalog&#39;, &#39;Product&#39;) Product(name=&#39;Salame&#39;, description=&#39;Salame Toscano&#39;, price=12).save() Product(name=&#39;Olio Balsamico&#39;, description=&#39;Olio balsamico di Modena&#39;, price=10).save() Product(name=&#39;Parmigiano&#39;, description=&#39;Parmigiano Reggiano&#39;, price=8.50).save() Product(name=&#39;Olio&#39;, description=&#39;Olio Oliva Toscano&#39;, price=13).save() Product(name=&#39;Porchetta&#39;, description=&#39;Porchetta toscana cotta a legna&#39;, price=7.50).save() Product(name=&#39;Cantucci&#39;, description=&#39;Cantucci di Prato&#39;, price=4).save() Product(name=&#39;Vino Rosso&#39;, description=&#39;Vino Rosso del Chianti&#39;, price=9.50).save() Product(name=&#39;Brigidini&#39;, description=&#39;Brigidini di Lamporecchio&#39;, price=3.50).save() class Migration(migrations.Migration): dependencies = [ (&#39;catalog&#39;, &#39;0001_initial&#39;), ] operations = [ migrations.RunPython(create_initial_products), ] to apply the migration we just created, just do: ./manage.py migrate If you try to test the API again from the command line, you will get these products back: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Allow: GET, HEAD, OPTIONS Content-Type: application/json Date: Wed, 28 Sep 2016 12:29:36 GMT Server: WSGIServer/0.1 Python/2.7.11 Vary: Accept, Cookie X-Frame-Options: SAMEORIGIN [ { &#34;description&#34;: &#34;Salame Toscano&#34;, &#34;name&#34;: &#34;Salame&#34;, &#34;price&#34;: &#34;12.00&#34; }, { &#34;description&#34;: &#34;Olio balsamico di Modena&#34;, &#34;name&#34;: &#34;Olio Balsamico&#34;, &#34;price&#34;: &#34;10.00&#34; }, { &#34;description&#34;: &#34;Parmigiano Reggiano&#34;, &#34;name&#34;: &#34;Parmigiano&#34;, &#34;price&#34;: &#34;8.50&#34; }, { &#34;description&#34;: &#34;Olio Oliva Toscano&#34;, &#34;name&#34;: &#34;Olio&#34;, &#34;price&#34;: &#34;13.00&#34; }, { &#34;description&#34;: &#34;Porchetta toscana cotta a legna&#34;, &#34;name&#34;: &#34;Porchetta&#34;, &#34;price&#34;: &#34;7.50&#34; }, { &#34;description&#34;: &#34;Cantucci di Prato&#34;, &#34;name&#34;: &#34;Cantucci&#34;, &#34;price&#34;: &#34;4.00&#34; }, { &#34;description&#34;: &#34;Vino Rosso del Chianti&#34;, &#34;name&#34;: &#34;Vino Rosso&#34;, &#34;price&#34;: &#34;9.50&#34; }, { &#34;description&#34;: &#34;Brigidini di Lamporecchio&#34;, &#34;name&#34;: &#34;Brigidini&#34;, &#34;price&#34;: &#34;3.50&#34; } ] Again, you can get up to this point with: git checkout tutorial-1.3 One more thing... No, we are not going to present a new amazing device, I&#39;m sorry, but I want to show you a nice Django Rest Framework feature you can have without much additional work. Edit settings.py and add rest_framework to the list of INSTALLED_APPS: INSTALLED_APPS = [ &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;rest_framework&#39;, &#39;catalog&#39;, ] Now, if you are still running the Django app, try to visit this url from your browser: http://127.0.0.1:8000/products/ That&#39;s very nice, isn&#39;t it? You can have browsable APIs at no cost. Wrapping Up I&#39;ve mentioned at the beginning that this is just the first part of my API tutorial. In the next part I will show you how to let the consumer of your API add some products and leave reviews (we will introduce a new model for this). Also, we will see how to set proper permissions to these new API methods so that only admin users will be able to add products while normal users will be able to add reviews. So, if you feel ready, you can begin to follow the second part of this tutorial References Some parts of this tutorial and a few examples have been taken directly from the original Django Rest Framework tutorial."/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2016-09-28 13:47:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="Development"/>
-<meta property="article:tag" content="API"/>
-<meta property="article:tag" content="Django"/>
-<meta property="article:tag" content="framework"/>
-<meta property="article:tag" content="Python"/>
-<meta property="article:tag" content="rest"/>
-<meta property="article:tag" content="tutorial"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Creating a production ready API with Python and Django Rest Framework - part 1</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API Add Authentication and POST methods Handling details and changes to existing data Testing the API Switching from Sqlite to PostgreSQL Hosting the API on Heroku Add an Image field and save images to S3 Create the basic structure for the API For this tutorial I will assume you have correctly installed at least Python (I will use Python 2.7.x), virtualenv and virtualenvwrapper on your system and I will explain how to create everything else step by step. Note: at the time of writing, the tutorial has been based on Django 1.10.1 and Django Rest Framework 3.4.7 Creating the main project structure mkdir drf-tutorial mkvirtualenv drf-tutorial cd drf-tutorial pip install django djangorestframework django-admin.py startproject drftutorial . cd drftutorial django-admin.py startapp catalog Data Model We will create the API for a generic products catalog, using a very simple structure (to keep things simple). Edit the file catalog/models.py adding these lines: from __future__ import unicode_literals from django.db import models class Product(models.Model): name = models.CharField(max_length=255) description = models.TextField() price = models.DecimalField(decimal_places=2, max_digits=20) after creating the model, we need to add 'catalog' application to INSTALLED_APPS. Edit settings.py and add the app at the end of the list: INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'catalog', ] at this point the Django application will be recognised by the project and we can create and apply the schema migration: (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py makemigrations Migrations for 'catalog': catalog/migrations/0001_initial.py: - Create model Product (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py migrate Operations to perform: Apply all migrations: admin, auth, catalog, contenttypes, sessions Running migrations: Applying contenttypes.0001_initial... OK Applying auth.0001_initial... OK Applying admin.0001_initial... OK Applying admin.0002_logentry_remove_auto_add... OK Applying contenttypes.0002_remove_content_type_name... OK Applying auth.0002_alter_permission_name_max_length... OK Applying auth.0003_alter_user_email_max_length... OK Applying auth.0004_alter_user_username_opts... OK Applying auth.0005_alter_user_last_login_null... OK Applying auth.0006_require_contenttypes_0002... OK Applying auth.0007_alter_validators_add_error_messages... OK Applying auth.0008_alter_user_username_max_length... OK Applying catalog.0001_initial... OK Applying sessions.0001_initial... OK API Serializer Serializers are those components used to convert the received data from JSON format to the relative Django model and viceversa. Create the new file catalog/serializers.py and place this code inside: from .models import Product from rest_framework import serializers class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = ('name', 'description', 'price') In this case we are using a ModelSerializer. We need to create a new class from it, and specify the model attribute, that's it. In this case we also specify the fields we want to return. API View The serializer alone is not able to respond to an API request, that's why we need to implement a view. In this first version of the view (that we will improve soon) we will &quot;manually&quot; transform the data available in the serializer dictionary to a JSON response. In catalog/views.py add this code: from django.http import HttpResponse from rest_framework.renderers import JSONRenderer from rest_framework.parsers import JSONParser from .models import Product from .serializers import ProductSerializer class JSONResponse(HttpResponse): &quot;&quot;&quot; An HttpResponse that renders its content into JSON. &quot;&quot;&quot; def __init__(self, data, **kwargs): content = JSONRenderer().render(data) kwargs['content_type'] = 'application/json' super(JSONResponse, self).__init__(content, **kwargs) def product_list(request): if request.method == 'GET': products = Product.objects.all() serializer = ProductSerializer(products, many=True) return JSONResponse(serializer.data) At this point we need to tell our Django app to use this API view when a certain URL is requested. We first need to add this code in catalog/urls.py from django.conf.urls import url from . import views urlpatterns = [ url(r'^products/$', views.product_list), ] and finally we need to add this to drftutorial/urls.py from django.conf.urls import url, include from django.contrib import admin urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^', include('catalog.urls')), ] Testing our work At this point we should be able to start our Django app: ./manage.py runserver Let's install a tool that will help us to test the API: pip install httpie now we can use it to call our URL: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Content-Type: application/json Date: Wed, 28 Sep 2016 09:54:50 GMT Server: WSGIServer/0.1 Python/2.7.11 X-Frame-Options: SAMEORIGIN [] It works! It's an empty response of course, because we still don't have any data to show, but we will see later how to load some example data in our database. If you have been able to follow the tutorial up to this point, that's good. If not, don't worry. You can checkout the code at exactly this point of the tutorial doing: git checkout tutorial-1.0 Improving the API View There is a quicker and more efficient way of implementing the same API view we have seen before. We can use a class based view, in particular the APIView class and also have the JSON response implemented automatically. Change the code inside catalog/views.py with this one: from django.http import HttpResponse from rest_framework.views import APIView from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(APIView): def get(self, request, format=None): products = Product.objects.all() serializer = ProductSerializer(products, many=True) return Response(serializer.data) You will also have to change catalog/urls.py in this way: urlpatterns = [ url(r'^products/$', views.ProductList.as_view()), ] You can check the source code for this step of the tutorial with: git checkout tutorial-1.1 There is also another way of writing the same view. Let's try it with ListAPIView. Edit catalog/views.py again and substitute the code with this one: from django.http import HttpResponse from rest_framework import generics from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(generics.ListAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer With a ListAPIView we are basically creating a read-only API that is supposed to return a list of items. We need to specify a queryset and the serializer_class parameters. Once again, you can get up to this point, checking out the related git tag: git checkout tutorial-1.2 Creating Initial Data An API that doesn't return any data is not very useful, right? Also, at the moment we haven't implemented yet any feature that let us insert any data. That's why I've created a data migration for you that will insert some data for you. You may notice that the example data contains some Italian products... out of the scope of this tutorial, I strongly advise you to google this products and if you ever happen to visit Italy, try them. You won't regret! Going back to our data migration, you first have to create an empty one with: ./manage.py makemigrations --empty catalog and then open the file that has been created under catalog/migrations/ named 0002_..... (your name will be different from mine, so just edit the one starting with 0002 and you will be fine) and fill it with this code: from __future__ import unicode_literals from django.db import migrations def create_initial_products(apps, schema_editor): Product = apps.get_model('catalog', 'Product') Product(name='Salame', description='Salame Toscano', price=12).save() Product(name='Olio Balsamico', description='Olio balsamico di Modena', price=10).save() Product(name='Parmigiano', description='Parmigiano Reggiano', price=8.50).save() Product(name='Olio', description='Olio Oliva Toscano', price=13).save() Product(name='Porchetta', description='Porchetta toscana cotta a legna', price=7.50).save() Product(name='Cantucci', description='Cantucci di Prato', price=4).save() Product(name='Vino Rosso', description='Vino Rosso del Chianti', price=9.50).save() Product(name='Brigidini', description='Brigidini di Lamporecchio', price=3.50).save() class Migration(migrations.Migration): dependencies = [ ('catalog', '0001_initial'), ] operations = [ migrations.RunPython(create_initial_products), ] to apply the migration we just created, just do: ./manage.py migrate If you try to test the API again from the command line, you will get these products back: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Allow: GET, HEAD, OPTIONS Content-Type: application/json Date: Wed, 28 Sep 2016 12:29:36 GMT Server: WSGIServer/0.1 Python/2.7.11 Vary: Accept, Cookie X-Frame-Options: SAMEORIGIN [ { &quot;description&quot;: &quot;Salame Toscano&quot;, &quot;name&quot;: &quot;Salame&quot;, &quot;price&quot;: &quot;12.00&quot; }, { &quot;description&quot;: &quot;Olio balsamico di Modena&quot;, &quot;name&quot;: &quot;Olio Balsamico&quot;, &quot;price&quot;: &quot;10.00&quot; }, { &quot;description&quot;: &quot;Parmigiano Reggiano&quot;, &quot;name&quot;: &quot;Parmigiano&quot;, &quot;price&quot;: &quot;8.50&quot; }, { &quot;description&quot;: &quot;Olio Oliva Toscano&quot;, &quot;name&quot;: &quot;Olio&quot;, &quot;price&quot;: &quot;13.00&quot; }, { &quot;description&quot;: &quot;Porchetta toscana cotta a legna&quot;, &quot;name&quot;: &quot;Porchetta&quot;, &quot;price&quot;: &quot;7.50&quot; }, { &quot;description&quot;: &quot;Cantucci di Prato&quot;, &quot;name&quot;: &quot;Cantucci&quot;, &quot;price&quot;: &quot;4.00&quot; }, { &quot;description&quot;: &quot;Vino Rosso del Chianti&quot;, &quot;name&quot;: &quot;Vino Rosso&quot;, &quot;price&quot;: &quot;9.50&quot; }, { &quot;description&quot;: &quot;Brigidini di Lamporecchio&quot;, &quot;name&quot;: &quot;Brigidini&quot;, &quot;price&quot;: &quot;3.50&quot; } ] Again, you can get up to this point with: git checkout tutorial-1.3 One more thing... No, we are not going to present a new amazing device, I'm sorry, but I want to show you a nice Django Rest Framework feature you can have without much additional work. Edit settings.py and add rest_framework to the list of INSTALLED_APPS: INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework', 'catalog', ] Now, if you are still running the Django app, try to visit this url from your browser: http://127.0.0.1:8000/products/ That's very nice, isn't it? You can have browsable APIs at no cost. Wrapping Up I've mentioned at the beginning that this is just the first part of my API tutorial. In the next part I will show you how to let the consumer of your API add some products and leave reviews (we will introduce a new model for this). Also, we will see how to set proper permissions to these new API methods so that only admin users will be able to add products while normal users will be able to add reviews. So, if you feel ready, you can begin to follow the second part of this tutorial References Some parts of this tutorial and a few examples have been taken directly from the original Django Rest Framework tutorial." name="description">
+<meta content="API, Django, framework, Python, rest, tutorial" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Creating a production ready API with Python and Django Rest Framework - part 1" property="og:title">
+<meta content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API Add Authentication and POST methods Handling details and changes to existing data Testing the API Switching from Sqlite to PostgreSQL Hosting the API on Heroku Add an Image field and save images to S3 Create the basic structure for the API For this tutorial I will assume you have correctly installed at least Python (I will use Python 2.7.x), virtualenv and virtualenvwrapper on your system and I will explain how to create everything else step by step. Note: at the time of writing, the tutorial has been based on Django 1.10.1 and Django Rest Framework 3.4.7 Creating the main project structure mkdir drf-tutorial mkvirtualenv drf-tutorial cd drf-tutorial pip install django djangorestframework django-admin.py startproject drftutorial . cd drftutorial django-admin.py startapp catalog Data Model We will create the API for a generic products catalog, using a very simple structure (to keep things simple). Edit the file catalog/models.py adding these lines: from __future__ import unicode_literals from django.db import models class Product(models.Model): name = models.CharField(max_length=255) description = models.TextField() price = models.DecimalField(decimal_places=2, max_digits=20) after creating the model, we need to add 'catalog' application to INSTALLED_APPS. Edit settings.py and add the app at the end of the list: INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'catalog', ] at this point the Django application will be recognised by the project and we can create and apply the schema migration: (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py makemigrations Migrations for 'catalog': catalog/migrations/0001_initial.py: - Create model Product (drf-tutorial) ➜ drftutorial git:(235dfcc) ✗ ./manage.py migrate Operations to perform: Apply all migrations: admin, auth, catalog, contenttypes, sessions Running migrations: Applying contenttypes.0001_initial... OK Applying auth.0001_initial... OK Applying admin.0001_initial... OK Applying admin.0002_logentry_remove_auto_add... OK Applying contenttypes.0002_remove_content_type_name... OK Applying auth.0002_alter_permission_name_max_length... OK Applying auth.0003_alter_user_email_max_length... OK Applying auth.0004_alter_user_username_opts... OK Applying auth.0005_alter_user_last_login_null... OK Applying auth.0006_require_contenttypes_0002... OK Applying auth.0007_alter_validators_add_error_messages... OK Applying auth.0008_alter_user_username_max_length... OK Applying catalog.0001_initial... OK Applying sessions.0001_initial... OK API Serializer Serializers are those components used to convert the received data from JSON format to the relative Django model and viceversa. Create the new file catalog/serializers.py and place this code inside: from .models import Product from rest_framework import serializers class ProductSerializer(serializers.ModelSerializer): class Meta: model = Product fields = ('name', 'description', 'price') In this case we are using a ModelSerializer. We need to create a new class from it, and specify the model attribute, that's it. In this case we also specify the fields we want to return. API View The serializer alone is not able to respond to an API request, that's why we need to implement a view. In this first version of the view (that we will improve soon) we will &quot;manually&quot; transform the data available in the serializer dictionary to a JSON response. In catalog/views.py add this code: from django.http import HttpResponse from rest_framework.renderers import JSONRenderer from rest_framework.parsers import JSONParser from .models import Product from .serializers import ProductSerializer class JSONResponse(HttpResponse): &quot;&quot;&quot; An HttpResponse that renders its content into JSON. &quot;&quot;&quot; def __init__(self, data, **kwargs): content = JSONRenderer().render(data) kwargs['content_type'] = 'application/json' super(JSONResponse, self).__init__(content, **kwargs) def product_list(request): if request.method == 'GET': products = Product.objects.all() serializer = ProductSerializer(products, many=True) return JSONResponse(serializer.data) At this point we need to tell our Django app to use this API view when a certain URL is requested. We first need to add this code in catalog/urls.py from django.conf.urls import url from . import views urlpatterns = [ url(r'^products/$', views.product_list), ] and finally we need to add this to drftutorial/urls.py from django.conf.urls import url, include from django.contrib import admin urlpatterns = [ url(r'^admin/', admin.site.urls), url(r'^', include('catalog.urls')), ] Testing our work At this point we should be able to start our Django app: ./manage.py runserver Let's install a tool that will help us to test the API: pip install httpie now we can use it to call our URL: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Content-Type: application/json Date: Wed, 28 Sep 2016 09:54:50 GMT Server: WSGIServer/0.1 Python/2.7.11 X-Frame-Options: SAMEORIGIN [] It works! It's an empty response of course, because we still don't have any data to show, but we will see later how to load some example data in our database. If you have been able to follow the tutorial up to this point, that's good. If not, don't worry. You can checkout the code at exactly this point of the tutorial doing: git checkout tutorial-1.0 Improving the API View There is a quicker and more efficient way of implementing the same API view we have seen before. We can use a class based view, in particular the APIView class and also have the JSON response implemented automatically. Change the code inside catalog/views.py with this one: from django.http import HttpResponse from rest_framework.views import APIView from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(APIView): def get(self, request, format=None): products = Product.objects.all() serializer = ProductSerializer(products, many=True) return Response(serializer.data) You will also have to change catalog/urls.py in this way: urlpatterns = [ url(r'^products/$', views.ProductList.as_view()), ] You can check the source code for this step of the tutorial with: git checkout tutorial-1.1 There is also another way of writing the same view. Let's try it with ListAPIView. Edit catalog/views.py again and substitute the code with this one: from django.http import HttpResponse from rest_framework import generics from rest_framework.response import Response from .models import Product from .serializers import ProductSerializer class ProductList(generics.ListAPIView): queryset = Product.objects.all() serializer_class = ProductSerializer With a ListAPIView we are basically creating a read-only API that is supposed to return a list of items. We need to specify a queryset and the serializer_class parameters. Once again, you can get up to this point, checking out the related git tag: git checkout tutorial-1.2 Creating Initial Data An API that doesn't return any data is not very useful, right? Also, at the moment we haven't implemented yet any feature that let us insert any data. That's why I've created a data migration for you that will insert some data for you. You may notice that the example data contains some Italian products... out of the scope of this tutorial, I strongly advise you to google this products and if you ever happen to visit Italy, try them. You won't regret! Going back to our data migration, you first have to create an empty one with: ./manage.py makemigrations --empty catalog and then open the file that has been created under catalog/migrations/ named 0002_..... (your name will be different from mine, so just edit the one starting with 0002 and you will be fine) and fill it with this code: from __future__ import unicode_literals from django.db import migrations def create_initial_products(apps, schema_editor): Product = apps.get_model('catalog', 'Product') Product(name='Salame', description='Salame Toscano', price=12).save() Product(name='Olio Balsamico', description='Olio balsamico di Modena', price=10).save() Product(name='Parmigiano', description='Parmigiano Reggiano', price=8.50).save() Product(name='Olio', description='Olio Oliva Toscano', price=13).save() Product(name='Porchetta', description='Porchetta toscana cotta a legna', price=7.50).save() Product(name='Cantucci', description='Cantucci di Prato', price=4).save() Product(name='Vino Rosso', description='Vino Rosso del Chianti', price=9.50).save() Product(name='Brigidini', description='Brigidini di Lamporecchio', price=3.50).save() class Migration(migrations.Migration): dependencies = [ ('catalog', '0001_initial'), ] operations = [ migrations.RunPython(create_initial_products), ] to apply the migration we just created, just do: ./manage.py migrate If you try to test the API again from the command line, you will get these products back: $ http http://127.0.0.1:8000/products/ HTTP/1.0 200 OK Allow: GET, HEAD, OPTIONS Content-Type: application/json Date: Wed, 28 Sep 2016 12:29:36 GMT Server: WSGIServer/0.1 Python/2.7.11 Vary: Accept, Cookie X-Frame-Options: SAMEORIGIN [ { &quot;description&quot;: &quot;Salame Toscano&quot;, &quot;name&quot;: &quot;Salame&quot;, &quot;price&quot;: &quot;12.00&quot; }, { &quot;description&quot;: &quot;Olio balsamico di Modena&quot;, &quot;name&quot;: &quot;Olio Balsamico&quot;, &quot;price&quot;: &quot;10.00&quot; }, { &quot;description&quot;: &quot;Parmigiano Reggiano&quot;, &quot;name&quot;: &quot;Parmigiano&quot;, &quot;price&quot;: &quot;8.50&quot; }, { &quot;description&quot;: &quot;Olio Oliva Toscano&quot;, &quot;name&quot;: &quot;Olio&quot;, &quot;price&quot;: &quot;13.00&quot; }, { &quot;description&quot;: &quot;Porchetta toscana cotta a legna&quot;, &quot;name&quot;: &quot;Porchetta&quot;, &quot;price&quot;: &quot;7.50&quot; }, { &quot;description&quot;: &quot;Cantucci di Prato&quot;, &quot;name&quot;: &quot;Cantucci&quot;, &quot;price&quot;: &quot;4.00&quot; }, { &quot;description&quot;: &quot;Vino Rosso del Chianti&quot;, &quot;name&quot;: &quot;Vino Rosso&quot;, &quot;price&quot;: &quot;9.50&quot; }, { &quot;description&quot;: &quot;Brigidini di Lamporecchio&quot;, &quot;name&quot;: &quot;Brigidini&quot;, &quot;price&quot;: &quot;3.50&quot; } ] Again, you can get up to this point with: git checkout tutorial-1.3 One more thing... No, we are not going to present a new amazing device, I'm sorry, but I want to show you a nice Django Rest Framework feature you can have without much additional work. Edit settings.py and add rest_framework to the list of INSTALLED_APPS: INSTALLED_APPS = [ 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework', 'catalog', ] Now, if you are still running the Django app, try to visit this url from your browser: http://127.0.0.1:8000/products/ That's very nice, isn't it? You can have browsable APIs at no cost. Wrapping Up I've mentioned at the beginning that this is just the first part of my API tutorial. In the next part I will show you how to let the consumer of your API add some products and leave reviews (we will introduce a new model for this). Also, we will see how to set proper permissions to these new API methods so that only admin users will be able to add products while normal users will be able to add reviews. So, if you feel ready, you can begin to follow the second part of this tutorial References Some parts of this tutorial and a few examples have been taken directly from the original Django Rest Framework tutorial." property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2016-09-28 13:47:00+02:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="Development" property="article:section">
+<meta content="API" property="article:tag"/>
+<meta content="Django" property="article:tag"/>
+<meta content="framework" property="article:tag"/>
+<meta content="Python" property="article:tag"/>
+<meta content="rest" property="article:tag"/>
+<meta content="tutorial" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Creating a production ready API with Python and Django Rest Framework - part 1</title>
+<link href="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2016", "item": "https://www.andreagrandi.it/2016"}, {"@type": "ListItem", "position": 3, "name": "09", "item": "https://www.andreagrandi.it/2016/09"}, {"@type": "ListItem", "position": 4, "name": "28", "item": "https://www.andreagrandi.it/2016/09/28"}, {"@type": "ListItem", "position": 5, "name": "Creating production ready api python django rest framework part 1", "item": "https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2016/09/28/creating-production-ready-api-python-django-rest-framework-part-1/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Creating a production ready API with Python and Django Rest Framework - part 1", "about": "Development", "datePublished": "2016-09-28 13:47"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="creating-production-ready-api-python-django-rest-framework-part-1">Creating a production ready API with Python and Django Rest Framework - part 1</h1>
-    <p>
+<header>
+<h1 id="creating-production-ready-api-python-django-rest-framework-part-1">Creating a production ready API with Python and Django Rest Framework - part 1</h1>
+<p>
       Posted on Wed 28 September 2016 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>The aim if this tutorial is to show how to create a production ready
+</p>
+</header>
+<div>
+<p>The aim if this tutorial is to show how to create a production ready
 solution for a <strong>REST API</strong>, using <strong>Python</strong> and <a href="http://www.django-rest-framework.org">Django Rest
 Framework</a>. I will show you how to
 first create a very basic API, how to handle the authentication and
@@ -206,7 +162,6 @@ django-admin.py<span class="w"> </span>startproject<span class="w"> </span>drftu
 <span class="nb">cd</span><span class="w"> </span>drftutorial
 django-admin.py<span class="w"> </span>startapp<span class="w"> </span>catalog
 </code></pre></div>
-
 <h3>Data Model</h3>
 <p>We will create the API for a generic products catalog, using a very
 simple structure (to keep things simple). Edit the file
@@ -220,25 +175,23 @@ simple structure (to keep things simple). Edit the file
     <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
     <span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_digits</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </code></pre></div>
-
 <p>after creating the model, we need to add 'catalog' application to
 <strong>INSTALLED_APPS</strong>. Edit <strong>settings.py</strong> and add the app at the end of
 the list:</p>
 <div class="highlight"><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
+    <span class="s1">'django.contrib.admin'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.auth'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.contenttypes'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.sessions'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.messages'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.staticfiles'</span><span class="p">,</span>
+    <span class="s1">'catalog'</span><span class="p">,</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>at this point the Django application will be recognised by the project
 and we can create and apply the schema migration:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span>drf-tutorial<span class="o">)</span><span class="w"> </span>➜<span class="w">  </span>drftutorial<span class="w"> </span>git:<span class="o">(</span>235dfcc<span class="o">)</span><span class="w"> </span>✗<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations
-Migrations<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;catalog&#39;</span>:
+Migrations<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">'catalog'</span>:
 <span class="w">    </span>catalog/migrations/0001_initial.py:
 <span class="w">        </span>-<span class="w"> </span>Create<span class="w"> </span>model<span class="w"> </span>Product
 
@@ -261,7 +214,6 @@ Operations<span class="w"> </span>to<span class="w"> </span>perform:
 <span class="w">        </span>Applying<span class="w"> </span>catalog.0001_initial...<span class="w"> </span>OK
 <span class="w">        </span>Applying<span class="w"> </span>sessions.0001_initial...<span class="w"> </span>OK
 </code></pre></div>
-
 <h3>API Serializer</h3>
 <p><a href="http://www.django-rest-framework.org/api-guide/serializers/"><strong>Serializers</strong></a>
 are those components used to convert the received data from JSON format
@@ -274,9 +226,8 @@ to the relative Django model and viceversa. Create the new file
 <span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'description'</span><span class="p">,</span> <span class="s1">'price'</span><span class="p">)</span>
 </code></pre></div>
-
 <p>In this case we are using a
 <a href="http://www.django-rest-framework.org/api-guide/serializers/#modelserializer"><strong>ModelSerializer</strong></a>.
 We need to create a new class from it, and specify the model attribute,
@@ -295,22 +246,21 @@ add this code:</p>
 
 
 <span class="k">class</span> <span class="nc">JSONResponse</span><span class="p">(</span><span class="n">HttpResponse</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    An HttpResponse that renders its content into JSON.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">JSONRenderer</span><span class="p">()</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;content_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">'content_type'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'application/json'</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">product_list</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">'GET'</span><span class="p">:</span>
         <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
-
 <p>At this point we need to tell our Django app to use this API view when a
 certain URL is requested. We first need to add this code in
 <strong>catalog/urls.py</strong></p>
@@ -318,29 +268,25 @@ certain URL is requested. We first need to add this code in
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">views</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">product_list</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">product_list</span><span class="p">),</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>and finally we need to add this to <strong>drftutorial/urls.py</strong></p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^admin/'</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^'</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">'catalog.urls'</span><span class="p">)),</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <h4>Testing our work</h4>
 <p>At this point we should be able to start our Django app:</p>
 <div class="highlight"><pre><span></span><code>./manage.py<span class="w"> </span>runserver
 </code></pre></div>
-
 <p>Let's install a tool that will help us to test the API:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>httpie
 </code></pre></div>
-
 <p>now we can use it to call our URL:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>http://127.0.0.1:8000/products/
 HTTP/1.0<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
@@ -351,7 +297,6 @@ X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">[]</span>
 </code></pre></div>
-
 <p>It works! It's an empty response of course, because we still don't have
 any data to show, but we will see later how to load some example data in
 our database. If you have been able to follow the tutorial up to this
@@ -359,7 +304,6 @@ point, that's good. If not, don't worry. You can checkout the code at
 exactly this point of the tutorial doing:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.0
 </code></pre></div>
-
 <h3>Improving the API View</h3>
 <p>There is a quicker and more efficient way of implementing the same API
 view we have seen before. We can use a class based view, in particular
@@ -379,17 +323,14 @@ one:</p>
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
-
 <p>You will also have to change <strong>catalog/urls.py</strong> in this way:</p>
 <div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^products/$'</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>You can check the source code for this step of the tutorial with:</p>
 <div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="n">checkout</span> <span class="n">tutorial</span><span class="o">-</span><span class="mf">1.1</span>
 </code></pre></div>
-
 <p>There is also another way of writing the same view. Let's try it with
 <a href="http://www.django-rest-framework.org/api-guide/generic-views/#listapiview"><strong>ListAPIView</strong></a>.
 Edit <strong>catalog/views.py</strong> again and substitute the code with this one:</p>
@@ -404,14 +345,12 @@ Edit <strong>catalog/views.py</strong> again and substitute the code with this o
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
     <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
 </code></pre></div>
-
 <p>With a <strong>ListAPIView</strong> we are basically creating a read-only API that is
 supposed to return a list of items. We need to specify a <strong>queryset</strong>
 and the <strong>serializer_class</strong> parameters. Once again, you can get up to
 this point, checking out the related git tag:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.2
 </code></pre></div>
-
 <h3>Creating Initial Data</h3>
 <p>An API that doesn't return any data is not very useful, right? Also, at
 the moment we haven't implemented yet any feature that let us insert any
@@ -424,7 +363,6 @@ them. You won't regret!</p>
 with:</p>
 <div class="highlight"><pre><span></span><code>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>--empty<span class="w"> </span>catalog
 </code></pre></div>
-
 <p>and then open the file that has been created under
 <strong>catalog/migrations/</strong> named <strong>0002_.....</strong> (your name will be
 different from mine, so just edit the one starting with 0002 and you
@@ -434,33 +372,31 @@ will be fine) and fill it with this code:</p>
 
 
 <span class="k">def</span> <span class="nf">create_initial_products</span><span class="p">(</span><span class="n">apps</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">):</span>
-    <span class="n">Product</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s1">&#39;catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">)</span>
+    <span class="n">Product</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s1">'catalog'</span><span class="p">,</span> <span class="s1">'Product'</span><span class="p">)</span>
 
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Salame&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Salame Toscano&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Olio Balsamico&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Olio balsamico di Modena&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Parmigiano&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Parmigiano Reggiano&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">8.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Olio&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Olio Oliva Toscano&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Porchetta&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Porchetta toscana cotta a legna&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">7.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Cantucci&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Cantucci di Prato&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Vino Rosso&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Vino Rosso del Chianti&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">9.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Brigidini&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Brigidini di Lamporecchio&#39;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">3.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Salame'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Salame Toscano'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Olio Balsamico'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Olio balsamico di Modena'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Parmigiano'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Parmigiano Reggiano'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">8.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Olio'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Olio Oliva Toscano'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Porchetta'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Porchetta toscana cotta a legna'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">7.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Cantucci'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Cantucci di Prato'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Vino Rosso'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Vino Rosso del Chianti'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">9.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Brigidini'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Brigidini di Lamporecchio'</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mf">3.50</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">Migration</span><span class="p">(</span><span class="n">migrations</span><span class="o">.</span><span class="n">Migration</span><span class="p">):</span>
 
     <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;0001_initial&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'catalog'</span><span class="p">,</span> <span class="s1">'0001_initial'</span><span class="p">),</span>
     <span class="p">]</span>
 
     <span class="n">operations</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">migrations</span><span class="o">.</span><span class="n">RunPython</span><span class="p">(</span><span class="n">create_initial_products</span><span class="p">),</span>
     <span class="p">]</span>
 </code></pre></div>
-
 <p>to apply the migration we just created, just do:</p>
 <div class="highlight"><pre><span></span><code>./manage.py<span class="w"> </span>migrate
 </code></pre></div>
-
 <p>If you try to test the API again from the command line, you will get
 these products back:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>http<span class="w"> </span>http://127.0.0.1:8000/products/
@@ -474,71 +410,68 @@ X-Frame-Options:<span class="w"> </span>SAMEORIGIN
 
 <span class="o">[</span>
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Salame Toscano&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Salame&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;12.00&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Salame Toscano"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Salame"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"12.00"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio balsamico di Modena&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio Balsamico&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.00&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Olio balsamico di Modena"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Olio Balsamico"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"10.00"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Parmigiano Reggiano&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Parmigiano&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;8.50&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Parmigiano Reggiano"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Parmigiano"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"8.50"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio Oliva Toscano&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Olio&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;13.00&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Olio Oliva Toscano"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Olio"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"13.00"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Porchetta toscana cotta a legna&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Porchetta&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;7.50&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Porchetta toscana cotta a legna"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Porchetta"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"7.50"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Cantucci di Prato&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Cantucci&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;4.00&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Cantucci di Prato"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Cantucci"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"4.00"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Vino Rosso del Chianti&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Vino Rosso&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;9.50&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Vino Rosso del Chianti"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Vino Rosso"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"9.50"</span>
 <span class="w">    </span><span class="o">}</span>,
 <span class="w">    </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Brigidini di Lamporecchio&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Brigidini&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;price&quot;</span>:<span class="w"> </span><span class="s2">&quot;3.50&quot;</span>
+<span class="w">        </span><span class="s2">"description"</span>:<span class="w"> </span><span class="s2">"Brigidini di Lamporecchio"</span>,
+<span class="w">        </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"Brigidini"</span>,
+<span class="w">        </span><span class="s2">"price"</span>:<span class="w"> </span><span class="s2">"3.50"</span>
 <span class="w">    </span><span class="o">}</span>
 <span class="o">]</span>
 </code></pre></div>
-
 <p>Again, you can get up to this point with:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.3
 </code></pre></div>
-
 <h3>One more thing...</h3>
 <p>No, we are not going to present a new amazing device, I'm sorry, but I
 want to show you a nice Django Rest Framework feature you can have
 without much additional work. Edit <strong>settings.py</strong> and add
 <strong>rest_framework</strong> to the list of <strong>INSTALLED_APPS</strong>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
+    <span class="s1">'django.contrib.admin'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.auth'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.contenttypes'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.sessions'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.messages'</span><span class="p">,</span>
+    <span class="s1">'django.contrib.staticfiles'</span><span class="p">,</span>
+    <span class="s1">'rest_framework'</span><span class="p">,</span>
+    <span class="s1">'catalog'</span><span class="p">,</span>
 <span class="p">]</span>
 </code></pre></div>
-
 <p>Now, if you are still running the Django app, try to visit this url from
-your browser: <a href="http://127.0.0.1:8000/products/">http://127.0.0.1:8000/products/</a><br>
+your browser: <a href="http://127.0.0.1:8000/products/">http://127.0.0.1:8000/products/</a><br/>
 That's very nice, isn't it? You can have browsable APIs at no cost.</p>
 <h3>Wrapping Up</h3>
 <p>I've mentioned at the beginning that this is just the first part of my
@@ -554,22 +487,17 @@ able to add reviews. So, if you feel ready, you can begin to follow the
 <p>Some parts of this tutorial and a few examples have been taken directly
 from the original <a href="http://www.django-rest-framework.org/tutorial/quickstart/">Django Rest Framework
 tutorial</a>.</p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/api.html">API</a>
-      <a href="https://www.andreagrandi.it/tag/django.html">Django</a>
-      <a href="https://www.andreagrandi.it/tag/framework.html">framework</a>
-      <a href="https://www.andreagrandi.it/tag/python.html">Python</a>
-      <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>
-      <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/api.html">API</a>
+<a href="https://www.andreagrandi.it/tag/django.html">Django</a>
+<a href="https://www.andreagrandi.it/tag/framework.html">framework</a>
+<a href="https://www.andreagrandi.it/tag/python.html">Python</a>
+<a href="https://www.andreagrandi.it/tag/rest.html">rest</a>
+<a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -585,30 +513,18 @@ tutorial</a>.</p>
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -619,13 +535,10 @@ tutorial</a>.</p>
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>

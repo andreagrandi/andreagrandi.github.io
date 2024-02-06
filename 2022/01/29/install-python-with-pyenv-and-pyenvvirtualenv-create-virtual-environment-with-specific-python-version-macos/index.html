@@ -1,181 +1,137 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/stylesheet/style.min.css">
-
-
-  <link id="pygments-light-theme" rel="stylesheet" type="text/css"     href="https://www.andreagrandi.it/theme/pygments/monokai.min.css">
-
-  <script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
-  <script defer src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
-  <script defer src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
-  <link rel="stylesheet" href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" />
-
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css">
-
-
-
-  <link href="https://www.andreagrandi.it/feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-    title="Andrea Grandi RSS">
-
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#333333">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#333333">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Microsoft EDGE -->
-  <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Andrea Grandi" />
-<meta name="description" content="How to use pyenv and pyenv-virtualenv to install a specific version of Python and create a virtual environment with that version on MacOS" />
-<meta name="keywords" content="python, development, pyenv, virtualenv, pyenv-virtualenv, environment, python310, programming, pip, macos, install, version">
-
-
-<meta property="og:site_name" content="Andrea Grandi"/>
-<meta property="og:title" content="Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS"/>
-<meta property="og:description" content="How to use pyenv and pyenv-virtualenv to install a specific version of Python and create a virtual environment with that version on MacOS"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2022-01-29 16:00:00+01:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://www.andreagrandi.it/author/andrea-grandi.html">
-<meta property="article:section" content="Development"/>
-<meta property="article:tag" content="python"/>
-<meta property="article:tag" content="development"/>
-<meta property="article:tag" content="pyenv"/>
-<meta property="article:tag" content="virtualenv"/>
-<meta property="article:tag" content="pyenv-virtualenv"/>
-<meta property="article:tag" content="environment"/>
-<meta property="article:tag" content="python310"/>
-<meta property="article:tag" content="programming"/>
-<meta property="article:tag" content="pip"/>
-<meta property="article:tag" content="macos"/>
-<meta property="article:tag" content="install"/>
-<meta property="article:tag" content="version"/>
-<meta property="og:image" content="/images/me_pycon_2019_2_300x300.jpg">
-
-  <title>Andrea Grandi &ndash; Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS</title>
-
-
-  <link rel="canonical" href="https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/" />
-
-  <link rel="me" href="https://mastodon.social/@andreagrandi" />
-</head>
-
-<body class="light-theme"
->
-  <aside>
-    <div>
-      <a href="https://www.andreagrandi.it">
-        <img src="/images/me_pycon_2019_2_300x300.jpg" alt="Andrea Grandi" title="Andrea Grandi">
-      </a>
-
-      <h1>
-        <a href="https://www.andreagrandi.it">Andrea Grandi</a>
-      </h1>
-
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://www.andreagrandi.it/theme/stylesheet/style.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<script src="https://www.andreagrandi.it/theme/tipuesearch/jquery.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.js"></script>
+<script defer="" src="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch_set.js"></script>
+<script defer="" src="https://www.andreagrandi.it/tipuesearch_content.js"></script>
+<link href="https://www.andreagrandi.it/theme/tipuesearch/tipuesearch.min.css" rel="stylesheet">
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="https://www.andreagrandi.it/feeds/all.rss.xml" rel="alternate" title="Andrea Grandi RSS" type="application/rss+xml"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#333333" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#333333" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#333333" name="msapplication-TileColor"/>
+<meta content="Andrea Grandi" name="author">
+<meta content="How to use pyenv and pyenv-virtualenv to install a specific version of Python and create a virtual environment with that version on MacOS" name="description">
+<meta content="python, development, pyenv, virtualenv, pyenv-virtualenv, environment, python310, programming, pip, macos, install, version" name="keywords"/>
+<meta content="Andrea Grandi" property="og:site_name">
+<meta content="Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS" property="og:title">
+<meta content="How to use pyenv and pyenv-virtualenv to install a specific version of Python and create a virtual environment with that version on MacOS" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2022-01-29 16:00:00+01:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://www.andreagrandi.it/author/andrea-grandi.html" property="article:author"/>
+<meta content="Development" property="article:section">
+<meta content="python" property="article:tag"/>
+<meta content="development" property="article:tag"/>
+<meta content="pyenv" property="article:tag"/>
+<meta content="virtualenv" property="article:tag"/>
+<meta content="pyenv-virtualenv" property="article:tag"/>
+<meta content="environment" property="article:tag"/>
+<meta content="python310" property="article:tag"/>
+<meta content="programming" property="article:tag"/>
+<meta content="pip" property="article:tag"/>
+<meta content="macos" property="article:tag"/>
+<meta content="install" property="article:tag"/>
+<meta content="version" property="article:tag"/>
+<meta content="/images/me_pycon_2019_2_300x300.jpg" property="og:image"/>
+<title>Andrea Grandi – Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS</title>
+<link href="https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/" rel="canonical">
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+</link></link></meta></meta></meta></meta></meta></meta></meta></link><link href="https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Andrea Grandi", "item": "https://www.andreagrandi.it"}, {"@type": "ListItem", "position": 2, "name": "2022", "item": "https://www.andreagrandi.it/2022"}, {"@type": "ListItem", "position": 3, "name": "01", "item": "https://www.andreagrandi.it/2022/01"}, {"@type": "ListItem", "position": 4, "name": "29", "item": "https://www.andreagrandi.it/2022/01/29"}, {"@type": "ListItem", "position": 5, "name": "Install python with pyenv and pyenvvirtualenv create virtual environment with specific python version macos", "item": "https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos"}, {"@type": "ListItem", "position": 6, "name": "Index", "item": "https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/index.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Andrea Grandi"}, "publisher": {"@type": "Organization", "name": "Andrea Grandi"}, "headline": "Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS", "about": "Development", "datePublished": "2022-01-29 16:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://www.andreagrandi.it">
+<img alt="Andrea Grandi" src="/images/me_pycon_2019_2_300x300.jpg" title="Andrea Grandi"/>
+</a>
+<h1>
+<a href="https://www.andreagrandi.it">Andrea Grandi</a>
+</h1>
 <p>Software Developer</p>
-      <form class="navbar-search" action="/search.html" role="search">
-        <input type="text" name="q" id="tipue_search_input" placeholder="Search...">
-      </form>
-
-      <nav>
-        <ul class="list">
-
-
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/about/">
+<form action="/search.html" class="navbar-search" role="search">
+<input id="tipue_search_input" name="q" placeholder="Search..." type="text"/>
+</form>
+<nav>
+<ul class="list">
+<li>
+<a href="https://www.andreagrandi.it/about/" target="_self">
               About
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/curriculum/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/curriculum/" target="_self">
               Curriculum
             </a>
-          </li>
-          <li>
-            <a target="_self"
-              href="https://www.andreagrandi.it/pgp-key/">
+</li>
+<li>
+<a href="https://www.andreagrandi.it/pgp-key/" target="_self">
               PGP Key
             </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li>
-          <a rel="me"  class="sc-mastodon" href="https://mastodon.social/@andreagrandi" target="_blank">
-            <i class="fab fa-mastodon"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-github" href="https://github.com/andreagrandi" target="_blank">
-            <i class="fab fa-github"></i>
-          </a>
-        </li>
-        <li>
-          <a  class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
-            <i class="fab fa-linkedin"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <a href="https://tree-nation.com/profile/impact/andreagrandi#co2" target="_blank" style="position:relative;cursor:pointer;display:block;z-index:999;">
-    <img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;">
-    </a>
-    <script src="https://tree-nation.com/js/track.js"></script>
-    <script>treenation_track("63a8beb06e6e6");</script>
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://www.andreagrandi.it">Home</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-
-      <a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
-    </nav>
-
+</li>
+</ul>
+</nav>
+<ul class="social">
+<li>
+<a class="sc-mastodon" href="https://mastodon.social/@andreagrandi" rel="me" target="_blank">
+<i class="fab fa-mastodon"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/andreagrandi" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/andreagrandi/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+<a href="https://tree-nation.com/profile/impact/andreagrandi#co2" style="position:relative;cursor:pointer;display:block;z-index:999;" target="_blank">
+<img src="https://tree-nation.com/images/tracking/label-co2-website-white-en.png" style="width:157px;height:auto;"/>
+</a>
+<script src="https://tree-nation.com/js/track.js"></script>
+<script>treenation_track("63a8beb06e6e6");</script>
+</aside>
+<main>
+<nav>
+<a href="https://www.andreagrandi.it">Home</a>
+<a href="/archives.html">Archives</a>
+<a href="/categories.html">Categories</a>
+<a href="/tags.html">Tags</a>
+<a href="https://www.andreagrandi.it/feeds/all.rss.xml">RSS</a>
+</nav>
 <article class="single">
-  <header>
-      
-    <h1 id="install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos">Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS</h1>
-    <p>
+<header>
+<h1 id="install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos">Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS</h1>
+<p>
       Posted on Sat 29 January 2022 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>This is an update version of my previous tutorial <a href="https://www.andreagrandi.it/2020/10/10/install-python-with-pyenv-create-virtual-environment-with-specific-python-version/">Install Python with pyenv and pyenv-virtualenv create virtual environment with specific Python version</a>. In this version I will show how to install Python 3.10.0 and create a virtual environment with that version.</p>
+</p>
+</header>
+<div>
+<p>This is an update version of my previous tutorial <a href="https://www.andreagrandi.it/2020/10/10/install-python-with-pyenv-create-virtual-environment-with-specific-python-version/">Install Python with pyenv and pyenv-virtualenv create virtual environment with specific Python version</a>. In this version I will show how to install Python 3.10.0 and create a virtual environment with that version.</p>
 <p>To manage my Python versions I'm using using <a href="https://github.com/pyenv/pyenv">pyenv</a> and <a href="https://github.com/pyenv/pyenv-virtualenv">pyenv-virtualenv</a> and once they are correctly configured, it's very easy to install a new Python version.</p>
 <h2>Make sure you have the required packages installed</h2>
 <p>First of all make sure you have all the latest packages installed (I'm using <a href="https://brew.sh">Homebrew</a> for MacOS):</p>
@@ -183,21 +139,18 @@
 brew<span class="w"> </span>install<span class="w"> </span>pyenv
 brew<span class="w"> </span>install<span class="w"> </span>pyenv-virtualenv
 </code></pre></div>
-
 <p>once installed you should see the latest version:</p>
 <div class="highlight"><pre><span></span><code>pyenv<span class="w"> </span>--version
 pyenv<span class="w"> </span><span class="m">2</span>.2.2
 </code></pre></div>
-
 <h2>Configure pyenv and pyenv-virtualenv</h2>
 <p>To be able to use <code>pyenv</code> and <code>pyenv-virtualenv</code> you need to write this basic configuration in your <code>~/.bashrc</code> (or <code>~/.zshrc</code> if you are using zsh):</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.pyenv&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
-<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>pyenv<span class="w"> </span>init<span class="w"> </span>--path<span class="k">)</span><span class="s2">&quot;</span>
-<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>pyenv<span class="w"> </span>init<span class="w"> </span>-<span class="k">)</span><span class="s2">&quot;</span>
-<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>pyenv<span class="w"> </span>virtualenv-init<span class="w"> </span>-<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>pyenv<span class="w"> </span>init<span class="w"> </span>--path<span class="k">)</span><span class="s2">"</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>pyenv<span class="w"> </span>init<span class="w"> </span>-<span class="k">)</span><span class="s2">"</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>pyenv<span class="w"> </span>virtualenv-init<span class="w"> </span>-<span class="k">)</span><span class="s2">"</span>
 </code></pre></div>
-
 <h2>Install Python 3.10.0</h2>
 <p>To install Python 3.10.0 you only need <code>pyenv install 3.10.0</code>:</p>
 <div class="highlight"><pre><span></span><code>pyenv<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.10.0
@@ -213,67 +166,54 @@ python-build:<span class="w"> </span>use<span class="w"> </span>readline<span cl
 python-build:<span class="w"> </span>use<span class="w"> </span>zlib<span class="w"> </span>from<span class="w"> </span>xcode<span class="w"> </span>sdk
 Installed<span class="w"> </span>Python-3.10.0<span class="w"> </span>to<span class="w"> </span>/Users/andrea/.pyenv/versions/3.10.0
 </code></pre></div>
-
 <h2>Set Python 3.10.0 as the local version</h2>
 <p>Now that the version you want has been installed, you need to tell pyenv you want to use it:</p>
 <div class="highlight"><pre><span></span><code>pyenv<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="m">3</span>.10.0
 pyenv<span class="w"> </span>which<span class="w"> </span>python
 </code></pre></div>
-
 <p>which will show you this:</p>
 <div class="highlight"><pre><span></span><code>/Users/andrea/.pyenv/versions/3.10.0/bin/python
 </code></pre></div>
-
 <h2>Create a virtual environment using Python from pyenv</h2>
 <p>To create a virtual environment named <code>my-310-python</code> using Python 3.10.0 version, you just need this command:</p>
 <div class="highlight"><pre><span></span><code>pyenv<span class="w"> </span>virtualenv<span class="w"> </span><span class="m">3</span>.10.0<span class="w"> </span>my-310-python
 </code></pre></div>
-
 <p>Verify that the virtual environment has been created:</p>
 <div class="highlight"><pre><span></span><code>pyenv<span class="w"> </span>virtualenvs
 <span class="m">3</span>.10.0/envs/my-310-python<span class="w"> </span><span class="o">(</span>created<span class="w"> </span>from<span class="w"> </span>/Users/andrea/.pyenv/versions/3.10.0<span class="o">)</span>
 </code></pre></div>
-
 <h2>Test and automatically activate the virtual environment</h2>
 <p>Create a test folder:</p>
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>test-310
 </code></pre></div>
-
 <p>Create a <code>.python-version</code> file in the test folder:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>my-310-python<span class="w"> </span>&gt;<span class="w"> </span>test-310/.python-version
 </code></pre></div>
-
 <p>Now if you enter the folder (<code>cd test-310</code>), the virtual environment will be automatically activated:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>test-310
 <span class="o">(</span>my-310-python<span class="o">)</span><span class="w"> </span>➜<span class="w">  </span>test-310
 </code></pre></div>
-
 <p>At this point you can verify that the virtual environment is working, by using <code>python --version</code>:</p>
 <div class="highlight"><pre><span></span><code>(my-310-python) ➜  test-310 python --version
 Python 3.10.0
 </code></pre></div>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://www.andreagrandi.it/tag/python.html">python</a>
-      <a href="https://www.andreagrandi.it/tag/development.html">development</a>
-      <a href="https://www.andreagrandi.it/tag/pyenv.html">pyenv</a>
-      <a href="https://www.andreagrandi.it/tag/virtualenv.html">virtualenv</a>
-      <a href="https://www.andreagrandi.it/tag/pyenv-virtualenv.html">pyenv-virtualenv</a>
-      <a href="https://www.andreagrandi.it/tag/environment.html">environment</a>
-      <a href="https://www.andreagrandi.it/tag/python310.html">python310</a>
-      <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>
-      <a href="https://www.andreagrandi.it/tag/pip.html">pip</a>
-      <a href="https://www.andreagrandi.it/tag/macos.html">macos</a>
-      <a href="https://www.andreagrandi.it/tag/install.html">install</a>
-      <a href="https://www.andreagrandi.it/tag/version.html">version</a>
-    </p>
-  </div>
-
-
-
-
-
+</div>
+<div class="tag-cloud">
+<p>
+<a href="https://www.andreagrandi.it/tag/python.html">python</a>
+<a href="https://www.andreagrandi.it/tag/development.html">development</a>
+<a href="https://www.andreagrandi.it/tag/pyenv.html">pyenv</a>
+<a href="https://www.andreagrandi.it/tag/virtualenv.html">virtualenv</a>
+<a href="https://www.andreagrandi.it/tag/pyenv-virtualenv.html">pyenv-virtualenv</a>
+<a href="https://www.andreagrandi.it/tag/environment.html">environment</a>
+<a href="https://www.andreagrandi.it/tag/python310.html">python310</a>
+<a href="https://www.andreagrandi.it/tag/programming.html">programming</a>
+<a href="https://www.andreagrandi.it/tag/pip.html">pip</a>
+<a href="https://www.andreagrandi.it/tag/macos.html">macos</a>
+<a href="https://www.andreagrandi.it/tag/install.html">install</a>
+<a href="https://www.andreagrandi.it/tag/version.html">version</a>
+</p>
+</div>
 <!-- Disqus -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -289,30 +229,18 @@ Python 3.10.0
 </noscript>
 <!-- End Disqus -->
 </article>
-
-    <footer>
+<footer>
 <p>
-  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  © 2024  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative Commons Attribution-ShareAlike 4.0 International License</a>
 </p>
 <p>
   Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme - source code available on <a href="https://github.com/andreagrandi/andreagrandi.it" target="_blank">GitHub</a>
 </p><p>
-  <a rel="license"
-     href="http://creativecommons.org/licenses/by-sa/4.0/"
-     target="_blank">
-    <img alt="Creative Commons License"
-         title="Creative Commons License"
-         style="border-width:0"
-           src="/images/by-sa.png"
-         width="80"
-         height="15"/>
-  </a>
-</p>    </footer>
-  </main>
-
-
-
-
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="/images/by-sa.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p> </footer>
+</main>
 <script type="application/ld+json">
 {
   "@context" : "http://schema.org",
@@ -323,13 +251,10 @@ Python 3.10.0
   "description": ""
 }
 </script>
-
-  <script>
+<script>
     $(document).ready(function () {
       $('#tipue_search_input').tipuesearch();
     });
   </script>
-
 </body>
-
 </html>
