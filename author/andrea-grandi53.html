@@ -147,6 +147,26 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2007/12/13/lower-price-for-n800-in-italymaybe-n810-coming-closer/">Lower price for N800 in Italy...maybe N810 coming closer?!</a></h2>
+    <p>
+      Posted on Thu 13 December 2007 in <a href="https://www.andreagrandi.it/category/linux-maemo-en.html">Linux, Maemo (EN)</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/n800.html">n800</a>,              <a href="https://www.andreagrandi.it/tag/nokia.html">nokia</a>,              <a href="https://www.andreagrandi.it/tag/tablet.html">tablet</a>
+    </p>
+  </header>
+  <div>
+      <p><a href=""><img alt="n800" src="https://www.andreagrandi.it/images/2008/08/n800.jpg"></a></p>
+<p>I was looking in the Italian Nokia official shop, and I noticed that the
+<strong>N800</strong> price was decreased to <strong>259€</strong> instead of <strong>289€</strong></p>
+<p>You can verify it on the <a href="http://shop.nokia.it/nokia-it/searchresults.aspx?sku=3525335&amp;wt=PHALL&amp;ws=0%2c19549522&amp;culture=it-IT#__anchor_ProductSelector">official website</a>.</p>
+<p>Maybe the <strong>N810</strong> is coming closer? 
+Who knows ;)</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2007/12/10/skype-on-n770-using-os2007-he/">Skype on N770 (using Os2007 HE)</a></h2>
     <p>
       Posted on Mon 10 December 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-skype.html">HowTo, Linux, Maemo (EN), Skype</a>
@@ -268,69 +288,6 @@ this in your N800:</p>
 <p><strong>Note:</strong> Nokia <strong>DOESN'T SUPPORT</strong> this procedure in ANY way. You can
 follow this procedure at your own risk. Neither me or Nokia have the
 responsability of any damage caused to your device.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2007/11/16/installing-qemu-arm-eabi-patch-into-scratchbox/">Installing qemu-arm-eabi patch into Scratchbox</a></h2>
-    <p>
-      Posted on Fri 16 November 2007 in <a href="https://www.andreagrandi.it/category/howto-linux-maemo-en-programmazione.html">HowTo, Linux, Maemo (EN), Programmazione</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/maemo.html">maemo</a>,              <a href="https://www.andreagrandi.it/tag/qemu.html">qemu</a>,              <a href="https://www.andreagrandi.it/tag/scratchbox.html">scratchbox</a>,              <a href="https://www.andreagrandi.it/tag/sdk.html">SDK</a>
-    </p>
-  </header>
-  <div>
-      <p>Using Scratchbox and in particular the Maemo SDK with ARMEL target, very
-often when we try to execute some application we can get into this kind
-of errors (for example):</p>
-<div class="highlight"><pre><span></span><code>sem_post:<span class="w"> </span>Function<span class="w"> </span>not<span class="w"> </span>implemented
-</code></pre></div>
-
-<p>This happens because not all the functions have been implemented in the
-emulated environment.[ Lauro Venâncio]{style="font-weight: bold;"} has
-created a <a href="http://sourceforge.net/projects/qemu-arm-eabi/">patched</a>
-version of qemu-arm called [qemu-arm-eabi].</p>
-<p>Thanks to <strong>Marcelo Lira</strong>, we have a simple
-howto to install the patch into the Scratchbox environment.</p>
-<p><strong>Note:</strong> you have to execute these commands
-from outside the Scratchbox environment and you should not be logged
-into the environment at the same time.</p>
-<p>You need gcc 3.4, SDL dev library andZlib dev:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gcc-3.4<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>zlib1g-dev
-</code></pre></div>
-
-<p>Get the patched qemu-arm. Notice that
-the patches are already applied, everything is here, and you don't need
-to get the qemu sources.</p>
-<div class="highlight"><pre><span></span><code>svn<span class="w"> </span>co<span class="w"> </span>https://qemu-arm-eabi.svn.sourceforge.net/svnroot/qemu-arm-eabi<span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
-<span class="nb">cd</span><span class="w"> </span>qemu-arm-eabi<span class="w"> </span>
-./configure<span class="w"> </span>--target-list<span class="o">=</span>arm-linux-user<span class="w"> </span>--static<span class="w"> </span>make
-</code></pre></div>
-
-<p>Copy qemu to the cputransp dir on scratchbox:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>cp<span class="w"> </span>arm-linux-user/qemu-arm<span class="w"> </span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
-</code></pre></div>
-
-<p>Add it to the list of cputransp methods. Open the file:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/scratchbox/devkits/cputransp/etc/cputransp-methods
-</code></pre></div>
-
-<p>and add this line:</p>
-<div class="highlight"><pre><span></span><code>qemu-arm-eabi-sb2
-</code></pre></div>
-
-<p>Configure the target to use the patched qemu as transparency method. Edit the file:</p>
-<div class="highlight"><pre><span></span><code>vim<span class="w"> </span>/scratchbox/users/USERNAME/targets/CHINOOK_ARMEL.config
-</code></pre></div>
-
-<p>and change this line:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">SBOX_CPUTRANSPARENCY_METHOD</span><span class="o">=</span>/scratchbox/devkits/cputransp/bin/qemu-arm-eabi-sb2
-</code></pre></div>
-
-<p>That's all! You're now ready to log again into your Scratchbox
-environment.</p>
   </div>
 </article>
 

@@ -147,6 +147,59 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2015/03/16/go-defining-methods-on-struct-types/">Go: defining methods on struct types</a></h2>
+    <p>
+      Posted on Mon 16 March 2015 in <a href="https://www.andreagrandi.it/category/go.html">Go</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/go.html">go</a>,              <a href="https://www.andreagrandi.it/tag/golang.html">golang</a>,              <a href="https://www.andreagrandi.it/tag/programming.html">programming</a>,              <a href="https://www.andreagrandi.it/tag/struct.html">struct</a>
+    </p>
+  </header>
+  <div>
+      <p>In <strong>Go</strong> it's possible to define <strong>methods</strong> on <strong>struct types</strong>. The
+syntax needed for it can be a bit strange for people that are used to
+define classes and methods in Java, C# etc... but once you learn it
+it's quite easy to use.</p>
+<p>In my case for example I needed something that could contain a Timer
+object, a string and a method that could start the timer and call a
+method at the end of the Timer execution. I implemented it in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">type</span><span class="w"> </span><span class="nx">DeviceTimer</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">DeviceID</span><span class="w">    </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">DeviceTimer</span><span class="w"> </span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Timer</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">timer</span><span class="w"> </span><span class="nx">DeviceTimer</span><span class="p">)</span><span class="w"> </span><span class="nx">startTimer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceTimer</span><span class="p">.</span><span class="nx">C</span>
+<span class="w">    </span><span class="nx">notifyDeviceTimerExpired</span><span class="p">(</span><span class="nx">timer</span><span class="p">.</span><span class="nx">DeviceID</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The key point is <strong>row 6</strong> <code>func (timer DeviceTimer) startTimer() { ... }</code> 
+where I defined a method called <code>startTimer</code> and I specify timer
+<code>DeviceTimer</code> inside the func definition. This basically "extends" the
+struct DeviceTimer adding that method to it. This means that I can call
+that method in this way:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">timer</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">300</span><span class="p">)</span>
+<span class="nx">device_timer</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">DeviceTimer</span><span class="p">{</span><span class="s">&quot;abc123&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">timer</span><span class="p">}</span>
+<span class="k">go</span><span class="w"> </span><span class="nx">device_timer</span><span class="p">.</span><span class="nx">startTimer</span><span class="p">()</span>
+</code></pre></div>
+
+<p>This is all you need to do. If you want to read more about this subject,
+I can suggest to read these two articles:</p>
+<ul>
+<li><strong>Go by Example: Methods</strong> <a href="https://gobyexample.com/methods">https://gobyexample.com/methods</a></li>
+<li><strong>Inheritance and subclassing in Go - or its near likeness</strong>
+    <a href="http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html">http://golangtutorials.blogspot.co.uk/2011/06/inheritance-and-subclassing-in-go-or.html</a></li>
+</ul>
+<p><strong>Note:</strong> I'm not a Go expert and these are just my personal notes I'm
+taking during my learning experience. I'm very keen to share my notes
+with everyone, but please don't take them as notes from an expert Go
+developer.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2015/02/21/how-to-create-a-docker-image-for-postgresql-and-persist-data/">How to create a Docker image for PostgreSQL and persist data</a></h2>
     <p>
       Posted on Sat 21 February 2015 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -455,162 +508,6 @@ the relative script.</p>
 <p>That's all! I hope this very simple service can be useful to other
 people and once again, if you want to improve it, I will be glad to
 accept your pull requests on GitHub.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/">Create an EncFS volume compatible with BoxCryptor Classic</a></h2>
-    <p>
-      Posted on Fri 12 September 2014 in <a href="https://www.andreagrandi.it/category/howto-linux-sicurezza.html">HowTo, Linux, Sicurezza</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/boxcryptor.html">boxcryptor</a>,              <a href="https://www.andreagrandi.it/tag/dropbox.html">dropbox</a>,              <a href="https://www.andreagrandi.it/tag/encfs.html">encfs</a>
-    </p>
-  </header>
-  <div>
-      <p>If you are planning to share an encrypted volume between Linux/OSX and
-Windows (I will assume you are sharing it on Dropbox, but you could use
-any similar service) and you are using
-<a href="http://www.arg0.net/encfs"><strong>EncFS</strong></a> under Linux/OSX and
-<a href="https://www.boxcryptor.com"><strong>BoxCryptor</strong></a> under Windows, there are
-some specifig settings to use when you create the EncFS volume. Infact
-even if BoxCryptor claims to be "encfs compatible", it's not 100%.</p>
-<p>Suppose you want to create an encrypted volume located at
-<strong><code>$HOME/.TestTmpEncrypted</code></strong> and mounted at <strong><code>$HOME/TestTmp</code></strong> you need
-the following command:</p>
-<div class="highlight"><pre><span></span><code>encfs<span class="w"> </span>~/.TestTmpEncrypted<span class="w"> </span>~/TestTmp
-</code></pre></div>
-
-<p>answer "Y" when you are asked if you want to create the folders:</p>
-<div class="highlight"><pre><span></span><code>The<span class="w"> </span>directory<span class="w"> </span><span class="s2">&quot;/home/andrea/.TestTmpEncrypted/&quot;</span><span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>exist.<span class="w"> </span>Should<span class="w"> </span>it<span class="w"> </span>be<span class="w"> </span>created?<span class="w"> </span><span class="o">(</span>y,n<span class="o">)</span><span class="w"> </span>y
-The<span class="w"> </span>directory<span class="w"> </span><span class="s2">&quot;/home/andrea/TestTmp&quot;</span><span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>exist.<span class="w"> </span>Should<span class="w"> </span>it<span class="w"> </span>be<span class="w"> </span>created?<span class="w"> </span><span class="o">(</span>y,n<span class="o">)</span><span class="w"> </span>y
-</code></pre></div>
-
-<p>At this point you will need to select between default paranoia mode or
-advanced mode. Please choose the <strong>advanced</strong> one (x):</p>
-<div class="highlight"><pre><span></span><code>Creating<span class="w"> </span>new<span class="w"> </span>encrypted<span class="w"> </span>volume.
-Please<span class="w"> </span>choose<span class="w"> </span>from<span class="w"> </span>one<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>options:
-<span class="w"> </span>enter<span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>expert<span class="w"> </span>configuration<span class="w"> </span>mode,
-<span class="w"> </span>enter<span class="w"> </span><span class="s2">&quot;p&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>pre-configured<span class="w"> </span>paranoia<span class="w"> </span>mode,
-<span class="w"> </span>anything<span class="w"> </span><span class="k">else</span>,<span class="w"> </span>or<span class="w"> </span>an<span class="w"> </span>empty<span class="w"> </span>line<span class="w"> </span>will<span class="w"> </span><span class="k">select</span><span class="w"> </span>standard<span class="w"> </span>mode.
-?&gt;<span class="w"> </span>x
-</code></pre></div>
-
-<p>Manual configuration mode selected.</p>
-<div class="highlight"><pre><span></span><code>Select<span class="w"> </span>AES<span class="w"> </span>as<span class="w"> </span>cypher<span class="w"> </span>algorithm:
-
-The<span class="w"> </span>following<span class="w"> </span>cypher<span class="w"> </span>algorithms<span class="w"> </span>are<span class="w"> </span>available:
-<span class="m">1</span>.<span class="w"> </span>AES<span class="w"> </span>:<span class="w"> </span><span class="m">16</span><span class="w"> </span>byte<span class="w"> </span>block<span class="w"> </span>cipher
---<span class="w"> </span>Supports<span class="w"> </span>key<span class="w"> </span>lengths<span class="w"> </span>of<span class="w"> </span><span class="m">128</span><span class="w"> </span>to<span class="w"> </span><span class="m">256</span><span class="w"> </span>bits
---<span class="w"> </span>Supports<span class="w"> </span>block<span class="w"> </span>sizes<span class="w"> </span>of<span class="w"> </span><span class="m">64</span><span class="w"> </span>to<span class="w"> </span><span class="m">4096</span><span class="w"> </span>bytes
-<span class="m">2</span>.<span class="w"> </span>Blowfish<span class="w"> </span>:<span class="w"> </span><span class="m">8</span><span class="w"> </span>byte<span class="w"> </span>block<span class="w"> </span>cypher
---<span class="w"> </span>Supports<span class="w"> </span>key<span class="w"> </span>lengths<span class="w"> </span>of<span class="w"> </span><span class="m">128</span><span class="w"> </span>to<span class="w"> </span><span class="m">256</span><span class="w"> </span>bits
---<span class="w"> </span>Supports<span class="w"> </span>block<span class="w"> </span>sizes<span class="w"> </span>of<span class="w"> </span><span class="m">64</span><span class="w"> </span>to<span class="w"> </span><span class="m">4096</span><span class="w"> </span>bytes
-
-Enter<span class="w"> </span>the<span class="w"> </span>number<span class="w"> </span>corresponding<span class="w"> </span>to<span class="w"> </span>your<span class="w"> </span>choice:<span class="w"> </span><span class="m">1</span>
-
-Selected<span class="w"> </span>algorithm<span class="w"> </span><span class="s2">&quot;AES&quot;</span>
-</code></pre></div>
-
-<p>Select <strong>256</strong> as key size:</p>
-<div class="highlight"><pre><span></span><code>Please<span class="w"> </span><span class="k">select</span><span class="w"> </span>a<span class="w"> </span>key<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bits.<span class="w"> </span>The<span class="w"> </span>cypher<span class="w"> </span>you<span class="w"> </span>have<span class="w"> </span>chosen
-supports<span class="w"> </span>sizes<span class="w"> </span>from<span class="w"> </span><span class="m">128</span><span class="w"> </span>to<span class="w"> </span><span class="m">256</span><span class="w"> </span>bits<span class="w"> </span><span class="k">in</span><span class="w"> </span>increments<span class="w"> </span>of<span class="w"> </span><span class="m">64</span><span class="w"> </span>bits.
-For<span class="w"> </span>example:
-<span class="m">128</span>,<span class="w"> </span><span class="m">192</span>,<span class="w"> </span><span class="m">256</span>
-Selected<span class="w"> </span>key<span class="w"> </span>size:<span class="w"> </span><span class="m">256</span>
-
-Using<span class="w"> </span>key<span class="w"> </span>size<span class="w"> </span>of<span class="w"> </span><span class="m">256</span><span class="w"> </span>bits
-</code></pre></div>
-
-<p>Choose <strong>1024</strong> as block size:</p>
-<div class="highlight"><pre><span></span><code>Select<span class="w"> </span>a<span class="w"> </span>block<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bytes.<span class="w"> </span>The<span class="w"> </span>cypher<span class="w"> </span>you<span class="w"> </span>have<span class="w"> </span>chosen
-supports<span class="w"> </span>sizes<span class="w"> </span>from<span class="w"> </span><span class="m">64</span><span class="w"> </span>to<span class="w"> </span><span class="m">4096</span><span class="w"> </span>bytes<span class="w"> </span><span class="k">in</span><span class="w"> </span>increments<span class="w"> </span>of<span class="w"> </span><span class="m">16</span>.
-Alternatively,<span class="w"> </span>just<span class="w"> </span>press<span class="w"> </span>enter<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>default<span class="w"> </span><span class="o">(</span><span class="m">1024</span><span class="w"> </span>bytes<span class="o">)</span>
-
-filesystem<span class="w"> </span>block<span class="w"> </span>size:
-
-Using<span class="w"> </span>filesystem<span class="w"> </span>block<span class="w"> </span>size<span class="w"> </span>of<span class="w"> </span><span class="m">1024</span><span class="w"> </span>bytes
-</code></pre></div>
-
-<p>Select <strong>Stream</strong> as filename encoding:</p>
-<div class="highlight"><pre><span></span><code>The<span class="w"> </span>following<span class="w"> </span>filename<span class="w"> </span>encoding<span class="w"> </span>algorithms<span class="w"> </span>are<span class="w"> </span>available:
-<span class="m">1</span>.<span class="w"> </span>Block<span class="w"> </span>:<span class="w"> </span>Block<span class="w"> </span>encoding,<span class="w"> </span>hides<span class="w"> </span>file<span class="w"> </span>name<span class="w"> </span>size<span class="w"> </span>somewhat
-<span class="m">2</span>.<span class="w"> </span>Null<span class="w"> </span>:<span class="w"> </span>No<span class="w"> </span>encryption<span class="w"> </span>of<span class="w"> </span>filenames
-<span class="m">3</span>.<span class="w"> </span>Stream<span class="w"> </span>:<span class="w"> </span>Stream<span class="w"> </span>encoding,<span class="w"> </span>keeps<span class="w"> </span>filenames<span class="w"> </span>as<span class="w"> </span>short<span class="w"> </span>as<span class="w"> </span>possible
-
-Enter<span class="w"> </span>the<span class="w"> </span>number<span class="w"> </span>corresponding<span class="w"> </span>to<span class="w"> </span>your<span class="w"> </span>choice:<span class="w"> </span><span class="m">3</span>
-
-Selected<span class="w"> </span>algorithm<span class="w"> </span><span class="s2">&quot;Stream&quot;&quot;</span>
-</code></pre></div>
-
-<p>Do <strong>NOT</strong> enable <strong>filename initialization vector chaining</strong>:</p>
-<div class="highlight"><pre><span></span><code>Enable<span class="w"> </span>filename<span class="w"> </span>initialization<span class="w"> </span>vector<span class="w"> </span>chaining?
-This<span class="w"> </span>makes<span class="w"> </span>filename<span class="w"> </span>encoding<span class="w"> </span>dependent<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>path,
-rather<span class="w"> </span><span class="k">then</span><span class="w"> </span>encoding<span class="w"> </span>each<span class="w"> </span>path<span class="w"> </span>element<span class="w"> </span>individually.
-The<span class="w"> </span>default<span class="w"> </span>here<span class="w"> </span>is<span class="w"> </span>Yes.
-Any<span class="w"> </span>response<span class="w"> </span>that<span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>begin<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;n&#39;</span><span class="w"> </span>will<span class="w"> </span>mean<span class="w"> </span>Yes:<span class="w"> </span>no
-</code></pre></div>
-
-<p>Do <strong>NOT</strong> enable <strong>per-file initialization vectors</strong>:</p>
-<div class="highlight"><pre><span></span><code>Enable<span class="w"> </span>per-file<span class="w"> </span>initialization<span class="w"> </span>vectors?
-This<span class="w"> </span>adds<span class="w"> </span>about<span class="w"> </span><span class="m">8</span><span class="w"> </span>bytes<span class="w"> </span>per<span class="w"> </span>file<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>storage<span class="w"> </span>requirements.
-It<span class="w"> </span>should<span class="w"> </span>not<span class="w"> </span>affect<span class="w"> </span>performance<span class="w"> </span>except<span class="w"> </span>possibly<span class="w"> </span>with<span class="w"> </span>applications
-which<span class="w"> </span>rely<span class="w"> </span>on<span class="w"> </span>block-aligned<span class="w"> </span>file<span class="w"> </span>io<span class="w"> </span><span class="k">for</span><span class="w"> </span>performance.
-The<span class="w"> </span>default<span class="w"> </span>here<span class="w"> </span>is<span class="w"> </span>Yes.
-Any<span class="w"> </span>response<span class="w"> </span>that<span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>begin<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;n&#39;</span><span class="w"> </span>will<span class="w"> </span>mean<span class="w"> </span>Yes:<span class="w"> </span>no
-</code></pre></div>
-
-<p>Do <strong>NOT</strong> enable <strong>external chained IV</strong>:</p>
-<div class="highlight"><pre><span></span><code>External<span class="w"> </span>chained<span class="w"> </span>IV<span class="w"> </span>disabled,<span class="w"> </span>as<span class="w"> </span>both<span class="w"> </span><span class="s1">&#39;IV chaining&#39;</span>
-and<span class="w"> </span><span class="s1">&#39;unique IV&#39;</span><span class="w"> </span>features<span class="w"> </span>are<span class="w"> </span>required<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>option.
-Enable<span class="w"> </span>block<span class="w"> </span>authentication<span class="w"> </span>code<span class="w"> </span>headers
-on<span class="w"> </span>every<span class="w"> </span>block<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>file?<span class="w"> </span>This<span class="w"> </span>adds<span class="w"> </span>about<span class="w"> </span><span class="m">12</span><span class="w"> </span>bytes<span class="w"> </span>per<span class="w"> </span>block
-to<span class="w"> </span>the<span class="w"> </span>storage<span class="w"> </span>requirements<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>file,<span class="w"> </span>and<span class="w"> </span>significantly<span class="w"> </span>affects
-performance<span class="w"> </span>but<span class="w"> </span>it<span class="w"> </span>also<span class="w"> </span>means<span class="w"> </span><span class="o">[</span>almost<span class="o">]</span><span class="w"> </span>any<span class="w"> </span>modifications<span class="w"> </span>or<span class="w"> </span>errors
-within<span class="w"> </span>a<span class="w"> </span>block<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>caught<span class="w"> </span>and<span class="w"> </span>will<span class="w"> </span>cause<span class="w"> </span>a<span class="w"> </span><span class="nb">read</span><span class="w"> </span>error.
-The<span class="w"> </span>default<span class="w"> </span>here<span class="w"> </span>is<span class="w"> </span>No.
-Any<span class="w"> </span>response<span class="w"> </span>that<span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>begin<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;y&#39;</span><span class="w"> </span>will<span class="w"> </span>mean<span class="w"> </span>No:<span class="w"> </span>no
-</code></pre></div>
-
-<p>Do <strong>NOT</strong> enable <strong>random bytes to each block header</strong>:</p>
-<div class="highlight"><pre><span></span><code>Add<span class="w"> </span>random<span class="w"> </span>bytes<span class="w"> </span>to<span class="w"> </span>each<span class="w"> </span>block<span class="w"> </span>header?
-This<span class="w"> </span>adds<span class="w"> </span>a<span class="w"> </span>performance<span class="w"> </span>penalty,<span class="w"> </span>but<span class="w"> </span>ensures<span class="w"> </span>that<span class="w"> </span>blocks
-have<span class="w"> </span>different<span class="w"> </span>authentication<span class="w"> </span>codes.<span class="w"> </span>Note<span class="w"> </span>that<span class="w"> </span>you<span class="w"> </span>can
-have<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>benefits<span class="w"> </span>by<span class="w"> </span>enabling<span class="w"> </span>per-file<span class="w"> </span>initialisation
-vectors,<span class="w"> </span>which<span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>come<span class="w"> </span>with<span class="w"> </span>as<span class="w"> </span>great<span class="w"> </span>a<span class="w"> </span>performance
-penalty.
-Select<span class="w"> </span>a<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>bytes,<span class="w"> </span>from<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">(</span>no<span class="w"> </span>random<span class="w"> </span>bytes<span class="o">)</span><span class="w"> </span>to<span class="w"> </span><span class="m">8</span>:<span class="w"> </span><span class="m">0</span>
-</code></pre></div>
-
-<p>Enable <strong>file-hole pass-through</strong>:</p>
-<div class="highlight"><pre><span></span><code>Enable<span class="w"> </span>file-hole<span class="w"> </span>pass-through?
-This<span class="w"> </span>avoids<span class="w"> </span>writing<span class="w"> </span>encrypted<span class="w"> </span>blocks<span class="w"> </span>when<span class="w"> </span>file<span class="w"> </span>holes<span class="w"> </span>are<span class="w"> </span>created.
-The<span class="w"> </span>default<span class="w"> </span>here<span class="w"> </span>is<span class="w"> </span>Yes.
-Any<span class="w"> </span>response<span class="w"> </span>that<span class="w"> </span>does<span class="w"> </span>not<span class="w"> </span>begin<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;n&#39;</span><span class="w"> </span>will<span class="w"> </span>mean<span class="w"> </span>Yes:<span class="w"> </span>yes
-</code></pre></div>
-
-<p>Finally you will see:</p>
-<div class="highlight"><pre><span></span><code>Configuration<span class="w"> </span>finished.<span class="w"> </span>The<span class="w"> </span>filesystem<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>created<span class="w"> </span>has
-the<span class="w"> </span>following<span class="w"> </span>properties:
-Filesystem<span class="w"> </span>cypher:<span class="w"> </span><span class="s2">&quot;ssl/aes&quot;</span>,<span class="w"> </span>version<span class="w"> </span><span class="m">3</span>:0:2
-Filename<span class="w"> </span>encoding:<span class="w"> </span><span class="s2">&quot;nameio/stream&quot;</span>,<span class="w"> </span>version<span class="w"> </span><span class="m">2</span>:1:2
-Key<span class="w"> </span>Size:<span class="w"> </span><span class="m">256</span><span class="w"> </span>bits
-Block<span class="w"> </span>Size:<span class="w"> </span><span class="m">1024</span><span class="w"> </span>bytes
-File<span class="w"> </span>holes<span class="w"> </span>passed<span class="w"> </span>through<span class="w"> </span>to<span class="w"> </span>ciphertext.
-</code></pre></div>
-
-<p>At this point set a passphrase for your new volume:</p>
-<div class="highlight"><pre><span></span><code>Now<span class="w"> </span>you<span class="w"> </span>will<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>enter<span class="w"> </span>a<span class="w"> </span>password<span class="w"> </span><span class="k">for</span><span class="w"> </span>your<span class="w"> </span>filesystem.
-You<span class="w"> </span>will<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>remember<span class="w"> </span>this<span class="w"> </span>password,<span class="w"> </span>as<span class="w"> </span>there<span class="w"> </span>is<span class="w"> </span>absolutely
-no<span class="w"> </span>recovery<span class="w"> </span>mechanism.<span class="w"> </span>However,<span class="w"> </span>the<span class="w"> </span>password<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>changed
-later<span class="w"> </span>using<span class="w"> </span>encfsctl.
-
-New<span class="w"> </span>Encfs<span class="w"> </span>Password:
-Verify<span class="w"> </span>Encfs<span class="w"> </span>Password:
-</code></pre></div>
-
-<p>You should be able to mount this volume using BoxCryptor.</p>
   </div>
 </article>
 

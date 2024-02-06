@@ -147,6 +147,73 @@
 
 <article>
   <header>
+    <h2><a href="https://www.andreagrandi.it/2020/04/10/covid-api-free-and-open-source-api-service-for-covid19-data/">covid-api - a free and open source API service for COVID-19 data</a></h2>
+    <p>
+      Posted on Fri 10 April 2020 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
+
+          &#8226; Tagged with
+              <a href="https://www.andreagrandi.it/tag/covid.html">covid</a>,              <a href="https://www.andreagrandi.it/tag/api.html">api</a>,              <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>,              <a href="https://www.andreagrandi.it/tag/data.html">data</a>,              <a href="https://www.andreagrandi.it/tag/covid-19.html">covid-19</a>,              <a href="https://www.andreagrandi.it/tag/service.html">service</a>,              <a href="https://www.andreagrandi.it/tag/free.html">free</a>,              <a href="https://www.andreagrandi.it/tag/open.html">open</a>,              <a href="https://www.andreagrandi.it/tag/source.html">source</a>
+    </p>
+  </header>
+  <div>
+      <h2>Introduction</h2>
+<p>In this period of COVID-19 emergency, many countries are publishing COVID related data that is being used by many existing projects and researchers.</p>
+<p>The main problem with these data is that they are being released in CSV format on some GitHub repository. While we fully appreciate the opennes of this format, unfortunataly it can introduce an additional work to be done (downloading the data, cleaning it, importing the data into a database, keeping it updated etc...) before someone can consume and analyse the data.</p>
+<h2>covid-api</h2>
+<p>covid-api project is a <strong>free</strong> and <strong>open source</strong> API service which automatically imports the data from various sources (at the moment we support the <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins CSSE</a> data source) and makes it available as a REST API.</p>
+<p>The service is still under development, but an initial version (with regularly updated data) is already available at <a href="https://api.covid19data.cloud">https://api.covid19data.cloud</a>.</p>
+<h2>How to use the data</h2>
+<p>To consume the API you don't need an account nor you need to authenticate in any way. You just need to request the right endpoint using the supported parameters.</p>
+<p>Here is an example for Python language:</p>
+<div class="highlight"><pre><span></span><code><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.covid19data.cloud/v1/jh/daily-reports?last_update_from=2020-04-01&amp;last_update_to=2020-04-03&amp;country=Italy&#39;</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+<span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">35343</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-01T21:58:34&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">110574</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13155</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">16847</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">37895</span><span class="p">,</span>
+<span class="s1">&#39;country_region&#39;</span><span class="p">:</span> <span class="s1">&#39;Italy&#39;</span><span class="p">,</span>
+<span class="s1">&#39;province_state&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;fips&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;admin2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;last_update&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-04-02T23:25:14&#39;</span><span class="p">,</span>
+<span class="s1">&#39;confirmed&#39;</span><span class="p">:</span> <span class="mi">115242</span><span class="p">,</span>
+<span class="s1">&#39;deaths&#39;</span><span class="p">:</span> <span class="mi">13915</span><span class="p">,</span>
+<span class="s1">&#39;recovered&#39;</span><span class="p">:</span> <span class="mi">18278</span><span class="p">}]</span>
+</code></pre></div>
+
+<p>Further API documentation is available at https://api.covid19data.cloud/docs</p>
+<h2>Next steps</h2>
+<p>While we keep polishing the code and <a href="https://github.com/andreagrandi/covid-api/issues/43">improving the existing data import</a> procedure, we are planning to support additional data sources. The next one we are going to support is the <a href="https://github.com/andreagrandi/covid-api/issues/46"><strong>Italian Protezione Civile</strong></a>.</p>
+<p>If you are aware of an additional data source that you would like to see covered, please let us know (creating a new Issue on GitHub) or send us a pull request.</p>
+<h2>Contribute to the project</h2>
+<p>If you are a Python developer and would like to contribute to the project, my advice is to first have a look at the main documentation available in the <a href="https://github.com/andreagrandi/covid-api/blob/master/README.md">README</a>.</p>
+<p>Then I suggest to have a look at the existing <a href="https://github.com/andreagrandi/covid-api/issues">Issues</a> and see where help is needed or in alternative you can open a new Issue or send a pull request with fixes and improvements.</p>
+<p>I also recommend to become familiar with our <a href="https://github.com/andreagrandi/covid-api/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a> before sending any contribution.</p>
+<h2>Sponsors and Thanks</h2>
+<p>I want to thank <a href="https://www.heroku.com/">Heroku</a> for accepting to sponsor the hosting of this service.</p>
+<p>I also want to thank all the <a href="https://github.com/andreagrandi/covid-api/graphs/contributors">volunteers</a> involved in the project for their help and contributions.</p>
+<h2>Disclaimer</h2>
+<p>We are doing our best to keep the available data updated, clean (removing duplicates), and to provide a reliable service, 
+but we are not in any way responsible for the accuracy of the data nor for the availability of the service itself. 
+Please <strong>use it at your own risk</strong>.</p>
+<p><strong>Abuse notice</strong>: we are currently not requiring any registration or authentication to use this service because 
+we would like to keep it as simple as possible. 
+Please do not abuse the service or you will force us to require a registration (subject to approval) to continue using it.</p>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://www.andreagrandi.it/2017/08/25/getting-latest-ubuntu-ami-with-terraform/">Getting latest Ubuntu AMI with Terraform</a></h2>
     <p>
       Posted on Fri 25 August 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
@@ -456,271 +523,6 @@ that is in the output/ folder and <strong>git push</strong> it on this repositor
 <p>While I was looking for instructions about how to host a static websites, I found many examples of websites using Amazon S3. There is nothing wrong with using this service (just keep in mind that it's not free, Amazon charges you for space usage and requests, so keep an eye on the AWS bill) but the way these websites were using it was completely wrong. The most common error I noticed was the fact they were enabling the <strong>flexible SSL</strong> option on CloudFlare: this means that the connection between the visitor and CloudFlare was encrypted (and visitor could see the the SSL enabled) but the connection between CloudFlare and Amazon S3 was being served with <strong>HTTP only</strong>, meaning that potentially the pages could have been modified before being served. Infact Amazon doesn't serve the S3 website buckets with SSL, they use plain HTTP (Why are you doing this Amazon?!). To use the S3 bucket correctly one should also configure Route 53 (to manage DNS) and CloudFront (the Amazon equivalent of CloudFlare service, beware because this is also charged separately depending on usage/traffic), making the whole setup a bit more complicated.</p>
 <h3>Conclusion</h3>
 <p>I finally moved away from my VPS and from now on I will be able to concentrate my time on content only instead of spending part of it to maintain my server. Last but not least, the possibility to write my content offline, will hopefully allow me to write from places (train, airplane) where I've never written from before. If you have any suggestion or if if you notice any error, feel free to leave a comment here below. In alternative, since now this blog is completely open source and on GitHub, you can fork it and make a pull request!</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://www.andreagrandi.it/2017/03/12/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">Creating a production ready API with Python and Django Rest Framework – part 3</a></h2>
-    <p>
-      Posted on Sun 12 March 2017 in <a href="https://www.andreagrandi.it/category/development.html">Development</a>
-
-          &#8226; Tagged with
-              <a href="https://www.andreagrandi.it/tag/api.html">API</a>,              <a href="https://www.andreagrandi.it/tag/django.html">Django</a>,              <a href="https://www.andreagrandi.it/tag/framework.html">framework</a>,              <a href="https://www.andreagrandi.it/tag/python.html">Python</a>,              <a href="https://www.andreagrandi.it/tag/rest.html">rest</a>,              <a href="https://www.andreagrandi.it/tag/tutorial.html">tutorial</a>
-    </p>
-  </header>
-  <div>
-      <p>In the <a href="https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">previous
-part</a>
-we implemented authentication, permissions and the possibility to POST
-new products for admins. In this new episode we will see how to
-implement <strong>details</strong> management, <strong>relations</strong> between models, <strong>nested
-APIs</strong> and a different level of permissions.</p>
-<p>If you haven't completed the previous parts or if you want to begin from
-this one, checkout the right code first:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.10
-</code></pre></div>
-
-<h3>Handling Product Details</h3>
-<p>Our current API methods allow us to list all the products we have in our
-catalog and to create a new one (if we have admin permissions), but what
-if we wanted to delete or update a single one? What if we wanted to get
-only a specific product? We need to handle details.</p>
-<p>As first thing we need to change the <strong>ProductSerializer</strong> to return the
-id of the product. Edit <strong>catalog/serializers.py</strong> and change the class
-in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
-</code></pre></div>
-
-<p>After changing the serializer we need to implement a new view called
-<strong>ProductDetail</strong>. Edit <strong>catalog/views.py</strong> and add the following
-imports:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span>
-<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
-<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
-<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
-</code></pre></div>
-
-<p>and the following class:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">Product</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">Http404</span>
-
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">product</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_204_NO_CONTENT</span><span class="p">)</span>
-</code></pre></div>
-
-<p>let's connect the new view to the urls, editing catalog/urls.py and
-changing the code in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-<span class="p">]</span>
-</code></pre></div>
-
-<p>If we try to <strong>PUT</strong>, <strong>DELETE</strong> or <strong>GET</strong> a product like
-<strong>/products/1/</strong> we can now update, delete or retrieve an existing item,
-but there is a little problem: we haven't set any permission on this
-class, so anyone can do it. The previous view was also more compact, why
-don't we use a generic view to perform these basic operations? Let's
-refactor <strong>ProductDetail</strong> with a
-<a href="http://www.django-rest-framework.org/api-guide/generic-views/#retrieveupdatedestroyapiview"><strong>RetrieveUpdateDestroyAPIView</strong></a>
-generic class. Open <strong>catalog/views.py</strong> and change the class code in
-this way:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProductDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
-</code></pre></div>
-
-<p>That's it! With just three lines of code we have now implemented the
-same feature of the previous class, plus we have set the correct
-permissions.</p>
-<p>To checkout the code at this point:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.12
-</code></pre></div>
-
-<h3>Reviews - Relations between models</h3>
-<p>As many online catalogs already have, it would be nice if our API had an
-endpoint where it is possible to leave a review for a product and get a
-list of reviews for a specific product. To implement this feature we
-need to add a new model to our application. Edit <strong>catalog/models.py</strong>
-adding this import:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
-</code></pre></div>
-
-<p>and this Django model:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Review</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
-    <span class="n">review</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
-    <span class="n">rating</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
-    <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
-</code></pre></div>
-
-<p>after creating the model, please remember to create the related DB
-<strong>migration</strong>:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>catalog
-</code></pre></div>
-
-<p>When the model is ready, we have to do some changes to the serializers.
-First of all we need to write a new one, for our new <strong>Review</strong> model.
-Then we have to change our <strong>ProductSerializer</strong> so that it will return
-its related reviews. Each Product can have multiple Review. And each
-Review will be always linked to a specific Product. Edit
-<strong>catalog/serializers.py</strong> and change it in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
-<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
-
-
-<span class="k">class</span> <span class="nc">ReviewSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="n">created_by</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ReadOnlyField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">&#39;created_by.username&#39;</span><span class="p">)</span>
-
-    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Review</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;review&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;created_by&#39;</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">ProductSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="n">reviews</span> <span class="o">=</span> <span class="n">ReviewSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;reviews&#39;</span><span class="p">)</span>
-</code></pre></div>
-
-<p><strong>Note:</strong> in <strong>ReviewSerializer</strong> when we serialise the user contained
-in <strong>created_by</strong> field, return the username instead of the id (to make
-it more human readable). Another important thing to notice is that the
-value of the <strong>related_name</strong> we have set in the <strong>Review</strong> model must
-match with the field name we have added in <strong>ProductSerializer fields</strong>
-property. In this case we have set it to <strong>reviews</strong>.</p>
-<p>At this point we need to add a new view. Edit <strong>catalog/views.py</strong> and
-add the following imports:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">IsAuthenticatedOrReadOnly</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Review</span>
-<span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span><span class="p">,</span> <span class="n">ReviewSerializer</span>
-</code></pre></div>
-
-<p>then add this class:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
-        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-            <span class="n">created_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
-            <span class="n">product_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
-</code></pre></div>
-
-<p>As you can notice, I had to customise the <strong>perform_create</strong> method
-because the default one doesn't know anything about the fact we want to
-set the <strong>created_by</strong> and <strong>product_id</strong> fields. Finally we need to
-bind this new view to a specific url, so we need to edit
-<strong>catalog/urls.py</strong> and add this:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;pk&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-<span class="p">]</span>
-</code></pre></div>
-
-<p>At this point any authenticated user should be able to <strong>POST a review</strong>
-for a product and anyone should be able to get the <strong>list of reviews</strong>
-for each product. If you have any problem with the code and want to move
-to this point, please checkout this:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.13
-</code></pre></div>
-
-<h3>Nested APIs details</h3>
-<p>To complete our API endpoints for Review, we need to add an additional
-feature that will let users to edit/delete their own review. Before
-implementing the new view, we need a little bit of refactoring and a new
-permission class. Edit <strong>catalog/permissions.py</strong> and add this new
-class:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">IsOwnerOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">has_object_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-
-        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">created_by</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-</code></pre></div>
-
-<p>Basically this will permit changes to the review only to its author. Now
-we are going to add new urls and doing some refactoring at the same
-time. Edit <strong>catalog/urls.py</strong> and change the urls in this way:</p>
-<div class="highlight"><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">ProductDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
-    <span class="n">url</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/$&#39;</span><span class="p">,</span>
-        <span class="n">views</span><span class="o">.</span><span class="n">ReviewList</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
-    <span class="p">),</span>
-    <span class="n">url</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s1">&#39;^products/(?P&lt;product_id&gt;[0-9]+)/reviews/(?P&lt;review_id&gt;[0-9]+)/$&#39;</span><span class="p">,</span>
-        <span class="n">views</span><span class="o">.</span><span class="n">ReviewDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">()</span>
-    <span class="p">),</span>
-<span class="p">]</span>
-</code></pre></div>
-
-<p>You may have noticed that I substituted <strong>pk</strong> with <strong>product_id</strong>. In
-the latest url I added, we need to be able to identify two primary keys:
-the one for the product and the one for the review. I renamed the
-previous ones for consistency. Now it's time to add the new view for
-Review details. Edit <strong>catalog/view.py</strong> and add this class:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
-    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ReviewSerializer</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span> <span class="n">IsOwnerOrReadOnly</span><span class="p">)</span>
-    <span class="n">lookup_url_kwarg</span> <span class="o">=</span> <span class="s1">&#39;review_id&#39;</span>
-
-    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;review_id&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">review</span><span class="p">)</span>
-</code></pre></div>
-
-<p>What are we doing here? You may have noticed that we set a new property
-called <strong>lookup_url_kwarg</strong>. That property is being used to determine
-the keyword in <strong>urls.py</strong> to be used for the primary key lookup.</p>
-<p>You will also need to do some refactoring to the other views, to adapt
-them to the changes we just did to the urls. I suggest you to have a
-look at the diffs
-here: <a href="https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14">https://github.com/andreagrandi/drf-tutorial/compare/tutorial-1.13...tutorial-1.14</a>
-or you can have a look at the whole file
-here <a href="https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py">https://github.com/andreagrandi/drf-tutorial/blob/541bf31c11fd1dbf2bcc1d31312086995e3e5b48/drftutorial/catalog/views.py</a></p>
-<p>In alternative, you can fetch the whole source code at this point:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>tutorial-1.14
-</code></pre></div>
-
-<h3>Wrapping Up</h3>
-<p>In this third part of the tutorial you learned how to handle model
-details in the API and how relations between different model work. In
-the <a href="https://www.andreagrandi.it/2017/08/17/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/">next part of the tutorial</a>
-we will do something we should have done since the beginning: adding <strong>tests</strong> to 
-our code and learn how to properly
-test the API.</p>
-<h3>Feedback Please</h3>
-<p>If you enjoyed this tutorial, please leave me some feedback!
-I really want to improve my work, based on the users feedback so any little advice will be appreciated, thanks!</p>
   </div>
 </article>
 
