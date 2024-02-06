@@ -147,115 +147,6 @@
 
 <article>
   <header>
-    <h2><a href="https://www.andreagrandi.it/2014/03/02/travis-ci-org-and-coveralls-io-qa-made-easy/">Travis-ci.org and Coveralls.io: Continuous Integration and QA made easy</a></h2>
-    <p>
-      Posted on Sun 02 March 2014 in <a href="https://www.andreagrandi.it/category/linux-programmazione-python.html">Linux, Programmazione, Python</a>
-
-
-    </p>
-  </header>
-  <div>
-      <p>Developing a large web application or before deploying some code is very
-important to verify the quality of the code itself, check if we have
-introduced any regression or bug and have something that tell us if we
-are increasing or decreasing the quality of the code.</p>
-<p>Suppose we are in an organization or a company where the basic rule is:
-<strong>master</strong> branch is always ready/stable to be deployed. In a team
-usually people work on personal branches, then when the code is stable
-it's merged with master.</p>
-<p>How do we check if the code is stable and ready to be merged? First of
-all we need to cover all our code with <strong>proper tests</strong> (I won't go in
-details about unit testing here, I assume that the reader knows what I'm
-talking about), then we need to actually run them, possibly in an
-isolated environment that is similar to the production one, and check if
-they all pass. If they do, we are quite safe to merge our code with
-master branch.</p>
-<p>How can we ensure that all the developers remember to run tests when
-they push some new code? To make things a bit more real, let's take the
-example of a Python/Django product (or even a library) that currently
-supports <strong>Python 2.6, 2.7, 3.3</strong> and <strong>Django 1.4.x, 1.5.x, 1.6.x</strong>.
-The whole matrix consists of <strong>9 possible combinations</strong>. Do we have to
-manually run tests on 9 configurations? No, we don't.</p>
-<h2>Travis-ci.org</h2>
-<p><strong>Travis</strong> is a continuous integration tool that, once configured, takes
-care of these tasks and let us save lot of time (that we can use to
-actually write code). <a href="https://travis-ci.org">Travis-ci.org</a> is an
-online service that works with <a href="https://github.com"><strong>GitHub</strong></a> (it
-requires we use GitHub as repository for our code), and once we have
-connected the two accounts and configured a very simple file in our
-projects, it's automatically triggered when we push on our GitHub
-repository.</p>
-<p>The configuration consists of adding a file named <strong>.travis.yml</strong> in the
-root of our project. A working example is available here
-<a href="https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml">https://github.com/andreagrandi/workshopvenues/blob/master/.travis.yml</a>
-(all the env variables I set are not required normally, but that's where
-I save the values of my configuration, so they need to be initialized
-before I can run tests).</p>
-<p>The service supports most of the languages that are commonly used and
-even a good number of PAAS, making it very easy to automatically
-<strong>deploy</strong> our code. If it should not be enough for your needs, they
-also expose a public <strong>API</strong>. I suggest you to give a look at the
-official documentation that will explain everything in details
-<a href="http://docs.travis-ci.com">http://docs.travis-ci.com</a></p>
-<p>Once everything is configured, we will have something like this on our
-console
-<a href="https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128">https://travis-ci.org/andreagrandi/workshopvenues/jobs/19882128</a></p>
-<p><a href="https://www.andreagrandi.it/images/2014/03/travis-ci-console.png"><img alt="travis-ci-console" src="https://www.andreagrandi.it/images/2014/03/travis-ci-console-1024x544.png" width="90%"></a></p>
-<p>If something goes wrong (if tests don't pass for example) we receive a
-notification with all the informations about the failing build, and if
-we had configured an automatic deployment of course the code would not
-be deployed in case of a failing build.</p>
-<p>Travis-ci.org is <strong>completly free</strong> for opensource projects and has also
-a paid version for private repositories.</p>
-<h2>Coveralls.io</h2>
-<p>There is a nice tool available for Python called
-<a href="http://nedbatchelder.com/code/coverage"><strong>coverage</strong></a>. Basically it
-runs tests and checks the percentage of the source code that is covered
-by tests, producing a nice report that shows us the percentage for every
-single file/module and even the lines of code that have been tested.</p>
-<p>Thanks to Coveralls.io and the use of Travis, even these tasks are
-completly automatized and the results are available online like in this
-example <a href="https://coveralls.io/builds/560853">https://coveralls.io/builds/560853</a></p>
-<p>The configuration is quite easy. We need to connect our Coveralls.io
-profile with GitHub, like we did for Travis-ci.org and then enable the
-repository. To trigger Coveralls after a successful Travis build, we
-need to have these lines at the end of our <strong>.travis.yml</strong> file</p>
-<div class="highlight"><pre><span></span><code><span class="nt">after_success</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coveralls</span>
-</code></pre></div>
-
-<p><a href="https://www.andreagrandi.it/images/2014/03/coveralls-console.png"><img alt="coveralls-console" src="https://www.andreagrandi.it/images/2014/03/coveralls-console-1024x767.png" width="90%"></a><br>
-Even Coveralls.io is <strong>completly free</strong> for opensource projects and
-offers a paid version for private repositories.</p>
-<h2>Heroku</h2>
-<p>I use <a href="https://www.heroku.com"><strong>Heroku</strong></a> to host and run my web
-application. Normally to deploy on Heroku you so something like this:
-<strong>git push heroku master</strong></p>
-<p>Adding these settings to the <strong>.travis.yaml</strong> file, I can automatically
-deploy the application on Heroku, if the build was successful:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">deploy</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">heroku</span>
-<span class="w">  </span><span class="nt">api_key</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">secure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">R4LFkVu1/io9wSb/FvVL6UEaKU7Y4vfen/gCDe0OnEwsH+VyOwcT5tyINAg05jWXhRhsgjYT9AuyB84uCuNZg+lO7HwV5Q4WnHo5IVcCrv0PUq/CbRPUS4C2kDD7zbA1ByCd224tcfBmUtu+DPzyouk23oJH+lUwa/FeUk0Yl+I=</span>
-<span class="w">  </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workshopvenues</span>
-<span class="w">  </span><span class="nt">on</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">andreagrandi/workshopvenues</span>
-<span class="w">  </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">workshopvenues/manage.py</span><span class="nv"> </span><span class="s">syncdb&quot;</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;python</span><span class="nv"> </span><span class="s">workshopvenues/manage.py</span><span class="nv"> </span><span class="s">migrate&quot;</span>
-</code></pre></div>
-
-<p>Not only the code is deployed, after deployment the <strong>South migrations</strong> are executed.</p>
-<h2>Conclusion</h2>
-<p>These two tools are saving me lot of time and are ensuring that the code
-I release for a project I'm working on
-(<a href="https://github.com/andreagrandi/workshopvenues"><strong>WorkshopVenues</strong></a>)
-is always tested when I push it on my repository.</p>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
     <h2><a href="https://www.andreagrandi.it/2014/01/30/factoryboy-creating-data-for-unit-tests-in-an-easy-way/">Factoryboy: Creating data for unit tests in an easy way</a></h2>
     <p>
       Posted on Thu 30 January 2014 in <a href="https://www.andreagrandi.it/category/programmazione-python.html">Programmazione, Python</a>
@@ -348,6 +239,32 @@ enjoy the subwoofer!</p>
 <li><a href="http://forums.gentoo.org/viewtopic-t-859769.html">http://forums.gentoo.org/viewtopic-t-859769.html</a></li>
 <li><a href="http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem">http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem</a></li>
 </ul>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://www.andreagrandi.it/2013/06/22/how-to-fix-a-wordpress-websitet-hacked-by-zend_framework-malware/">How to fix a WordPress website hacked by "zend_framework" malware</a></h2>
+    <p>
+      Posted on Sat 22 June 2013 in <a href="https://www.andreagrandi.it/category/howto-linux-sicurezza-ubuntu-en-wordpress.html">HowTo, Linux, Sicurezza, Ubuntu (EN), WordPress</a>
+
+
+    </p>
+  </header>
+  <div>
+      <p>I admit. <strong>This website</strong>, like thousands of others, <strong>has been
+hacked</strong>! I still have to identify the precise source of the attack, but
+I've found out that is very common. I was able to discover about the
+attack just because the dashboard of WordPress stopped working. I
+decided to investigate and I found this strind on top of every .php file
+<a href="http://pastebin.com/k0iQymRy">http://pastebin.com/k0iQymRy</a></p>
+<p>Just googling I discovered that I was not alone
+<a href="http://stackoverflow.com/questions/16963818/server-hacked-on-wordpress-files">http://stackoverflow.com/questions/16963818/server-hacked-on-wordpress-files</a></p>
+<h2>How to fix this?</h2>
+<p>The best solution would be to restore the files with a valid backup, but
+sometimes this is not possible. Here comes an handy bash solution (note:
+you need to be able to access your hosting with a SSH shell to execute
+this command): <a href="http://pastebin.com/V3nFwwtZ">http://pastebin.com/V3nFwwtZ</a></p>
   </div>
 </article>
 
