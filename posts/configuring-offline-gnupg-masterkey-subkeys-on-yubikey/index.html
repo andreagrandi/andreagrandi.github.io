@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='I&amp;rsquo;ve recently bought a YubiKey 4 and decided to use it for GnuPG too, other than using it as hardware 2FA.
+I&amp;rsquo;ve also decided to make my GnuPG configuration much more safe, generating the master key on an offline computer (in my case a simple RaspberryPi not connected to Internet) and generating a subkey that will be moved to my YubiKey.
+Disclaimer Always think about what your threat model is before deciding something is 100% safe for you.'>
+<title>Configuring an offline GnuPG master key and subkeys on YubiKey</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Configuring an offline GnuPG master key and subkeys on YubiKey'>
+<meta property='og:description' content='I&amp;rsquo;ve recently bought a YubiKey 4 and decided to use it for GnuPG too, other than using it as hardware 2FA.
+I&amp;rsquo;ve also decided to make my GnuPG configuration much more safe, generating the master key on an offline computer (in my case a simple RaspberryPi not connected to Internet) and generating a subkey that will be moved to my YubiKey.
+Disclaimer Always think about what your threat model is before deciding something is 100% safe for you.'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='GnuPG' /><meta property='article:tag' content='PGP' /><meta property='article:tag' content='Security' /><meta property='article:tag' content='YubiKey' /><meta property='article:tag' content='Encryption' /><meta property='article:published_time' content='2017-09-30T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2017-09-30T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="Configuring an offline GnuPG master key and subkeys on YubiKey">
+<meta name="twitter:description" content="I&amp;rsquo;ve recently bought a YubiKey 4 and decided to use it for GnuPG too, other than using it as hardware 2FA.
+I&amp;rsquo;ve also decided to make my GnuPG configuration much more safe, generating the master key on an offline computer (in my case a simple RaspberryPi not connected to Internet) and generating a subkey that will be moved to my YubiKey.
+Disclaimer Always think about what your threat model is before deciding something is 100% safe for you."><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/howto/" >
+                HowTo
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/configuring-offline-gnupg-masterkey-subkeys-on-yubikey/">Configuring an offline GnuPG master key and subkeys on YubiKey</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 30, 2017</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>I&rsquo;ve recently bought a <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey 4</a> and
+decided to use it for GnuPG too, other than using it as hardware 2FA.</p>
+<p>I&rsquo;ve also decided to make my GnuPG configuration much more safe, generating the <strong>master key</strong>
+on an <strong>offline</strong> computer (in my case a simple RaspberryPi not connected to Internet) and <strong>generating a subkey</strong>
+that will be moved to my <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>.</p>
+<h4 id="disclaimer">Disclaimer</h4>
+<p>Always think about what your <strong>threat model</strong> is before deciding something is 100% safe for you.
+I&rsquo;m not claiming this setup/configuration is bullet proof. If you want to protect your GnuPG key from most of the hackers,
+keyloggers and if you want to use it on different computers without ever compromising your secret key, this setup
+can be what you are looking for. If you think you may be victim of a targeted state sponsored attack, I&rsquo;m not sure this
+setup could be enough.</p>
+<h4 id="why-keeping-offline-the-master-key">Why keeping offline the master key?</h4>
+<p>If you only use your master key on a computer that never connects to Internet (I reckon you will want to update/patch it
+from time to time, that&rsquo;s why we are going to keep the master key on an external USB key) you are at least safe from remote attacks.</p>
+<h4 id="why-using-subkeys">Why using subkeys?</h4>
+<p>Your GnuPG master key is also your &ldquo;identity&rdquo; among every PGP user. If you loose your master key or if your key is compromised
+you need to rebuild your identity and reputation from scratch. Instead, if a subkey is compromised, you can revoke the subkey (using your
+master key) and generate a new subkey.</p>
+<h4 id="how-a-yubikey-makes-things-safer">How a YubiKey makes things safer?</h4>
+<p>If you always use your subkey from a <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>, it&rsquo;s very unlikely that your
+private key can be stolen: it&rsquo;s impossible to read it from the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> and if you loose your YubiKey
+or if it&rsquo;s physically stolen, the attacker will still need your passphrase and your YubiKey PIN.</p>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>1 <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey 4</a></li>
+<li>2 USB keys (in theory you only need one, but I strongly suggest you have another one as backup)</li>
+<li>1 offline computer (a simple RaspberryPi with no Internet connection will be fine)</li>
+</ul>
+<h3 id="initial-setup">Initial setup</h3>
+<p>From now on, I will assume that you have prepared a computer for offline use (in my case I&rsquo;m using a RaspberryPi 2 with
+Raspbian) and you will type the next commands there and only there.</p>
+<p>Plug one of the <strong>USB key</strong> (you can format it with VFAT for simplicity) in the offline computer and wait for the system to mount it.
+At this point it should be mounted in a path like this: <strong>/media/AABB-BAAC</strong></p>
+<p>Now set the GnuPG working directory and create it:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ export GNUPGHOME=/media/AABB-BAAC/gnupghome
+</span></span><span class="line"><span class="cl">user@debian:~$ mkdir $GNUPGHOME
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="second-disclaimer">Second disclaimer</h4>
+<p>If you think your threat model doesn&rsquo;t include someone can hack your computer from remote,
+you can ignore my advice and type these commands on your main laptop (at your own risk).</p>
+<h4 id="note">Note</h4>
+<p>For my own convenience, to write this tutorial I reproduced all these steps on my MacBook because it was easier to copy/paste
+commands and outputs but I&rsquo;ve tested it with the exact setup I&rsquo;m describing, and it
+should be compatible with OSX and Linux.
+When you see something has been masked it&rsquo;s just to hide (from spam) things like my email or to protect the serial number
+of my <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>. Last but not least, the output shown here could not match exactly the one you get on your own PC and this also
+depends on the GnuPG version you are using.</p>
+<h3 id="generating-the-master-key">Generating the master key</h3>
+<p>The master key must be generated using the advanced mode, because by default when a new master key is generated, also a new subkey
+is created with all the capabilities (Authentication + Signing + Encryption), while we want something different.</p>
+<p><strong>Note:</strong> PGP keys up to <strong>4096 bits</strong> are only supported in <strong>YubiKey 4</strong> models. If you have a <strong>YubiKey NEO</strong> you must use
+a <strong>2048 bits</strong> key because it&rsquo;s the maximum size supported. Here you will create a PGP key with <strong>only
+the Authentication capability</strong>. If your GnuPG version doesn&rsquo;t allow this, choose &ldquo;sign only&rdquo;, just don&rsquo;t
+create the encryption capability at this time.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --expert --gen-key
+</span></span><span class="line"><span class="cl">gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+</span></span><span class="line"><span class="cl">This is free software: you are free to change and redistribute it.
+</span></span><span class="line"><span class="cl">There is NO WARRANTY, to the extent permitted by law.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg: directory `/media/AABB-BAAC/gnupghome&#39; created
+</span></span><span class="line"><span class="cl">gpg: new configuration file `/media/AABB-BAAC/gnupghome/gpg.conf&#39; created
+</span></span><span class="line"><span class="cl">gpg: WARNING: options in `/media/AABB-BAAC/gnupghome/gpg.conf&#39; are not yet active during this run
+</span></span><span class="line"><span class="cl">gpg: keyring `/media/AABB-BAAC/gnupghome/secring.gpg&#39; created
+</span></span><span class="line"><span class="cl">gpg: keyring `/media/AABB-BAAC/gnupghome/pubring.gpg&#39; created
+</span></span><span class="line"><span class="cl">Please select what kind of key you want:
+</span></span><span class="line"><span class="cl">(1) RSA and RSA (default)
+</span></span><span class="line"><span class="cl">(2) DSA and Elgamal
+</span></span><span class="line"><span class="cl">(3) DSA (sign only)
+</span></span><span class="line"><span class="cl">(4) RSA (sign only)
+</span></span><span class="line"><span class="cl">(7) DSA (set your own capabilities)
+</span></span><span class="line"><span class="cl">(8) RSA (set your own capabilities)
+</span></span><span class="line"><span class="cl">Your selection? 8
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+</span></span><span class="line"><span class="cl">Current allowed actions: Sign Certify Encrypt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(S) Toggle the sign capability
+</span></span><span class="line"><span class="cl">(E) Toggle the encrypt capability
+</span></span><span class="line"><span class="cl">(A) Toggle the authenticate capability
+</span></span><span class="line"><span class="cl">(Q) Finished
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your selection? s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+</span></span><span class="line"><span class="cl">Current allowed actions: Certify Encrypt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(S) Toggle the sign capability
+</span></span><span class="line"><span class="cl">(E) Toggle the encrypt capability
+</span></span><span class="line"><span class="cl">(A) Toggle the authenticate capability
+</span></span><span class="line"><span class="cl">(Q) Finished
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your selection? e
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+</span></span><span class="line"><span class="cl">Current allowed actions: Certify
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(S) Toggle the sign capability
+</span></span><span class="line"><span class="cl">(E) Toggle the encrypt capability
+</span></span><span class="line"><span class="cl">(A) Toggle the authenticate capability
+</span></span><span class="line"><span class="cl">(Q) Finished
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your selection? q
+</span></span><span class="line"><span class="cl">RSA keys may be between 1024 and 4096 bits long.
+</span></span><span class="line"><span class="cl">What keysize do you want? (2048) 4096
+</span></span><span class="line"><span class="cl">Requested keysize is 4096 bits
+</span></span><span class="line"><span class="cl">Please specify how long the key should be valid.
+</span></span><span class="line"><span class="cl">        0 = key does not expire
+</span></span><span class="line"><span class="cl">    &lt;n&gt;  = key expires in n days
+</span></span><span class="line"><span class="cl">    &lt;n&gt;w = key expires in n weeks
+</span></span><span class="line"><span class="cl">    &lt;n&gt;m = key expires in n months
+</span></span><span class="line"><span class="cl">    &lt;n&gt;y = key expires in n years
+</span></span><span class="line"><span class="cl">Key is valid for? (0) 2y
+</span></span><span class="line"><span class="cl">Key expires at Wed 25 Sep 18:39:49 2019 BST
+</span></span><span class="line"><span class="cl">Is this correct? (y/N) y
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">GnuPG needs to construct a user ID to identify your key.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Real name: Andrea Grandi
+</span></span><span class="line"><span class="cl">Email address: user@email.com
+</span></span><span class="line"><span class="cl">Comment:
+</span></span><span class="line"><span class="cl">You selected this USER-ID:
+</span></span><span class="line"><span class="cl">    &#34;Andrea Grandi &lt;user@email.com&gt;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+</span></span><span class="line"><span class="cl">You need a Passphrase to protect your secret key.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">We need to generate a lot of random bytes. It is a good idea to perform
+</span></span><span class="line"><span class="cl">some other action (type on the keyboard, move the mouse, utilize the
+</span></span><span class="line"><span class="cl">disks) during the prime generation; this gives the random number
+</span></span><span class="line"><span class="cl">generator a better chance to gain enough entropy.
+</span></span><span class="line"><span class="cl">gpg: /media/AABB-BAAC/gnupghome/trustdb.gpg: trustdb created
+</span></span><span class="line"><span class="cl">gpg: key 2240402E marked as ultimately trusted
+</span></span><span class="line"><span class="cl">public and secret key created and signed.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg: checking the trustdb
+</span></span><span class="line"><span class="cl">gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+</span></span><span class="line"><span class="cl">gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+</span></span><span class="line"><span class="cl">gpg: next trustdb check due at 2019-09-25
+</span></span><span class="line"><span class="cl">pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
+</span></span><span class="line"><span class="cl">    Key fingerprint = 7D4C 4090 DB50 1693 4614  F6FC 6206 9DE9 2240 402E
+</span></span><span class="line"><span class="cl">uid       [ultimate] Andrea Grandi &lt;user@email.com&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Note:</strong> please remember to save your passphrase in a safe place. Choose something you
+can remember because you will need it every time you need to sign, encrypt or decrypt something.</p>
+<h3 id="creating-a-revocation-certificate">Creating a revocation certificate</h3>
+<p>It&rsquo;s very important to create a revocation certificate to be used if and when
+in the future you want to change your master key and revoke the existing one:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --gen-revoke 2240402E &gt; 2240402E-revocation-certificate.asc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sec  4096R/2240402E 2017-09-25 Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Create a revocation certificate for this key? (y/N) y
+</span></span><span class="line"><span class="cl">Please select the reason for the revocation:
+</span></span><span class="line"><span class="cl">0 = No reason specified
+</span></span><span class="line"><span class="cl">1 = Key has been compromised
+</span></span><span class="line"><span class="cl">2 = Key is superseded
+</span></span><span class="line"><span class="cl">3 = Key is no longer used
+</span></span><span class="line"><span class="cl">Q = Cancel
+</span></span><span class="line"><span class="cl">(Probably you want to select 1 here)
+</span></span><span class="line"><span class="cl">Your decision? 3
+</span></span><span class="line"><span class="cl">Enter an optional description; end it with an empty line:
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">Reason for revocation: Key is no longer used
+</span></span><span class="line"><span class="cl">(No description given)
+</span></span><span class="line"><span class="cl">Is this okay? (y/N) y
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You need a passphrase to unlock the secret key for
+</span></span><span class="line"><span class="cl">user: &#34;Andrea Grandi &lt;user@email.com&gt;&#34;
+</span></span><span class="line"><span class="cl">4096-bit RSA key, ID 2240402E, created 2017-09-25
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ASCII armored output forced.
+</span></span><span class="line"><span class="cl">Revocation certificate created.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please move it to a medium which you can hide away; if Mallory gets
+</span></span><span class="line"><span class="cl">access to this certificate he can use it to make your key unusable.
+</span></span><span class="line"><span class="cl">It is smart to print this certificate and store it away, just in case
+</span></span><span class="line"><span class="cl">your media become unreadable.  But have some caution:  The print system of
+</span></span><span class="line"><span class="cl">your machine might store the data and make it available to others!
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="creating-encryption-subkey">Creating Encryption subkey</h3>
+<p>To create a subkey we need to edit the existing key (please note that <strong>2240402E</strong>
+is the last 8 chars from the fingerprint of the previously generated master key)
+and specify we want to create an Encryption only key.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --edit-key 2240402E
+</span></span><span class="line"><span class="cl">gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+</span></span><span class="line"><span class="cl">This is free software: you are free to change and redistribute it.
+</span></span><span class="line"><span class="cl">There is NO WARRANTY, to the extent permitted by law.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Secret key is available.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+</span></span><span class="line"><span class="cl">                    trust: ultimate      validity: ultimate
+</span></span><span class="line"><span class="cl">[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; addkey
+</span></span><span class="line"><span class="cl">Key is protected.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You need a passphrase to unlock the secret key for
+</span></span><span class="line"><span class="cl">user: &#34;Andrea Grandi &lt;user@email.com&gt;&#34;
+</span></span><span class="line"><span class="cl">4096-bit RSA key, ID 2240402E, created 2017-09-25
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please select what kind of key you want:
+</span></span><span class="line"><span class="cl">(3) DSA (sign only)
+</span></span><span class="line"><span class="cl">(4) RSA (sign only)
+</span></span><span class="line"><span class="cl">(5) Elgamal (encrypt only)
+</span></span><span class="line"><span class="cl">(6) RSA (encrypt only)
+</span></span><span class="line"><span class="cl">Your selection? 6
+</span></span><span class="line"><span class="cl">RSA keys may be between 1024 and 4096 bits long.
+</span></span><span class="line"><span class="cl">What keysize do you want? (2048) 4096
+</span></span><span class="line"><span class="cl">Requested keysize is 4096 bits
+</span></span><span class="line"><span class="cl">Please specify how long the key should be valid.
+</span></span><span class="line"><span class="cl">        0 = key does not expire
+</span></span><span class="line"><span class="cl">    &lt;n&gt;  = key expires in n days
+</span></span><span class="line"><span class="cl">    &lt;n&gt;w = key expires in n weeks
+</span></span><span class="line"><span class="cl">    &lt;n&gt;m = key expires in n months
+</span></span><span class="line"><span class="cl">    &lt;n&gt;y = key expires in n years
+</span></span><span class="line"><span class="cl">Key is valid for? (0) 2y
+</span></span><span class="line"><span class="cl">Key expires at Wed 25 Sep 18:47:21 2019 BST
+</span></span><span class="line"><span class="cl">Is this correct? (y/N) y
+</span></span><span class="line"><span class="cl">Really create? (y/N) y
+</span></span><span class="line"><span class="cl">We need to generate a lot of random bytes. It is a good idea to perform
+</span></span><span class="line"><span class="cl">some other action (type on the keyboard, move the mouse, utilize the
+</span></span><span class="line"><span class="cl">disks) during the prime generation; this gives the random number
+</span></span><span class="line"><span class="cl">generator a better chance to gain enough entropy.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+</span></span><span class="line"><span class="cl">                    trust: ultimate      validity: ultimate
+</span></span><span class="line"><span class="cl">sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+</span></span><span class="line"><span class="cl">[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; save
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="export-a-backup-of-the-secret-keys">Export a backup of the secret keys</h3>
+<p>It&rsquo;s very important to export a backup of the secret keys at this point.
+Writing the secret subkey to the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> is a destructive process: keys are moved
+to the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>, they are not copied.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --export-secret-key 2240402E &gt; 2240402E-secret.pgp
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Note:</strong> this backup includes both the secret master key and the secret subkey.
+Please remember to <strong>save a backup of this key</strong> on a couple of separate USB keys: you will need
+this keys to generate future subkeys and/or to revoke the existing ones.</p>
+<h3 id="programming-the-yubikey-with-all-gnupg-keys">Programming the YubiKey with all GnuPG keys</h3>
+<p>We have previously created the <strong>master key</strong> and the <strong>encryption subkey</strong>. Now we will
+create the <strong>authentication</strong> and <strong>signing</strong> keys directly on the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> (we don&rsquo;t
+need to have a copy of these keys) and we will move the secret encryption key
+to the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --edit-key 2240402E
+</span></span><span class="line"><span class="cl">gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+</span></span><span class="line"><span class="cl">This is free software: you are free to change and redistribute it.
+</span></span><span class="line"><span class="cl">There is NO WARRANTY, to the extent permitted by law.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Secret key is available.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+</span></span><span class="line"><span class="cl">                    trust: ultimate      validity: ultimate
+</span></span><span class="line"><span class="cl">sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+</span></span><span class="line"><span class="cl">[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; addcardkey
+</span></span><span class="line"><span class="cl">Signature key ....: [none]
+</span></span><span class="line"><span class="cl">Encryption key....: [none]
+</span></span><span class="line"><span class="cl">Authentication key: [none]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please select the type of key to generate:
+</span></span><span class="line"><span class="cl">(1) Signature key
+</span></span><span class="line"><span class="cl">(2) Encryption key
+</span></span><span class="line"><span class="cl">(3) Authentication key
+</span></span><span class="line"><span class="cl">Your selection? 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">What keysize do you want for the Signature key? (4096)
+</span></span><span class="line"><span class="cl">Key is protected.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You need a passphrase to unlock the secret key for
+</span></span><span class="line"><span class="cl">user: &#34;Andrea Grandi &lt;user@email.com&gt;&#34;
+</span></span><span class="line"><span class="cl">4096-bit RSA key, ID 2240402E, created 2017-09-25
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please specify how long the key should be valid.
+</span></span><span class="line"><span class="cl">        0 = key does not expire
+</span></span><span class="line"><span class="cl">    &lt;n&gt;  = key expires in n days
+</span></span><span class="line"><span class="cl">    &lt;n&gt;w = key expires in n weeks
+</span></span><span class="line"><span class="cl">    &lt;n&gt;m = key expires in n months
+</span></span><span class="line"><span class="cl">    &lt;n&gt;y = key expires in n years
+</span></span><span class="line"><span class="cl">Key is valid for? (0) 2y
+</span></span><span class="line"><span class="cl">Key expires at Wed 25 Sep 18:50:42 2019 BST
+</span></span><span class="line"><span class="cl">Is this correct? (y/N) y
+</span></span><span class="line"><span class="cl">Really create? (y/N) y
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+</span></span><span class="line"><span class="cl">                    trust: ultimate      validity: ultimate
+</span></span><span class="line"><span class="cl">sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+</span></span><span class="line"><span class="cl">sub  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25  usage: S
+</span></span><span class="line"><span class="cl">[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; addcardkey
+</span></span><span class="line"><span class="cl">Signature key ....: 6FAB DC46 1847 3550 3769  2D32 0DE1 36B4 771B 0554
+</span></span><span class="line"><span class="cl">Encryption key....: [none]
+</span></span><span class="line"><span class="cl">Authentication key: [none]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please select the type of key to generate:
+</span></span><span class="line"><span class="cl">(1) Signature key
+</span></span><span class="line"><span class="cl">(2) Encryption key
+</span></span><span class="line"><span class="cl">(3) Authentication key
+</span></span><span class="line"><span class="cl">Your selection? 3
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">What keysize do you want for the Authentication key? (4096)
+</span></span><span class="line"><span class="cl">Key is protected.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You need a passphrase to unlock the secret key for
+</span></span><span class="line"><span class="cl">user: &#34;Andrea Grandi &lt;user@email.com&gt;&#34;
+</span></span><span class="line"><span class="cl">4096-bit RSA key, ID 2240402E, created 2017-09-25
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please specify how long the key should be valid.
+</span></span><span class="line"><span class="cl">        0 = key does not expire
+</span></span><span class="line"><span class="cl">    &lt;n&gt;  = key expires in n days
+</span></span><span class="line"><span class="cl">    &lt;n&gt;w = key expires in n weeks
+</span></span><span class="line"><span class="cl">    &lt;n&gt;m = key expires in n months
+</span></span><span class="line"><span class="cl">    &lt;n&gt;y = key expires in n years
+</span></span><span class="line"><span class="cl">Key is valid for? (0) 2y
+</span></span><span class="line"><span class="cl">Key expires at Wed 25 Sep 18:54:51 2019 BST
+</span></span><span class="line"><span class="cl">Is this correct? (y/N) y
+</span></span><span class="line"><span class="cl">Really create? (y/N) y
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pub  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25  usage: C
+</span></span><span class="line"><span class="cl">                    trust: ultimate      validity: ultimate
+</span></span><span class="line"><span class="cl">sub  4096R/01731555  created: 2017-09-25  expires: 2019-09-25  usage: E
+</span></span><span class="line"><span class="cl">sub  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25  usage: S
+</span></span><span class="line"><span class="cl">sub  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25  usage: A
+</span></span><span class="line"><span class="cl">[ultimate] (1). Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; toggle
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sec  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">ssb  4096R/01731555  created: 2017-09-25  expires: never
+</span></span><span class="line"><span class="cl">ssb  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">(1)  Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; key 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sec  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">ssb* 4096R/01731555  created: 2017-09-25  expires: never
+</span></span><span class="line"><span class="cl">ssb  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">(1)  Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; keytocard
+</span></span><span class="line"><span class="cl">Signature key ....: 6FAB DC46 1847 3550 3769  2D32 0DE1 36B4 771B 0554
+</span></span><span class="line"><span class="cl">Encryption key....: [none]
+</span></span><span class="line"><span class="cl">Authentication key: BD26 3AD8 985E CAB0 9F32  7307 DF7C F7C0 A9B5 334C
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please select where to store the key:
+</span></span><span class="line"><span class="cl">(2) Encryption key
+</span></span><span class="line"><span class="cl">Your selection? 2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You need a passphrase to unlock the secret key for
+</span></span><span class="line"><span class="cl">user: &#34;Andrea Grandi &lt;user@email.com&gt;&#34;
+</span></span><span class="line"><span class="cl">4096-bit RSA key, ID 01731555, created 2017-09-25
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sec  4096R/2240402E  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">ssb* 4096R/01731555  created: 2017-09-25  expires: never
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">ssb  4096R/771B0554  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">ssb  4096R/A9B5334C  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                    card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">(1)  Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg&gt; save
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="check-public-keys">Check public keys</h4>
+<p>Just to verify everything has been created correctly, we check the public keys.
+We should see one <strong>pub</strong> key and three <strong>sub</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg -k
+</span></span><span class="line"><span class="cl">/media/AABB-BAAC/gnupghome/pubring.gpg
+</span></span><span class="line"><span class="cl">--------------------------------
+</span></span><span class="line"><span class="cl">pub   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
+</span></span><span class="line"><span class="cl">uid       [ultimate] Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">sub   4096R/01731555 2017-09-25 [expires: 2019-09-25]
+</span></span><span class="line"><span class="cl">sub   4096R/771B0554 2017-09-25 [expires: 2019-09-25]
+</span></span><span class="line"><span class="cl">sub   4096R/A9B5334C 2017-09-25 [expires: 2019-09-25]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="check-private-keys">Check private keys</h4>
+<p>When we check the private keys we should see that one key is still local, marked as <strong>sec</strong> (it&rsquo;s
+the private key of the master key), while three other keys are marked as <strong>ssb&gt;</strong>
+which means they have been moved to the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg -K
+</span></span><span class="line"><span class="cl">/media/AABB-BAAC/gnupghome/secring.gpg
+</span></span><span class="line"><span class="cl">--------------------------------
+</span></span><span class="line"><span class="cl">sec   4096R/2240402E 2017-09-25 [expires: 2019-09-25]
+</span></span><span class="line"><span class="cl">uid                  Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">ssb&gt;  4096R/01731555 2017-09-25
+</span></span><span class="line"><span class="cl">ssb&gt;  4096R/771B0554 2017-09-25
+</span></span><span class="line"><span class="cl">ssb&gt;  4096R/A9B5334C 2017-09-25
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="import-back-secret-keys-from-backup-only-for-multiple-yubikeys">Import back secret keys from backup (only for multiple YubiKeys)</h4>
+<p>As previously said, when we write the encryption subkey to the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>, the key
+is <strong>moved</strong> and not just copied, so we need to import back the secret key into
+the keyring. It&rsquo;s important to have a backup of the subkey too, not because we need it
+in case the key is compromised etc&hellip; but because we need it in case we want to write
+multiple YubiKeys with the same encryption key, so that we have a backup key to use.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --import &lt; 2240402E-secret.pgp
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="completely-remove-secret-keys-from-laptop">Completely remove secret keys from laptop</h4>
+<p>Once you have programmed the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> and you are sure the secret keys are
+backed up on a couple of USB keys, you are ready to remove the secret keys from your laptop.</p>
+<p><strong>Note:</strong> you don&rsquo;t need to remove anything if you have conducted the whole setup
+on a spare offline PC (or on a RaspberryPi) because that&rsquo;s not your every day computer.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --delete-secret-key 2240402E
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="exporting-the-public-pgp-key">Exporting the public PGP key</h3>
+<p>As you know, PGP keys are composed by a secret part and a public one. The public one
+must be distributed publicly and it&rsquo;s the one people will use to encrypt messages directed
+to you.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --armor --export 2240402E &gt; 2240402E.asc
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you have a personal blog/website I suggest to upload it there (for example mine
+can be found here <a class="link" href="https://www.andreagrandi.it/2240402E.asc"  target="_blank" rel="noopener"
+    >https://www.andreagrandi.it/2240402E.asc</a>)</p>
+<h3 id="change-yubikey-pins-and-complete-configuration">Change YubiKey PINs and complete configuration</h3>
+<p>Every <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> is sold with a certain default configuration: there is a <strong>user PIN</strong>
+that is required every time we need to use the key to sign/decrypt something (in addition
+to our passphrase) and there is an <strong>admin PIN</strong> that is required every time we change
+certain settings on the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a>.</p>
+<p>The default values are:</p>
+<ul>
+<li>user PIN: 123456</li>
+<li>admin PIN: 12345678</li>
+</ul>
+<p>I strongly recommend you to change them following this example:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">user@debian:~$ gpg --card-edit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Reader ...........: Yubico Yubikey 4 OTP U2F CCID
+</span></span><span class="line"><span class="cl">Application ID ...: D000000000000000000000000000000000
+</span></span><span class="line"><span class="cl">Version ..........: 2.1
+</span></span><span class="line"><span class="cl">Manufacturer .....: Yubico
+</span></span><span class="line"><span class="cl">Serial number ....: 012345678
+</span></span><span class="line"><span class="cl">Name of cardholder: [not set]
+</span></span><span class="line"><span class="cl">Language prefs ...: [not set]
+</span></span><span class="line"><span class="cl">Sex ..............: unspecified
+</span></span><span class="line"><span class="cl">URL of public key : [not set]
+</span></span><span class="line"><span class="cl">Login data .......: [not set]
+</span></span><span class="line"><span class="cl">Signature PIN ....: not forced
+</span></span><span class="line"><span class="cl">Key attributes ...: rsa4096 rsa4096 rsa4096
+</span></span><span class="line"><span class="cl">Max. PIN lengths .: 127 127 127
+</span></span><span class="line"><span class="cl">PIN retry counter : 3 0 3
+</span></span><span class="line"><span class="cl">Signature counter : 3
+</span></span><span class="line"><span class="cl">Signature key ....: 6FAB DC46 1847 3550 3769  2D32 0DE1 36B4 771B 0554
+</span></span><span class="line"><span class="cl">    created ....: 2017-09-25 17:50:37
+</span></span><span class="line"><span class="cl">Encryption key....: FC6F 40BC 4173 8D13 2D7C  E958 BCDC EA84 0173 1555
+</span></span><span class="line"><span class="cl">    created ....: 2017-09-25 17:47:09
+</span></span><span class="line"><span class="cl">Authentication key: BD26 3AD8 985E CAB0 9F32  7307 DF7C F7C0 A9B5 334C
+</span></span><span class="line"><span class="cl">    created ....: 2017-09-25 17:54:49
+</span></span><span class="line"><span class="cl">General key info..: sub  rsa4096/0DE136B4771B0554 2017-09-25 Andrea Grandi &lt;user@email.com&gt;
+</span></span><span class="line"><span class="cl">sec#  rsa4096/62069DE92240402E  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">ssb&gt;  rsa4096/BCDCEA8401731555  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                                card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">ssb&gt;  rsa4096/0DE136B4771B0554  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                                card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">ssb&gt;  rsa4096/DF7CF7C0A9B5334C  created: 2017-09-25  expires: 2019-09-25
+</span></span><span class="line"><span class="cl">                                card-no: 0006 05672181
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gpg/card&gt; admin
+</span></span><span class="line"><span class="cl">Admin commands are allowed
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Change the PIN and Admin PINs
+</span></span><span class="line"><span class="cl">gpg/card&gt; passwd
+</span></span><span class="line"><span class="cl">gpg: OpenPGP card no. D000000000000000000000000000000000 detected
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">1 - change PIN
+</span></span><span class="line"><span class="cl">2 - unblock PIN
+</span></span><span class="line"><span class="cl">3 - change Admin PIN
+</span></span><span class="line"><span class="cl">4 - set the Reset Code
+</span></span><span class="line"><span class="cl">Q - quit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your selection? 1
+</span></span><span class="line"><span class="cl">PIN changed.     
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">1 - change PIN
+</span></span><span class="line"><span class="cl">2 - unblock PIN
+</span></span><span class="line"><span class="cl">3 - change Admin PIN
+</span></span><span class="line"><span class="cl">4 - set the Reset Code
+</span></span><span class="line"><span class="cl">Q - quit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your selection? 3
+</span></span><span class="line"><span class="cl">PIN changed.     
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">1 - change PIN
+</span></span><span class="line"><span class="cl">2 - unblock PIN
+</span></span><span class="line"><span class="cl">3 - change Admin PIN
+</span></span><span class="line"><span class="cl">4 - set the Reset Code
+</span></span><span class="line"><span class="cl">Q - quit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your selection? q
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Make sure the PIN is entered before signing
+</span></span><span class="line"><span class="cl">gpg/card&gt; forcesig
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Set the URL where the OpenPGP public key can be found.
+</span></span><span class="line"><span class="cl">gpg/card&gt; url
+</span></span><span class="line"><span class="cl">URL to retrieve public key: https://www.andreagrandi.it/2240402E.asc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Fetch the public key into the local keyring
+</span></span><span class="line"><span class="cl">gpg/card&gt; fetch
+</span></span><span class="line"><span class="cl">                                                        
+</span></span><span class="line"><span class="cl">gpg/card&gt; quit
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Note:</strong> when you want to use your <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> on any computer (for example your work laptop)
+you need to at least import your public PGP key into the keyring. If the key is not
+read automatically, you may need to give it a refresh using this command:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">user@debian:~$ gpg --card-status
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="careful-with-pins">Careful with PINs</h4>
+<p>Please remember that you can only digit a wrong user PIN for a maximum of three times.
+After three time you will need to edit the <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> (with <strong>gpg &ndash;card-edit</strong>) become admin
+and use the <strong>unblock PIN</strong> option. If you digit the wrong admin PIN for three time, you will have
+to follow a quite complicated procedure (explained at this address: <a class="link" href="https://developers.yubico.com/ykneo-openpgp/ResetApplet.html"  target="_blank" rel="noopener"
+    >https://developers.yubico.com/ykneo-openpgp/ResetApplet.html</a>)
+and your <a class="link" href="https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;qid=1507054059&amp;sr=8-1&amp;keywords=yubico&#43;4&amp;linkCode=ll1&amp;tag=andreagrandi-21&amp;linkId=6da97357c6fe86ca94df918c172f6605"  target="_blank" rel="noopener"
+    >YubiKey</a> will be reset with factory settings, deleting your PGP keys from it.</p>
+<h3 id="references">References</h3>
+<p>To write this tutorial I originally followed other articles online. The main ones are:</p>
+<ul>
+<li><a class="link" href="https://www.esev.com/blog/post/2015-01-pgp-ssh-key-on-yubikey-neo/"  target="_blank" rel="noopener"
+    >https://www.esev.com/blog/post/2015-01-pgp-ssh-key-on-yubikey-neo/</a></li>
+<li><a class="link" href="https://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/"  target="_blank" rel="noopener"
+    >https://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/</a></li>
+<li><a class="link" href="https://wiki.debian.org/Subkeys"  target="_blank" rel="noopener"
+    >https://wiki.debian.org/Subkeys</a></li>
+<li><a class="link" href="https://www.paulfurley.com/gpg-for-humans-preparing-an-offline-machine/"  target="_blank" rel="noopener"
+    >https://www.paulfurley.com/gpg-for-humans-preparing-an-offline-machine/</a></li>
+<li><a class="link" href="https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/"  target="_blank" rel="noopener"
+    >https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/</a></li>
+<li><a class="link" href="https://rnorth.org/gpg-and-ssh-with-yubikey-for-mac"  target="_blank" rel="noopener"
+    >https://rnorth.org/gpg-and-ssh-with-yubikey-for-mac</a></li>
+</ul>
+<h4 id="amazon-association-disclaimer">Amazon Association disclaimer</h4>
+<p>I&rsquo;m trying a little experiment with the Amazon Association program. Basically, if you click
+on any of the YubiKey links and decide to buy it, I will get a little commission from it.
+I&rsquo;ve never tried this before and I&rsquo;ve no idea if it works or not. I&rsquo;m writing this here just for the
+sake of transparency.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/gnupg/">GnuPG</a>
+        
+            <a href="/tags/pgp/">PGP</a>
+        
+            <a href="/tags/security/">Security</a>
+        
+            <a href="/tags/yubikey/">YubiKey</a>
+        
+            <a href="/tags/encryption/">Encryption</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='As you may have noticed, my website looks very different compared to a few days ago. It&amp;rsquo;s just a different theme or template, I completely changed how the pages are generated and I&amp;rsquo;m hosting it in a completely different way.
+A brief history When I started this blog 10 years ago, I was hosting it on a shared hosting service and it was based on WordPress. I then decided to keep WordPress as backend (I don&amp;rsquo;t like PHP very much but I wasn&amp;rsquo;t even good at front end development at the time, so using a tool that allowed me to concentrate on the content rather than on design was a natural choice for me) but to move my website to a VPS on DigitalOcean, where I&amp;rsquo;ve self-hosted Nginx &#43; PHP &#43; MySQL and even Postfix for email aliases until a few days ago.'>
+<title>Migrating from WordPress to a static generated website</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/migrating-from-wordpress-to-static-generated-website/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Migrating from WordPress to a static generated website'>
+<meta property='og:description' content='As you may have noticed, my website looks very different compared to a few days ago. It&amp;rsquo;s just a different theme or template, I completely changed how the pages are generated and I&amp;rsquo;m hosting it in a completely different way.
+A brief history When I started this blog 10 years ago, I was hosting it on a shared hosting service and it was based on WordPress. I then decided to keep WordPress as backend (I don&amp;rsquo;t like PHP very much but I wasn&amp;rsquo;t even good at front end development at the time, so using a tool that allowed me to concentrate on the content rather than on design was a natural choice for me) but to move my website to a VPS on DigitalOcean, where I&amp;rsquo;ve self-hosted Nginx &#43; PHP &#43; MySQL and even Postfix for email aliases until a few days ago.'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/migrating-from-wordpress-to-static-generated-website/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Python' /><meta property='article:tag' content='Pelican' /><meta property='article:tag' content='static' /><meta property='article:tag' content='website' /><meta property='article:tag' content='migration' /><meta property='article:tag' content='CloudFlare' /><meta property='article:tag' content='GitHub' /><meta property='article:published_time' content='2017-07-02T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2017-07-02T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="Migrating from WordPress to a static generated website">
+<meta name="twitter:description" content="As you may have noticed, my website looks very different compared to a few days ago. It&amp;rsquo;s just a different theme or template, I completely changed how the pages are generated and I&amp;rsquo;m hosting it in a completely different way.
+A brief history When I started this blog 10 years ago, I was hosting it on a shared hosting service and it was based on WordPress. I then decided to keep WordPress as backend (I don&amp;rsquo;t like PHP very much but I wasn&amp;rsquo;t even good at front end development at the time, so using a tool that allowed me to concentrate on the content rather than on design was a natural choice for me) but to move my website to a VPS on DigitalOcean, where I&amp;rsquo;ve self-hosted Nginx &#43; PHP &#43; MySQL and even Postfix for email aliases until a few days ago."><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/migrating-from-wordpress-to-static-generated-website/">Migrating from WordPress to a static generated website</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 02, 2017</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>As you may have noticed, my website looks very different compared to a few days ago.
+It&rsquo;s just a different theme or template, I completely changed how the pages are generated and
+I&rsquo;m hosting it in a completely different way.</p>
+<h3 id="a-brief-history">A brief history</h3>
+<p>When I started this blog 10 years ago, I was hosting it on a shared hosting service and it was based on <strong>WordPress</strong>.
+I then decided to keep WordPress as backend (I don&rsquo;t like PHP very much but I wasn&rsquo;t even good at front end development at the time,
+so using a tool that allowed me to concentrate on the content rather than on design was a natural choice for me) but to move my website
+to a <strong>VPS</strong> on <strong>DigitalOcean</strong>, where I&rsquo;ve self-hosted <strong>Nginx + PHP + MySQL</strong> and even Postfix for email aliases until a few days ago.</p>
+<h3 id="why-moving-to-a-static-website">Why moving to a static website?</h3>
+<p>In these three or four years I&rsquo;ve been using a VPS, I must say I&rsquo;ve been good enough (or maybe lucky?) at keeping &ldquo;bad people&rdquo; out
+of my server, but it&rsquo;s true that <strong>maintaining a VPS can be very time consuming</strong> and you can never be sure that your website is always safe.
+I&rsquo;ve heard about static website before, but I was a bit skeptic because I had not spent enough time investigating all the possibilities
+(search and comments are still possible, thanks to external services and plugins).</p>
+<p>Another advantage of a static website is that I can perfectly &ldquo;run&rdquo; (preview) on my local computer without publishing it online. Pages can be rendered locally
+and will appear in the browser exactly as they will appear once published online.</p>
+<p>If you use a tool like WordPress, you need to be constantly connected to Internet to write any change. With static pages <strong>I can write my content offline</strong>
+(so I can do it while commuting on the train or while I&rsquo;m flying somewhere) and publish it once I&rsquo;m back online.</p>
+<h3 id="pelican">Pelican</h3>
+<p>The tool that I&rsquo;m using to generate this website is called <a class="link" href="https://blog.getpelican.com/"  target="_blank" rel="noopener"
+    >Pelican</a>.
+There are many <a class="link" href="https://www.staticgen.com/"  target="_blank" rel="noopener"
+    >static website generators</a>, the reason why I chose Pelican is because it&rsquo;s written in <strong>Python</strong>,
+so if I need to do any change I can do them and because its templates use Jinja2 which I&rsquo;m already familiar with. It can also import posts from WordPress
+(and I had over 180 posts to import from my previous website) so if you are migrating from it it&rsquo;s a good choice. Please note that the import script is not perfect
+and that you may have to adjust some formatting here and there.</p>
+<h3 id="a-new-deployment-pipeline">A new deployment pipeline</h3>
+<p>When you use WordPress your website is already online and all you have to do is to login, use the integrated editor, write content and finally publish it.
+A static website doesn&rsquo;t have any admin tool, it&rsquo;s just static pages. How do you publish content then? There are of course multiple solutions available.
+In my case my website source code is hosted in <a class="link" href="https://github.com/andreagrandi/andreagrandi.it"  target="_blank" rel="noopener"
+    >a repository on GitHub</a>. When I commit on <strong>master</strong> branch
+there is a webhook that triggers a <a class="link" href="https://github.com/andreagrandi/andreagrandi.it/blob/master/.travis.yml"  target="_blank" rel="noopener"
+    >build job</a> on <a class="link" href="https://travis-ci.org/"  target="_blank" rel="noopener"
+    >TravisCI</a>.
+TravisCI fetches the latest source code, installs Pelican on the CI and builds the static pages. Once the build is finished, a <a class="link" href="https://github.com/andreagrandi/andreagrandi.it/blob/master/deploy.sh"  target="_blank" rel="noopener"
+    >bash script</a> is used to <strong>publish</strong>
+the generated pages on the static website hosting service.</p>
+<h3 id="hosting-a-static-website">Hosting a static website</h3>
+<p>The good thing about hosting a static website is that you don&rsquo;t need a database so you can host it almost anywhere at a cheaper price or even for free.
+In my case I&rsquo;ve decided to use <strong>GitHub pages</strong>, mainly for simplicity. Every GitHub user can have a static website hosted at &lt;yourusername&gt;.github.io for free.
+To start using it, you just have to create a repository named &lt;yourusername&gt;.github.io under your GitHub account. In my case the repository is <a class="link" href="https://github.com/andreagrandi/andreagrandi.github.io"  target="_blank" rel="noopener"
+    >https://github.com/andreagrandi/andreagrandi.github.io</a>. My deploy script simply takes the generated content
+that is in the output/ folder and <strong>git push</strong> it on this repository. Once the website has been pushed to git, it&rsquo;s immediately available at <strong><a class="link" href="https://andreagrandi.github.io"  target="_blank" rel="noopener"
+    >https://andreagrandi.github.io</a></strong></p>
+<h4 id="cloudflare">CloudFlare</h4>
+<p>GitHub Pages service has a little limitation: you can either have your website served from a URL similar to the one I&rsquo;ve just mentioned, including SSL support <em>or</em> you can use your own domain, but <strong>you can&rsquo;t have both things</strong> (SSL + custom domain). To workaround this, you can instruct your domain registrar (in my case is <a class="link" href="https://www.gandi.net/"  target="_blank" rel="noopener"
+    >Gandi.net</a>) to let CloudFlare manage your domain and just enabling &ldquo;Full SSL&rdquo; support will do the trick. I won&rsquo;t repeat here how to use CloudFlare since they have a very nice tutorial explaining how to configure their service to be used with GitHub Pages: <a class="link" href="https://blog.cloudflare.com/secure-and-fast-github-pages-with-cloudflare/"  target="_blank" rel="noopener"
+    >https://blog.cloudflare.com/secure-and-fast-github-pages-with-cloudflare/</a>. Remember to include a <strong>CNAME</strong> file containing your domain name and let your static generetor put it on the root of your website, otherwise GitHub pages won&rsquo;t serve the pages correctly.</p>
+<h4 id="why-not-amazon-s3">Why not Amazon S3?</h4>
+<p>While I was looking for instructions about how to host a static websites, I found many examples of websites using Amazon S3. There is nothing wrong with using this service (just keep in mind that it&rsquo;s not free, Amazon charges you for space usage and requests, so keep an eye on the AWS bill) but the way these websites were using it was completely wrong. The most common error I noticed was the fact they were enabling the <strong>flexible SSL</strong> option on CloudFlare: this means that the connection between the visitor and CloudFlare was encrypted (and visitor could see the the SSL enabled) but the connection between CloudFlare and Amazon S3 was being served with <strong>HTTP only</strong>, meaning that potentially the pages could have been modified before being served. Infact Amazon doesn&rsquo;t serve the S3 website buckets with SSL, they use plain HTTP (Why are you doing this Amazon?!). To use the S3 bucket correctly one should also configure Route 53 (to manage DNS) and CloudFront (the Amazon equivalent of CloudFlare service, beware because this is also charged separately depending on usage/traffic), making the whole setup a bit more complicated.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>I finally moved away from my VPS and from now on I will be able to concentrate my time on content only instead of spending part of it to maintain my server. Last but not least, the possibility to write my content offline, will hopefully allow me to write from places (train, airplane) where I&rsquo;ve never written from before. If you have any suggestion or if if you notice any error, feel free to leave a comment here below. In alternative, since now this blog is completely open source and on GitHub, you can fork it and make a pull request!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/python/">Python</a>
+        
+            <a href="/tags/pelican/">Pelican</a>
+        
+            <a href="/tags/static/">Static</a>
+        
+            <a href="/tags/website/">Website</a>
+        
+            <a href="/tags/migration/">Migration</a>
+        
+            <a href="/tags/cloudflare/">CloudFlare</a>
+        
+            <a href="/tags/github/">Github</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework – part 3</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework – part 2</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/creating-production-ready-api-python-django-rest-framework-part-1/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework - part 1</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/using-python-ipdb-from-jupyter/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using Python ipdb from Jupyter</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-publish-a-python-package-to-pypi/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to publish a Python package to PyPI</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='In the first part of this tutorial we have seen how to create a basic API using Django Rest Framework. This second part will explain how to implement POST methods and add different levels of permissions and authentication. If you are starting from part 2, you may want to checkout the source code at this exact point:
+1 git checkout tutorial-1.4 A step back Before showing how easy it is to implement a POST method for our existing API, I want to do a step back and show you the &amp;ldquo;manual way&amp;rdquo;, using just the APIView class.'>
+<title>Creating a production ready API with Python and Django Rest Framework – part 2</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Creating a production ready API with Python and Django Rest Framework – part 2'>
+<meta property='og:description' content='In the first part of this tutorial we have seen how to create a basic API using Django Rest Framework. This second part will explain how to implement POST methods and add different levels of permissions and authentication. If you are starting from part 2, you may want to checkout the source code at this exact point:
+1 git checkout tutorial-1.4 A step back Before showing how easy it is to implement a POST method for our existing API, I want to do a step back and show you the &amp;ldquo;manual way&amp;rdquo;, using just the APIView class.'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='API' /><meta property='article:tag' content='Django' /><meta property='article:tag' content='framework' /><meta property='article:tag' content='Python' /><meta property='article:tag' content='rest' /><meta property='article:tag' content='tutorial' /><meta property='article:published_time' content='2016-10-01T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2016-10-01T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="Creating a production ready API with Python and Django Rest Framework – part 2">
+<meta name="twitter:description" content="In the first part of this tutorial we have seen how to create a basic API using Django Rest Framework. This second part will explain how to implement POST methods and add different levels of permissions and authentication. If you are starting from part 2, you may want to checkout the source code at this exact point:
+1 git checkout tutorial-1.4 A step back Before showing how easy it is to implement a POST method for our existing API, I want to do a step back and show you the &amp;ldquo;manual way&amp;rdquo;, using just the APIView class."><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">Creating a production ready API with Python and Django Rest Framework – part 2</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 01, 2016</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>In the <a class="link" href="%7bfilename%7d6-creating-production-ready-api-python-django-rest-framework-part-1.md" >first
+part</a>
+of this tutorial we have seen how to create a basic API using <strong>Django
+Rest Framework</strong>. This second part will explain how to implement
+<strong>POST</strong> methods and add different levels of <strong>permissions</strong> and
+<strong>authentication</strong>. If you are starting from part 2, you may want to
+checkout the source code at this exact point:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.4
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="a-step-back">A step back</h3>
+<p>Before showing how easy it is to implement a <strong>POST</strong> method for our
+existing API, I want to do a step back and show you the &ldquo;manual way&rdquo;,
+using just the
+<a class="link" href="http://www.django-rest-framework.org/api-guide/views/"  target="_blank" rel="noopener"
+    ><strong>APIView</strong></a>
+class. Edit the file <strong>catalog/views.py</strong> and change the code in this
+way:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="kn">import</span> <span class="n">APIView</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If we try to use the API again (from the browser of from the http
+client), it will still work in the same way. The difference here is that
+we are using the very basic <strong>APIView</strong> class and we have explicitly
+defined the <strong>GET</strong> method for it.</p>
+<h3 id="implementing-a-post-method-with-apiview">Implementing a POST method with APIView</h3>
+<p>An API is not being used at its full potential if it&rsquo;s read only. We are
+going to implement a POST method for the existing view and testing it
+with <a class="link" href="https://httpie.org/"  target="_blank" rel="noopener"
+    ><strong>httpie</strong></a> client again. First of all we
+need to add an import to <strong>catalog/views.py</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">status</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>then we add this method to our <strong>ProductList</strong> class:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">serializer</span> <span class="o">=</span> <span class="n">ProductSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now let&rsquo;s test our <strong>POST</strong> method we just implemented:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&#34;Salamino&#34;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&#34;Salamino Piccante&#34;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&#34;10.50&#34;</span>
+</span></span><span class="line"><span class="cl">HTTP/1.0 <span class="m">201</span> Created
+</span></span><span class="line"><span class="cl">Allow: GET, POST, HEAD, OPTIONS
+</span></span><span class="line"><span class="cl">Content-Type: application/json
+</span></span><span class="line"><span class="cl">Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> 11:48:48 GMT
+</span></span><span class="line"><span class="cl">Server: WSGIServer/0.1 Python/2.7.10
+</span></span><span class="line"><span class="cl">Vary: Accept, Cookie
+</span></span><span class="line"><span class="cl">X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;description&#34;</span>: <span class="s2">&#34;Salamino Piccante&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;Salamino&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;price&#34;</span>: <span class="s2">&#34;10.50&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>It works! In case something doesn&rsquo;t work, try to fetch the source code
+at this point:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.7
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="implementing-a-post-method-with-listcreateapiview">Implementing a POST method with ListCreateAPIView</h3>
+<p>Do you remember when I mentioned at the beginning that there is an easy
+way to do the same thing? I wasn&rsquo;t cheating. Let&rsquo;s change again our old
+code in <strong>catalog/views.py</strong> but this time we will use a different base
+class:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">generics</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Product</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">.serializers</span> <span class="kn">import</span> <span class="n">ProductSerializer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ProductList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>let&rsquo;s test this again with <strong>httpie</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&#34;Pecorino&#34;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&#34;Pecorino Sardo&#34;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&#34;7.00&#34;</span>
+</span></span><span class="line"><span class="cl">HTTP/1.0 <span class="m">201</span> Created
+</span></span><span class="line"><span class="cl">Allow: GET, POST, HEAD, OPTIONS
+</span></span><span class="line"><span class="cl">Content-Type: application/json
+</span></span><span class="line"><span class="cl">Date: Thu, <span class="m">29</span> Sep <span class="m">2016</span> 15:21:20 GMT
+</span></span><span class="line"><span class="cl">Server: WSGIServer/0.1 Python/2.7.10
+</span></span><span class="line"><span class="cl">Vary: Accept, Cookie
+</span></span><span class="line"><span class="cl">X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;description&#34;</span>: <span class="s2">&#34;Pecorino Sardo&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;Pecorino&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;price&#34;</span>: <span class="s2">&#34;7.00&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>We just POSTed some data on the API! How can it work? Well, we have
+changed the base class from <strong>ListAPIView</strong> to
+<a class="link" href="http://www.django-rest-framework.org/api-guide/generic-views/#listcreateapiview"  target="_blank" rel="noopener"
+    ><strong>ListCreateAPIView</strong></a>.
+This particular class implements <strong>a generic POST method</strong> that will
+accept and validate all the fields through the specified serializer.</p>
+<h3 id="authentication">Authentication</h3>
+<p>Now our API let us add products to the catalog, amazing! But&hellip; is it
+exactly what we want? In a real scenario we don&rsquo;t want any random user
+to be able to add products in our database, so we are going to protect
+the POST method allowing only Admin users.</p>
+<p>Before digging into Django Rest Framework permissions, we need to setup
+an authentication system. For simplicity we will implement
+<a class="link" href="http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication"  target="_blank" rel="noopener"
+    ><strong>TokenAuthentication</strong></a>.
+As first step we need to edit <strong>settings.py</strong> and
+insert <strong>rest_framework.authtoken</strong> in the <strong>INSTALLED_APPS</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s1">&#39;rest_framework.authtoken&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s1">&#39;catalog&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>after this, we need to add <strong>TokenAuthentication</strong> as default
+authentication class (append this in <strong>settings.py</strong> at the end):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s1">&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;rest_framework.authentication.TokenAuthentication&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Finally we need to add a particular URL to the project so that clients
+will be able to call an endpoint passing <strong>username</strong> and <strong>password</strong>
+to get a <strong>token</strong> back. Edit <strong>drftutorial/urls.py</strong> and make it&rsquo;s like
+this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">include</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework.authtoken.views</span> <span class="kn">import</span> <span class="n">obtain_auth_token</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;catalog.urls&#39;</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^api-token-auth/&#39;</span><span class="p">,</span> <span class="n">obtain_auth_token</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Don&rsquo;t forget to re-run the <strong>migrations</strong>, because TokenAuthorization
+needs to change a couple of tables:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ./manage.py migrate
+</span></span><span class="line"><span class="cl">Operations to perform:
+</span></span><span class="line"><span class="cl">    Apply all migrations: admin, auth, authtoken, catalog, contenttypes, sessions
+</span></span><span class="line"><span class="cl">Running migrations:
+</span></span><span class="line"><span class="cl">    Applying authtoken.0001_initial... OK
+</span></span><span class="line"><span class="cl">    Applying authtoken.0002_auto_20160226_1747... OK
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In case you had any problem changing the code up to this point, you can
+always fetch the related git tag:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.9
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="testing-the-authentication">Testing the Authentication</h4>
+<p>Before testing the authentication, make sure you created at least the
+Django <strong>superuser</strong> with:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ./manage.py createsuperuser
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>now let&rsquo;s try to <strong>obtain the token</strong> we will need later for our API
+calls:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ http --json POST http://127.0.0.1:8000/api-token-auth/ <span class="nv">username</span><span class="o">=</span><span class="s2">&#34;yourusername&#34;</span> <span class="nv">password</span><span class="o">=</span><span class="s2">&#34;yourpassword&#34;</span>
+</span></span><span class="line"><span class="cl">HTTP/1.0 <span class="m">200</span> OK
+</span></span><span class="line"><span class="cl">Allow: POST, OPTIONS
+</span></span><span class="line"><span class="cl">Content-Type: application/json
+</span></span><span class="line"><span class="cl">Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> 08:55:07 GMT
+</span></span><span class="line"><span class="cl">Server: WSGIServer/0.1 Python/2.7.11
+</span></span><span class="line"><span class="cl">X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;bc9514f0892368cfd0ea792a977aff55d53e3634&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>We will need to pass this token in every API call we want to be
+authenticated. The token is being passed through the &ldquo;Authentication&rdquo;
+header parameter.</p>
+<h3 id="api-permissions">API Permissions</h3>
+<p>Authentication is something that identify the user with a particular
+system. Permissions instead are the level of things that are allowed or
+not allowed for a particular user. In our case we said we want to let
+Admin users to be able to POST new products and we want to let even
+anonymous users to GET the product list.</p>
+<p>Django Rest Framework has some built-in classes that we can apply to our
+views to define the level of permissions. We could have used the
+<a class="link" href="http://www.django-rest-framework.org/api-guide/permissions/#isadminuser"  target="_blank" rel="noopener"
+    ><strong>IsAdminUser</strong></a>
+class, but it would not allow anonymous users to perform the GET
+request. Or we could have used
+<a class="link" href="http://www.django-rest-framework.org/api-guide/permissions/#isauthenticatedorreadonly"  target="_blank" rel="noopener"
+    ><strong>IsAuthenticatedOrReadOnly</strong></a>
+class, but this would allow any registered user to add products (and we
+want to let only admins).</p>
+<p>Or&hellip;we can define our own permission class and have exactly what we
+want. Create a new file <strong>catalog/permissions.py</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">BasePermission</span><span class="p">,</span> <span class="n">SAFE_METHODS</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">IsAdminOrReadOnly</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">has_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="n">SAFE_METHODS</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Just as a side note, <strong>SAFE_METHODS</strong> are <strong>GET</strong>, <strong>HEAD</strong> and
+<strong>OPTIONS</strong>. These method are considered &ldquo;safe&rdquo; because they don&rsquo;t
+change any existing data. Open <strong>catalog/views.py</strong> again, import this
+at the beginning:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">.permissions</span> <span class="kn">import</span> <span class="n">IsAdminOrReadOnly</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>and set this as <strong>permission_classes</strong> to <strong>ProductList</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="n">serializer_class</span> <span class="o">=</span> <span class="n">ProductSerializer</span>
+</span></span><span class="line"><span class="cl"><span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAdminOrReadOnly</span><span class="p">,</span> <span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Let&rsquo;s now try to add a new product using the <strong>token</strong> we got before
+(you will have to use your own token of course, mine only works on my
+local db):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ http --json POST http://127.0.0.1:8000/products/ <span class="nv">name</span><span class="o">=</span><span class="s2">&#34;Lardo&#34;</span> <span class="nv">description</span><span class="o">=</span><span class="s2">&#34;Lardo di Colonnata&#34;</span> <span class="nv">price</span><span class="o">=</span><span class="s2">&#34;8.50&#34;</span> <span class="s1">&#39;Authorization: Token bc9514f0892368cfd0ea792a977aff55d53e3634&#39;</span>
+</span></span><span class="line"><span class="cl">HTTP/1.0 <span class="m">201</span> Created
+</span></span><span class="line"><span class="cl">Allow: GET, POST, HEAD, OPTIONS
+</span></span><span class="line"><span class="cl">Content-Type: application/json
+</span></span><span class="line"><span class="cl">Date: Fri, <span class="m">30</span> Sep <span class="m">2016</span> 13:04:13 GMT
+</span></span><span class="line"><span class="cl">Server: WSGIServer/0.1 Python/2.7.11
+</span></span><span class="line"><span class="cl">Vary: Accept
+</span></span><span class="line"><span class="cl">X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;description&#34;</span>: <span class="s2">&#34;Lardo di Colonnata&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;Lardo&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;price&#34;</span>: <span class="s2">&#34;8.50&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>It worked! We have now protected our API so that not admin people can&rsquo;t
+create any product. If you have any problem with the code, you can check
+it out with this tag:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.10
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="wrapping-up">Wrapping Up</h3>
+<p>We have now implemented the POST method to add new products to our
+catalog. In the <a class="link" href="%7bfilename%7d/2017/1-creating-a-production-ready-api-with-python-and-django-rest-framework-part-3.md" >next
+episode</a>
+we will see how to implement endpoints to get a single product, to
+update or delete products and finally we will allow registered users to
+send a review for a specific product.</p>
+<h3 id="feedback-please">Feedback Please</h3>
+<p>I know, this blog doesn&rsquo;t have any &ldquo;comment&rdquo; feature (I was tired of
+dealing with spam), but if you want to provide some feedback you can
+still do it by email. Just visit my
+<a class="link" href="%7bfilename%7d/pages/about.md" ><strong>About</strong></a> page, you will find my
+email there.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/api/">Api</a>
+        
+            <a href="/tags/django/">Django</a>
+        
+            <a href="/tags/framework/">Framework</a>
+        
+            <a href="/tags/python/">Python</a>
+        
+            <a href="/tags/rest/">Rest</a>
+        
+            <a href="/tags/tutorial/">Tutorial</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/posts/creating-production-ready-api-python-django-rest-framework-part-1/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework - part 1</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-write-a-custom-django-middleware/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to write a custom Django Middleware</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/django-notes-read-values-from-settings-in-a-safe-way/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Django Notes: read values from settings in a safe way</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/using-virtualenv-to-manage-multiple-pythondjango-environments-in-the-same-machine/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using virtualenv to manage multiple Python/Django environments in the same machine</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/skype-sms-su-linux-grazie-a-skype4py-si-puo/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Skype SMS su Linux: grazie a Skype4Py si puo&#39;!</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

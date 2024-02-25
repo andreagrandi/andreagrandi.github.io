@@ -1,0 +1,1004 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Ubuntu on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/ubuntu/</link>
+        <description>Recent content in Ubuntu on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 25 Aug 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Getting latest Ubuntu AMI with Terraform</title>
+        <link>https://www.andreagrandi.it/posts/getting-latest-ubuntu-ami-with-terraform/</link>
+        <pubDate>Fri, 25 Aug 2017 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/getting-latest-ubuntu-ami-with-terraform/</guid>
+        <description>&lt;p&gt;When we need to create an EC2 resource on AWS using Terraform, we need to specify the AMI id to get the correct image.
+The id is not easy to memorise and it changes depending on the zone we are working one. On every new release the id changes again.
+So, how can we be sure to get the correct ID for our region, of the latest image available for a given Linux distribution?&lt;/p&gt;
+&lt;h3 id=&#34;getting-latest-ubuntu-ami-id&#34;&gt;Getting latest Ubuntu AMI id&lt;/h3&gt;
+&lt;p&gt;In this example I will show how to get the ID for the latest version of Ubuntu 16.04 server, for the London region and create an EC2 instance using that ID.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-terraform&#34; data-lang=&#34;terraform&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;variable&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;aws_region&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;default&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;eu-west-2&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt; # London
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kr&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;provider&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;aws&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;region&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;var&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;aws_region&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;access_key&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;youraccesskey&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;secret_key&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;yoursecretkey&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;aws_ami&amp;#34;&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;ubuntu&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;most_recent&lt;/span&gt; = &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;filter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;na&#34;&gt;name&lt;/span&gt;   = &lt;span class=&#34;s2&#34;&gt;&amp;#34;name&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;na&#34;&gt;values&lt;/span&gt; = &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;filter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;na&#34;&gt;name&lt;/span&gt;   = &lt;span class=&#34;s2&#34;&gt;&amp;#34;virtualization-type&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;na&#34;&gt;values&lt;/span&gt; = &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;hvm&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;owners&lt;/span&gt; = &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;099720109477&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt; # Canonical
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;resource&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;aws_instance&amp;#34;&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;web&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;ami&lt;/span&gt;           = &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;aws_ami&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ubuntu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;instance_type&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;t2.micro&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;tags&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;na&#34;&gt;Name&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;HelloUbuntu&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;output&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;image_id&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;na&#34;&gt;value&lt;/span&gt; = &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;aws_ami&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ubuntu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After we have initialised our script using &lt;strong&gt;terraform init&lt;/strong&gt; if we run it, we will get the AMI id and the instance will be created:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;➜  example1$: terraform apply
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;data.aws_ami.ubuntu: Refreshing state...
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;aws_instance.web: Creating...
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ami:                          &amp;#34;&amp;#34; =&amp;gt; &amp;#34;ami-03998867&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    associate_public_ip_address:  &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    availability_zone:            &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ebs_block_device.#:           &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ephemeral_block_device.#:     &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    instance_state:               &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    instance_type:                &amp;#34;&amp;#34; =&amp;gt; &amp;#34;t2.micro&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ipv6_address_count:           &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ipv6_addresses.#:             &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    key_name:                     &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    network_interface.#:          &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    network_interface_id:         &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    placement_group:              &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    primary_network_interface_id: &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    private_dns:                  &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    private_ip:                   &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    public_dns:                   &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    public_ip:                    &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    root_block_device.#:          &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    security_groups.#:            &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    source_dest_check:            &amp;#34;&amp;#34; =&amp;gt; &amp;#34;true&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    subnet_id:                    &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    tags.%:                       &amp;#34;&amp;#34; =&amp;gt; &amp;#34;1&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    tags.Name:                    &amp;#34;&amp;#34; =&amp;gt; &amp;#34;HelloUbuntu&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    tenancy:                      &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    volume_tags.%:                &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    vpc_security_group_ids.#:     &amp;#34;&amp;#34; =&amp;gt; &amp;#34;&amp;lt;computed&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;aws_instance.web: Still creating... (10s elapsed)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;aws_instance.web: Still creating... (20s elapsed)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;aws_instance.web: Still creating... (30s elapsed)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;aws_instance.web: Creation complete (ID: i-0f58f8bd55b3a7e38)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Outputs:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;image_id = ami-03998867
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;That&amp;rsquo;s all we need to spin up an EC2 instance on AWS using latest Ubuntu image available.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How to make subwoofer work in Ubuntu</title>
+        <link>https://www.andreagrandi.it/posts/how-to-make-subwoofer-work-in-ubuntu/</link>
+        <pubDate>Sat, 22 Jun 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-make-subwoofer-work-in-ubuntu/</guid>
+        <description>&lt;p&gt;Using the same computer with Windows 8 and Ubuntu I noticed that the
+sound was worse in Ubuntu and I discovered why soon: &lt;strong&gt;subwoofer&lt;/strong&gt;
+doesn&amp;rsquo;t work out of the box!&lt;/p&gt;
+&lt;h2 id=&#34;how-to-fix-it&#34;&gt;How to fix it&lt;/h2&gt;
+&lt;p&gt;The fix is quite easy to apply (but it was not easy to find the right
+one!). First of all edit &lt;strong&gt;/etc/pulse/default.pa&lt;/strong&gt; and add this line at
+the end:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;load-module module-combine &lt;span class=&#34;nv&#34;&gt;channels&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;channel_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;front-left,front-right,rear-left,rear-right,front-center,lfe
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;then edit &lt;strong&gt;&lt;code&gt;/etc/pulse/daemon.conf&lt;/code&gt;&lt;/strong&gt;, modify the line
+&lt;code&gt;enable-lfe-remixing: no&lt;/code&gt; to &lt;strong&gt;&lt;code&gt;enable-lfe-remixing: yes&lt;/code&gt;&lt;/strong&gt;, then
+uncomment it (remove the semicolon in front of it). Reboot your PC and
+enjoy the subwoofer!&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://forums.gentoo.org/viewtopic-t-859769.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://forums.gentoo.org/viewtopic-t-859769.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://askubuntu.com/questions/53802/subwoofer-sound-preferences-problem&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>UDS happening online only: pros and cons</title>
+        <link>https://www.andreagrandi.it/posts/uds-happening-online-only-pros-and-cons/</link>
+        <pubDate>Tue, 05 Mar 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/uds-happening-online-only-pros-and-cons/</guid>
+        <description>&lt;p&gt;When last week &lt;a class=&#34;link&#34; href=&#34;http://fridge.ubuntu.com/2013/02/26/ubuntu-developer-summits-now-online-and-every-three-months/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Canonical announced&lt;/a&gt;
+the usual UDS was not going to happen I was a bit shocked and
+disappointed: starting from the next UDS (that is going to happen
+tomorrow!) the event will be &lt;strong&gt;online only&lt;/strong&gt; and &lt;strong&gt;every 3 months&lt;/strong&gt;.
+During these days I&amp;rsquo;ve been thinking a lot about this move and I will
+tell you what are the pros and cons, in my opinion, followed by some
+final thoughts.&lt;/p&gt;
+&lt;h2 id=&#34;pros&#34;&gt;Pros&lt;/h2&gt;
+&lt;p&gt;Having 4 UDS every year, instead of 2, is surely a better thing. I&amp;rsquo;m a
+big fan of Scrum methodology, so I think that &lt;strong&gt;iterating more often is
+better&lt;/strong&gt; than iterating less. If there are any mistakes you can correct
+them and iterating again before releasing the final product.&lt;/p&gt;
+&lt;p&gt;Potentially &lt;strong&gt;more people can partecipate&lt;/strong&gt; to the event (even the
+opposite is true and I will explain why). People won&amp;rsquo;t need to move from
+home, travel, pay any expense etc&amp;hellip; they just need a computer and a
+good Internet connection.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s &lt;strong&gt;cheaper for everyone&lt;/strong&gt;: I can just imagine how expensive could be
+for Canonical to organize a similar event. Booking a big hotel, paying
+travel and expenses to near one houndred of community people. People who
+didn&amp;rsquo;t get any sponsorization had to pay all the travel expenses to
+attend the event.&lt;/p&gt;
+&lt;h2 id=&#34;cons&#34;&gt;Cons&lt;/h2&gt;
+&lt;p&gt;Potentially &lt;strong&gt;less people can partecipate&lt;/strong&gt; to the event. Yes, like I
+said before even this sentence is true and I will explain why. First of
+all, using Google+ there are at least three countries that will be cut
+out: &lt;strong&gt;China&lt;/strong&gt;, &lt;strong&gt;Thailand&lt;/strong&gt; and &lt;strong&gt;Vietnam&lt;/strong&gt;. Google+ is not available
+in those countries.&lt;/p&gt;
+&lt;p&gt;Are you sure that special people will be able to follow the event? For
+example &lt;strong&gt;blind people&lt;/strong&gt; won&amp;rsquo;t be able to chat or to ask question in the
+chat.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Only 10 people&lt;/strong&gt; will be able to talk. In normal UDS sessions more
+people could raise the hand and ask a question or interact with the
+track leaders. Who will choose the 10 people with audio+video streaming
+rights?&lt;/p&gt;
+&lt;p&gt;We will &lt;strong&gt;completly miss the social aspect&lt;/strong&gt; of the UDS. If you think
+this was only a secondary part, please go on. I felt more committed to
+work and collaborate with people I met in person than with someone I&amp;rsquo;ve
+never met before.&lt;/p&gt;
+&lt;p&gt;Announcing an event, even if online, just &lt;strong&gt;one week before&lt;/strong&gt; it
+happens. Really? Some people had already taken vacation from work,
+booked flights etc&amp;hellip; not counting many people that can&amp;rsquo;t take 2 days
+off from work just with 1 week notice period. It&amp;rsquo;s also almost
+impossible that community members have the time to schedule a blueprint
+and be able to discuss about a subject.&lt;/p&gt;
+&lt;h2 id=&#34;final-thoughts&#34;&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;From a &lt;strong&gt;cutting costs&lt;/strong&gt; point of view I really can&amp;rsquo;t say anything.
+Organizing UDS was surely very expensive for Canonical and nobody can
+blame them if they decided to spend those money in a different way.&lt;/p&gt;
+&lt;p&gt;What really concerns me: is UDS still useful? My opinion is that at
+least since latest 2 or 3 UDS the presence of the Community was not so
+relevant, because I had &lt;strong&gt;the clear sensation that the most important
+decisions were made by Canonical before the UDS&lt;/strong&gt; and then there was
+just some details tuning. Another proof of my thoughts is the today
+announcement: &lt;strong&gt;despite the fact that I 100% agree with Unity switching
+to Qt/QML&lt;/strong&gt; (I already proposed this 2 years ago during Budapest UDS,
+but nobody listened to me) &lt;strong&gt;I completly disagree with the way the
+decision was made&lt;/strong&gt;: not a single involvement or discussion with the
+community.&lt;/p&gt;
+&lt;p&gt;I would apreaciate &lt;strong&gt;more openness and honesty&lt;/strong&gt; from Canonical. Do you
+want to take all the decisions? That&amp;rsquo;s fine, but at least state it
+clearly.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Using Twitter Bootstrap with Node.js, Express and Jade</title>
+        <link>https://www.andreagrandi.it/posts/using-twitter-bootstrap-with-node-js-express-and-jade/</link>
+        <pubDate>Sun, 24 Feb 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/using-twitter-bootstrap-with-node-js-express-and-jade/</guid>
+        <description>&lt;p&gt;I&amp;rsquo;ve decided to write this post as a note to myself. I&amp;rsquo;m still learning
+Node.js and digging into Express/Jade, but I&amp;rsquo;ve read many people using
+the nice &lt;a class=&#34;link&#34; href=&#34;http://twitter.github.com/bootstrap/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Twitter Bootstrap&lt;/strong&gt;&lt;/a&gt;
+and I was wondering if there was a way to integrate all these
+technologies. The short answer is: yes, we can!&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; once again, I&amp;rsquo;m not a Node.js expert and surely there are
+other ways to achieve this task (for example there is a Node.js module
+called
+&lt;a class=&#34;link&#34; href=&#34;https://npmjs.org/package/twitter-bootstrap&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;twitter-bootstrap&lt;/strong&gt;&lt;/a&gt;,
+but I haven&amp;rsquo;t tried it). This tutorial is based on another tutorial I
+found, but it was not very updated and it had a more complicated way to
+install Bootstrap, so I decided to write a new one basing it on the
+original &lt;a class=&#34;link&#34; href=&#34;http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.rs.au.com/31/how-to-install-bootstrap-v2-0-2-in-expressjs-v3-0-0&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;preparing-the-environment&#34;&gt;Preparing the environment&lt;/h2&gt;
+&lt;p&gt;I will assume that you&amp;rsquo;re running any Linux distribution (in my case I&amp;rsquo;m
+using Ubuntu 12.10, but feel free to use your own distribution). Be sure
+to have installed a recent version of &lt;strong&gt;nodejs&lt;/strong&gt; and &lt;strong&gt;npm&lt;/strong&gt; packages
+(I&amp;rsquo;m using Node.js 0.8.20 and npm 1.2.11).&lt;/p&gt;
+&lt;h2 id=&#34;create-a-project-folder-and-install-the-required-dependencies&#34;&gt;Create a project folder and install the required dependencies&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir node-bootstrap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; node-bootstrap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install express
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install jade
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;create-the-basic-project-structure-with-express&#34;&gt;Create the basic project structure with Express&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap$ node_modules/express/bin/express nodebootstrap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/package.json
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/app.js
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/public
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/public/javascripts
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/public/images
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/public/stylesheets
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/public/stylesheets/style.css
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/routes
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/routes/index.js
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/routes/user.js
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/views
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/views/layout.jade
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;create : nodebootstrap/views/index.jade
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;install dependencies:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; nodebootstrap &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; npm install
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;run the app:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ node app
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You should already have installed all the needed dependencies, even
+without executing &lt;strong&gt;npm install&lt;/strong&gt;, anyway executing it won&amp;rsquo;t hurt.&lt;/p&gt;
+&lt;h2 id=&#34;download-and-install-bootstrap&#34;&gt;Download and install Bootstrap&lt;/h2&gt;
+&lt;p&gt;Download Twitter Boostrap from the official
+website &lt;a class=&#34;link&#34; href=&#34;http://twitter.github.com/bootstrap/assets/bootstrap.zip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://twitter.github.com/bootstrap/assets/bootstrap.zip&lt;/a&gt; and
+unzip it under the &lt;strong&gt;nodebootstrap/public&lt;/strong&gt; folder.&lt;/p&gt;
+&lt;h2 id=&#34;bootstrap-integration-with-jade-template-system&#34;&gt;Bootstrap integration with Jade template system&lt;/h2&gt;
+&lt;p&gt;At this point you need to edit the &lt;strong&gt;views/layout.jade&lt;/strong&gt; file and
+include the references to Bootsrap&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;html
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  head
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    title= title
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    link(rel=&amp;#39;stylesheet&amp;#39;, href=&amp;#39;/bootstrap/css/bootstrap.min.css&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    link(rel=&amp;#39;stylesheet&amp;#39;, href=&amp;#39;/bootstrap/css/bootstrap-responsive.min.css&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    link(rel=&amp;#39;stylesheet&amp;#39;, href=&amp;#39;/stylesheets/style.css&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    script(src=&amp;#39;https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    script(src=&amp;#39;/bootstrap/js/bootstrap.min.js&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  body
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    block content
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;test-the-bootstrap-integration&#34;&gt;Test the Bootstrap integration&lt;/h2&gt;
+&lt;p&gt;At this point we will modify &lt;strong&gt;views/index.jade&lt;/strong&gt; that is the default
+template used to render the index&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;extends&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;layout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;block&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;n&#34;&gt;div&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;top&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;form&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;form&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;horizontal&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;post&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;loginForm&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;label&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Username&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;input&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;span3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;username&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;type&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;text&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;placeholder&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Enter your username&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;label&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Password&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;input&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;span3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;password&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;type&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;password&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Password&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;input&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;btn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;type&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;submit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Log In&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;n&#34;&gt;div&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;container&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;div&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;n&#34;&gt;table&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;table&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;table&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;striped&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;n&#34;&gt;thead&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;              &lt;span class=&#34;n&#34;&gt;tr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;th&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Table&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;th&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Heading&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;n&#34;&gt;tbody&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;              &lt;span class=&#34;n&#34;&gt;tr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;td&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Blah&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;td&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;              &lt;span class=&#34;n&#34;&gt;tr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;td&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Hello&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                &lt;span class=&#34;n&#34;&gt;td&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;World&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;n&#34;&gt;div&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;footer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now go back to the terminal and execute the app:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;andrea@andrea-Inspiron-660:~/Documents/sviluppo/nodejs/node-bootstrap/nodebootstrap$ node app.js
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Express server listening on port &lt;span class=&#34;m&#34;&gt;3000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Open your favourite browse and visit &lt;a class=&#34;link&#34; href=&#34;http://localhost:3000&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://localhost:3000&lt;/a&gt; to see your
+first Bootstrap + Node.js application app and running.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Using QtCreator to deploy and run a Qt application to a remote Linux device</title>
+        <link>https://www.andreagrandi.it/posts/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</link>
+        <pubDate>Thu, 17 Jan 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/</guid>
+        <description>&lt;p&gt;QtCreator is a very flexible IDE and can really be adapted for a lot of
+things. I usually use it to develop mobile applications for Nokia N9 and
+BlackBerry 10, but it can be used for more generic tasks. In my case I
+wanted to be able to develop a Qt application using my desktop PC,
+deploy it and run on a remote (actually it&amp;rsquo;s on the same desk) Linux
+machine running Xubuntu.&lt;/p&gt;
+&lt;p&gt;Doing this is quite easy and you don&amp;rsquo;t need any specific plugin on
+QtCreator, but be sure to have at least version 2.6.x. Other than
+QtCreator you also need two Linux based PC (I used Ubuntu 12.10 for my
+development machine and Xubuntu 12.10 for the remote netbook) and an SSH
+account on the remote PC.&lt;/p&gt;
+&lt;h2 id=&#34;add-the-remote-device-to-qtcreator&#34;&gt;Add the remote device to QtCreator&lt;/h2&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;QtCreatorDevice.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/QtCreatorDevice.png&#34;
+	width=&#34;1016&#34;
+	height=&#34;586&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;QtCreatorDevice&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;173&#34;
+		data-flex-basis=&#34;416px&#34;
+	
+&gt;{ width=100% }&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To add the remote Linux device on QtCreator, use the
+&lt;strong&gt;Tools-&amp;gt;Options&lt;/strong&gt; menu and click on &amp;ldquo;&lt;strong&gt;Devices&lt;/strong&gt;&amp;rdquo; item. At this
+point click on &amp;ldquo;&lt;strong&gt;Add&lt;/strong&gt;&amp;rdquo; button and fill the fields using values similar
+to the screenshot. In particular specify a &lt;strong&gt;name&lt;/strong&gt; for the device, the
+&lt;strong&gt;IP&lt;/strong&gt; of the remote machine and a &lt;strong&gt;username&lt;/strong&gt; and &lt;strong&gt;password&lt;/strong&gt; that
+must already exist (I just created the user &amp;ldquo;andrea&amp;rdquo; on the Xubuntu
+machine and used the same password). I also had to set the &lt;strong&gt;timeout&lt;/strong&gt;
+to 20 seconds, because I had some connection problems and the connection
+kept dropping after 10 seconds trying. To verify if everything is
+working fine, just click on &lt;strong&gt;Test&lt;/strong&gt; button.&lt;/p&gt;
+&lt;h2 id=&#34;add-a-specific-qt-version&#34;&gt;Add a specific Qt version&lt;/h2&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;QtCreatorQtVersion.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/QtCreatorQtVersion.png&#34;
+	width=&#34;1025&#34;
+	height=&#34;621&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;QtCreatorQtVersion&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;165&#34;
+		data-flex-basis=&#34;396px&#34;
+	
+&gt;{ width=100% }&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To write your application you may need a specific Qt version that is
+different from the one distributed by your Linux distribution. There&amp;rsquo;s
+no problem, QtCreator let you add different Qt versions without any
+conflict. In my case I installed the Qt5 version distributed by
+&lt;strong&gt;Canonical Qt5 Edgers
+Team&lt;/strong&gt;: &lt;a class=&#34;link&#34; href=&#34;https://launchpad.net/~canonical-qt5-edgers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://launchpad.net/~canonical-qt5-edgers&lt;/a&gt;&lt;br&gt;
+Once it&amp;rsquo;s installed, just click on &amp;ldquo;&lt;strong&gt;Add&lt;/strong&gt;&amp;rdquo; button and select the qmake
+specific to the version you want to add (in my case it was in
+&lt;strong&gt;/opt/qt5/bin/qmake&lt;/strong&gt; ).&lt;/p&gt;
+&lt;h2 id=&#34;add-a-qt-kit&#34;&gt;Add a Qt Kit&lt;/h2&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;QtCreatorQtKits.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-qtcreator-to-deploy-and-run-a-qt-application-to-a-remote-linux-device/QtCreatorQtKits.png&#34;
+	width=&#34;1025&#34;
+	height=&#34;621&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;QtCreatorQtKits&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;165&#34;
+		data-flex-basis=&#34;396px&#34;
+	
+&gt;{ width=100% }&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;QtCreator permits to add new &lt;strong&gt;Kit&lt;/strong&gt; (development configurations) and
+these kits are used during project creation to specify what you want to
+target. In my example I added a new kit choosing an appropriate &lt;strong&gt;name&lt;/strong&gt;
+&amp;ldquo;Qt5 Ubuntu&amp;rdquo;, the &lt;strong&gt;device type&lt;/strong&gt;, the actual &lt;strong&gt;device&lt;/strong&gt; previously
+configured and finally the &lt;strong&gt;Qt version&lt;/strong&gt; that we added before. With a
+kit I have a complete &amp;ldquo;toolchain&amp;rdquo; that allow me to write applications
+for a particular device, with a specific Qt version.&lt;/p&gt;
+&lt;h2 id=&#34;putting-the-pieces-together&#34;&gt;Putting the pieces together&lt;/h2&gt;
+&lt;p&gt;At this point you just have to create a new &amp;ldquo;&lt;strong&gt;Qt Quick 2&lt;/strong&gt;&amp;rdquo;
+application, and select the new kit you just created instead of the
+&amp;ldquo;Desktop&amp;rdquo; one. &lt;strong&gt;Please note&lt;/strong&gt; that there is a little problem that I
+haven&amp;rsquo;t fixed yet (but I&amp;rsquo;m working on it): if you create, for example, a
+project named &amp;ldquo;QtTest1&amp;rdquo; it will be deployed to the folder /opt/QtTest1/
+on the remote machine. By default your user doesn&amp;rsquo;t have read+write
+permissions for that folder so I manualy created the folder and I gave a
+chmod 777 on it, just for testing. There are two possible ways to fix
+this: you could create a specific user that has read+write permissions
+on /opt/ or you could modify the deployment configuration to have the
+app deployed to the user /home (I will investigate on this possibility
+and I will write something in one of the next posts).&lt;/p&gt;
+&lt;h2 id=&#34;final-thoughts&#34;&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;What all of this could be useful for? Well, do 2+2 and you&amp;rsquo;ll easily
+guess ;) In the next weeks I will post more specific informations and I
+will update everyone with my progresses. Any comment is welcome! If you
+want to contribute to this you&amp;rsquo;re welcome too of course.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Ubuntu Release Sprint: calling for feedback!</title>
+        <link>https://www.andreagrandi.it/posts/ubuntu-release-sprint-calling-for-feedback/</link>
+        <pubDate>Fri, 17 Aug 2012 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/ubuntu-release-sprint-calling-for-feedback/</guid>
+        <description>&lt;p&gt;During the last UDS party, I had an idea to improve Ubuntu development,
+but I didn&amp;rsquo;t know if it could be a good idea or a stupid one, so I
+talked to &lt;strong&gt;Daniel Holbach&lt;/strong&gt; and &lt;strong&gt;David Planella&lt;/strong&gt; about it and they
+were happy to hear about it and Daniel told me to talk about
+this directly to &lt;strong&gt;Mark&lt;/strong&gt; (and I did it).&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s explain the basic idea.&lt;/p&gt;
+&lt;p&gt;From an UDS and the next one, it would be useful to have a
+development sprint where people can talk about assigned UDS blueprints,
+at which point they are on their tasks, if they have any problems and if
+they will finish them within the next UDS.&lt;/p&gt;
+&lt;p&gt;Of course Canonical cannot organize another meeting, it would be
+very expensive, so the idea is: why don&amp;rsquo;t we use &lt;strong&gt;Google Hangout&lt;/strong&gt; to
+organize the sprint? I has a limit of 10 people, I know, but we could
+select (for example) 5 from the community and 5 from Canonical. There
+would be parallel meeting and tracks, we would use the same blueprints
+used during the last UDS and we would add further notes. The
+attendees would be able to listen and watch the stream and make
+questions through the available chat.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ve also created a &lt;strong&gt;wiki&lt;/strong&gt; page with more informations and you can
+find it here: &lt;a class=&#34;link&#34; href=&#34;https://wiki.ubuntu.com/UbuntuReleaseSprint&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://wiki.ubuntu.com/UbuntuReleaseSprint&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;What do you think about? I know that Canonical is already
+organizing sprints and this could be a way to involve more the Ubuntu
+Community. Maybe we should schedule a session &lt;strong&gt;at next UDS&lt;/strong&gt; to talk
+about this?&lt;/p&gt;
+&lt;p&gt;I hope to get some &lt;strong&gt;feedback&lt;/strong&gt; from you.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Ubuntu 12.04, Nvidia 8800 GS and Nouveau drivers</title>
+        <link>https://www.andreagrandi.it/posts/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/</link>
+        <pubDate>Fri, 27 Apr 2012 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;logo_nvidia_linux.jpg&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/ubuntu-12-04-nvidia-8800-gs-and-nouveau-drivers/logo_nvidia_linux.jpg&#34;
+	width=&#34;400&#34;
+	height=&#34;322&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;logo nvidia linux&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;124&#34;
+		data-flex-basis=&#34;298px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;After upgrading my desktop PC to &lt;strong&gt;Ubuntu 12.04&lt;/strong&gt; (actually my main
+machine) I started experimenting many &lt;strong&gt;Xorg crashes&lt;/strong&gt; and instability
+issues. I &lt;a class=&#34;link&#34; href=&#34;https://bugs.launchpad.net/ubuntu/&amp;#43;source/nvidia-graphics-drivers/&amp;#43;bug/986445&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;reported the
+bug&lt;/a&gt;,
+but I had to find a solution or I should have rolled back to Ubuntu
+11.10. The problem (from my point of view) is of the new &lt;strong&gt;Nvidia
+295.40&lt;/strong&gt; binary drivers. I also tried an older version (295.33)
+experiencing the same problems. I then decided to give the
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;http://nouveau.freedesktop.org&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Nouveau&lt;/a&gt;&lt;/strong&gt; opensource drivers a try.&lt;/p&gt;
+&lt;p&gt;I must say that in over 24 hours I didn&amp;rsquo;t have a single Xorg crash. My
+desktop is very stable and Nouveau drivers are pretty fast: I can watch
+a 1080p video on Youtube in full screen without having any problem. The
+only problem with my machine is that I&amp;rsquo;m using a VGA Switcher to share
+my monitor wit Xbox (see &lt;a class=&#34;link&#34; href=&#34;%7bfilename%7d/2012/6-sharing-your-pc-monitor-with-your-xbox-using-a-vga-switcher.md&#34; &gt;this old
+post&lt;/a&gt;),
+so my monitor capabilities cannot be detected automatically and I had to
+do some manually tuning of the Xorg configuration.&lt;/p&gt;
+&lt;p&gt;First of all I had to resolve a very annoying problem: the screen was
+blinking every 10 seconds and this really hurted my eyes. To fix this I
+had to add a kernel parameter: **drm_kms_helper.poll=0&lt;br&gt;
+**you need to add this string in &lt;strong&gt;&lt;code&gt;/etc/default/grub&lt;/code&gt;&lt;/strong&gt; to
+the &lt;strong&gt;&lt;code&gt;GRUB_CMDLINE_LINUX_DEFAULT&lt;/code&gt;&lt;/strong&gt; parameter. After this your line
+should look like this one: &lt;strong&gt;&lt;code&gt;GRUB_CMDLINE_LINUX_DEFAULT=&amp;quot;quiet splash drm_kms_helper.poll=0&amp;quot;&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Don&amp;rsquo;t forget to execute: &lt;strong&gt;&lt;code&gt;sudo update-grub&lt;/code&gt;&lt;/strong&gt; from the command line.&lt;/p&gt;
+&lt;p&gt;Then I had to create a proper &lt;strong&gt;xorg.conf&lt;/strong&gt; setting my resolution
+(1680x1050) manually:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Section &lt;span class=&#34;s2&#34;&gt;&amp;#34;Monitor&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Identifier &lt;span class=&#34;s2&#34;&gt;&amp;#34;DVI-I-1&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;VendorName &lt;span class=&#34;s2&#34;&gt;&amp;#34;Asus&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ModelName &lt;span class=&#34;s2&#34;&gt;&amp;#34;Ancor Communications Inc VW222&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Modeline &lt;span class=&#34;s2&#34;&gt;&amp;#34;1680x1050R&amp;#34;&lt;/span&gt; 119.00 &lt;span class=&#34;m&#34;&gt;1680&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1728&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1760&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1840&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1050&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1053&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1059&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1080&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;+hsync -vsync  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Option &lt;span class=&#34;s2&#34;&gt;&amp;#34;PreferredMode&amp;#34;&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;1680x1050R&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;EndSection
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Section &lt;span class=&#34;s2&#34;&gt;&amp;#34;Screen&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Identifier &lt;span class=&#34;s2&#34;&gt;&amp;#34;Screen0&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Monitor &lt;span class=&#34;s2&#34;&gt;&amp;#34;DVI-I-1&amp;#34;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;EndSection
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;How do you generate the &lt;strong&gt;Modeline&lt;/strong&gt; line? It&amp;rsquo;s very simple. Just
+execute: &amp;ldquo;&lt;strong&gt;cvt -r 1680 1050&lt;/strong&gt;&amp;rdquo; in the command line and you&amp;rsquo;ll get a
+line similar to the one I added (of course substitute those numbers with
+the resolution you want).&lt;/p&gt;
+&lt;p&gt;You have to save this file in &lt;strong&gt;/etc/X11/xorg.conf&lt;/strong&gt; and reboot your
+system to use all the new settings. Now my system runs nicely and very
+fast! I&amp;rsquo;m really enjoying the new &lt;strong&gt;Ubuntu 12.04 Precise Pangolin&lt;/strong&gt;. I
+just hope that Nvidia guys will fix the sta&lt;br&gt;
+bility issues of their driver as soon as possible, so I&amp;rsquo;ll be able to
+choose again between the opensource driver and the closed source one
+(faster with 3D stuff, but more unstable as you can see).&lt;/p&gt;
+&lt;p&gt;A big &lt;strong&gt;thanks&lt;/strong&gt; to everyone in &lt;strong&gt;#nouveau&lt;/strong&gt; &lt;strong&gt;IRC&lt;/strong&gt; channel on
+&lt;strong&gt;Freenode&lt;/strong&gt;. They were very kind to help me configuring their
+opensource driver.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Ubuntu Global Jam Italy (Pistoia): a quick review</title>
+        <link>https://www.andreagrandi.it/posts/ubuntu-global-jam-italy-pistoia-a-quick-review/</link>
+        <pubDate>Sun, 04 Mar 2012 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/ubuntu-global-jam-italy-pistoia-a-quick-review/</guid>
+        <description>&lt;p&gt;Yesterday in &lt;strong&gt;Pistoia&lt;/strong&gt; (Italy) we had the &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://wiki.ubuntu.com/UbuntuGlobalJam&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Ubuntu Global
+Jam&lt;/a&gt;&lt;/strong&gt; and about &lt;strong&gt;15 people&lt;/strong&gt;
+attended the event. We began with an introductive talk by &lt;strong&gt;Paolo
+Sammicheli&lt;/strong&gt; about the Italian Ubuntu Community and how it is possible
+to contribute to Ubuntu. We divided in two small groups, one translating
+from English to Italian (coordinated on IRC by the people of the
+community) and another group leaded by &lt;strong&gt;Marco Trevisan&lt;/strong&gt;, learning how
+to implement automatic tests in Unity code (in particular he introduced
+us &lt;strong&gt;Autopilot&lt;/strong&gt;, more information
+here: &lt;a class=&#34;link&#34; href=&#34;https://wiki.ubuntu.com/Unity/QA/Autopilot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://wiki.ubuntu.com/Unity/QA/Autopilot&lt;/a&gt; ). Next time I would
+like to ask people to register to Launchpad and sign the Code of Conduct
+&lt;strong&gt;before&lt;/strong&gt; attending the global jam. We wasted a lot of time with this
+task.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;UGJ-Pistoia-2012.jpg&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/ubuntu-global-jam-italy-pistoia-a-quick-review/UGJ-Pistoia-2012.jpg&#34;
+	width=&#34;960&#34;
+	height=&#34;720&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;ugj pistoia&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;At the end of the day me and the other people from Pistoia, took the
+other people for a quick tour around the city where we had the
+possibility to eat some tasty food. It was a very amazing day and people
+who started collaborating for the first time were very happy! I think
+this has been a successful day, at least for us. I hope the other LoCo
+are having a good Jam as well and I really can&amp;rsquo;t wait for the next
+Ubuntu Global Jam.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Nokia QtSDK installer crash on Ubuntu: how to fix it</title>
+        <link>https://www.andreagrandi.it/posts/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</link>
+        <pubDate>Thu, 12 Jan 2012 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/nokia-qtsdk-installer-crash-on-ubuntu-how-to-fix-it/</guid>
+        <description>&lt;p&gt;If you try to install &lt;strong&gt;Nokia QtSDK&lt;/strong&gt; on Ubuntu using the Nokia
+installer (that provides a newer version than the one distributed in
+Ubuntu Software Center) you could get an error like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;Qt_SDK_Lin32_offline_v1_1_3_en.run:3126&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;: Gtk-CRITICAL **:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;IA__gtk_widget_style_get: assertion &lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;GTK_IS_WIDGET &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;widget&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;failed  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;to fix it, you need to run the installer with a specific parameter:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./Qt_SDK_Lin32_offline_v1_1_4_en.run -style cleanlooks  
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;and everything should work!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>UDS day-0</title>
+        <link>https://www.andreagrandi.it/posts/uds-day-0/</link>
+        <pubDate>Wed, 11 May 2011 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/uds-day-0/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/uds-day-0/IMG_0254-300x200.jpg&#34;
+	width=&#34;300&#34;
+	height=&#34;200&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;uds&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;150&#34;
+		data-flex-basis=&#34;360px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I left from &lt;strong&gt;Firenze&lt;/strong&gt; with my friend &lt;strong&gt;Marco Trevisan&lt;/strong&gt;, to go to
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;http://uds.ubuntu.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Ubuntu Developer Summit&lt;/a&gt;&lt;/strong&gt; in &lt;strong&gt;Budapest&lt;/strong&gt;. We
+changed flight in &lt;strong&gt;Rome&lt;/strong&gt; where we met also &lt;strong&gt;Andrea Azzarone&lt;/strong&gt;.
+Unluckly &lt;strong&gt;Alitalia losts Marco&amp;rsquo;s baggage&lt;/strong&gt;, so he&amp;rsquo;s still waiting for
+it.&lt;/p&gt;
+&lt;p&gt;We arrived at the hotel at 20:00 more or less where we met other people
+of the community. There are &lt;strong&gt;lot of italians&lt;/strong&gt; at UDS. Most work for
+Canonical, other were sponsored by.&lt;/p&gt;
+&lt;p&gt;I met &lt;strong&gt;Marianna Raffaele&lt;/strong&gt; (one of the UDS organizer&amp;hellip; yeah, she&amp;rsquo;s
+italian too!), I had to explain her a little problem I had with my
+booking (nothing bad) and she managed to help me. She also gave me a
+very nice guitar plettre with Ubuntu logo. Thank you Marianna for this!&lt;/p&gt;
+&lt;p&gt;We went out with &lt;strong&gt;Jorge Castro&lt;/strong&gt; to drink some beers (he offered me
+one, thanks Jorge!!!) and we met lot of other Ubuntu people. A really
+amazing start!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>UDS day-1</title>
+        <link>https://www.andreagrandi.it/posts/uds-day-1/</link>
+        <pubDate>Wed, 11 May 2011 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/uds-day-1/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/uds-day-1/IMG_0286-300x200.jpg&#34;
+	width=&#34;300&#34;
+	height=&#34;200&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;uds&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;150&#34;
+		data-flex-basis=&#34;360px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;My day started at 7:30 with a &lt;strong&gt;very nice breakfast!&lt;/strong&gt; I was alone with
+just another guy this morning, in a very big breakbast room.&lt;/p&gt;
+&lt;p&gt;After it I grabbed my badge to avoid queue later and went back to my
+room to wake up &lt;strong&gt;Marco Trevisan&lt;/strong&gt; (he was still sleeping :P ).&lt;/p&gt;
+&lt;p&gt;The keynote was opened by &lt;strong&gt;Jono Bacon&lt;/strong&gt; (the Ubuntu Community manager),
+followed by Ubuntu founder &lt;strong&gt;Mark Shuttleworth&lt;/strong&gt;. The most interesting
+(and tweeted) part of the keynote was &amp;ldquo;&lt;strong&gt;how to prounounce Oneiric&lt;/strong&gt;&amp;rdquo;
+(Oeniric will be the next Ubuntu release).&lt;/p&gt;
+&lt;p&gt;The keynote finished with a bit late, so all the other tracks were
+shifted forward. I followed &amp;ldquo;&lt;strong&gt;Unity 2D Oneiric Improvements&lt;/strong&gt;&amp;rdquo;, it was
+interesting because there were some &lt;strong&gt;Nokia/Qt&lt;/strong&gt; guys and they looked
+very interested in helping the Unity 2D team and collaborating with
+them.&lt;/p&gt;
+&lt;p&gt;Now following &amp;ldquo;&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://wiki.ubuntu.com/DocumentationTeam/SystemDocumentation/Tasks/Oneiric&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Shaping a strategy for Ubuntu user assistance&lt;/a&gt;&lt;/strong&gt;&amp;rdquo;,
+I just had the possibility my involvement into helping people that
+require Ubuntu assistance.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;lunch&lt;/strong&gt; has been very tasty, I had the possibility to eat some
+local recipes, not bad at all.&lt;/p&gt;
+&lt;p&gt;After lunch we had a short session on &lt;strong&gt;Qt&lt;/strong&gt;. The version 4.8 is going
+to be released in a couple of months, while 5.0 is announced to be
+released in 1 year from now: it will be almost code-compatible with 4.x,
+it will have an improved support for Qt Quick and QML.&lt;/p&gt;
+&lt;p&gt;As last track of the day I decided to follow &amp;ldquo;&lt;strong&gt;Personal Cloud&lt;/strong&gt;&amp;rdquo;. Not a
+perfect track, since the person who should have been here was only
+talking with us using Skype and it was more difficoult to hear what he
+said.&lt;/p&gt;
+&lt;p&gt;At the end of this day there was the &amp;ldquo;&lt;strong&gt;Meet &amp;amp; Greet&lt;/strong&gt;&amp;rdquo; party, sponsored
+by Freescale and Openstack. They offered a dinner and we had some good
+music after it.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>UDS day-2</title>
+        <link>https://www.andreagrandi.it/posts/uds-day-2/</link>
+        <pubDate>Wed, 11 May 2011 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/uds-day-2/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/uds-day-2/IMG_0323-300x200.jpg&#34;
+	width=&#34;300&#34;
+	height=&#34;200&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;uds&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;150&#34;
+		data-flex-basis=&#34;360px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This day at UDS started a bit late for me, since i woke up pretty sick (damn
+air conditioned!!!). I did not follow any conferences in the morning. I
+relly wanted to follow the &lt;strong&gt;Wayland&lt;/strong&gt; one, but when I arrived the room
+was already full and it was almost impossible to enter, so I decided not
+to enter.&lt;/p&gt;
+&lt;p&gt;I attended &amp;ldquo;&lt;strong&gt;What&amp;rsquo;s wrong with UDS and how we can fix it&lt;/strong&gt;&amp;rdquo; session
+before having lunch. We discussed the possibility to improve all the
+session in general, for example giving them a proper order so that a
+team can first discuss some API interface, then another team can discuss
+how to design them.&lt;/p&gt;
+&lt;p&gt;We had another wonderful and tasty &lt;strong&gt;lunch&lt;/strong&gt;, even if I didn&amp;rsquo;t eat so
+much, but food was very good anyway.&lt;/p&gt;
+&lt;p&gt;During the afternoon I followed an interesting track: &amp;ldquo;&lt;strong&gt;Recommend music
+based on current song playing or on users media library&lt;/strong&gt;&amp;rdquo;. We discussed
+the possibilities to implement a music suggestion service, based on
+user&amp;rsquo;s tastes.&lt;/p&gt;
+&lt;p&gt;I spent the rest of theconference time writing these blog posts and
+uploading pictures.&lt;/p&gt;
+&lt;p&gt;After the sessions we had the &lt;strong&gt;Linaro Showcase&lt;/strong&gt;: lot of demo running
+on Linaro and ARM processors. I was really impressed by a robot with
+Kinect that was able to follow people recognizing their faces. During
+the showcase there was a very nice dinner.&lt;/p&gt;
+&lt;p&gt;After dinner I went out with my friend &lt;strong&gt;Manrique Lopez&lt;/strong&gt; who is here in
+Budapest for another conference, so we decided to meet for a good beer.&lt;/p&gt;
+&lt;p&gt;Before coming back to the hotel me, &lt;strong&gt;Marco Trevisan&lt;/strong&gt; and &lt;strong&gt;Andrea
+Azzarone&lt;/strong&gt; had a nice talk with &lt;strong&gt;Jorge Castro&lt;/strong&gt;. He really make us feel
+part of the Ubuntu family!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>UDS day-3</title>
+        <link>https://www.andreagrandi.it/posts/uds-day-3/</link>
+        <pubDate>Wed, 11 May 2011 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/uds-day-3/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/uds-day-3/IMG_0260-300x200.jpg&#34;
+	width=&#34;300&#34;
+	height=&#34;200&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;uds&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;150&#34;
+		data-flex-basis=&#34;360px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Even this morning I didn&amp;rsquo;t wake up early because I still felt sick (I already
+know this sore throath won&amp;rsquo;t abandon me untile I go back home).&lt;/p&gt;
+&lt;p&gt;I had a &lt;strong&gt;light breakfast at 10:30&lt;/strong&gt; and then I finishes uploading some
+pictures and published articles on my blog I already had written before.&lt;/p&gt;
+&lt;p&gt;While waiting to attend a session, I found &lt;strong&gt;Mark Shuttleworth&lt;/strong&gt; around
+and I congratulated with him for the effort he is putting into Ubuntu.
+Without a similar distribution, I&amp;rsquo;m pretty sure that Linux would not be
+so popular today.&lt;/p&gt;
+&lt;p&gt;We had lunch at 13:00 as usual and after that I attended a couple of
+presentation. The first one on Eucalyptus, then &amp;ldquo;&lt;strong&gt;Cooking Recipes&lt;/strong&gt;&amp;rdquo;
+for Ubuntu and another one dedicated to &lt;strong&gt;Wine&lt;/strong&gt;. The Wine session was
+so funny! They had a little problem with video projector and all the
+images appeared with a blur effect so that you could think to be drunk
+;)&lt;/p&gt;
+&lt;p&gt;After these sessions I had to go back to my room since I didn&amp;rsquo;t feel
+very well, but I was able to attend &amp;ldquo;&lt;strong&gt;Unity&amp;rsquo;s relations and
+dependancies on GNOME&lt;/strong&gt;&amp;rdquo; thanks to audio streaming, IRC for asking
+questions and etherpad to take notes.&lt;/p&gt;
+&lt;p&gt;I attended also &amp;ldquo;&lt;strong&gt;desktop-dx-o-unity-a11y&lt;/strong&gt;&amp;rdquo; where there was a
+discussion about the state of &lt;strong&gt;Unity&lt;/strong&gt; and what can be improved before
+&lt;strong&gt;Oneiric&lt;/strong&gt; release. Lot of work has to be done yet, in particular about
+accessibility.&lt;/p&gt;
+&lt;p&gt;Last session of this day, a
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;http://summit.ubuntu.com/uds-o/meeting/other-o-sabdfl-community-qa/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Q+A&lt;/a&gt;&lt;/strong&gt;
+with &lt;strong&gt;Mark Shuttleworth&lt;/strong&gt;. The session was very interesting! He replied
+to all questions coming from the public and from IRC.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

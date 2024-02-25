@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='A few days ago I had the great opportunity to attend an event organised in collaboration with Python Software Foundation, a few primary school teachers and hosted by Computing at School, in London. The meeting was organised by Yvonne Walker (from CAS) and Nicholas Tollervey (PSF). The aim of the meeting was for teachers and developers to meet and discuss the opportunities offered by MicroPython on the BBC micro:bit. During the event a BBC micro:bit board was loaned to each person for the purpose of developing Python scripts, MicroPython itself or educational resources for the BBC micro:bit.'>
+<title>Getting started with BBC MicroBit and Python</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/getting-started-with-bbc-microbit-and-python/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Getting started with BBC MicroBit and Python'>
+<meta property='og:description' content='A few days ago I had the great opportunity to attend an event organised in collaboration with Python Software Foundation, a few primary school teachers and hosted by Computing at School, in London. The meeting was organised by Yvonne Walker (from CAS) and Nicholas Tollervey (PSF). The aim of the meeting was for teachers and developers to meet and discuss the opportunities offered by MicroPython on the BBC micro:bit. During the event a BBC micro:bit board was loaned to each person for the purpose of developing Python scripts, MicroPython itself or educational resources for the BBC micro:bit.'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/getting-started-with-bbc-microbit-and-python/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='microbit' /><meta property='article:tag' content='psf' /><meta property='article:published_time' content='2015-12-10T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2015-12-10T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="Getting started with BBC MicroBit and Python">
+<meta name="twitter:description" content="A few days ago I had the great opportunity to attend an event organised in collaboration with Python Software Foundation, a few primary school teachers and hosted by Computing at School, in London. The meeting was organised by Yvonne Walker (from CAS) and Nicholas Tollervey (PSF). The aim of the meeting was for teachers and developers to meet and discuss the opportunities offered by MicroPython on the BBC micro:bit. During the event a BBC micro:bit board was loaned to each person for the purpose of developing Python scripts, MicroPython itself or educational resources for the BBC micro:bit."><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/howto/" >
+                HowTo
+            </a>
+        
+            <a href="/categories/microbit/" >
+                Microbit
+            </a>
+        
+            <a href="/categories/python/" >
+                Python
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/getting-started-with-bbc-microbit-and-python/">Getting started with BBC MicroBit and Python</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 10, 2015</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>A few days ago I had the great opportunity to attend an event organised
+in collaboration with <strong><a class="link" href="https://www.python.org/"  target="_blank" rel="noopener"
+    >Python Software
+Foundation</a></strong>, a few <strong>primary school
+teachers</strong> and hosted by <strong><a class="link" href="http://www.computingatschool.org.uk/"  target="_blank" rel="noopener"
+    >Computing at
+School</a></strong>, in <strong>London</strong>. The
+meeting was organised by <strong>Yvonne Walker</strong> (from CAS) and <strong>Nicholas
+Tollervey</strong> (PSF). The aim of the meeting was for teachers and
+developers to meet and discuss the opportunities offered
+by <strong><a class="link" href="https://micropython.org/"  target="_blank" rel="noopener"
+    >MicroPython</a></strong> on the <strong><a class="link" href="https://www.microbit.co.uk/"  target="_blank" rel="noopener"
+    >BBC
+micro:bit</a></strong>. During the event a
+<strong>BBC</strong> <strong>micro:bit</strong> board was loaned to each person for the purpose of
+developing Python scripts, MicroPython itself or educational resources
+for the <strong>BBC micro:bit</strong>. Nicholas made it very clear that there is an
+<strong>NDA</strong> in place until the device is delivered to the kids and explained
+what we could or couldn&rsquo;t do.</p>
+<p><a class="link" href="computing_at_school_microbit_reduced.jpg" ><img src="/posts/getting-started-with-bbc-microbit-and-python/computing_at_school_microbit_reduced.jpg"
+	width="4032"
+	height="3024"
+	
+	loading="lazy"
+	
+		alt="microbit"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="133"
+		data-flex-basis="320px"
+	
+>{width=100%}</a></p>
+<h2 id="the-board">The Board</h2>
+<p><a class="link" href="bbcfullbleed.jpg" ><img src="/posts/getting-started-with-bbc-microbit-and-python/bbcfullbleed.jpg"
+	width="960"
+	height="623"
+	
+	loading="lazy"
+	
+		alt="board"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="154"
+		data-flex-basis="369px"
+	
+>{width=100%}</a></p>
+<p>The board is a 4 x 5 cm device with an <strong>ARM Cortex-M0</strong> processor,
+<strong>accelerometer</strong> and magnetometer sensors, <strong>Bluetooth</strong> and <strong>USB
+connectivity</strong>, a <strong>display</strong> consisting of 25 LEDs, <strong>two programmable
+buttons</strong>, and can be powered by either USB or an external battery pack
+(source: <a class="link" href="https://en.wikipedia.org/wiki/Micro_Bit"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Micro_Bit</a> ).</p>
+<h2 id="flashing-the-firmware">Flashing the firmware</h2>
+<p>Once you get a new board, it probably doesn&rsquo;t have a proper firmware and
+application flashed. I suggest you to download the <strong>Python MicroBit
+REPL</strong> from this repository: <a class="link" href="https://github.com/ntoll/microrepl"  target="_blank" rel="noopener"
+    >https://github.com/ntoll/microrepl</a><br>
+All you need to do is to connect the board to your computer, using a
+<strong>micro-USB cable</strong>. The device will be mounted as a volume. At this
+point, drag &amp; drop the file called
+<strong><a class="link" href="https://github.com/ntoll/microrepl/blob/master/firmware.hex"  target="_blank" rel="noopener"
+    >firmware.hex</a></strong>
+into the mounted volume. The firmware will be flashed and during the
+operation you will see a yellow led flashing.</p>
+<h2 id="usingmicropython-microbit-repl">Using MicroPython micro:bit REPL</h2>
+<p>To start writing some Python code on micro:bit you first need to clone
+this <a class="link" href="https://github.com/ntoll/microrepl"  target="_blank" rel="noopener"
+    >repository</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone git@github.com:ntoll/microrepl.git
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>once you have cloned the repository, you need to install the Python
+dependencies (I suggest you to do it from inside a <strong>virtualenv</strong>)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">pip install -r requirements.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>start the MicroPython REPL</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">python microrepl.py
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>and the Python shell will open, so you can start writing commands, like
+this one</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">(</span>microbit<span class="o">)</span>➜  microrepl git:<span class="o">(</span>master<span class="o">)</span> python microrepl.py
+</span></span><span class="line"><span class="cl">Quit: Ctrl+<span class="o">]</span> <span class="p">|</span> Stop program: Ctrl+C <span class="p">|</span> Reset: Ctrl+D
+</span></span><span class="line"><span class="cl">Type <span class="s1">&#39;help()&#39;</span> <span class="o">(</span>without the quotes<span class="o">)</span> <span class="k">then</span> press ENTER.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; import this
+</span></span><span class="line"><span class="cl">The Zen of MicroPython, by Nicholas H.Tollervey
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Code,
+</span></span><span class="line"><span class="cl">Hack it,
+</span></span><span class="line"><span class="cl">Less is more,
+</span></span><span class="line"><span class="cl">Keep it simple,
+</span></span><span class="line"><span class="cl">Small is beautiful,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Be brave! Break things! Learn and have fun!
+</span></span><span class="line"><span class="cl">Express yourself with MicroPython.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Happy hacking! :-<span class="o">)</span>
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="bbc-microbit-micropython-editor">BBC micro:bit MicroPython Editor</h2>
+<p>Typing all the Python commands directly into the shell can be a bit
+difficult. You can use a very nice and dedicated editor to write code
+and produce the compiled application for the micro:bit. All you need to
+do is clone this <a class="link" href="https://github.com/ntoll/upyed"  target="_blank" rel="noopener"
+    >repository</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone git@github.com:ntoll/upyed.git
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Open the file named <strong>editor.html</strong> with your browser and start writing
+your code. When your code is done, you can generate the <strong>.hex</strong> file
+clicking on <strong>Download</strong> button. To load the compiled application you
+just need to drag &amp; drop the .hex file to the mounted device, exactly
+like you did the first time to flash it. If you need a reference for all
+the methods and libraries available, you can consult the official
+documentation
+here <a class="link" href="http://microbit-micropython.readthedocs.org/en/latest/index.html"  target="_blank" rel="noopener"
+    >http://microbit-micropython.readthedocs.org/en/latest/index.html</a></p>
+<h2 id="references">References</h2>
+<ul>
+<li><a class="link" href="https://github.com/ntoll/microrepl"  target="_blank" rel="noopener"
+    >https://github.com/ntoll/microrepl</a></li>
+<li><a class="link" href="https://github.com/ntoll/upyed"  target="_blank" rel="noopener"
+    >https://github.com/ntoll/upyed</a></li>
+<li><a class="link" href="https://www.microbit.co.uk/"  target="_blank" rel="noopener"
+    >https://www.microbit.co.uk/</a></li>
+<li><a class="link" href="http://microbit-micropython.readthedocs.org/en/latest/index.html"  target="_blank" rel="noopener"
+    >http://microbit-micropython.readthedocs.org/en/latest/index.html</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/microbit/">Microbit</a>
+        
+            <a href="/tags/psf/">Psf</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

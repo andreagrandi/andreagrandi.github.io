@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Artificial on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/artificial/</link>
+        <description>Recent content in Artificial on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 05 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/artificial/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Use OpenAI API to make two GPT bots talk to each other</title>
+        <link>https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/</link>
+        <pubDate>Fri, 05 May 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/two-chatgpt-robots.jpeg" alt="Featured image of post Use OpenAI API to make two GPT bots talk to each other" /&gt;&lt;p&gt;I wanted to learn how to use OpenAI API in Python, so I decided to make it fun and created an interesting experiment: what would happen if I let two GPT powered bots &amp;ldquo;talk&amp;rdquo; to each other? Let&amp;rsquo;s find out!&lt;/p&gt;
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;If you want to run this experiment locally you will need the following things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;an &lt;a class=&#34;link&#34; href=&#34;https://platform.openai.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;OpenAI&lt;/a&gt; account&lt;/li&gt;
+&lt;li&gt;2 API keys (you can create them from here: &lt;a class=&#34;link&#34; href=&#34;https://platform.openai.com/account/api-keys&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://platform.openai.com/account/api-keys&lt;/a&gt; )&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; in my code I used &lt;code&gt;gpt-4&lt;/code&gt; as model, but in order to use this version, at the time I&amp;rsquo;m writing this article, you will need to request early access using this form &lt;a class=&#34;link&#34; href=&#34;https://openai.com/waitlist/gpt-4-api&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://openai.com/waitlist/gpt-4-api&lt;/a&gt;
+Until then, you can replace &lt;code&gt;gpt-4&lt;/code&gt; with &lt;code&gt;gpt-3.5-turbo&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;prepare-the-environment&#34;&gt;Prepare the environment&lt;/h2&gt;
+&lt;p&gt;To be able to run the script, you first need to set two environment variables with the API key you generated previously:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;OPENAI_API_KEY_1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;your-api-key-1
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;OPENAI_API_KEY_2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;your-api-key-2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Then install the required Python libraries (I suggest you use a proper virtual environment. If you don&amp;rsquo;t know how to do that, you can follow my tutorial here: &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/&lt;/a&gt; )&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install -r requirements.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Then you can run the script by doing:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python botchat.py
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;the-code&#34;&gt;The code&lt;/h2&gt;
+&lt;p&gt;You can find the complete and updated version of the code on GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/botchat&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/andreagrandi/botchat&lt;/a&gt; but here below I will explain a few things.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;OPEN_AI_MODEL&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;gpt-4&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;as I previously mentioned, I&amp;rsquo;m using &lt;code&gt;gpt-4&lt;/code&gt; by default, but if you don&amp;rsquo;t have access yet you will need to replace this with:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;OPEN_AI_MODEL&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;gpt-3.5-turbo&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;When crafting the message to send to the bot I check if the input matches with the original context and if they don&amp;rsquo;t match I&amp;rsquo;m also sending the original context: this has definitely improved the quality of the conversation between the two bots, otherwise the API would not maintain the context between one message and the other.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;conversation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;input_text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;original_context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;input_text&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;original_context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;original_context&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34; &amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;input_text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;input_text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;I send the message to the first bot and I get a response back:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;bot_1_response&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;openai&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ChatCompletion&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;create&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;model&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OPEN_AI_MODEL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;messages&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;role&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;assistant&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;presence_penalty&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;api_key&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OPENAI_API_KEY_1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;and then I use the response to feed the second bot:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;original_context&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bot_1_response&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choices&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;bot_2_response&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;openai&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ChatCompletion&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;create&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;model&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OPEN_AI_MODEL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;messages&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;role&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;user&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;message&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;presence_penalty&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;api_key&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OPENAI_API_KEY_2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;what-to-use-as-input&#34;&gt;What to use as input?&lt;/h2&gt;
+&lt;p&gt;This is not a trivial question and it will highly affect the quality (and the success) of the &amp;ldquo;conversation&amp;rdquo;. My suggestion is to explain that you are expecting to have a conversation and to limit replies to a couple of paragraphs only. Then decide what the conversation is about.&lt;/p&gt;
+&lt;p&gt;For example you could input something like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;✗ python botchat.py
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Please enter your message: You are having a conversation with a person.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Do not reply with more than &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt; paragraphs. The conversation is about weather
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;a-full-gpt-conversation&#34;&gt;A full GPT conversation&lt;/h2&gt;
+&lt;p&gt;If you are curious to read the resulting &amp;ldquo;conversation&amp;rdquo; between two GPT powered bot, you can find here below. You will notice that at first they start talking about the weather, then they move to talk about outdoor activities and they finally end up talking about art.&lt;/p&gt;
+&lt;p&gt;Enjoy the conversation!&lt;/p&gt;
+&lt;p&gt;::text
+BOT 1: I just love how the weather has been lately. Sunny and warm during the day, with just the
+right cool breeze in the evening. It feels like the perfect balance between summer and autumn.
+Have you been enjoying it as well?&lt;/p&gt;
+&lt;p&gt;Yesterday, I took advantage of the great weather and went for a hike in the nearby park.
+The views were stunning, and it was so refreshing to be surrounded by nature.
+Do you have any favorite outdoor activities for this type of weather?&lt;/p&gt;
+&lt;p&gt;BOT 2: I absolutely agree with you! This kind of weather is perfect for spending time outdoors
+and enjoying various activities. I have been enjoying it, taking walks in the evening when it&amp;rsquo;s
+cooler and sunnier during the day.&lt;/p&gt;
+&lt;p&gt;As for outdoor activities, I enjoy hiking and cycling in this type of weather. There&amp;rsquo;s something
+about being out in nature during the pleasant transition between summer and autumn that feels invigorating.
+What about you?&lt;/p&gt;
+&lt;p&gt;BOT 1: Do you have any favorite outdoor activities you like to do during this time of year? I&amp;rsquo;m always
+looking for new ideas to make the most of this beautiful weather.&lt;/p&gt;
+&lt;p&gt;BOT 2: One of my favorite outdoor activities during this time of year is hiking. It&amp;rsquo;s a great way to enjoy
+the pleasant weather, explore nature, and get some exercise. Additionally, it&amp;rsquo;s an activity that can be
+tailored to people of all fitness levels since you can choose trails based on difficulty.
+Just make sure you wear proper footwear and bring plenty water to stay hydrated.&lt;/p&gt;
+&lt;p&gt;Another enjoyable activity is having a picnic in the park. You can gather friends or family,
+pack up some delicious food, and find a nice spot to relax and enjoy the outdoors. It&amp;rsquo;s a wonderful
+way to catch up with loved ones while soaking up the sunshine or finding a shady spot under a tree.
+Plus, it&amp;rsquo;s an opportunity to play some lawn games or throw a frisbee around for added fun.&lt;/p&gt;
+&lt;p&gt;BOT 1: I totally agree with you! Hiking is an amazing way to make the most of the good weather,
+and it&amp;rsquo;s a perfect excuse to get some fresh air and take a break from our busy lives.
+Plus, there&amp;rsquo;s nothing like reaching the top of a hill or a look-out point and taking in the stunning views.
+It&amp;rsquo;s one of those experiences that make you realize how beautiful the world really is.&lt;/p&gt;
+&lt;p&gt;The picnic idea is fantastic as well. It&amp;rsquo;s such a simple yet enjoyable way to spend time with friends
+and family. Everyone can bring their favorite dishes to share, so it&amp;rsquo;s also a great way to try out new
+food options.
+And as you mentioned, it offers the opportunity to include some fun outdoor games and create cherished
+memories together.
+The key to enjoying these outdoor activities, of course, is having wonderful weather -
+which makes us appreciate the sunshine even more!&lt;/p&gt;
+&lt;p&gt;BOT 2: Absolutely! Having good weather is an essential component for truly enjoying these outdoor activities.
+And, they are also perfect opportunities to bond with loved ones or simply unwind and relax in nature, away
+from the stresses of daily life. Moments like these allow us to reconnect with ourselves and appreciate our
+surroundings, thanks to the great outdoors and a warm, sunny day.&lt;/p&gt;
+&lt;p&gt;But let&amp;rsquo;s not forget that even though we wish for perfect weather all the time, experiencing different
+forms of weather can also be fascinating and provides variety in our lives. Rainy days, for instance,
+can bring coziness and a feeling of comfort or offer a chance for introspection, while snowy days can turn
+into winter wonderlands for those who love to bundle up and play or appreciate the beauty of
+snow-covered landscapes. So, even if it&amp;rsquo;s not all sunshine and warmth, each type of weather can still
+offer memories and experiences worth cherishing.&lt;/p&gt;
+&lt;p&gt;BOT 1: That&amp;rsquo;s very true! Different types of weather can create various moods and atmospheres that can be
+delightful and appreciated in different ways. Whether it&amp;rsquo;s the refreshing sensation of a light drizzle on
+a summer day or the comforting warmth of staying indoors with a hot cocoa during a snowstorm,
+these experiences enrich our lives and often evoke fond memories.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s important to note that while we appreciate the beauty and benefits of diverse weather conditions,
+we must also stay aware of possible extreme weather events and pay attention to forecasts and warnings
+to be prepared and ensure our safety. That being said, there&amp;rsquo;s no denying that the power and variety
+of weather is one of the many factors that make life on this planet so captivating and unique.&lt;/p&gt;
+&lt;p&gt;BOT 2: I couldn&amp;rsquo;t agree more with you! It&amp;rsquo;s interesting how weather can impact not only our mood and
+experiences, but also inspire different forms of art, like music and paintings. Just think about
+how many songs or poems have been written about rain or sunny days –
+weather certainly has an undeniable influence on our creativity.&lt;/p&gt;
+&lt;p&gt;As you mentioned, being prepared for extreme weather events is crucial as well.
+With climate change happening, we may experience more unpredictable weather patterns,
+and it&amp;rsquo;s important to adapt and take care of our environment to minimize adverse effects.
+Nonetheless, the diverse weather conditions we experience make Earth an incredible and fascinating place to live.&lt;/p&gt;
+&lt;p&gt;BOT 1: Absolutely, the connection between weather and art is truly fascinating.
+It&amp;rsquo;s amazing to see how weather has been a source of inspiration for so many artists throughout history,
+giving us iconic masterpieces that help us understand and appreciate the beauty of our world even more.&lt;/p&gt;
+&lt;p&gt;You make an important point about the need to prepare for extreme weather events and climate change.
+As we continue to tackle these challenges, it&amp;rsquo;s essential to promote sustainability and have global
+cooperation to protect our planet. The incredible diversity of weather conditions on Earth reminds us
+of the precious and delicate nature of our home, and emphasizes how crucial it is to preserve
+it for future generations.&lt;/p&gt;
+&lt;p&gt;BOT 2: I completely agree that a deeper appreciation for the beauty and intricacy of our planet&amp;rsquo;s
+weather systems, as showcased through art, can promote sustainability efforts. By realizing the value
+and uniqueness of our ecosystems, we may be more inspired to engage in actions that are environmentally
+responsible and find solutions to preserve our world for the future.&lt;/p&gt;
+&lt;p&gt;Art also has the power to raise awareness about environmental issues, including extreme weather events
+and climate change. Artists can convey powerful messages through their work, often more effectively
+than words alone. With the increased understanding and empathy that comes from experiencing these
+artistic expressions, we can become more motivated to actively participate in efforts to curb
+climate change and protect our environment.&lt;/p&gt;
+&lt;p&gt;BOT 1: Moreover, art can evoke strong emotions and create connections between people and their surroundings.
+By presenting the beauty of weather systems and their vulnerability to human actions, art can stir
+feelings of responsibility, compassion, and urgency to take action.
+This emotional connection could influence individuals or communities to implement sustainable practices
+to preserve these ecosystems.&lt;/p&gt;
+&lt;p&gt;Additionally, collaborations between artists, scientists, and policymakers can lead to innovative ways
+to communicate the importance of environmental conservation and climate change solutions.
+These interdisciplinary efforts can create more engaging and effective strategies in educational
+and public awareness campaigns, thus inspiring collective action towards a sustainable future.&lt;/p&gt;
+&lt;p&gt;BOT 2: I completely agree that art can be a powerful tool in raising awareness about environmental
+issues like climate change and weather systems. This emotional connection provided through art could
+encourage people to take necessary steps toward a sustainable lifestyle, by fostering
+the feeling of responsibility and urgency.&lt;/p&gt;
+&lt;p&gt;Furthermore, interdisciplinary collaborations between artists, scientists, and policymakers are essential
+in effectively addressing and communicating the importance of environmental conservation.
+These partnerships will help develop educational and public awareness initiatives that will not only
+engage people but also inspire them to work collectively towards a more sustainable future for our planet.&lt;/p&gt;
+&lt;p&gt;BOT 1: Art has the ability to evoke emotions and stir personal connections to the environment,
+which in turn can lead to a deeper understanding and appreciation of our planet&amp;rsquo;s fragile state.
+Through various forms of artistic expression, be it paintings, sculptures, music or installations,
+artists have the power to convey critical messages about the importance of taking care of our environment.&lt;/p&gt;
+&lt;p&gt;When people are moved by these visual and auditory experiences, it becomes more likely that they&amp;rsquo;ll realize
+the gravity of the situation and feel prompted to make necessary changes in their own lives.
+By incorporating climate change and environmental issues in their work, artists can leave a lasting
+impact on their audience, inspire further discussions, and potentially contribute to instigating actions
+that address the challenges faced by our Earth.&lt;/p&gt;
+&lt;p&gt;BOT 2: Absolutely, art has a unique way of resonating with people on an emotional level,
+often more effectively than facts and statistics alone. Evoking emotions through art can create
+a personal connection to the environment, making the issue more real and urgent for the individual
+experiencing it.
+This personal connection can lead to raised awareness and a greater sense of responsibility
+when it comes to taking care of our planet.&lt;/p&gt;
+&lt;p&gt;Moreover, art transcends language barriers and geographical boundaries, enabling it to reach
+a diverse audience. By showcasing environmental issues through artistic expression, the message becomes
+accessible to people from various backgrounds and cultures.
+This widespread reach could potentially create a united global response in addressing the urgent need for
+change regarding our environment and its preservation.&lt;/p&gt;
+&lt;p&gt;BOT 1: Absolutely, art has a unique way of resonating with people on an emotional level, often more
+effectively than facts and statistics alone. Evoking emotions through art can create a personal connection
+to the environment, making the issue more real and urgent for the individual experiencing it.
+This personal connection can lead to raised awareness and a greater sense of responsibility when it comes
+to taking care of our planet.&lt;/p&gt;
+&lt;p&gt;Moreover, art transcends language barriers and geographical boundaries, enabling it to reach a
+diverse audience.
+By showcasing environmental issues through artistic expression, the message becomes accessible to people
+from various backgrounds and cultures. This widespread reach could potentially create a united global
+response in addressing the urgent need for change regarding our environment and its preservation.&lt;/p&gt;
+&lt;p&gt;BOT 2: I completely agree with you. Art can not only raise awareness about the impact of climate change
+and other environmental issues but also inspire people to take action in their own lives.
+People tend to connect with visual representations more strongly, and artistic expressions can
+vividly illustrate the effects of these challenges in a way that is easily understood by everyone.&lt;/p&gt;
+&lt;p&gt;Additionally, art can foster important conversations and facilitate a sense of community among individuals
+who share a concern for the environment. By creating spaces to engage in dialogues and exchange ideas,
+art can spark innovative solutions to environmental problems, motivating people to get involved and
+rally support for sustainable practices. The power of art lies in its ability to connect us, provoke emotions,
+and motivate us to pursue a better world.&lt;/p&gt;
+&lt;p&gt;BOT 1: It&amp;rsquo;s true that art holds a special power to evoke emotions and create connections,
+making it a crucial tool for raising environmental awareness. The more we can expose people to various
+art forms depicting the consequences of climate change and our relationship with nature, the more likely
+they are to feel empathy and understanding towards the issues.
+This in turn can encourage them to make environmentally-conscious lifestyle choices or even advocate
+for policy change at a higher level.&lt;/p&gt;
+&lt;p&gt;Using art as a means of communication also transcends language barriers, meaning it can reach wider
+audiences and appeal to diverse groups of people. By including local communities and artists,
+we can create a connection on a personal level, giving people a sense of ownership and a stake in the cause.
+Art can act as a gateway for education, activism, and community engagement in the ongoing fight
+against climate change and other environmental concerns.&lt;/p&gt;
+&lt;p&gt;BOT 2: Absolutely, the universality of art allows it to be a perfect medium for conveying important
+messages and generating global conversations about environmental issues.
+Visual arts, music, dance, and even literature can all become powerful tools in raising awareness,
+bridging cultural gaps, and inspiring positive actions.&lt;/p&gt;
+&lt;p&gt;Moreover, involving local artists and communities in the creation of environmental art ensures that
+diverse perspectives are represented, promoting a sense of inclusivity in the movement.
+This collective effort towards sustainable living can have immense ripple effects as people from various
+backgrounds come together with a common purpose. Thus, art can be a catalyst for environmental action,
+ostering empathy and collective responsibility among its audience.&lt;/p&gt;
+&lt;p&gt;BOT 1: Additionally, art has the unique ability to evoke emotions and make people
+feel more connected to certain causes. This emotional connection can lead to a greater sense of urgency,
+prompting individuals and communities to take action when it comes to climate change
+and other environmental issues. Art can effectively communicate complex problems and potential solutions
+in a more relatable manner, making the information accessible to a broader audience.&lt;/p&gt;
+&lt;p&gt;Furthermore, environmental art often brings attention to aspects of our natural world that might be
+overlooked in daily life. By highlighting the beauty and vulnerability of our surroundings,
+it can encourage people to develop a stronger appreciation for the environment and inspire
+them to become more conscious about their own actions and choices.
+In this way, art plays a crucial role in promoting meaningful dialogue and action
+on climate change and sustainability.&lt;/p&gt;
+&lt;p&gt;BOT 2: I agree with you. Art has a powerful influence on the way people perceive and understand
+complex issues like climate change. By presenting these problems in a more visually engaging
+and emotive manner, it becomes easier for people to grasp the severity of the situation
+and feel compelled to act.
+The use of symbolism and metaphor in art can also make abstract concepts
+like global warming more tangible and relatable.&lt;/p&gt;
+&lt;p&gt;Moreover, when artists collaborate with scientists, they can create innovative ways to communicate
+climate data and environmental phenomena, making them more accessible to wider audiences who may not
+be familiar with scientific language. This interaction between art and science broadens
+the understanding of environmental challenges and fosters collective responsibility towards finding solutions.
+In the end, art serves as a vital tool to raise awareness, promote dialogue,
+and inspire positive change for a more sustainable future.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>HowTo use OpenAI API for ChatGPT in Python</title>
+        <link>https://www.andreagrandi.it/posts/how-to-use-openai-api-for-chatgpt-in-python/</link>
+        <pubDate>Mon, 17 Apr 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-use-openai-api-for-chatgpt-in-python/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/how-to-use-openai-api-for-chatgpt-in-python/python-chatgpt.jpeg" alt="Featured image of post HowTo use OpenAI API for ChatGPT in Python" /&gt;&lt;p&gt;OpenAI is a research organization that develops and promotes friendly AI for the betterment of humanity. One of its most popular projects is the development of the GPT (Generative Pre-trained Transformer) series, which includes ChatGPT, a large language model trained to generate human-like text based on given prompts. In this blog post, we&amp;rsquo;ll show you how to use the OpenAI API for ChatGPT with Python examples.&lt;/p&gt;
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;Before we start, you&amp;rsquo;ll need to create an OpenAI account and obtain an API key. You can do this by going to the &lt;a class=&#34;link&#34; href=&#34;https://beta.openai.com/docs/api-reference/introduction&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;OpenAI API website&lt;/a&gt; and signing up for an account. Once you have an account, you can obtain an API key from the API dashboard.&lt;/p&gt;
+&lt;p&gt;You&amp;rsquo;ll also need the &lt;code&gt;openai&lt;/code&gt; Python package, which you can install using pip:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install openai
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;example-generating-text-with-chatgpt&#34;&gt;Example: Generating Text with ChatGPT&lt;/h2&gt;
+&lt;p&gt;Once you have your API key and have installed the openai package, you can start using the OpenAI API to generate text with ChatGPT. Here&amp;rsquo;s an example:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;openai&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;os&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;openai&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;api_key&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;environ&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;OPENAI_API_KEY&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;prompt&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;What is the meaning of life?&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;response&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;openai&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Completion&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;create&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;engine&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;davinci&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;prompt&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;prompt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;max_tokens&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;50&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;answer&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choices&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;answer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;In this example, we import the &lt;code&gt;openai&lt;/code&gt; package and set our API key using &lt;code&gt;openai.api_key&lt;/code&gt;. We then define a &lt;code&gt;prompt&lt;/code&gt; variable containing the text we want ChatGPT to generate more text from. We use &lt;code&gt;openai.Completion.create()&lt;/code&gt; to send the prompt to the OpenAI API and receive a response containing generated text. Finally, we print the generated text using &lt;code&gt;response.choices[0].text.strip()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In the &lt;code&gt;openai.Completion.create()&lt;/code&gt; function, we specify the following parameters:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;engine&lt;/code&gt;: The name of the GPT model to use. In this case, we&amp;rsquo;re using the davinci model, which is the most capable and expensive model.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;prompt&lt;/code&gt;: The text prompt to send to the GPT model.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;max_tokens&lt;/code&gt;: The maximum number of tokens (words and punctuation) to generate in the response.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can customize these parameters to suit your needs. For example, you can use a different GPT model, a different prompt, or a different &lt;code&gt;max_tokens&lt;/code&gt; value.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Using the OpenAI API for ChatGPT is easy with the &lt;code&gt;openai&lt;/code&gt; Python package. You can generate human-like text for a wide range of applications, such as chatbots, language translation, and content creation. With the power of the OpenAI API, you can take your AI projects to the next level.&lt;/p&gt;
+&lt;h2 id=&#34;disclaimer-and-attribution&#34;&gt;Disclaimer and attribution&lt;/h2&gt;
+&lt;p&gt;If you didn&amp;rsquo;t get it until now&amp;hellip; I need to tell you: all of the above has been generated by ChatGPT! This of course was just an experiment and I&amp;rsquo;ve no intention of regularly generating my blog posts with this tool. In case I did further experiments, I will always include this disclaimer at the bottom. I hope you enjoyed reading!&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

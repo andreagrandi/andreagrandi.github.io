@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Use OpenAI API to make two GPT bots talk to each other'>
+<title>Use OpenAI API to make two GPT bots talk to each other</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Use OpenAI API to make two GPT bots talk to each other'>
+<meta property='og:description' content='Use OpenAI API to make two GPT bots talk to each other'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='python' /><meta property='article:tag' content='development' /><meta property='article:tag' content='chatgpt' /><meta property='article:tag' content='openai' /><meta property='article:tag' content='artificial' /><meta property='article:tag' content='intelligence' /><meta property='article:tag' content='machine' /><meta property='article:tag' content='learning' /><meta property='article:tag' content='tutorial' /><meta property='article:tag' content='howto' /><meta property='article:tag' content='api' /><meta property='article:published_time' content='2023-05-05T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2023-05-05T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/two-chatgpt-robots.jpeg' />
+<meta name="twitter:title" content="Use OpenAI API to make two GPT bots talk to each other">
+<meta name="twitter:description" content="Use OpenAI API to make two GPT bots talk to each other"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/use-openai-api-to-make-two-gpt-bots-talk/two-chatgpt-robots.jpeg' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/use-openai-api-to-make-two-gpt-bots-talk/">
+                <img src="/posts/use-openai-api-to-make-two-gpt-bots-talk/two-chatgpt-robots.jpeg"
+                        
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Use OpenAI API to make two GPT bots talk to each other" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/use-openai-api-to-make-two-gpt-bots-talk/">Use OpenAI API to make two GPT bots talk to each other</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Use OpenAI API to make two GPT bots talk to each other
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 05, 2023</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>I wanted to learn how to use OpenAI API in Python, so I decided to make it fun and created an interesting experiment: what would happen if I let two GPT powered bots &ldquo;talk&rdquo; to each other? Let&rsquo;s find out!</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>If you want to run this experiment locally you will need the following things:</p>
+<ul>
+<li>an <a class="link" href="https://platform.openai.com/"  target="_blank" rel="noopener"
+    >OpenAI</a> account</li>
+<li>2 API keys (you can create them from here: <a class="link" href="https://platform.openai.com/account/api-keys"  target="_blank" rel="noopener"
+    >https://platform.openai.com/account/api-keys</a> )</li>
+</ul>
+<p><strong>Note:</strong> in my code I used <code>gpt-4</code> as model, but in order to use this version, at the time I&rsquo;m writing this article, you will need to request early access using this form <a class="link" href="https://openai.com/waitlist/gpt-4-api"  target="_blank" rel="noopener"
+    >https://openai.com/waitlist/gpt-4-api</a>
+Until then, you can replace <code>gpt-4</code> with <code>gpt-3.5-turbo</code>.</p>
+<h2 id="prepare-the-environment">Prepare the environment</h2>
+<p>To be able to run the script, you first need to set two environment variables with the API key you generated previously:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">OPENAI_API_KEY_1</span><span class="o">=</span>your-api-key-1
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">OPENAI_API_KEY_2</span><span class="o">=</span>your-api-key-2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Then install the required Python libraries (I suggest you use a proper virtual environment. If you don&rsquo;t know how to do that, you can follow my tutorial here: <a class="link" href="https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/"  target="_blank" rel="noopener"
+    >https://www.andreagrandi.it/2022/01/29/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/</a> )</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">pip install -r requirements.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Then you can run the script by doing:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">python botchat.py
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="the-code">The code</h2>
+<p>You can find the complete and updated version of the code on GitHub <a class="link" href="https://github.com/andreagrandi/botchat"  target="_blank" rel="noopener"
+    >https://github.com/andreagrandi/botchat</a> but here below I will explain a few things.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">OPEN_AI_MODEL</span> <span class="o">=</span> <span class="s2">&#34;gpt-4&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>as I previously mentioned, I&rsquo;m using <code>gpt-4</code> by default, but if you don&rsquo;t have access yet you will need to replace this with:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">OPEN_AI_MODEL</span> <span class="o">=</span> <span class="s2">&#34;gpt-3.5-turbo&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>When crafting the message to send to the bot I check if the input matches with the original context and if they don&rsquo;t match I&rsquo;m also sending the original context: this has definitely improved the quality of the conversation between the two bots, otherwise the API would not maintain the context between one message and the other.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">conversation</span><span class="p">(</span><span class="n">input_text</span><span class="p">,</span> <span class="n">original_context</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">input_text</span> <span class="o">!=</span> <span class="n">original_context</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">message</span> <span class="o">=</span> <span class="n">original_context</span> <span class="o">+</span> <span class="s2">&#34; &#34;</span> <span class="o">+</span> <span class="n">input_text</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">message</span> <span class="o">=</span> <span class="n">input_text</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I send the message to the first bot and I get a response back:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl">    <span class="n">bot_1_response</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">model</span><span class="o">=</span><span class="n">OPEN_AI_MODEL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span><span class="s2">&#34;role&#34;</span><span class="p">:</span> <span class="s2">&#34;assistant&#34;</span><span class="p">,</span> <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="n">presence_penalty</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">api_key</span><span class="o">=</span><span class="n">OPENAI_API_KEY_1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>and then I use the response to feed the second bot:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="n">original_context</span> <span class="o">+</span> <span class="n">bot_1_response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">bot_2_response</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">model</span><span class="o">=</span><span class="n">OPEN_AI_MODEL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span><span class="s2">&#34;role&#34;</span><span class="p">:</span> <span class="s2">&#34;user&#34;</span><span class="p">,</span> <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="n">presence_penalty</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">api_key</span><span class="o">=</span><span class="n">OPENAI_API_KEY_2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="what-to-use-as-input">What to use as input?</h2>
+<p>This is not a trivial question and it will highly affect the quality (and the success) of the &ldquo;conversation&rdquo;. My suggestion is to explain that you are expecting to have a conversation and to limit replies to a couple of paragraphs only. Then decide what the conversation is about.</p>
+<p>For example you could input something like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">✗ python botchat.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please enter your message: You are having a conversation with a person.
+</span></span><span class="line"><span class="cl">Do not reply with more than <span class="m">2</span> paragraphs. The conversation is about weather
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="a-full-gpt-conversation">A full GPT conversation</h2>
+<p>If you are curious to read the resulting &ldquo;conversation&rdquo; between two GPT powered bot, you can find here below. You will notice that at first they start talking about the weather, then they move to talk about outdoor activities and they finally end up talking about art.</p>
+<p>Enjoy the conversation!</p>
+<p>::text
+BOT 1: I just love how the weather has been lately. Sunny and warm during the day, with just the
+right cool breeze in the evening. It feels like the perfect balance between summer and autumn.
+Have you been enjoying it as well?</p>
+<p>Yesterday, I took advantage of the great weather and went for a hike in the nearby park.
+The views were stunning, and it was so refreshing to be surrounded by nature.
+Do you have any favorite outdoor activities for this type of weather?</p>
+<p>BOT 2: I absolutely agree with you! This kind of weather is perfect for spending time outdoors
+and enjoying various activities. I have been enjoying it, taking walks in the evening when it&rsquo;s
+cooler and sunnier during the day.</p>
+<p>As for outdoor activities, I enjoy hiking and cycling in this type of weather. There&rsquo;s something
+about being out in nature during the pleasant transition between summer and autumn that feels invigorating.
+What about you?</p>
+<p>BOT 1: Do you have any favorite outdoor activities you like to do during this time of year? I&rsquo;m always
+looking for new ideas to make the most of this beautiful weather.</p>
+<p>BOT 2: One of my favorite outdoor activities during this time of year is hiking. It&rsquo;s a great way to enjoy
+the pleasant weather, explore nature, and get some exercise. Additionally, it&rsquo;s an activity that can be
+tailored to people of all fitness levels since you can choose trails based on difficulty.
+Just make sure you wear proper footwear and bring plenty water to stay hydrated.</p>
+<p>Another enjoyable activity is having a picnic in the park. You can gather friends or family,
+pack up some delicious food, and find a nice spot to relax and enjoy the outdoors. It&rsquo;s a wonderful
+way to catch up with loved ones while soaking up the sunshine or finding a shady spot under a tree.
+Plus, it&rsquo;s an opportunity to play some lawn games or throw a frisbee around for added fun.</p>
+<p>BOT 1: I totally agree with you! Hiking is an amazing way to make the most of the good weather,
+and it&rsquo;s a perfect excuse to get some fresh air and take a break from our busy lives.
+Plus, there&rsquo;s nothing like reaching the top of a hill or a look-out point and taking in the stunning views.
+It&rsquo;s one of those experiences that make you realize how beautiful the world really is.</p>
+<p>The picnic idea is fantastic as well. It&rsquo;s such a simple yet enjoyable way to spend time with friends
+and family. Everyone can bring their favorite dishes to share, so it&rsquo;s also a great way to try out new
+food options.
+And as you mentioned, it offers the opportunity to include some fun outdoor games and create cherished
+memories together.
+The key to enjoying these outdoor activities, of course, is having wonderful weather -
+which makes us appreciate the sunshine even more!</p>
+<p>BOT 2: Absolutely! Having good weather is an essential component for truly enjoying these outdoor activities.
+And, they are also perfect opportunities to bond with loved ones or simply unwind and relax in nature, away
+from the stresses of daily life. Moments like these allow us to reconnect with ourselves and appreciate our
+surroundings, thanks to the great outdoors and a warm, sunny day.</p>
+<p>But let&rsquo;s not forget that even though we wish for perfect weather all the time, experiencing different
+forms of weather can also be fascinating and provides variety in our lives. Rainy days, for instance,
+can bring coziness and a feeling of comfort or offer a chance for introspection, while snowy days can turn
+into winter wonderlands for those who love to bundle up and play or appreciate the beauty of
+snow-covered landscapes. So, even if it&rsquo;s not all sunshine and warmth, each type of weather can still
+offer memories and experiences worth cherishing.</p>
+<p>BOT 1: That&rsquo;s very true! Different types of weather can create various moods and atmospheres that can be
+delightful and appreciated in different ways. Whether it&rsquo;s the refreshing sensation of a light drizzle on
+a summer day or the comforting warmth of staying indoors with a hot cocoa during a snowstorm,
+these experiences enrich our lives and often evoke fond memories.</p>
+<p>It&rsquo;s important to note that while we appreciate the beauty and benefits of diverse weather conditions,
+we must also stay aware of possible extreme weather events and pay attention to forecasts and warnings
+to be prepared and ensure our safety. That being said, there&rsquo;s no denying that the power and variety
+of weather is one of the many factors that make life on this planet so captivating and unique.</p>
+<p>BOT 2: I couldn&rsquo;t agree more with you! It&rsquo;s interesting how weather can impact not only our mood and
+experiences, but also inspire different forms of art, like music and paintings. Just think about
+how many songs or poems have been written about rain or sunny days –
+weather certainly has an undeniable influence on our creativity.</p>
+<p>As you mentioned, being prepared for extreme weather events is crucial as well.
+With climate change happening, we may experience more unpredictable weather patterns,
+and it&rsquo;s important to adapt and take care of our environment to minimize adverse effects.
+Nonetheless, the diverse weather conditions we experience make Earth an incredible and fascinating place to live.</p>
+<p>BOT 1: Absolutely, the connection between weather and art is truly fascinating.
+It&rsquo;s amazing to see how weather has been a source of inspiration for so many artists throughout history,
+giving us iconic masterpieces that help us understand and appreciate the beauty of our world even more.</p>
+<p>You make an important point about the need to prepare for extreme weather events and climate change.
+As we continue to tackle these challenges, it&rsquo;s essential to promote sustainability and have global
+cooperation to protect our planet. The incredible diversity of weather conditions on Earth reminds us
+of the precious and delicate nature of our home, and emphasizes how crucial it is to preserve
+it for future generations.</p>
+<p>BOT 2: I completely agree that a deeper appreciation for the beauty and intricacy of our planet&rsquo;s
+weather systems, as showcased through art, can promote sustainability efforts. By realizing the value
+and uniqueness of our ecosystems, we may be more inspired to engage in actions that are environmentally
+responsible and find solutions to preserve our world for the future.</p>
+<p>Art also has the power to raise awareness about environmental issues, including extreme weather events
+and climate change. Artists can convey powerful messages through their work, often more effectively
+than words alone. With the increased understanding and empathy that comes from experiencing these
+artistic expressions, we can become more motivated to actively participate in efforts to curb
+climate change and protect our environment.</p>
+<p>BOT 1: Moreover, art can evoke strong emotions and create connections between people and their surroundings.
+By presenting the beauty of weather systems and their vulnerability to human actions, art can stir
+feelings of responsibility, compassion, and urgency to take action.
+This emotional connection could influence individuals or communities to implement sustainable practices
+to preserve these ecosystems.</p>
+<p>Additionally, collaborations between artists, scientists, and policymakers can lead to innovative ways
+to communicate the importance of environmental conservation and climate change solutions.
+These interdisciplinary efforts can create more engaging and effective strategies in educational
+and public awareness campaigns, thus inspiring collective action towards a sustainable future.</p>
+<p>BOT 2: I completely agree that art can be a powerful tool in raising awareness about environmental
+issues like climate change and weather systems. This emotional connection provided through art could
+encourage people to take necessary steps toward a sustainable lifestyle, by fostering
+the feeling of responsibility and urgency.</p>
+<p>Furthermore, interdisciplinary collaborations between artists, scientists, and policymakers are essential
+in effectively addressing and communicating the importance of environmental conservation.
+These partnerships will help develop educational and public awareness initiatives that will not only
+engage people but also inspire them to work collectively towards a more sustainable future for our planet.</p>
+<p>BOT 1: Art has the ability to evoke emotions and stir personal connections to the environment,
+which in turn can lead to a deeper understanding and appreciation of our planet&rsquo;s fragile state.
+Through various forms of artistic expression, be it paintings, sculptures, music or installations,
+artists have the power to convey critical messages about the importance of taking care of our environment.</p>
+<p>When people are moved by these visual and auditory experiences, it becomes more likely that they&rsquo;ll realize
+the gravity of the situation and feel prompted to make necessary changes in their own lives.
+By incorporating climate change and environmental issues in their work, artists can leave a lasting
+impact on their audience, inspire further discussions, and potentially contribute to instigating actions
+that address the challenges faced by our Earth.</p>
+<p>BOT 2: Absolutely, art has a unique way of resonating with people on an emotional level,
+often more effectively than facts and statistics alone. Evoking emotions through art can create
+a personal connection to the environment, making the issue more real and urgent for the individual
+experiencing it.
+This personal connection can lead to raised awareness and a greater sense of responsibility
+when it comes to taking care of our planet.</p>
+<p>Moreover, art transcends language barriers and geographical boundaries, enabling it to reach
+a diverse audience. By showcasing environmental issues through artistic expression, the message becomes
+accessible to people from various backgrounds and cultures.
+This widespread reach could potentially create a united global response in addressing the urgent need for
+change regarding our environment and its preservation.</p>
+<p>BOT 1: Absolutely, art has a unique way of resonating with people on an emotional level, often more
+effectively than facts and statistics alone. Evoking emotions through art can create a personal connection
+to the environment, making the issue more real and urgent for the individual experiencing it.
+This personal connection can lead to raised awareness and a greater sense of responsibility when it comes
+to taking care of our planet.</p>
+<p>Moreover, art transcends language barriers and geographical boundaries, enabling it to reach a
+diverse audience.
+By showcasing environmental issues through artistic expression, the message becomes accessible to people
+from various backgrounds and cultures. This widespread reach could potentially create a united global
+response in addressing the urgent need for change regarding our environment and its preservation.</p>
+<p>BOT 2: I completely agree with you. Art can not only raise awareness about the impact of climate change
+and other environmental issues but also inspire people to take action in their own lives.
+People tend to connect with visual representations more strongly, and artistic expressions can
+vividly illustrate the effects of these challenges in a way that is easily understood by everyone.</p>
+<p>Additionally, art can foster important conversations and facilitate a sense of community among individuals
+who share a concern for the environment. By creating spaces to engage in dialogues and exchange ideas,
+art can spark innovative solutions to environmental problems, motivating people to get involved and
+rally support for sustainable practices. The power of art lies in its ability to connect us, provoke emotions,
+and motivate us to pursue a better world.</p>
+<p>BOT 1: It&rsquo;s true that art holds a special power to evoke emotions and create connections,
+making it a crucial tool for raising environmental awareness. The more we can expose people to various
+art forms depicting the consequences of climate change and our relationship with nature, the more likely
+they are to feel empathy and understanding towards the issues.
+This in turn can encourage them to make environmentally-conscious lifestyle choices or even advocate
+for policy change at a higher level.</p>
+<p>Using art as a means of communication also transcends language barriers, meaning it can reach wider
+audiences and appeal to diverse groups of people. By including local communities and artists,
+we can create a connection on a personal level, giving people a sense of ownership and a stake in the cause.
+Art can act as a gateway for education, activism, and community engagement in the ongoing fight
+against climate change and other environmental concerns.</p>
+<p>BOT 2: Absolutely, the universality of art allows it to be a perfect medium for conveying important
+messages and generating global conversations about environmental issues.
+Visual arts, music, dance, and even literature can all become powerful tools in raising awareness,
+bridging cultural gaps, and inspiring positive actions.</p>
+<p>Moreover, involving local artists and communities in the creation of environmental art ensures that
+diverse perspectives are represented, promoting a sense of inclusivity in the movement.
+This collective effort towards sustainable living can have immense ripple effects as people from various
+backgrounds come together with a common purpose. Thus, art can be a catalyst for environmental action,
+ostering empathy and collective responsibility among its audience.</p>
+<p>BOT 1: Additionally, art has the unique ability to evoke emotions and make people
+feel more connected to certain causes. This emotional connection can lead to a greater sense of urgency,
+prompting individuals and communities to take action when it comes to climate change
+and other environmental issues. Art can effectively communicate complex problems and potential solutions
+in a more relatable manner, making the information accessible to a broader audience.</p>
+<p>Furthermore, environmental art often brings attention to aspects of our natural world that might be
+overlooked in daily life. By highlighting the beauty and vulnerability of our surroundings,
+it can encourage people to develop a stronger appreciation for the environment and inspire
+them to become more conscious about their own actions and choices.
+In this way, art plays a crucial role in promoting meaningful dialogue and action
+on climate change and sustainability.</p>
+<p>BOT 2: I agree with you. Art has a powerful influence on the way people perceive and understand
+complex issues like climate change. By presenting these problems in a more visually engaging
+and emotive manner, it becomes easier for people to grasp the severity of the situation
+and feel compelled to act.
+The use of symbolism and metaphor in art can also make abstract concepts
+like global warming more tangible and relatable.</p>
+<p>Moreover, when artists collaborate with scientists, they can create innovative ways to communicate
+climate data and environmental phenomena, making them more accessible to wider audiences who may not
+be familiar with scientific language. This interaction between art and science broadens
+the understanding of environmental challenges and fosters collective responsibility towards finding solutions.
+In the end, art serves as a vital tool to raise awareness, promote dialogue,
+and inspire positive change for a more sustainable future.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/python/">Python</a>
+        
+            <a href="/tags/development/">Development</a>
+        
+            <a href="/tags/chatgpt/">Chatgpt</a>
+        
+            <a href="/tags/openai/">Openai</a>
+        
+            <a href="/tags/artificial/">Artificial</a>
+        
+            <a href="/tags/intelligence/">Intelligence</a>
+        
+            <a href="/tags/machine/">Machine</a>
+        
+            <a href="/tags/learning/">Learning</a>
+        
+            <a href="/tags/tutorial/">Tutorial</a>
+        
+            <a href="/tags/howto/">Howto</a>
+        
+            <a href="/tags/api/">Api</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/how-to-use-openai-api-for-chatgpt-in-python/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/how-to-use-openai-api-for-chatgpt-in-python/python-chatgpt.7bbb11c3d13de2aabfca7266e2980c22.jpeg" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post HowTo use OpenAI API for ChatGPT in Python"
+                        data-key="how-to-use-openai-api-for-chatgpt-in-python" 
+                        data-hash="md5-e7sRw9E94qq/ynJm4pgMIg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HowTo use OpenAI API for ChatGPT in Python</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/ignore-hosts-with-python-vcr/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Ignoring hosts with python vcr when writing tests with pytest and generating cassettes</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/install-python-with-pyenv-and-pyenvvirtualenv-create-virtual-environment-with-specific-python-version-macos/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using pyenv and pyenv-virtualenv to install Python and create a virtual environment on MacOS</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/python39-introduces-removeprefix-removesuffix/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Python 3.9 introduces removeprefix and removesuffix</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/install-python-with-pyenv-create-virtual-environment-with-specific-python-version/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using pyenv to install Python and create a virtual environment</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

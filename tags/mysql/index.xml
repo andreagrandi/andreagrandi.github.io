@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>MySQL on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/mysql/</link>
+        <description>Recent content in MySQL on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Mon, 26 May 2008 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/mysql/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Applicazioni Ruby On Rails che non utilizzano database</title>
+        <link>https://www.andreagrandi.it/posts/applicazioni-ruby-on-rails-che-non-utilizzano-database/</link>
+        <pubDate>Mon, 26 May 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/applicazioni-ruby-on-rails-che-non-utilizzano-database/</guid>
+        <description>&lt;p&gt;Se a qualcuno fosse capitato di recente di creare una semplice
+applicazione &amp;ldquo;&lt;em&gt;Hello World&lt;/em&gt;&amp;rdquo; utilizzando il framework &lt;a class=&#34;link&#34; href=&#34;http://www.rubyonrails.org&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Ruby on
+Rails&lt;/strong&gt;&lt;/a&gt;, avrà notato che in fase di
+esecuzione si ottiene un errore di questo tipo:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Can&lt;span class=&#34;s1&#34;&gt;&amp;#39;t connect to local MySQL server through socket &amp;#39;&lt;/span&gt;/var/run/mysqld/mysqld.sock&lt;span class=&#34;err&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;2&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Perchè un errore relativo a &lt;strong&gt;MySQL&lt;/strong&gt; in un&amp;rsquo;applicazione che stampa
+semplicemente una stringa di testo? Nelle nuove versioni di &lt;strong&gt;RoR&lt;/strong&gt;
+vengono caricati per default i moduli &lt;strong&gt;ActiveRecord&lt;/strong&gt;,
+&lt;strong&gt;ActiveResource&lt;/strong&gt; e &lt;strong&gt;ActionMailer&lt;/strong&gt;. ActiveRecord in particolare si
+aspetta di trovare (per le impostazioni di default) un database MySQL
+funzionante.&lt;/p&gt;
+&lt;p&gt;Per evitare questo errore è sufficiente decommentare una riga
+all&amp;rsquo;interno di environment.rb che si trova in
+&lt;strong&gt;&lt;code&gt;$PATH_APPLICAZIONE/config/environment.rb&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Skip frameworks you&amp;#39;re not going to use (only works if using vendor/rails).  &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# To use Rails without a database, you must remove the Active Record framework  &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;config&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;frameworks&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;:active_record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;:active_resource&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;ss&#34;&gt;:action_mailer&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;em&gt;Fonte:&lt;/em&gt; &lt;a class=&#34;link&#34; href=&#34;http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.swards.net/2008/02/ruby-on-rails-application-with-no.html&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>MySQL: quando si deve pagare la licenza?</title>
+        <link>https://www.andreagrandi.it/posts/mysql-quando-si-deve-pagare-la-licenza/</link>
+        <pubDate>Tue, 05 Feb 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/mysql-quando-si-deve-pagare-la-licenza/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/mysql-quando-si-deve-pagare-la-licenza/mysql_logo.thumbnail.jpg&#34;
+	width=&#34;128&#34;
+	height=&#34;74&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;mysql\_logo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;172&#34;
+		data-flex-basis=&#34;415px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Una delle domande che mi vengono fatte piu&amp;rsquo; di frequente è &amp;ldquo;&lt;em&gt;MySQL si paga
+per uso commerciale?&lt;/em&gt;&amp;rdquo;. La risposta non è delle piu&amp;rsquo; semplici.&lt;/p&gt;
+&lt;p&gt;Leggendo direttamente il sito web di &lt;strong&gt;MySQL&lt;/strong&gt;, si possono trovare due
+pagine dedicate alle licenze: una per chi fa sviluppo di &lt;a class=&#34;link&#34; href=&#34;http://www.mysql.com/company/legal/licensing/opensource-license.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;software opensource&lt;/a&gt;
+ed una per chi sviluppa &lt;a class=&#34;link&#34; href=&#34;http://www.mysql.com/company/legal/licensing/commercial-license.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;software commerciale&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Dopo una lettura superficiale delle due pagine, potremmo essere tratti
+in inganno e pensare che sviluppando un&amp;rsquo;applicazione commerciale, si
+debba per forza acquistare una licenza commerciale di MySQL. Questo non
+è vero.&lt;/p&gt;
+&lt;p&gt;Tutto dipende dal tipo di librerie di interfacciamento che vogliamo
+utilizzare. MySQL mette a disposizione due modi per interfacciarsi al
+database: una propria &lt;strong&gt;API&lt;/strong&gt; scritta in linguaggio C ed un &lt;strong&gt;socket&lt;/strong&gt;
+in ascolto che riceve comandi tramite una normale connessione TCP/IP.&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; chiaro che scrivendo un&amp;rsquo;applicazione che va a fare l&amp;rsquo;include di
+(faccio un esempio) mysql.h poi io debba rilasciarne i sorgenti. La
+licenza GPL con il quale è stato rilasciato MySQL (ed anche le sue
+librerie client) dice chiaramente che quando si &amp;ldquo;&lt;em&gt;linka&lt;/em&gt;&amp;rdquo; codice GPL ad
+altro codice, il risultato deve essere per forza rilasciato sotto
+licenza GPL.&lt;/p&gt;
+&lt;p&gt;La licenza GPL però non impone vincoli di utilizzo dell&amp;rsquo;applicazione
+stessa. Utilizzare quindi una libreria client che al posto delle API,
+usa il socket TCP/IP, ci permette di utilizzare MySQL anche da
+un&amp;rsquo;applicazione closed-source, senza bisogno di ottenere una licenza
+commerciale.&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; esattamente quello che fa la libreria di interfacciamento di
+&lt;strong&gt;Python&lt;/strong&gt; oppure di &lt;strong&gt;PHP&lt;/strong&gt;. Esse utilizzando il metodo di connessione
+al socket, senza fare l&amp;rsquo;include del codice di MySQL.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Riassumendo:&lt;/strong&gt; se ci troviamo a scrivere un&amp;rsquo;applicazione commerciale
+che sappiamo non verrà distribuita insieme al codice sorgente, dobbiamo
+preoccuparci solo di utilizzare una libreria client che utilizzi il
+metodo di connessione tramite socket al database.&lt;/p&gt;
+&lt;p&gt;C&amp;rsquo;è infine da aggiungere una cosa: se si utilizza codice opensource per
+uso personale oppure interno alla propria azienda, senza distribuirlo in
+giro, la GPL non ci impone di rilasciare le modifiche che abbiamo fatto
+ai sorgenti GPL che stiamo utilizzando.&lt;/p&gt;
+&lt;p&gt;Il caso piu&amp;rsquo; lampante è quello di &lt;strong&gt;Google&lt;/strong&gt;: essi utilizzano tonnellate
+di codice GPL, però non distribuiscono un programma, offrono un
+servizio. Questo gli permette di non dover rendere pubbliche le
+modifiche fatte al codice originale.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Credits: questo articolo è stato possibile in gran parte grazie
+all&amp;rsquo;aiuto ed ai consigli di &lt;strong&gt;Giovanni Bajo&lt;/strong&gt; (che pur chiedendomi di
+specificare che non è un avvocato e che quindi potrebbe anche
+sbagliarsi, ha senz&amp;rsquo;altro fatto un ottimo lavoro) .&lt;/em&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

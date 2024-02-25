@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Software on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/software/</link>
+        <description>Recent content in Software on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 21 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/software/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Skipping tests depending on the Python version</title>
+        <link>https://www.andreagrandi.it/posts/skipping-tests-depending-python-version/</link>
+        <pubDate>Thu, 21 Feb 2019 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/skipping-tests-depending-python-version/</guid>
+        <description>&lt;p&gt;Sometimes we want to run certain tests only on a specific version of Python.&lt;/p&gt;
+&lt;p&gt;Suppose you are migrating a large project from Python 2 to Python 3 and you know in advance that certain tests won&amp;rsquo;t run
+under Python 3.&lt;/p&gt;
+&lt;p&gt;Chances are that during the migration you are already using the &lt;a class=&#34;link&#34; href=&#34;https://pythonhosted.org/six/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;six&lt;/a&gt; library. The &lt;strong&gt;six&lt;/strong&gt; libraries have
+two boolean properties which are initialised to &lt;code&gt;True&lt;/code&gt; depending on the Python version which is being used: &lt;code&gt;PY2&lt;/code&gt; when running under Python 2
+and &lt;code&gt;PY3&lt;/code&gt; when running under Python 3.&lt;/p&gt;
+&lt;p&gt;This library, combined with the &lt;strong&gt;skipIf&lt;/strong&gt; method of &lt;a class=&#34;link&#34; href=&#34;https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;unittest library&lt;/a&gt;
+can be used to easily skip tests when using Python 3:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;six&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;unittest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;MyTestCase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unittest&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TestCase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nd&#34;&gt;@unittest.skipIf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;six&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;PY3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;not compatible with Python 3&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;test_example&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;c1&#34;&gt;# This test won&amp;#39;t run under Python 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;credits&#34;&gt;Credits&lt;/h2&gt;
+&lt;p&gt;Thanks to my colleague &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/valnico&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Nicola&lt;/a&gt;&lt;/strong&gt; for giving me the inspiration to write this post.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Installing Python and virtualenv on MacOS</title>
+        <link>https://www.andreagrandi.it/posts/installing-python-and-virtualenv-on-osx/</link>
+        <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/installing-python-and-virtualenv-on-osx/</guid>
+        <description>&lt;p&gt;Every time I need to install Python on MacOS or whenever a colleague asks for help, I have to search fo the most updated instructions on Google, and every time I find different ways of doing the exact same thing.&lt;/p&gt;
+&lt;p&gt;Tired of this, I decided to write down my own notes. Please note that I don&amp;rsquo;t claim this to be the best way of installing Python on MacOS. It works fine for me so use it at your own risk.&lt;/p&gt;
+&lt;h2 id=&#34;requirements&#34;&gt;Requirements&lt;/h2&gt;
+&lt;p&gt;To follow these instructions you need to at least have installed &lt;strong&gt;brew&lt;/strong&gt; on MacOS. Please follow the instructions on the official website: &lt;a class=&#34;link&#34; href=&#34;https://brew.sh&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://brew.sh&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;installing-python-37x-and-python-27x&#34;&gt;Installing Python 3.7.x and Python 2.7.x&lt;/h2&gt;
+&lt;p&gt;Even if I strongly suggest to start every new project with Python 3 (since Python 2 will only be supported until the end of 2019), there may be use cases when version 2 is still required, so I will give you the instructions to install both.&lt;/p&gt;
+&lt;h3 id=&#34;installing-python-37x&#34;&gt;Installing Python 3.7.x&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install python
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This will install Python 3 by default.&lt;/p&gt;
+&lt;h3 id=&#34;installing-python-27x&#34;&gt;Installing Python 2.7.x&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install python@2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This will install version 2 of Python.&lt;/p&gt;
+&lt;h3 id=&#34;add-the-python-locations-to-path&#34;&gt;Add the Python locations to PATH&lt;/h3&gt;
+&lt;p&gt;Edit your &lt;code&gt;.bashrc&lt;/code&gt; or &lt;code&gt;.zshrc&lt;/code&gt; and add this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;export PATH=&amp;#34;/usr/local/opt/python/libexec/bin:/usr/local/bin:$PATH&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You will need to close your terminal and reopen it for the changes to be applied. Once you have done it, you can verify if Python 3 and Python 2 have been installed correctly:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Python 3.7.1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;and&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python2 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Python 2.7.15
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;install-virtualenv-and-virtualenvwrapper&#34;&gt;Install virtualenv and virtualenvwrapper&lt;/h2&gt;
+&lt;p&gt;When working with Python, it&amp;rsquo;s a good thing not to install packages system wide, but confine them in virtual environments. A good and well tested way of doing that is to use &lt;code&gt;virtualenv&lt;/code&gt; (and its companion &lt;code&gt;virtualenvwrapper&lt;/code&gt;) which makes the most common operations easier.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install virtualenv
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install virtualenvwrapper
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Those (and only those) two packages will be installed system wide, because we will need them to be available outside of a virtual environment.&lt;/p&gt;
+&lt;h3 id=&#34;configure-virtualenv&#34;&gt;Configure virtualenv&lt;/h3&gt;
+&lt;p&gt;Edit again your &lt;code&gt;.bashrc&lt;/code&gt; (or &lt;code&gt;.zshrc&lt;/code&gt;) and add these lines:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;export WORKON_HOME=~/.virtualenvs
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[ -f /usr/local/bin/virtualenvwrapper.sh ] &amp;amp;&amp;amp; source /usr/local/bin/virtualenvwrapper.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This will configure the default location where to store your virtual environments and will run a command every time you open a new terminal, to make sure &lt;code&gt;virtualenvwrapper&lt;/code&gt; can work correctly.&lt;/p&gt;
+&lt;h2 id=&#34;test-if-the-installed-tools-are-working&#34;&gt;Test if the installed tools are working&lt;/h2&gt;
+&lt;p&gt;To make sure everything has been configured correctly, please close and reopen your terminal and let&amp;rsquo;s try to create a new virtual environment:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkvirtualenv test
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;which should output something like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Using base prefix &amp;#39;/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;New python executable in /Users/andrea/.virtualenvs/test/bin/python3.7
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Installing setuptools, pip, wheel...
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;done.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;(test) ➜  ~
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If you see something similar, it means that the virtual environment has been created correctly. Please note that by default this command will create an environment base on Python 3. Do you need to create one for Python 2? No problem, you just need to do the following:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkvirtualenv -p /usr/local/bin/python2 test
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;which should output this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Running virtualenv with interpreter /usr/local/bin/python2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;New python executable in /Users/andrea/.virtualenvs/test/bin/python2.7
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Also creating executable in /Users/andrea/.virtualenvs/test/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Installing setuptools, pip, wheel...
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;done.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/predeactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postdeactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/preactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/postactivate
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;virtualenvwrapper.user_scripts creating /Users/andrea/.virtualenvs/test/bin/get_env_details
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;(test) ➜  ~
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;That&amp;rsquo;s all you have to do to install and configure Python and virtualenv on MacOS. If you have problems, comments or questions, feel free to leave a comment on this post.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Why I mentor on Exercism.io</title>
+        <link>https://www.andreagrandi.it/posts/why-i-mentor-on-exercism/</link>
+        <pubDate>Sun, 04 Nov 2018 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/why-i-mentor-on-exercism/</guid>
+        <description>&lt;p&gt;Exercism (&lt;a class=&#34;link&#34; href=&#34;https://exercism.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://exercism.io&lt;/a&gt;) is a platform that has been created to help people improving their coding skills, thanks to the volunteers mentoring the students. There are tracks for almost all the popular languages and each track has coding tests that the students can download, solve offline using their preferred editor, and test the solution against the provided unit tests. Once the solution is ready to be reviewed (or even if it&amp;rsquo;s not complete but the student needs help), it can be submitted to the website and it will go in a queue where the first available mentor will pick it and start mentoring.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;service is free&lt;/strong&gt; to use for all the students and &lt;strong&gt;the mentors are all volunteers&lt;/strong&gt; (this doesn&amp;rsquo;t mean that the platform doesn&amp;rsquo;t have any costs. If you are curious about the resources needed to keep the platform alive, you can give a look at &lt;a class=&#34;link&#34; href=&#34;https://www.reddit.com/r/Python/comments/9tugvn/exercismio_needs_python_mentors/e8zy5mq/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this answer on Reddit&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When I found out about the platform, I decided to use it (as student) to &lt;strong&gt;improve my Go coding skills&lt;/strong&gt;. I must say that I&amp;rsquo;ve been learning a lot from the mentors and some of them are putting a lot of effort to give you all the possible advices to improve your coding style. In a single exercise once, I learnt at least five things about Go I didn&amp;rsquo;t know before!&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ve been a Python developer (professionally) for the last 5 years, but I&amp;rsquo;ve never considered myself an &amp;ldquo;expert&amp;rdquo;. I decided to give it a try with mentoring, because I felt I wanted to &lt;strong&gt;give something back to the community&lt;/strong&gt;, so I registered as mentor too and started mentoring in the Python track.&lt;/p&gt;
+&lt;p&gt;The first surprise has been that mentoring other students, I was probably learning more than how much I was teaching. First of all, once you already know how to solve a problem, it&amp;rsquo;s always interesting to look at other possible solutions. I&amp;rsquo;ve found sometimes that students were providing better (more concise and readable) solutions than mine. Last but not least, before advising someone about conding style or a more idiomatic solution, I always double check things from different sources. There is nothing wrong making mistakes, especially if you are learning&amp;hellip; but it would be damaging for the student if I was teaching them something wrong, so I need to be sure about what I say. This of course makes me study, even the basic things, again and again and at the end of the day, my skills are better too.&lt;/p&gt;
+&lt;p&gt;Once you join the mentors group, you are invited to a private Slack where you can count on the help of other mentors (we have channels for each track/language) or ask questions. So, if you are not sure about something, you can always ask around.&lt;/p&gt;
+&lt;p&gt;If my story and experience convinced you, &lt;strong&gt;Exercism is looking for more mentors!&lt;/strong&gt; The more we have available, the less time the students have to wait in a queue to be mentored. You can find all the instructions at this address &lt;a class=&#34;link&#34; href=&#34;https://mentoring.exercism.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://mentoring.exercism.io&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Using ipdb with Python 3.7.x breakpoint</title>
+        <link>https://www.andreagrandi.it/posts/using-ipdb-with-python-37-breakpoint/</link>
+        <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/using-ipdb-with-python-37-breakpoint/</guid>
+        <description>&lt;p&gt;Python 3.7.x introduced a &lt;a class=&#34;link&#34; href=&#34;https://docs.python.org/3/whatsnew/3.7.html#pep-553-built-in-breakpoint&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;new method to insert a breakpoint&lt;/a&gt; in the code.
+Before Python 3.7.x to insert a debugging point we had to write &lt;code&gt;import pdb; pdb.set_trace()&lt;/code&gt; which honestly I could never remember (and I also created a snippet on VS Code to auto complete it).&lt;/p&gt;
+&lt;p&gt;Now you can just write &lt;code&gt;breakpoint()&lt;/code&gt; that&amp;rsquo;s it!&lt;/p&gt;
+&lt;p&gt;Now&amp;hellip; the only problem is that by default that command will use &lt;strong&gt;pdb&lt;/strong&gt; which is not exactly the best debugger you can have. I usually use &lt;strong&gt;ipdb&lt;/strong&gt; but there wasn&amp;rsquo;t an intuitive way of using it&amp;hellip; and no, just installing it in your virtual environment, it won&amp;rsquo;t be used by default.&lt;/p&gt;
+&lt;p&gt;How to use it then? It&amp;rsquo;s very simple. The new debugging command will read an environment variable named &lt;strong&gt;PYTHONBREAKPOINT&lt;/strong&gt;. If you set it properly, you will be able to use ipdb instead of pdb.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;export PYTHONBREAKPOINT=ipdb.set_trace
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;At this point, any time you use &lt;code&gt;breakpoint()&lt;/code&gt; in your code, &lt;strong&gt;ipdb&lt;/strong&gt; will be used instead of &lt;strong&gt;pdb&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;references&#34;&gt;References&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://hackernoon.com/python-3-7s-new-builtin-breakpoint-a-quick-tour-4f1aebc444c&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

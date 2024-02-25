@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Before I start, let me confirm to you that official Docker images for PostgreSQL already exist and are available here: https://registry.hub.docker.com/_/postgres/ so this howto wants to be a guide to explain how to create these images and talk about some of the Docker features.
+I will assume that you have already installed Docker on your machine. I have tested these instructions both on Ubuntu Linux and OSX (OSX users will need to install boot2docker, instructions are not available in this guide).'>
+<title>How to create a Docker image for PostgreSQL and persist data</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/how-to-create-a-docker-image-for-postgresql-and-persist-data/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='How to create a Docker image for PostgreSQL and persist data'>
+<meta property='og:description' content='Before I start, let me confirm to you that official Docker images for PostgreSQL already exist and are available here: https://registry.hub.docker.com/_/postgres/ so this howto wants to be a guide to explain how to create these images and talk about some of the Docker features.
+I will assume that you have already installed Docker on your machine. I have tested these instructions both on Ubuntu Linux and OSX (OSX users will need to install boot2docker, instructions are not available in this guide).'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/how-to-create-a-docker-image-for-postgresql-and-persist-data/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='containers' /><meta property='article:tag' content='devops' /><meta property='article:tag' content='docker' /><meta property='article:tag' content='fig' /><meta property='article:tag' content='Linux' /><meta property='article:tag' content='OSX' /><meta property='article:tag' content='postgresql' /><meta property='article:published_time' content='2015-02-21T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2015-02-21T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="How to create a Docker image for PostgreSQL and persist data">
+<meta name="twitter:description" content="Before I start, let me confirm to you that official Docker images for PostgreSQL already exist and are available here: https://registry.hub.docker.com/_/postgres/ so this howto wants to be a guide to explain how to create these images and talk about some of the Docker features.
+I will assume that you have already installed Docker on your machine. I have tested these instructions both on Ubuntu Linux and OSX (OSX users will need to install boot2docker, instructions are not available in this guide)."><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/how-to-create-a-docker-image-for-postgresql-and-persist-data/">How to create a Docker image for PostgreSQL and persist data</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 21, 2015</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Before I start, let me confirm to you that official
+<a class="link" href="https://www.docker.com/"  target="_blank" rel="noopener"
+    ><strong>Docker</strong></a> images for
+<a class="link" href="http://www.postgresql.org/"  target="_blank" rel="noopener"
+    ><strong>PostgreSQL</strong></a> already exist and are
+available here: <a class="link" href="https://registry.hub.docker.com/_/postgres/"  target="_blank" rel="noopener"
+    >https://registry.hub.docker.com/_/postgres/</a> so this
+howto wants to be a guide to explain how to create these images and talk
+about some of the Docker features.</p>
+<p>I will assume that you have already installed Docker on your machine. I
+have tested these instructions both on <strong>Ubuntu Linux</strong> and <strong>OSX</strong> (OSX
+users will need to install <a class="link" href="http://boot2docker.io/"  target="_blank" rel="noopener"
+    >boot2docker</a>,
+instructions are not available in this guide).</p>
+<h2 id="dockerfile">Dockerfile</h2>
+<p>To create a Docker image we need to create a text file named
+<strong>Dockerfile</strong> and use the available commands and syntax to declare how
+the image will be built. At the beginning of the file we need to specify
+the base image we are going to use and our contact informations:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> ubuntu:14.04</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">MAINTAINER</span><span class="s"> Andrea Grandi &lt;nospamthanks@gmail.com&gt;</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>In our case we are using <strong>Ubuntu 14.04</strong> as base image. After these
+instructions we need to add PostgreSQL package repository and GnuPG
+public key:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">RUN</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&#34;deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main&#34;</span> &gt; /etc/apt/sources.list.d/pgdg.list<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>then we need to update the packages available in Ubuntu and install
+PostgreSQL:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y -q install python-software-properties software-properties-common   <span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>  <span class="o">&amp;&amp;</span> apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>We are installing version 9.3 of PostgreSQL, instructions would be very
+similar for any other version of the database.</p>
+<p><strong>Note:</strong> it&rsquo;s important to have <strong>apt-get update</strong> and <strong>apt-get
+install</strong> commands in the same <strong>RUN</strong> line, else they would be
+considered two different layers by Docker and in case an updated package
+is available it won&rsquo;t be installed when the image is rebuilt.</p>
+<p>At this point we switch to <strong>postgres</strong> user to execute the next
+commands:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">USER</span><span class="s"> postgres</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> /etc/init.d/postgresql start   <span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>  <span class="o">&amp;&amp;</span> psql --command <span class="s2">&#34;CREATE USER pguser WITH SUPERUSER PASSWORD &#39;pguser&#39;;&#34;</span>   <span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>  <span class="o">&amp;&amp;</span> createdb -O pguser pgdb<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>We switch to <strong>root</strong> user and we complete the configuration:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">USER</span><span class="s"> root</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&#34;host all  all    0.0.0.0/0  md5&#34;</span> &gt;&gt; /etc/postgresql/9.3/main/pg_hba.conf<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&#34;listen_addresses=&#39;*&#39;&#34;</span> &gt;&gt; /etc/postgresql/9.3/main/postgresql.conf<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>We expose the port where PostgreSQL will listen to:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">EXPOSE</span><span class="s"> 5432</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>We setup the data and shared folders that we will use later:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">RUN</span> mkdir -p /var/run/postgresql <span class="o">&amp;&amp;</span> chown -R postgres /var/run/postgresql<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">VOLUME</span>  <span class="p">[</span><span class="s2">&#34;/etc/postgresql&#34;</span><span class="p">,</span> <span class="s2">&#34;/var/log/postgresql&#34;</span><span class="p">,</span> <span class="s2">&#34;/var/lib/postgresql&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Finally we switch again to the <strong>postgres</strong> user and we define the entry
+command for this image:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">USER</span><span class="s"> postgres</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/usr/lib/postgresql/9.3/bin/postgres&#34;</span><span class="p">,</span> <span class="s2">&#34;-D&#34;</span><span class="p">,</span> <span class="s2">&#34;/var/lib/postgresql/9.3/main&#34;</span><span class="p">,</span> <span class="s2">&#34;-c&#34;</span><span class="p">,</span> <span class="s2">&#34;config_file=/etc/postgresql/9.3/main/postgresql.conf&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The full <strong>Dockerfile</strong> is available
+here <a class="link" href="https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile"  target="_blank" rel="noopener"
+    >https://github.com/andreagrandi/postgresql-docker/blob/master/Dockerfile</a></p>
+<h3 id="building-docker-image">Building Docker image</h3>
+<p>Once the Dockerfile is ready, we need to build the image before running
+it in a container. Please customize the tag name using your own
+docker.io hub account (or you won&rsquo;t be able to push it to the hub):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker build --rm<span class="o">=</span><span class="nb">true</span> -t andreagrandi/postgresql:9.3 .
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="running-the-postgresql-docker-container">Running the PostgreSQL Docker container</h3>
+<p>To run the container, once the image is built, you just need to use this
+command:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -i -t -p 5432:5432 andreagrandi/postgresql:9.3
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="testing-the-running-postgresql">Testing the running PostgreSQL</h3>
+<p>To test the running container we can use any client, even the
+commandline one:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">psql -h localhost -p <span class="m">5432</span> -U pguser -W pgdb
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>When you are prompted for password, type: <strong>pguser</strong><br>
+Please note that <strong>localhost</strong> is only valid if you are running Docker
+on Ubuntu. If you are an OSX user, you need to discover the correct ip
+using: <strong>boot2docker ip</strong></p>
+<h3 id="persisting-data">Persisting data</h3>
+<p>You may have noticed that once you stop the container, if you previously
+wrote some data on the DB, that data is lost. This is because by default
+Docker containers are not persistent. We can resolve this problem using
+a data container. My only suggestion is not to do it manually and use a
+tool like <a class="link" href="http://www.fig.sh/"  target="_blank" rel="noopener"
+    ><strong>fig</strong></a> to orchestrate this. Fig is a
+tool to orchestrate containers and its features are being rewritten in
+Go language and integrated into Docker itself. So if you prepare a
+<strong>fig.yml</strong> configuration file now, you will be able, hopefully, to
+reuse it once this feature will be integrated into Docker. Please refer
+to fig website for the instructions to install it (briefly: under Ubuntu
+you can use <strong>pip install fig</strong> and under OSX you can use <strong>brew install
+fig</strong>).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">dbdata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">andreagrandi/postgresql:9.3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">/var/lib/postgresql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">db</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">andreagrandi/postgresql:9.3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">volumes_from</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">dbdata</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="s2">&#34;5432:5432&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Save this file as <strong>fig.yml</strong> in the same folder of the Dockerfile and
+spin up the container using this command: <strong>fig up</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">andreas-air:postgresql-docker andrea <span class="o">[</span>master<span class="o">]</span> $ fig up
+</span></span><span class="line"><span class="cl">Recreating postgresqldocker_dbdata_1...
+</span></span><span class="line"><span class="cl">Recreating postgresqldocker_db_1...
+</span></span><span class="line"><span class="cl">Attaching to postgresqldocker_db_1
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>6-1<span class="o">]</span> LOG:  database system was interrupted<span class="p">;</span> last known up at 2015-02-21 17:46:10 UTC
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>6-2<span class="o">]</span> LOG:  database system was not properly shut down<span class="p">;</span> automatic recovery in progress
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>6-3<span class="o">]</span> LOG:  redo starts at 0/1782F68
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>6-4<span class="o">]</span> LOG:  record with zero length at 0/1782FA8
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>6-5<span class="o">]</span> LOG:  redo <span class="k">done</span> at 0/1782F68
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>6-6<span class="o">]</span> LOG:  last completed transaction was at log <span class="nb">time</span> 2015-02-21 17:46:10.61746+00
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>1-1<span class="o">]</span> LOG:  database system is ready to accept connections
+</span></span><span class="line"><span class="cl">db_1 <span class="p">|</span> 2015-02-21 19:01:07 UTC <span class="o">[</span>10-1<span class="o">]</span> LOG:  autovacuum launcher started
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you try to write some data on the database and then you stop (CTRL+C)
+the running containers and spin up them again, you will see that your
+data is still there.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This is just an example of how to prepare a Docker container for a
+specific service. The difficoult part is when you have to spin up
+multiple services (for example a Django web application using
+PostgreSQL, RabbitMQ, MongoDB etc&hellip;), connect them all together and
+orchestrate the solution. I will maybe talk about this in one of the
+next posts. You can find the full source code of my PostgreSQL Docker
+image, including the fig.yml file in this
+repository <a class="link" href="https://github.com/andreagrandi/postgresql-docker"  target="_blank" rel="noopener"
+    >https://github.com/andreagrandi/postgresql-docker</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/containers/">Containers</a>
+        
+            <a href="/tags/devops/">Devops</a>
+        
+            <a href="/tags/docker/">Docker</a>
+        
+            <a href="/tags/fig/">Fig</a>
+        
+            <a href="/tags/linux/">Linux</a>
+        
+            <a href="/tags/osx/">Osx</a>
+        
+            <a href="/tags/postgresql/">Postgresql</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/posts/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Automatically pull updated Docker images and restart containers with docker-puller</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-configure-edimax-ew-7811un-wifi-dongle-on-raspbian/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to configure Edimax EW-7811UN Wifi dongle on Raspbian</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to fix encfs installation on OSX 10.9 (Mavericks) and brew</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-make-subwoofer-work-in-ubuntu/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to make subwoofer work in Ubuntu</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/uds-happening-online-only-pros-and-cons/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">UDS happening online only: pros and cons</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi.it">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

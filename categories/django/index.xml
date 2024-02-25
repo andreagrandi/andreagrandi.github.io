@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Django on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/categories/django/</link>
+        <description>Recent content in Django on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 29 Aug 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/django/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Django Notes: read values from settings in a safe way</title>
+        <link>https://www.andreagrandi.it/posts/django-notes-read-values-from-settings-in-a-safe-way/</link>
+        <pubDate>Sat, 29 Aug 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/django-notes-read-values-from-settings-in-a-safe-way/</guid>
+        <description>&lt;p&gt;Working on &lt;strong&gt;Django&lt;/strong&gt; projects I find very often that many developers
+access the values that are defined in &lt;strong&gt;settings&lt;/strong&gt; in this way&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.conf&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;my_value&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;MY_SETTING&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;What happens if &lt;code&gt;MY_SETTING&lt;/code&gt; has not been defined in &lt;strong&gt;settings.py&lt;/strong&gt;?
+The code will raise an error and crash, of course. How can we make the
+code more reliable? We could &lt;em&gt;try/except&lt;/em&gt; the code block that tries to
+read the value and maybe set a value if we get an exception, but this
+would not be a clean way to do this job.&lt;/p&gt;
+&lt;p&gt;A cleaner way to do it is to use &lt;strong&gt;getattr&lt;/strong&gt; in this way:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;django.conf&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;my_value&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;getattr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;settings&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;MY_SETTING&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;my-default-value&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;getattr&lt;/strong&gt; will try to read &lt;code&gt;MY_SETTING&lt;/code&gt; value from &lt;strong&gt;settings.py&lt;/strong&gt;,
+if the value doesn&amp;rsquo;t exist &lt;code&gt;my_value&lt;/code&gt; will be assigned with
+&lt;code&gt;&#39;my-default-value&#39;&lt;/code&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Django Notes: tests, setUp method and db data</title>
+        <link>https://www.andreagrandi.it/posts/django-notes-tests-setup-method-and-db-data/</link>
+        <pubDate>Thu, 23 Jul 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/django-notes-tests-setup-method-and-db-data/</guid>
+        <description>&lt;p&gt;This won&amp;rsquo;t be a full post, but just a quick note (probably the first one
+of a serie) about development with Django.&lt;/p&gt;
+&lt;p&gt;When we write a &lt;strong&gt;TestCase&lt;/strong&gt; test, if we have defined a &lt;strong&gt;setUp&lt;/strong&gt;
+method, it will be called before the execution of each test. One could
+think that the database is completely reset after each test, but this is
+not true (not like I was thinking). After each test, whatever we wrote
+on the database is rolled back. If we create a &amp;ldquo;Client&amp;rdquo; row (assuming we
+have a model called Clients) in our setUp, when we call it the second
+time the ID won&amp;rsquo;t be 1 as someone (me included) could expect. It will be
+2 instead, because the database has not completely deleted and created
+from scratch.&lt;/p&gt;
+&lt;p&gt;This means that we can&amp;rsquo;t assume that our Client ID will always be 1 for
+each test and we should rather reference to it in a dinamic way like:
+&lt;strong&gt;self.client.id&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This could be a trivial thing for many people but I was not 100% sure
+about this so I asked for a confirmation on &lt;strong&gt;#django&lt;/strong&gt; IRC room and
+people (expecially &lt;strong&gt;apollo13&lt;/strong&gt;) was kind enough to explain me how it
+works.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

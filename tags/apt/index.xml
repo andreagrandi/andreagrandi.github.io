@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Apt on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/apt/</link>
+        <description>Recent content in Apt on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 14 Feb 2009 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/apt/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Importare le chiavi pubbliche PGP in apt su Ubuntu</title>
+        <link>https://www.andreagrandi.it/posts/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</link>
+        <pubDate>Sat, 14 Feb 2009 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/pg2logo.png&#34;
+	width=&#34;156&#34;
+	height=&#34;156&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;pgp logo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Utilizzando i repository esterni su &lt;strong&gt;Ubuntu&lt;/strong&gt;, capita spesso di non avere una
+procedura automatica per importare anche le relative &lt;strong&gt;chiavi pubbliche
+PGP&lt;/strong&gt;, che ci permettono di avere la garanzia che i pacchetti che stiamo
+scaricando siano autentici e che quindi provengano dall&amp;rsquo;autore
+originale.&lt;/p&gt;
+&lt;p&gt;Sul sito web dei progetti che mettono a disposizione un repository,
+solitamente è indicato anche l&amp;rsquo;ID della chiave pubblica PGP. Ad esempio
+sul sito del &lt;em&gt;Blueman Development Team&lt;/em&gt; troviamo &lt;strong&gt;6B15AB91951DC1E2&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Per importare questa chiave pubblica dentro apt di Ubuntu, sono
+sufficienti i seguenti comandi da terminale:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --export --armor 6B15AB91951DC1E2 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; sudo apt-key add -
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Ovviamente dovrete sostituire l&amp;rsquo;ID della chiave PGP con quello che vi
+interessa aggiungere. Qui di seguito potete vedere un esempio completo
+dei messaggi di conferma che si ricevono quando si aggiunge la chiave:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg: requesting key 951DC1E2 from hkp server keyserver.ubuntu.com
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg: key 951DC1E2: public key &lt;span class=&#34;s2&#34;&gt;&amp;#34;Launchpad PPA for Blueman Development Team&amp;#34;&lt;/span&gt; imported
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg: Total number processed: &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg:               imported: &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;RSA: 1&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --export --armor 6B15AB91951DC1E2 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; sudo apt-key add - OK
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

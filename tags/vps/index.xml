@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Vps on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/vps/</link>
+        <description>Recent content in Vps on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 31 Aug 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/vps/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Getting started with Digital Ocean VPS: configuring DNS and Postfix for email forwarding</title>
+        <link>https://www.andreagrandi.it/posts/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/</link>
+        <pubDate>Sun, 31 Aug 2014 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/</guid>
+        <description>&lt;p&gt;I have recently migrated my website from a shared hosting to a dedicated
+VPS on Digital Ocean. Having a VPS surely gives you unlimited
+possibilities, compared to a shared hosting, but of course you have to
+manage some services by yourself.&lt;/p&gt;
+&lt;p&gt;In my case I only needed: SSH access, LEMP configuration (Nginx + MySQL&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;PHP) to serve my WordPress blog and Postfix to use email forwarding
+from my aliases to my personal email.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;configuring-dns-on-digital-ocean&#34;&gt;Configuring DNS on Digital Ocean&lt;/h2&gt;
+&lt;p&gt;Understanding how to properly configure the DNS entries in the panel
+could be a bit tricky if it&amp;rsquo;s not your daily bread. In particular there
+is a Digital Ocean configuration that assumes certain things about your
+droplet, so it&amp;rsquo;s better to configure it properly.&lt;/p&gt;
+&lt;p&gt;For example the droplet name should not be casual, but it should match
+your domain name: I initially called my host &amp;ldquo;andreagrandi&amp;rdquo; and I had to
+rename it to &amp;ldquo;andreagrandi.it&amp;rdquo; to have the proper PTR values.&lt;/p&gt;
+&lt;p&gt;You will need to create at least a &amp;ldquo;mail&amp;rdquo; record, pointing to your IP
+and an &amp;ldquo;MX&amp;rdquo; record pointing to mail.yourdomain.com. (please note the dot
+at the end of the domain name). Here is the configuration of my own
+droplet (you will notice also a CNAME record. You need it if you want
+&lt;a class=&#34;link&#34; href=&#34;https://www.yourdomain.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;www.yourdomain.com&lt;/a&gt; to correctly point to your ip.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;dns_config_digitalocean.jpg&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/getting-started-with-digital-ocean-vps-configuring-dns-and-postfix-for-email-forwarding/dns_config_digitalocean.jpg&#34;
+	width=&#34;855&#34;
+	height=&#34;458&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;dns\_config\_digitalocean&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;186&#34;
+		data-flex-basis=&#34;448px&#34;
+	
+&gt;{ width=100% }&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;configuring-postfix&#34;&gt;Configuring Postfix&lt;/h2&gt;
+&lt;p&gt;In my case I only needed some aliases that I use to forward emails to my
+GMail account, so the configuration is quite easy. First you need to
+install Postfix:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo apt-get install postfix
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Then you need to edit** /etc/postfix/main.cf** customizing myhostname
+with your domain name and add &lt;strong&gt;virtual_alias_maps&lt;/strong&gt; and
+&lt;strong&gt;virtual_alias_domains&lt;/strong&gt; parameters. Please also check that
+&lt;strong&gt;mynetworks&lt;/strong&gt; is configured exactly as I did, or you will make your
+mail server vulnerable to spam bots. You can see my complete
+configuration here:&lt;/p&gt;
+&lt;p&gt;
+&lt;script src=&#34;https://gist.github.com/andreagrandi/fe6246dac228250ee2c0.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;h2 id=&#34;add-your-email-aliases&#34;&gt;Add your email aliases&lt;/h2&gt;
+&lt;p&gt;Edit &lt;strong&gt;/etc/postfix/virtual&lt;/strong&gt; file and add your aliases, one per line,
+like in this example:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;info@yourdomain.com youremail@gmail.com
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sales@yourdomain.com youremail@gmail.com
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;At this point update the alias map and reload Postfix configuration:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo postmap /etc/postfix/virtual
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo /etc/init.d/postfix reload
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;As you can see, configuring Postfix is quite easy, you just need to be
+careful when you configure the DNS records in the control panel. Are you
+curious to try how Digital Ocean VPS works? Fancy &lt;strong&gt;10$ credit&lt;/strong&gt;
+(enough for 2 months if you choose the basic droplet) for &lt;strong&gt;free&lt;/strong&gt;? Use
+this link and enjoy it
+&lt;a class=&#34;link&#34; href=&#34;https://www.digitalocean.com/?refcode=cc8349e328a5&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.digitalocean.com/?refcode=cc8349e328a5&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

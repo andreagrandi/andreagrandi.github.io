@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Cloud on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/cloud/</link>
+        <description>Recent content in Cloud on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 11 Oct 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/cloud/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to configure EncFS on OSX 10.10 (Yosemite)</title>
+        <link>https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/</link>
+        <pubDate>Sun, 11 Oct 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/</guid>
+        <description>&lt;p&gt;With &lt;strong&gt;EncFS&lt;/strong&gt; it&amp;rsquo;s possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc&amp;hellip;), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It&amp;rsquo;s
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.&lt;/p&gt;
+&lt;h2 id=&#34;installing-encfs&#34;&gt;Installing EncFS&lt;/h2&gt;
+&lt;p&gt;EncFS can be installed from &lt;strong&gt;brew&lt;/strong&gt;. If you don&amp;rsquo;t have brew package
+manager installed on OSX you can install it using this command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ruby -e &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After brew, you need to install &lt;strong&gt;OSXFuse&lt;/strong&gt; from this
+website &lt;a class=&#34;link&#34; href=&#34;http://osxfuse.github.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://osxfuse.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Finally you can install &lt;strong&gt;encfs&lt;/strong&gt; using this command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install homebrew/fuse/encfs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;configuring-the-encrypted-folder&#34;&gt;Configuring the encrypted folder&lt;/h2&gt;
+&lt;p&gt;Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;encfs ~/Dropbox/Private ~/Private
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If you are mounting an existing encrypted volume, you will be prompted
+for the password. If you are creating a new encrypted volume you will be
+asked some questions about EncFS parameters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; if it&amp;rsquo;s important for you to keep compatibility with
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.boxcryptor.com/en/classic&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;BoxCryptor Classic&lt;/a&gt;&lt;/strong&gt; (in case
+you want to use the same volume under Windows), please refer to this
+other article I
+wrote: &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;mount-the-encrypted-volume-on-startup&#34;&gt;Mount the encrypted volume on startup&lt;/h2&gt;
+&lt;p&gt;First of all you need to save the volume&amp;rsquo;s password inside the OSX
+keychain. Open the app &lt;strong&gt;Keychain Access&lt;/strong&gt; and create a new entry with
+name &lt;strong&gt;encfs&lt;/strong&gt; and account value &lt;strong&gt;encfs&lt;/strong&gt;, then write your &lt;strong&gt;password&lt;/strong&gt;
+and click &lt;strong&gt;Add&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;encfs_keychain_access.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/encfs_keychain_access.png&#34;
+	width=&#34;428&#34;
+	height=&#34;397&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;encfs\_keychain\_access&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;258px&#34;
+	
+&gt;{ width=60% }&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Once the password is saved, &lt;strong&gt;open a text editor&lt;/strong&gt; and paste this script
+and save it as &lt;strong&gt;encfs_mount.sh&lt;/strong&gt; inside your &lt;strong&gt;$HOME&lt;/strong&gt; folder:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# Secure EncFS Dropbox mounter by Daniel Widerin &amp;lt;daniel@widerin.net&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;SOURCE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;~/Dropbox/Private
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;TARGET&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;~/Private
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;VOLUME_TITLE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;Private
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;encfs&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;ENCFS&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/bin/encfs
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mount &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt; &amp;gt;/dev/null
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[[&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$?&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt; -eq &lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; /usr/sbin/diskutil unmount &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; ! -d &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Create new mountpoint &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod &lt;span class=&#34;m&#34;&gt;0700&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$ENCFS&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$SOURCE&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt; --extpass&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39; |grep password|cut -d \\\&amp;#34; -f 2&amp;#34;&lt;/span&gt; -ovolname&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$VOLUME_TITLE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Make it &lt;strong&gt;executable&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod +x ~/encfs_mount.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Open &lt;strong&gt;AppleScript&lt;/strong&gt; editor and paste this text inside and save as an
+app in the $HOME folder:&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;Screenshot-2015-10-11-19.27.14.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/Screenshot-2015-10-11-19.27.14.png&#34;
+	width=&#34;484&#34;
+	height=&#34;392&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;apple script&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;123&#34;
+		data-flex-basis=&#34;296px&#34;
+	
+&gt;{ width=60% }&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; shell script &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$HOME&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;/encfs_mount.sh&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Finally, open &amp;ldquo;&lt;strong&gt;System Preferences&lt;/strong&gt;&amp;rdquo; -&amp;gt; &amp;ldquo;&lt;strong&gt;Users &amp;amp; Groups&lt;/strong&gt;&amp;rdquo; and
+add the previously saved application.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;Screenshot-2015-10-11-19.27.44.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/Screenshot-2015-10-11-19.27.44.png&#34;
+	width=&#34;463&#34;
+	height=&#34;380&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;system preferences&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;121&#34;
+		data-flex-basis=&#34;292px&#34;
+	
+&gt;{ width=60% }&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;final-notes&#34;&gt;Final notes&lt;/h2&gt;
+&lt;p&gt;At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: &lt;strong&gt;do not save anything
+directly on &lt;code&gt;~/Dropbox/Private&lt;/code&gt;&lt;/strong&gt;, only read and save your files from
+&lt;code&gt;~/Private&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.maketecheasier.com/install-encfs-mac/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://ninjatips.com/encrypt-dropbox-using-encfs/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://ninjatips.com/encrypt-dropbox-using-encfs/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>How to fix encfs installation on OSX 10.9 (Mavericks) and brew</title>
+        <link>https://www.andreagrandi.it/posts/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</link>
+        <pubDate>Fri, 08 Nov 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</guid>
+        <description>&lt;p&gt;After upgrading from OSX 10.8.x to 10.9 (Mavericks), &lt;strong&gt;encfs&lt;/strong&gt; recipe is
+broken. First of all you have to fix a problem with a library header:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;then you can install encfs using this remote brew recipe:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;It&amp;rsquo;s also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;That&amp;rsquo;s it! Please note that this is just a workaround (thanks to
+&lt;strong&gt;Giovanni Bajo&lt;/strong&gt; for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here &lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/defunctzombie/7324625&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://gist.github.com/defunctzombie/7324625&lt;/a&gt; but I haven&amp;rsquo;t
+tested it yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; to fully integrate encfs with OSX, I also suggest to follow
+this nice guide &lt;a class=&#34;link&#34; href=&#34;http://www.maketecheasier.com/install-encfs-mac/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

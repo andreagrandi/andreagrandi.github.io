@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>DevOps on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/categories/devops/</link>
+        <description>Recent content in DevOps on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 06 Dec 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/devops/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Getting a free SSL certificate from Letsencrypt and configuring it on Nginx with automatic renewal</title>
+        <link>https://www.andreagrandi.it/posts/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/</link>
+        <pubDate>Sun, 06 Dec 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/getting-a-free-ssl-certificate-from-letsencrypt-and-configuring-it-on-nginx-with-automatic-renewal/</guid>
+        <description>&lt;p&gt;Finally &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://letsencrypt.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Letsencrypt&lt;/a&gt;&lt;/strong&gt; went to &lt;strong&gt;public
+beta&lt;/strong&gt; and I really couldn&amp;rsquo;t wait to use it on my VPS (where this blog
+is hosted). Until few days ago I was using a &lt;strong&gt;free SSL&lt;/strong&gt; certificate
+from &lt;a class=&#34;link&#34; href=&#34;https://www.startssl.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;StartSSL&lt;/a&gt;. The service is nice and I&amp;rsquo;m
+grateful to them for this important resource they are providing for
+free, but it must be said that their renewal procedure isn&amp;rsquo;t one of the
+most user friendly.&lt;/p&gt;
+&lt;p&gt;For people who don&amp;rsquo;t know the service yet, &lt;strong&gt;Letsencrypt&lt;/strong&gt; not only
+gives &lt;strong&gt;free SSL certificates&lt;/strong&gt;, they also provide a command line tool
+that people can use to request a new certificate or to renew an existing
+one. This means that you don&amp;rsquo;t have to worry anymore if/when your
+certificate expires, you can set a crontab command and have the
+certificate &lt;strong&gt;automatically renewed&lt;/strong&gt; for you.&lt;/p&gt;
+&lt;h2 id=&#34;client-installation&#34;&gt;Client installation&lt;/h2&gt;
+&lt;p&gt;To request a SSL certificate you need to install their command line
+utility. Unless it has already been packaged for your distribution, for
+the moment it&amp;rsquo;s much easier to get it from git as they explain in their
+&lt;a class=&#34;link&#34; href=&#34;https://letsencrypt.readthedocs.org/en/latest/using.html#installation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;installation
+instructions&lt;/a&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git clone https://github.com/letsencrypt/letsencrypt
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; letsencrypt
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./letsencrypt-auto
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;getting-the-ssl-certificate&#34;&gt;Getting the SSL certificate&lt;/h2&gt;
+&lt;p&gt;There are a few different options available to request a certificate,
+but the easiest one is to use the &lt;strong&gt;&amp;ndash;webroot&lt;/strong&gt; option, specifying the
+document root of your website so that the client will be able to put
+there a verification (temporary) file that will be served to the remote
+service and used as verification method. In my case I only needed this
+command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email myemail@myprovider.com --renew-by-default --agree-tos
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Please note that I had to specify both &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;www.andreagrandi.it&lt;/a&gt; and
+andreagrandi.it as domains, otherwise it would have been invalid when
+requesting just andreagrandi.it resources.&lt;/p&gt;
+&lt;h2 id=&#34;configuration-files-and-certificates-installation&#34;&gt;Configuration files and certificates installation&lt;/h2&gt;
+&lt;p&gt;The command above will save all the configuration under
+&lt;strong&gt;/etc/letsencrypt/&lt;/strong&gt; and all the generated certificates under
+&lt;strong&gt;/etc/letsencrypt/live/www.andreagrandi.it/*.pem&lt;/strong&gt; (all the *.pem
+files here are symbolic links to the current certificate). If you are
+using &lt;strong&gt;Nginx&lt;/strong&gt; the only files you need are &lt;strong&gt;fullchain.pem&lt;/strong&gt; and
+&lt;strong&gt;privkey.pem&lt;/strong&gt; and you can set them in your Nginx configuration using
+these two parameters:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssl_certificate /etc/letsencrypt/live/www.andreagrandi.it/fullchain.pem&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssl_certificate_key /etc/letsencrypt/live/www.andreagrandi.it/privkey.pem&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;In case you want to have a look at my full Nginx configuration file, as
+reference, you can find it
+here &lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://gist.github.com/andreagrandi/8b194c99cd3e77fdb5a8&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;automatic-renewal&#34;&gt;Automatic renewal&lt;/h2&gt;
+&lt;p&gt;The last thing to be configured is a crontab rule to call the script
+every&amp;hellip; 2 months. Why 2 months? Letsencrypt SSL &lt;strong&gt;certificates expire
+in 3 months&lt;/strong&gt;. Usually SSL certificates are valid at least for 1 year,
+but Letsencrypt decided to make it 3 months to incentivate the
+automation of the renewal. I set it to 2 months, so if anything goes
+wrong I still have plenty of time to do it manually. To edit crontab for
+root user execute &lt;strong&gt;crontab -e&lt;/strong&gt; and add this line:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; */2 * /root/letsencrypt/letsencrypt-auto certonly --webroot -w /var/www/andreagrandi.it/ -d www.andreagrandi.it -d andreagrandi.it --email email@domain.com --renew-by-default --agree-tos &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; service nginx reload
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Just a final note. You may have noticed that this website presents an
+SSL certificate issued by COMODO. That&amp;rsquo;s because I have
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.cloudflare.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;CloudFlare&lt;/a&gt;&lt;/strong&gt; in front of my website and
+that&amp;rsquo;s how their SSL strict option works (at least for free plans).&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

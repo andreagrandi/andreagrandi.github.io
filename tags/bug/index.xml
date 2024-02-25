@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Bug on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/bug/</link>
+        <description>Recent content in Bug on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 09 Dec 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/bug/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Fix encfs under OSX after upgrading to 10.11.2</title>
+        <link>https://www.andreagrandi.it/posts/fix-encfs-under-osx-after-upgrading-to-10-11-2/</link>
+        <pubDate>Wed, 09 Dec 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/fix-encfs-under-osx-after-upgrading-to-10-11-2/</guid>
+        <description>&lt;p&gt;After having upgraded &lt;strong&gt;OSX&lt;/strong&gt; to &lt;strong&gt;10.11.2&lt;/strong&gt; on my MacBook, I noticed
+that my &lt;strong&gt;encfs&lt;/strong&gt; volume didn&amp;rsquo;t mount after reboot. I tried to run the
+script manually and all I got was this error:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;dyld: Symbol not found: __ZN5boost7archive17xml_iarchive_implINS0_12xml_iarchiveEE13load_overrideERNS0_15class_name_typeEi
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Referenced from: /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Expected in: /usr/local/lib/libboost_serialization-mt.dylib
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;in /usr/local/Cellar/encfs/1.8.1/lib/libencfs.6.dylib
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;I quickly found that was a common problem caused by a new version of
+&lt;strong&gt;Boost&lt;/strong&gt; being
+installed: &lt;a class=&#34;link&#34; href=&#34;https://github.com/Homebrew/homebrew/issues/46254&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/Homebrew/homebrew/issues/46254&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To fix it, you just need to &lt;strong&gt;reinstall encfs&lt;/strong&gt; using this command&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew reinstall -s encfs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>Nokia N900: some problems with latest PR 1.1.1 firmware</title>
+        <link>https://www.andreagrandi.it/posts/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/</link>
+        <pubDate>Wed, 17 Feb 2010 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/</guid>
+        <description>&lt;p&gt;I don&amp;rsquo;t know if it&amp;rsquo;s just a case or if I&amp;rsquo;m the only one who had these
+problems, but I&amp;rsquo;ll report them anyway, maybe somebody had my same
+problem and we could try to prepare a proper bug report to make the
+Maemo team fix them.&lt;/p&gt;
+&lt;h2 id=&#34;infinite-boot-loop-after-upgrade&#34;&gt;Infinite boot loop after upgrade&lt;/h2&gt;
+&lt;p&gt;First of all I have to say that before upgrading to PR 1.1.1 I checked
+if I had enough space on the rootfs. I only had 27 Mb and so I decided
+to remove some unused applications, deleted some *.deb in
+/var/cache/apt/archives and disabled extras repositories. Of course I
+also did a backup of all my configuration. After the cleaning operation
+I had near 60 Mb free on rootfs, enough to install the upgrade.&lt;/p&gt;
+&lt;p&gt;I closed all running applications, started the application manager and
+began the upgrade. After the upgrade was completed, the device did a
+reboot&amp;hellip; then another one, then again, again&amp;hellip;. until I had to remove
+the battery to stop it.&lt;/p&gt;
+&lt;p&gt;Conclusion: I had to re-flash the device with the latest image to make
+it work again.&lt;/p&gt;
+&lt;h2 id=&#34;mafw-dbus-wrapper-taking-all-the-cpu&#34;&gt;mafw-dbus-wrapper taking all the CPU&lt;/h2&gt;
+&lt;p&gt;I was watching a video (using subtitles) and after some minutes the
+whole UI became unresponsive. Strange because I already did this before
+without having any problem. I tried to check the problem using &amp;ldquo;top&amp;rdquo;
+utility from terminal and I saw that there was a mafw process
+(mafw-dbus-wrapper) that was taking 80-90% of CPU. My fault is that
+normally there are at least 3-4 , mafw-dbus-wrapper processes and I
+didn&amp;rsquo;t check which one was causing the problem. Anyway I made a
+screenshot, just in case it can help.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;Screenshot-20100217-034958.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/nokia-n900-some-problems-with-latest-pr-1-1-1-firmware/Screenshot-20100217-034958-300x180.png&#34;
+	width=&#34;300&#34;
+	height=&#34;180&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;mafw dbus&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;166&#34;
+		data-flex-basis=&#34;400px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I hope this short report can be useful to help Maemo team to fix or at
+least investigate what happened. Just leave a comment or contact me if
+you need more informations.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Un bug del Kernel Linux 2.6.27 potrebbe danneggiare le schede ethernet con driver e1000e</title>
+        <link>https://www.andreagrandi.it/posts/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/</link>
+        <pubDate>Wed, 24 Sep 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/ethernet.jpg&#34;
+	width=&#34;500&#34;
+	height=&#34;500&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;ethernet&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Secondo quanto &lt;a class=&#34;link&#34; href=&#34;https://lists.ubuntu.com/archives/ubuntu-devel-announce/2008-September/000488.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;riportato sulla mailing list&lt;/a&gt;
+di sviluppo di Ubuntu, un &lt;strong&gt;bug&lt;/strong&gt; presente nella versione &lt;strong&gt;2.6.27&lt;/strong&gt; del
+&lt;strong&gt;kernel Linux&lt;/strong&gt; potrebbe &lt;strong&gt;danneggiare irreparabilmente&lt;/strong&gt; le schede
+ethernet dotate di chipset &lt;strong&gt;Intel GigE&lt;/strong&gt; che utilizzano il driver
+&lt;strong&gt;e1000e&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Secondo le prime analisi, il bug andrebbe a sovrascrivere la eprom di
+queste schede di rete, rendendole inutilizzabili.&lt;/p&gt;
+&lt;p&gt;L&amp;rsquo;attuale alpha 6 di Ubuntu contiene questo bug, si consiglia quindi di
+non utilizzarla se si possiede tale scheda, ma di attendere almeno la
+prossima release (la beta dovrebbe uscire il 2 ottobre), dove il bug è
+già stato corretto.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Rilasciato WordPress 2.3.3: corretta una grave falla di sicurezza</title>
+        <link>https://www.andreagrandi.it/posts/rilasciato-wordpress-233-corretta-una-grave-falla-di-sicurezza/</link>
+        <pubDate>Wed, 06 Feb 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/rilasciato-wordpress-233-corretta-una-grave-falla-di-sicurezza/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/rilasciato-wordpress-233-corretta-una-grave-falla-di-sicurezza/wordpress-logo.thumbnail.jpg&#34;
+	width=&#34;128&#34;
+	height=&#34;128&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;wordpress\_logo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; stata rilasciata da poche ore la &lt;a class=&#34;link&#34; href=&#34;http://wordpress.org/development/2008/02/wordpress-233/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;versione
+2.3.3&lt;/a&gt; di
+&lt;strong&gt;WordPress&lt;/strong&gt;. Con questa release viene corretta una &lt;strong&gt;falla piuttosto
+grave&lt;/strong&gt; che riguarda in particolar modo quei blog che permettono la
+registrazione di altri utenti.&lt;/p&gt;
+&lt;p&gt;A causa di un bug in &lt;strong&gt;xmlrpc.php&lt;/strong&gt; è infatti possibile per un utente
+qualsiasi del blog, editare i contenuti scritti da un altro utente.&lt;/p&gt;
+&lt;p&gt;Oltre a questo bug, sono stati corretti anche &lt;a class=&#34;link&#34; href=&#34;http://trac.wordpress.org/query?status=closed&amp;amp;milestone=2.3.3&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;altri piccoli
+problemi&lt;/a&gt;
+che riguardavano la versione &lt;strong&gt;2.3.2&lt;/strong&gt; di WordPress.&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; consigliato un tempestivo aggiornamento, seguendo &lt;a class=&#34;link&#34; href=&#34;http://codex.wordpress.org/Upgrading_WordPress&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;la
+procedura&lt;/a&gt; indicata sul
+sito ufficiale.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

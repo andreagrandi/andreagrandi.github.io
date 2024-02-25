@@ -1,0 +1,983 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Sicurezza on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/categories/sicurezza/</link>
+        <description>Recent content in Sicurezza on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 11 Oct 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/sicurezza/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to configure EncFS on OSX 10.10 (Yosemite)</title>
+        <link>https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/</link>
+        <pubDate>Sun, 11 Oct 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/</guid>
+        <description>&lt;p&gt;With &lt;strong&gt;EncFS&lt;/strong&gt; it&amp;rsquo;s possible to keep our data in almost any cloud
+(Dropbox, OneDrive, etc&amp;hellip;), having a good level of privacy and
+security. Infact EncFS encrypt and decrypt our data automatically. It&amp;rsquo;s
+available for Linux as well and using a commercial solution (that is
+currently unsupported) even on Windows.&lt;/p&gt;
+&lt;h2 id=&#34;installing-encfs&#34;&gt;Installing EncFS&lt;/h2&gt;
+&lt;p&gt;EncFS can be installed from &lt;strong&gt;brew&lt;/strong&gt;. If you don&amp;rsquo;t have brew package
+manager installed on OSX you can install it using this command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ruby -e &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After brew, you need to install &lt;strong&gt;OSXFuse&lt;/strong&gt; from this
+website &lt;a class=&#34;link&#34; href=&#34;http://osxfuse.github.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://osxfuse.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Finally you can install &lt;strong&gt;encfs&lt;/strong&gt; using this command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install homebrew/fuse/encfs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;configuring-the-encrypted-folder&#34;&gt;Configuring the encrypted folder&lt;/h2&gt;
+&lt;p&gt;Now that EncFS is installed, you can either mount an existing EncFS
+volume or create a new one. In both cases the command is the same:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;encfs ~/Dropbox/Private ~/Private
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If you are mounting an existing encrypted volume, you will be prompted
+for the password. If you are creating a new encrypted volume you will be
+asked some questions about EncFS parameters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; if it&amp;rsquo;s important for you to keep compatibility with
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.boxcryptor.com/en/classic&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;BoxCryptor Classic&lt;/a&gt;&lt;/strong&gt; (in case
+you want to use the same volume under Windows), please refer to this
+other article I
+wrote: &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.andreagrandi.it/2014/09/12/create-an-encfs-volume-compatible-with-boxcryptor-classic/&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;mount-the-encrypted-volume-on-startup&#34;&gt;Mount the encrypted volume on startup&lt;/h2&gt;
+&lt;p&gt;First of all you need to save the volume&amp;rsquo;s password inside the OSX
+keychain. Open the app &lt;strong&gt;Keychain Access&lt;/strong&gt; and create a new entry with
+name &lt;strong&gt;encfs&lt;/strong&gt; and account value &lt;strong&gt;encfs&lt;/strong&gt;, then write your &lt;strong&gt;password&lt;/strong&gt;
+and click &lt;strong&gt;Add&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;encfs_keychain_access.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/encfs_keychain_access.png&#34;
+	width=&#34;428&#34;
+	height=&#34;397&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;encfs\_keychain\_access&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;258px&#34;
+	
+&gt;{ width=60% }&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Once the password is saved, &lt;strong&gt;open a text editor&lt;/strong&gt; and paste this script
+and save it as &lt;strong&gt;encfs_mount.sh&lt;/strong&gt; inside your &lt;strong&gt;$HOME&lt;/strong&gt; folder:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# Secure EncFS Dropbox mounter by Daniel Widerin &amp;lt;daniel@widerin.net&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;SOURCE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;~/Dropbox/Private
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;TARGET&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;~/Private
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;VOLUME_TITLE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;Private
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;encfs&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;ENCFS&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/bin/encfs
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mount &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt; &amp;gt;/dev/null
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[[&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$?&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt; -eq &lt;span class=&#34;s2&#34;&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; /usr/sbin/diskutil unmount &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; ! -d &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Create new mountpoint &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod &lt;span class=&#34;m&#34;&gt;0700&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$ENCFS&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$SOURCE&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$TARGET&lt;/span&gt; --extpass&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;security 2&amp;gt;&amp;amp;1 &amp;gt;/dev/null find-generic-password -gl &amp;#39;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$KEYCHAIN_PASSWORD&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#39; |grep password|cut -d \\\&amp;#34; -f 2&amp;#34;&lt;/span&gt; -ovolname&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$VOLUME_TITLE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Make it &lt;strong&gt;executable&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod +x ~/encfs_mount.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Open &lt;strong&gt;AppleScript&lt;/strong&gt; editor and paste this text inside and save as an
+app in the $HOME folder:&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;Screenshot-2015-10-11-19.27.14.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/Screenshot-2015-10-11-19.27.14.png&#34;
+	width=&#34;484&#34;
+	height=&#34;392&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;apple script&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;123&#34;
+		data-flex-basis=&#34;296px&#34;
+	
+&gt;{ width=60% }&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; shell script &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$HOME&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;/encfs_mount.sh&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Finally, open &amp;ldquo;&lt;strong&gt;System Preferences&lt;/strong&gt;&amp;rdquo; -&amp;gt; &amp;ldquo;&lt;strong&gt;Users &amp;amp; Groups&lt;/strong&gt;&amp;rdquo; and
+add the previously saved application.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;Screenshot-2015-10-11-19.27.44.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-configure-encfs-on-osx-10-10-yosemite/Screenshot-2015-10-11-19.27.44.png&#34;
+	width=&#34;463&#34;
+	height=&#34;380&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;system preferences&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;121&#34;
+		data-flex-basis=&#34;292px&#34;
+	
+&gt;{ width=60% }&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;final-notes&#34;&gt;Final notes&lt;/h2&gt;
+&lt;p&gt;At this point encfs is configured to be mounted at startup and to save
+the encrypted files inside Dropbox. Please note: &lt;strong&gt;do not save anything
+directly on &lt;code&gt;~/Dropbox/Private&lt;/code&gt;&lt;/strong&gt;, only read and save your files from
+&lt;code&gt;~/Private&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.maketecheasier.com/install-encfs-mac/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://ninjatips.com/encrypt-dropbox-using-encfs/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://ninjatips.com/encrypt-dropbox-using-encfs/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>Why I completely switched this website to HTTPS (and why you should do the same)</title>
+        <link>https://www.andreagrandi.it/posts/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/</link>
+        <pubDate>Sat, 22 Aug 2015 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/why-i-completely-switched-this-website-to-https-and-why-you-should-do-the-same/</guid>
+        <description>&lt;p&gt;I must admit it, there was a time when I was not using &lt;strong&gt;HTTPS&lt;/strong&gt;, not
+even to protect the admin section of the website. This means that anyone
+could have intercepted the password and published (or deleted) things in
+my name. Since a couple of years ago I started protecting my admin
+sectio using an SSL certificate.  I haven&amp;rsquo;t done it before for a couple
+of reason: my hosting was on a provider that required a lot of money
+(something like 100$/year) to enable SSL support, plus an SSL
+certificated costed at least 100-120$/year.&lt;/p&gt;
+&lt;p&gt;When I migrated my website on my own &lt;a class=&#34;link&#34; href=&#34;https://www.digitalocean.com/?refcode=cc8349e328a5&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;VPS on
+DigitalOcean&lt;/a&gt; I
+finally discovered that &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.startssl.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;StartSSL&lt;/a&gt;&lt;/strong&gt; was
+giving &lt;strong&gt;free class 1 certificates&lt;/strong&gt; and I immediately got one. I made
+the mistake to just serve the admin pages using HTTPS, not all the
+website. I regretted about this decision after readin a
+&lt;a class=&#34;link&#34; href=&#34;http://dannyman.toldme.com/2010/12/23/swa-yahoo-being-evil/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;couple&lt;/a&gt; of
+&lt;a class=&#34;link&#34; href=&#34;http://opensource.com/business/15/8/interview-daniel-roesler-utilityapi&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;articles&lt;/a&gt;
+that were explaining how some internet providers where changing served
+HTTP pages injecting their own ads or banner. That was unacceptable to
+me and I swicthed the whole website to HTTPS.&lt;/p&gt;
+&lt;p&gt;Basically, if you don&amp;rsquo;t serve even your personal website using HTTPS,
+someone could change the page while it&amp;rsquo;s being transfered to the
+requester. Imagine if you have (like me) a page on your blog that let
+people download your public PGP key. Users could be served with a
+different key, so someone else would be able to decrypt a message
+intended for you only. Scary, isn&amp;rsquo;t it?&lt;/p&gt;
+&lt;p&gt;If you need more informations about how to request a StartSSL
+certificate and how to install it on Nginx/Apache, I can suggest this
+nice tutorial: &lt;a class=&#34;link&#34; href=&#34;https://konklone.com/post/switch-to-https-now-for-free&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://konklone.com/post/switch-to-https-now-for-free&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you need to serve a WordPress website, that configuration is not
+enough. In that case you may want to have a look at my own Nginx
+configuration, available at this
+address: &lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://gist.github.com/andreagrandi/5de9dc9c4eb7e732764c&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;p.s: if you are you curious to try how Digital Ocean VPS works and fancy
+&lt;strong&gt;10$ credit&lt;/strong&gt; (enough for 2 months if you choose the basic droplet)
+for &lt;strong&gt;free, u&lt;/strong&gt;se this link and enjoy
+it &lt;a class=&#34;link&#34; href=&#34;https://www.digitalocean.com/?refcode=cc8349e328a5&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.digitalocean.com/?refcode=cc8349e328a5&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Create an EncFS volume compatible with BoxCryptor Classic</title>
+        <link>https://www.andreagrandi.it/posts/create-an-encfs-volume-compatible-with-boxcryptor-classic/</link>
+        <pubDate>Fri, 12 Sep 2014 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/create-an-encfs-volume-compatible-with-boxcryptor-classic/</guid>
+        <description>&lt;p&gt;If you are planning to share an encrypted volume between Linux/OSX and
+Windows (I will assume you are sharing it on Dropbox, but you could use
+any similar service) and you are using
+&lt;a class=&#34;link&#34; href=&#34;http://www.arg0.net/encfs&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;EncFS&lt;/strong&gt;&lt;/a&gt; under Linux/OSX and
+&lt;a class=&#34;link&#34; href=&#34;https://www.boxcryptor.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;BoxCryptor&lt;/strong&gt;&lt;/a&gt; under Windows, there are
+some specifig settings to use when you create the EncFS volume. Infact
+even if BoxCryptor claims to be &amp;ldquo;encfs compatible&amp;rdquo;, it&amp;rsquo;s not 100%.&lt;/p&gt;
+&lt;p&gt;Suppose you want to create an encrypted volume located at
+&lt;strong&gt;&lt;code&gt;$HOME/.TestTmpEncrypted&lt;/code&gt;&lt;/strong&gt; and mounted at &lt;strong&gt;&lt;code&gt;$HOME/TestTmp&lt;/code&gt;&lt;/strong&gt; you need
+the following command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;encfs ~/.TestTmpEncrypted ~/TestTmp
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;answer &amp;ldquo;Y&amp;rdquo; when you are asked if you want to create the folders:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The directory &lt;span class=&#34;s2&#34;&gt;&amp;#34;/home/andrea/.TestTmpEncrypted/&amp;#34;&lt;/span&gt; does not exist. Should it be created? &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;y,n&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; y
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The directory &lt;span class=&#34;s2&#34;&gt;&amp;#34;/home/andrea/TestTmp&amp;#34;&lt;/span&gt; does not exist. Should it be created? &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;y,n&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; y
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;At this point you will need to select between default paranoia mode or
+advanced mode. Please choose the &lt;strong&gt;advanced&lt;/strong&gt; one (x):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Creating new encrypted volume.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Please choose from one of the following options:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; enter &lt;span class=&#34;s2&#34;&gt;&amp;#34;x&amp;#34;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; expert configuration mode,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; enter &lt;span class=&#34;s2&#34;&gt;&amp;#34;p&amp;#34;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; pre-configured paranoia mode,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; anything &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;, or an empty line will &lt;span class=&#34;k&#34;&gt;select&lt;/span&gt; standard mode.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;?&amp;gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Manual configuration mode selected.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Select AES as cypher algorithm:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The following cypher algorithms are available:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;1. AES : &lt;span class=&#34;m&#34;&gt;16&lt;/span&gt; byte block cipher
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-- Supports key lengths of &lt;span class=&#34;m&#34;&gt;128&lt;/span&gt; to &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; bits
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-- Supports block sizes of &lt;span class=&#34;m&#34;&gt;64&lt;/span&gt; to &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2. Blowfish : &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; byte block cypher
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-- Supports key lengths of &lt;span class=&#34;m&#34;&gt;128&lt;/span&gt; to &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; bits
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-- Supports block sizes of &lt;span class=&#34;m&#34;&gt;64&lt;/span&gt; to &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter the number corresponding to your choice: &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Selected algorithm &lt;span class=&#34;s2&#34;&gt;&amp;#34;AES&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Select &lt;strong&gt;256&lt;/strong&gt; as key size:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Please &lt;span class=&#34;k&#34;&gt;select&lt;/span&gt; a key size in bits. The cypher you have chosen
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;supports sizes from &lt;span class=&#34;m&#34;&gt;128&lt;/span&gt; to &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; bits in increments of &lt;span class=&#34;m&#34;&gt;64&lt;/span&gt; bits.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;For example:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;128, 192, &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Selected key size: &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Using key size of &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; bits
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Choose &lt;strong&gt;1024&lt;/strong&gt; as block size:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Select a block size in bytes. The cypher you have chosen
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;supports sizes from &lt;span class=&#34;m&#34;&gt;64&lt;/span&gt; to &lt;span class=&#34;m&#34;&gt;4096&lt;/span&gt; bytes in increments of 16.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Alternatively, just press enter &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; the default &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1024&lt;/span&gt; bytes&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;filesystem block size:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Using filesystem block size of &lt;span class=&#34;m&#34;&gt;1024&lt;/span&gt; bytes
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Select &lt;strong&gt;Stream&lt;/strong&gt; as filename encoding:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The following filename encoding algorithms are available:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;1. Block : Block encoding, hides file name size somewhat
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2. Null : No encryption of filenames
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;3. Stream : Stream encoding, keeps filenames as short as possible
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enter the number corresponding to your choice: &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Selected algorithm &lt;span class=&#34;s2&#34;&gt;&amp;#34;Stream&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;filename initialization vector chaining&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enable filename initialization vector chaining?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;This makes filename encoding dependent on the &lt;span class=&#34;nb&#34;&gt;complete&lt;/span&gt; path,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rather &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt; encoding each path element individually.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The default here is Yes.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Any response that does not begin with &lt;span class=&#34;s1&#34;&gt;&amp;#39;n&amp;#39;&lt;/span&gt; will mean Yes: no
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;per-file initialization vectors&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enable per-file initialization vectors?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;This adds about &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; bytes per file to the storage requirements.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;It should not affect performance except possibly with applications
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;which rely on block-aligned file io &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; performance.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The default here is Yes.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Any response that does not begin with &lt;span class=&#34;s1&#34;&gt;&amp;#39;n&amp;#39;&lt;/span&gt; will mean Yes: no
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;external chained IV&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;External chained IV disabled, as both &lt;span class=&#34;s1&#34;&gt;&amp;#39;IV chaining&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;and &lt;span class=&#34;s1&#34;&gt;&amp;#39;unique IV&amp;#39;&lt;/span&gt; features are required &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; this option.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enable block authentication code headers
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;on every block in a file? This adds about &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; bytes per block
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;to the storage requirements &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; a file, and significantly affects
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;performance but it also means &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;almost&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; any modifications or errors
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;within a block will be caught and will cause a &lt;span class=&#34;nb&#34;&gt;read&lt;/span&gt; error.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The default here is No.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Any response that does not begin with &lt;span class=&#34;s1&#34;&gt;&amp;#39;y&amp;#39;&lt;/span&gt; will mean No: no
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Do &lt;strong&gt;NOT&lt;/strong&gt; enable &lt;strong&gt;random bytes to each block header&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Add random bytes to each block header?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;This adds a performance penalty, but ensures that blocks
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;have different authentication codes. Note that you can
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;have the same benefits by enabling per-file initialisation
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vectors, which does not come with as great a performance
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;penalty.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Select a number of bytes, from &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;no random bytes&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; to 8: &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Enable &lt;strong&gt;file-hole pass-through&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Enable file-hole pass-through?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;This avoids writing encrypted blocks when file holes are created.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;The default here is Yes.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Any response that does not begin with &lt;span class=&#34;s1&#34;&gt;&amp;#39;n&amp;#39;&lt;/span&gt; will mean Yes: yes
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Finally you will see:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Configuration finished. The filesystem to be created has
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;the following properties:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Filesystem cypher: &lt;span class=&#34;s2&#34;&gt;&amp;#34;ssl/aes&amp;#34;&lt;/span&gt;, version 3:0:2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Filename encoding: &lt;span class=&#34;s2&#34;&gt;&amp;#34;nameio/stream&amp;#34;&lt;/span&gt;, version 2:1:2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Key Size: &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; bits
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Block Size: &lt;span class=&#34;m&#34;&gt;1024&lt;/span&gt; bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;File holes passed through to ciphertext.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;At this point set a passphrase for your new volume:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Now you will need to enter a password &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; your filesystem.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;You will need to remember this password, as there is absolutely
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;no recovery mechanism. However, the password can be changed
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;later using encfsctl.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;New Encfs Password:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Verify Encfs Password:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You should be able to mount this volume using BoxCryptor.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How to fix encfs installation on OSX 10.9 (Mavericks) and brew</title>
+        <link>https://www.andreagrandi.it/posts/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</link>
+        <pubDate>Fri, 08 Nov 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-fix-encfs-installation-on-osx-10-9-mavericks-and-brew/</guid>
+        <description>&lt;p&gt;After upgrading from OSX 10.8.x to 10.9 (Mavericks), &lt;strong&gt;encfs&lt;/strong&gt; recipe is
+broken. First of all you have to fix a problem with a library header:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo ln -s /usr/include/sys/_endian.h /usr/include/sys/endian.h
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;then you can install encfs using this remote brew recipe:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew reinstall https://gist.github.com/ghibble/7297078/raw/cae1ff000a5e1cfc670f5b7a611279ed494b63af/encfs.rb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;It&amp;rsquo;s also possible that you have to fix fuse4x installation before being
+able to use encfs (I had to do it):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo /bin/cp -rfX /usr/local/Cellar/fuse4x-kext/0.9.2/Library/Extensions/fuse4x.kext /Library/Extensions
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo chmod +s /Library/Extensions/fuse4x.kext/Support/load_fuse4x
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;That&amp;rsquo;s it! Please note that this is just a workaround (thanks to
+&lt;strong&gt;Giovanni Bajo&lt;/strong&gt; for suggesting me the symlink fix). Please also note
+that this recipe uses fuse4x library and not the most updated osxfuse
+(but it works, anyway). Some other users reported me that there is a fix
+for the original brew recipe, and this one uses osxfuse. You can find it
+here &lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/defunctzombie/7324625&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://gist.github.com/defunctzombie/7324625&lt;/a&gt; but I haven&amp;rsquo;t
+tested it yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; to fully integrate encfs with OSX, I also suggest to follow
+this nice guide &lt;a class=&#34;link&#34; href=&#34;http://www.maketecheasier.com/install-encfs-mac/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.maketecheasier.com/install-encfs-mac/&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>How to fix a WordPress website hacked by zend_framework malware</title>
+        <link>https://www.andreagrandi.it/posts/how-to-fix-a-wordpress-websitet-hacked-by-zend_framework-malware/</link>
+        <pubDate>Sat, 22 Jun 2013 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-fix-a-wordpress-websitet-hacked-by-zend_framework-malware/</guid>
+        <description>&lt;p&gt;I admit. &lt;strong&gt;This website&lt;/strong&gt;, like thousands of others, &lt;strong&gt;has been
+hacked&lt;/strong&gt;! I still have to identify the precise source of the attack, but
+I&amp;rsquo;ve found out that is very common. I was able to discover about the
+attack just because the dashboard of WordPress stopped working. I
+decided to investigate and I found this strind on top of every .php file
+&lt;a class=&#34;link&#34; href=&#34;http://pastebin.com/k0iQymRy&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://pastebin.com/k0iQymRy&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Just googling I discovered that I was not alone
+&lt;a class=&#34;link&#34; href=&#34;http://stackoverflow.com/questions/16963818/server-hacked-on-wordpress-files&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://stackoverflow.com/questions/16963818/server-hacked-on-wordpress-files&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;how-to-fix-this&#34;&gt;How to fix this?&lt;/h2&gt;
+&lt;p&gt;The best solution would be to restore the files with a valid backup, but
+sometimes this is not possible. Here comes an handy bash solution (note:
+you need to be able to access your hosting with a SSH shell to execute
+this command): &lt;a class=&#34;link&#34; href=&#34;http://pastebin.com/V3nFwwtZ&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://pastebin.com/V3nFwwtZ&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Importare le chiavi pubbliche PGP in apt su Ubuntu</title>
+        <link>https://www.andreagrandi.it/posts/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</link>
+        <pubDate>Sat, 14 Feb 2009 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/importare-le-chiavi-pubbliche-pgp-in-apt-su-ubuntu/pg2logo.png&#34;
+	width=&#34;156&#34;
+	height=&#34;156&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;pgp logo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Utilizzando i repository esterni su &lt;strong&gt;Ubuntu&lt;/strong&gt;, capita spesso di non avere una
+procedura automatica per importare anche le relative &lt;strong&gt;chiavi pubbliche
+PGP&lt;/strong&gt;, che ci permettono di avere la garanzia che i pacchetti che stiamo
+scaricando siano autentici e che quindi provengano dall&amp;rsquo;autore
+originale.&lt;/p&gt;
+&lt;p&gt;Sul sito web dei progetti che mettono a disposizione un repository,
+solitamente è indicato anche l&amp;rsquo;ID della chiave pubblica PGP. Ad esempio
+sul sito del &lt;em&gt;Blueman Development Team&lt;/em&gt; troviamo &lt;strong&gt;6B15AB91951DC1E2&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Per importare questa chiave pubblica dentro apt di Ubuntu, sono
+sufficienti i seguenti comandi da terminale:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --export --armor 6B15AB91951DC1E2 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; sudo apt-key add -
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Ovviamente dovrete sostituire l&amp;rsquo;ID della chiave PGP con quello che vi
+interessa aggiungere. Qui di seguito potete vedere un esempio completo
+dei messaggi di conferma che si ricevono quando si aggiunge la chiave:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --keyserver keyserver.ubuntu.com --recv 6B15AB91951DC1E2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg: requesting key 951DC1E2 from hkp server keyserver.ubuntu.com
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg: key 951DC1E2: public key &lt;span class=&#34;s2&#34;&gt;&amp;#34;Launchpad PPA for Blueman Development Team&amp;#34;&lt;/span&gt; imported
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg: Total number processed: &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    gpg:               imported: &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;RSA: 1&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg --export --armor 6B15AB91951DC1E2 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; sudo apt-key add - OK
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>Trusted Computing: perchè fidarsi di chi non si fida di noi?</title>
+        <link>https://www.andreagrandi.it/posts/trusted-computing-perche-fidarsi-di-chi-non-si-fida-di-noi/</link>
+        <pubDate>Sat, 18 Oct 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/trusted-computing-perche-fidarsi-di-chi-non-si-fida-di-noi/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/trusted-computing-perche-fidarsi-di-chi-non-si-fida-di-noi/trusted.jpg&#34;
+	width=&#34;720&#34;
+	height=&#34;576&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;trusted&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;125&#34;
+		data-flex-basis=&#34;300px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; &lt;a class=&#34;link&#34; href=&#34;http://punto-informatico.it/2442404/Telefonia/News/google-cancella-remoto-applicativi-android.aspx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;notizia di questi giorni&lt;/a&gt;
+il fatto che Google abbia previsto un meccanismo di &amp;ldquo;sicurezza&amp;rdquo; che
+consentirà a loro stessi di &lt;strong&gt;rimuovere automaticamente&lt;/strong&gt;, dai
+telefonini &lt;strong&gt;GPhone&lt;/strong&gt; che verranno venduti, le applicazioni non ritenute
+sicure. Google avrà quindi la possibilità di controllare i propri
+dispositivi da remoto, accedere alla memoria del telefono e rimuovere
+quello che non desidera ci sia installato: chi ci assicura che non si
+mettano a controllare pure il testo degli SMS che inviamo o riceviamo,
+magari per inviarci pubblicità mirata a seconda delle nostre esigenze?&lt;/p&gt;
+&lt;p&gt;Della stessa pasta sono fatti anche i dispositivi della &lt;strong&gt;Apple&lt;/strong&gt;, in
+particolare l&amp;rsquo;&lt;strong&gt;iPhone&lt;/strong&gt;. Anche questo dispositivo &lt;a class=&#34;link&#34; href=&#34;http://punto-informatico.it/2346662/Telefonia/News/iphone-3g-libero-ma-non-troppo.aspx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;incorpora infatti un chip&lt;/a&gt;
+che impedisce alle applicazioni non consentite di girare sul telefonino.
+L&amp;rsquo;unico modo per installare applicazioni sull&amp;rsquo;iPhone è quello di
+scaricarle dall&amp;rsquo;&lt;strong&gt;Apple Store&lt;/strong&gt;, ed ovviamente Apple &lt;strong&gt;si riserva il
+diritto di decidere&lt;/strong&gt; quali applicazioni possano apparire nello store e
+quali invece no, ed una nota nella licenza che devono firmare gli
+sviluppatori di applicazioni per iPhone, si dice anche che essi non
+possono in alcun modo dire pubblicamente che una loro applicazione è
+stata esclusa dallo store. Tutto questo in nome della nostra
+&amp;ldquo;sicurezza&amp;rdquo;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Ubuntu 8.04 in RAID1 non può fare il boot con un solo disco</title>
+        <link>https://www.andreagrandi.it/posts/ubuntu-804-in-raid1-non-puo-fare-il-boot-con-un-solo-disco/</link>
+        <pubDate>Thu, 25 Sep 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/ubuntu-804-in-raid1-non-puo-fare-il-boot-con-un-solo-disco/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/ubuntu-804-in-raid1-non-puo-fare-il-boot-con-un-solo-disco/raid1.jpg&#34;
+	width=&#34;225&#34;
+	height=&#34;257&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;raid1&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;87&#34;
+		data-flex-basis=&#34;210px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;La modalità &lt;strong&gt;RAID1&lt;/strong&gt; (detta anche modalità &lt;strong&gt;mirror&lt;/strong&gt;) è una particolare configurazione nella
+quale vengono utilizzati due hard disk al posto di uno, per
+leggere/scrivere gli stessi dati. Questo permette di avere &lt;strong&gt;un&amp;rsquo;esatta
+copia degli stessi dati su due dischi diversi&lt;/strong&gt;, facendo in modo che se
+uno si dovesse rompere, l&amp;rsquo;altro conterrebbe una copia esatta dei dati,
+permettendoci quindi di sostituire il disco rotto senza alcuna perdita.&lt;/p&gt;
+&lt;p&gt;Quello che &lt;strong&gt;ci si aspetta&lt;/strong&gt; quando uno dei due dischi si rompe è &lt;strong&gt;che
+il sistema continui a funzionare normalmente&lt;/strong&gt;, magari avvisandoci della
+rottura di uno dei due dischi.&lt;/p&gt;
+&lt;p&gt;Il comportamento di &lt;strong&gt;Ubuntu 8.04&lt;/strong&gt; purtroppo &lt;strong&gt;non segue questa
+procedura&lt;/strong&gt;. Gli script di avvio sono infatti configurati in modo che
+venga impedito il boot di sistema se il RAID risulta degradato. Questo
+comportamento è stato inizialmente &lt;a class=&#34;link&#34; href=&#34;https://bugs.launchpad.net/initramfs-tools/&amp;#43;bug/120375&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;segnalato come bug&lt;/a&gt; su
+&lt;strong&gt;launchpad.net&lt;/strong&gt; e successivamente confermato e marcato come &amp;ldquo;risolto&amp;rdquo;
+per la prossima release di Ubuntu, la &lt;strong&gt;8.10&lt;/strong&gt; che dovrebbe uscire alla
+fine di ottobre.&lt;/p&gt;
+&lt;p&gt;Lo sviluppatore che si è occupato di risolvere il problema, &lt;a class=&#34;link&#34; href=&#34;https://launchpad.net/~kirkland&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Dustin Kirkland&lt;/strong&gt;&lt;/a&gt;, ha anche creato
+un&amp;rsquo;apposita &lt;a class=&#34;link&#34; href=&#34;https://wiki.ubuntu.com/BootDegradedRaid&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;pagina sul wiki&lt;/a&gt;
+di Ubuntu dove spiega uno scenario reale e come il problema è stato
+risolto.&lt;/p&gt;
+&lt;p&gt;Ci saremmo aspettati di veder incluso questo fix anche nell&amp;rsquo;attuale
+Ubuntu 8.04, visto che si tratta di una &lt;strong&gt;LTS&lt;/strong&gt; (non tutti vorranno
+abbandonare una versione la cui stabilità e gli aggiornamenti sono
+mantenuti per almeno 3 anni) solo per risolvere un problema col RAID1,
+ma per adesso non sembra rientrare nei piani degli sviluppatori.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Un bug del Kernel Linux 2.6.27 potrebbe danneggiare le schede ethernet con driver e1000e</title>
+        <link>https://www.andreagrandi.it/posts/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/</link>
+        <pubDate>Wed, 24 Sep 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/un-bug-del-kernel-linux-2627-potrebbe-danneggiare-le-schede-ethernet-con-driver-e1000e/ethernet.jpg&#34;
+	width=&#34;500&#34;
+	height=&#34;500&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;ethernet&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Secondo quanto &lt;a class=&#34;link&#34; href=&#34;https://lists.ubuntu.com/archives/ubuntu-devel-announce/2008-September/000488.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;riportato sulla mailing list&lt;/a&gt;
+di sviluppo di Ubuntu, un &lt;strong&gt;bug&lt;/strong&gt; presente nella versione &lt;strong&gt;2.6.27&lt;/strong&gt; del
+&lt;strong&gt;kernel Linux&lt;/strong&gt; potrebbe &lt;strong&gt;danneggiare irreparabilmente&lt;/strong&gt; le schede
+ethernet dotate di chipset &lt;strong&gt;Intel GigE&lt;/strong&gt; che utilizzano il driver
+&lt;strong&gt;e1000e&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Secondo le prime analisi, il bug andrebbe a sovrascrivere la eprom di
+queste schede di rete, rendendole inutilizzabili.&lt;/p&gt;
+&lt;p&gt;L&amp;rsquo;attuale alpha 6 di Ubuntu contiene questo bug, si consiglia quindi di
+non utilizzarla se si possiede tale scheda, ma di attendere almeno la
+prossima release (la beta dovrebbe uscire il 2 ottobre), dove il bug è
+già stato corretto.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Scollegate i carica batterie quando non li usate!</title>
+        <link>https://www.andreagrandi.it/posts/scollegate-i-carica-batterie-quando-non-li-usate/</link>
+        <pubDate>Tue, 23 Sep 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/scollegate-i-carica-batterie-quando-non-li-usate/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/scollegate-i-carica-batterie-quando-non-li-usate/nokia_charger.jpg&#34;
+	width=&#34;312&#34;
+	height=&#34;312&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;nokia charger&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Secondo quanto dichiarato da &lt;strong&gt;Nokia&lt;/strong&gt; (che negli ultimi device usciti
+addirittura visualizza un messaggio di avviso sul display quando il
+dispositivo è completamente carico), è stato calcolato che se anche solo
+tutti gli utenti Nokia scollegassero i loro carica batterie quando la
+carica è completata, si potrebbe risparmiare &lt;strong&gt;energia per alimentare
+circa 100.000&lt;/strong&gt; case di media dimensione in tutta Europa.&lt;/p&gt;
+&lt;p&gt;Quando si lascia il carica batterie inserito nella presa di casa
+infatti, viene &lt;strong&gt;ugualmente consumata&lt;/strong&gt; una certa quantità di energia
+che noi riteniamo irrilevante o addirittura non esistente. A leggere i
+dati di Nokia non è così.&lt;/p&gt;
+&lt;p&gt;Questo ovviamente non vale soltanto per i loro carica batterie, ma anche
+per quelli dei cellulari di altre marche. Se vogliamo dare il nostro
+piccolo contributo per il risparmio energetico mondiale, tutto quello
+che dobbiamo fare è &lt;strong&gt;scollegare il carica batterie&lt;/strong&gt; dalla parete una
+volta che abbiamo finito di ricaricare il cellulare.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Viaggiate negli USA? Possono sequestrarvi il PC, senza motivo</title>
+        <link>https://www.andreagrandi.it/posts/viaggiate-negli-usa-possono-sequestrarvi-il-pc-senza-motivo/</link>
+        <pubDate>Fri, 01 Aug 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/viaggiate-negli-usa-possono-sequestrarvi-il-pc-senza-motivo/</guid>
+        <description>&lt;p&gt;Secondo una denuncia fatta dal &lt;a class=&#34;link&#34; href=&#34;http://www.washingtonpost.com/wp-dyn/content/article/2008/08/01/AR2008080103030.html?hpid=topnews&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Washington Post&lt;/a&gt;
+e ripresa poi anche da un &lt;a class=&#34;link&#34; href=&#34;http://www.repubblica.it/2008/08/sezioni/esteri/usa-notebook/usa-notebook/usa-notebook.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;quotidiano italiano&lt;/a&gt;,
+la situazione &lt;strong&gt;privacy&lt;/strong&gt; per chi viaggia negli &lt;strong&gt;Stati Uniti&lt;/strong&gt; sta diventando sempre piu&amp;rsquo; critica.&lt;/p&gt;
+&lt;p&gt;Un &lt;a class=&#34;link&#34; href=&#34;http://www.cbp.gov/linkhandler/cgov/travel/admissability/search_authority.ctt/search_authority.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;documento&lt;/a&gt;
+inviato a tutti i principali agenti di controllo (aeroporti, porti,
+frontiere ecc&amp;hellip;) contenente una policy di comportamento per quanto
+riguarda i controlli da fare a chi entra negli Stati Uniti, spiega che
+qualsiasi tipo di apparecchio elettronico puo&amp;rsquo; essere sequestrato ed
+esaminato senza che esista alcun sospetto particolare o ci sia una
+ragione precisa per farlo.&lt;/p&gt;
+&lt;p&gt;La policy prevede che possano essere sequestrati PC, notebook,
+cellulari, iPod, dischi USB e tutti quei dispositivi in grado di
+memorizzare informazioni, indistintamente a tutti i cittadini che
+entrano negli USA, senza che vi sia una ragione particolare.&lt;/p&gt;
+&lt;p&gt;I dati acquisiti possono essere esaminati sul posto oppure trattenuti
+per essere verificati in altra sede. La policy purtroppo non dice nulla
+riguardo a cosa si debba fare dei dati sensibili delle persone (dati
+sanitari, finanziari ecc&amp;hellip;).&lt;/p&gt;
+&lt;p&gt;Vale davvero la pena andare a spendere i propri soldi in un paese che,
+con la scusa della sicurezza e della lotta al terrorismo, ficca il naso
+negli affari di tutti, facendo vivere le persone in un continuo stato di
+allerta e di terrore, piu&amp;rsquo; di quanto non facciano i veri terroristi?&lt;/p&gt;
+&lt;p&gt;Capisco che in questo modo ci sia anche la possibilità di beccare
+veramente qualche malintenzionato, ed in questo caso non ci sarebbe
+niente di male, ma a che costo viene fatto tutto questo?&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>MSN e la censura delle conversazioni</title>
+        <link>https://www.andreagrandi.it/posts/msn-e-la-censura-delle-conversazioni/</link>
+        <pubDate>Tue, 13 May 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/msn-e-la-censura-delle-conversazioni/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/msn-e-la-censura-delle-conversazioni/censura.thumbnail.jpg&#34;
+	width=&#34;128&#34;
+	height=&#34;107&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Censurato&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;119&#34;
+		data-flex-basis=&#34;287px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Lo sapevate che &lt;strong&gt;i server di MSN censurano le vostre conversazioni&lt;/strong&gt;,
+filtrando i messaggi che, secondo loro, sono ritenuti &amp;ldquo;potenzialmente
+pericolosi&amp;rdquo;?&lt;/p&gt;
+&lt;p&gt;Non si tratta certo di una novità, purtroppo però molte persone ancora
+non sono a conoscenza di questo fatto e penso sia opportuno fare quanta
+piu&amp;rsquo; informazione possibile per mettere gli utenti MSN al corrente del
+comportamento di questo sistema di instant messaging.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Come funziona la comunicazione fra utenti MSN?&lt;/strong&gt; Quando ci si connette
+a MSN e si vuole inviare un messaggio ad un nostro amico nella lista dei
+contatti, il messaggio viene prima inviato ai server di MSN e poi viene
+successivamente inviato al nostro amico da parte del server.&lt;/p&gt;
+&lt;p&gt;Questo meccanismo fa si che la conversazione non sia diretta, ma passi
+attraverso qualcosa che è in grado di fare qualsiasi cosa:
+&lt;strong&gt;registrarla&lt;/strong&gt;, &lt;strong&gt;analizzarla&lt;/strong&gt; e persino &lt;strong&gt;bloccarla&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; quello che è accaduto in questi giorni con &lt;a class=&#34;link&#34; href=&#34;http://www.betadaily.com/2008/05/10/microsoft-starts-blocking-youtube-links-from-being-shared-on-msn-and-windows-live-messenger/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;i link ai video di Youtube&lt;/a&gt;
+e quello che sta accadendo da sempre a moltissimi link ritenuti
+pericolosi da &amp;ldquo;mamma Microsoft&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;Provate ad esempio ad inviare tramite MSN un link contenente la stringa
+&amp;ldquo;download.php&amp;rdquo; come ad esempio il link per scaricare OpenOffice (sarà un
+caso?!): 
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;http://www.plio.it/download.php?q=d&amp;amp;product=OpenOffice.org&amp;amp;os=winwjre&amp;amp;lang=it&amp;amp;version=2.4.0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.plio.it/download.php?q=d&amp;product=OpenOffice.org&amp;os=winwjre&amp;lang=it&amp;version=2.4.0&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Il comportamento sarà lo stesso per tutti, qualsiasi client si usi
+(anche se utilizziamo un client MSN-compatibile, tipo Pidgin, su un
+altro sistema operativo), visto che il filtro avviene a livello di
+server: &lt;strong&gt;il messaggio non verrà recapitato&lt;/strong&gt; alla persona alla quale
+abbiamo tentato di inviarlo.&lt;/p&gt;
+&lt;p&gt;Come possiamo sapere quali saranno le parole che verranno censurate dai
+server di MSN? Non c&amp;rsquo;è modo. La lista delle parole censurate è
+ovviamente segreta. Cosa succederà un giorno se a Microsoft (magari con
+l&amp;rsquo;appoggio o la spinta di qualche governo) verrà in mente di iniziare a
+filtrare altri contenuti ritenuti &amp;ldquo;pericolosi&amp;rdquo;? Questa situazione
+purtroppo ricorda molto da vicino &amp;ldquo;&lt;em&gt;la grande muraglia&lt;/em&gt;&amp;rdquo;, ovvero il
+&lt;strong&gt;firewall&lt;/strong&gt; con il quale tutti i navigatori residenti in Cina sono
+costretti a fare i conti durante la navigazione.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;La soluzione ovviamente esiste:&lt;/strong&gt; non utilizzare MSN come sistema di
+instant messaging, ma usare invece una piattaforma completamente aperta
+e non centralizzata, come ad esempio &lt;a class=&#34;link&#34; href=&#34;http://www.jabber.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Jabber&lt;/strong&gt;&lt;/a&gt; dove la comunicazione avviene tra
+piu&amp;rsquo; server, e dove chiunque puo&amp;rsquo; mettere su un proprio server.&lt;/p&gt;
+&lt;p&gt;Spero che questo post abbia aperto un po&amp;rsquo; gli occhi a coloro che fino ad
+ora erano un po&amp;rsquo; scettici su questo tipo di cose.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Rilasciato WordPress 2.3.3: corretta una grave falla di sicurezza</title>
+        <link>https://www.andreagrandi.it/posts/rilasciato-wordpress-233-corretta-una-grave-falla-di-sicurezza/</link>
+        <pubDate>Wed, 06 Feb 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/rilasciato-wordpress-233-corretta-una-grave-falla-di-sicurezza/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/rilasciato-wordpress-233-corretta-una-grave-falla-di-sicurezza/wordpress-logo.thumbnail.jpg&#34;
+	width=&#34;128&#34;
+	height=&#34;128&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;wordpress\_logo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; stata rilasciata da poche ore la &lt;a class=&#34;link&#34; href=&#34;http://wordpress.org/development/2008/02/wordpress-233/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;versione
+2.3.3&lt;/a&gt; di
+&lt;strong&gt;WordPress&lt;/strong&gt;. Con questa release viene corretta una &lt;strong&gt;falla piuttosto
+grave&lt;/strong&gt; che riguarda in particolar modo quei blog che permettono la
+registrazione di altri utenti.&lt;/p&gt;
+&lt;p&gt;A causa di un bug in &lt;strong&gt;xmlrpc.php&lt;/strong&gt; è infatti possibile per un utente
+qualsiasi del blog, editare i contenuti scritti da un altro utente.&lt;/p&gt;
+&lt;p&gt;Oltre a questo bug, sono stati corretti anche &lt;a class=&#34;link&#34; href=&#34;http://trac.wordpress.org/query?status=closed&amp;amp;milestone=2.3.3&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;altri piccoli
+problemi&lt;/a&gt;
+che riguardavano la versione &lt;strong&gt;2.3.2&lt;/strong&gt; di WordPress.&lt;/p&gt;
+&lt;p&gt;E&amp;rsquo; consigliato un tempestivo aggiornamento, seguendo &lt;a class=&#34;link&#34; href=&#34;http://codex.wordpress.org/Upgrading_WordPress&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;la
+procedura&lt;/a&gt; indicata sul
+sito ufficiale.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

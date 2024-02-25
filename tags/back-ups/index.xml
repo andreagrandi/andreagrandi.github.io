@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Back-Ups on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/back-ups/</link>
+        <description>Recent content in Back-Ups on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 15 Feb 2008 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/back-ups/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>APC Back-UPS 500 USB e Ubuntu Server</title>
+        <link>https://www.andreagrandi.it/posts/apc-back-ups-500-usb-e-ubuntu-server/</link>
+        <pubDate>Fri, 15 Feb 2008 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/apc-back-ups-500-usb-e-ubuntu-server/</guid>
+        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/apc-back-ups-500-usb-e-ubuntu-server/apc500.thumbnail.jpg&#34;
+	width=&#34;91&#34;
+	height=&#34;128&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;apc\_ups\_500&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;71&#34;
+		data-flex-basis=&#34;170px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;L&amp;rsquo;utilizzo di una unità UPS è certamente una delle cose piu&amp;rsquo; consigliate quando
+vogliamo proteggere l&amp;rsquo;integrità di un computer da sbalzi di corrente o
+interruzioni dell&amp;rsquo;alimentazione.&lt;/p&gt;
+&lt;p&gt;Cosa succede però quando la batteria dell&amp;rsquo;UPS si esaurisce? In casi
+normali è molto semplice: la corrente viene a mancare del tutto ed il
+nostro PC verrà spento bruscamente.&lt;/p&gt;
+&lt;p&gt;Alla mancanza di corrente non c&amp;rsquo;è modo di porre un rimedio definitivo,
+però possiamo almeno fare in modo che il nostro computer venga spento in
+maniera corretta, prima che la batteria dell&amp;rsquo;UPS si esaurisca del tutto.&lt;/p&gt;
+&lt;p&gt;Nel caso di una macchina Linux, ci viene in aiuto una utility chiamata
+&lt;strong&gt;apcupsd&lt;/strong&gt;. Installarla su Ubuntu è molto semplice:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;apt-get install apcupsd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;A questo punto, dando per scontato che abbiate già connesso l&amp;rsquo;UPS al
+PC/server, collegate il cavo USB a corredo in modo da far riconoscere
+l&amp;rsquo;UPS a Linux, in modo da poter proseguire con la configurazione. Il
+primo file da modificare è &lt;strong&gt;&lt;code&gt;/etc/apcupsd/apcupsd.conf&lt;/code&gt;&lt;/strong&gt; ed impostare i
+seguenti parametri come segue:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;UPSCABLE usb
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;UPSTYPE usb
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;DEVICE
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;A questo punto non ci resta che modificare il file
+&lt;strong&gt;&lt;code&gt;/etc/default/apcupsd&lt;/code&gt;&lt;/strong&gt; in modo da rendere effettive le modifiche:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;ISCONFIGURED&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;yes
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Infine dobbiamo soltanto avviare il demone ed il gioco è fatto:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/etc/init.d/apcupsd start
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Per default &lt;strong&gt;apcupsd&lt;/strong&gt; effettuerà lo &lt;strong&gt;shutdown&lt;/strong&gt; nel PC quando la
+batteria sarà arrivata al &lt;strong&gt;5%&lt;/strong&gt; della sua capacità, consentendo così
+uno shutdown controllato del sistema, ed evitando quindi possibili
+perdite di dati.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

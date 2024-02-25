@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Flask on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/flask/</link>
+        <description>Recent content in Flask on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 25 Oct 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/flask/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Automatically pull updated Docker images and restart containers with docker-puller</title>
+        <link>https://www.andreagrandi.it/posts/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/</link>
+        <pubDate>Sat, 25 Oct 2014 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/automatically-pull-updated-docker-images-and-restart-containers-with-docker-puller/</guid>
+        <description>&lt;p&gt;If you use &lt;a class=&#34;link&#34; href=&#34;https://docker.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docker.io&lt;/a&gt; (or any similar service) to
+build your &lt;strong&gt;Docker&lt;/strong&gt; containers, it may be possible that, once the new
+image is generated, you want your Docker host to automatically pull it
+and restart the container.&lt;/p&gt;
+&lt;p&gt;Docker.io gives you the possibility to set a &lt;strong&gt;web hook&lt;/strong&gt; after a
+successful build. Basically it does a POST on a defined URL and send
+some informations in JSON format.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/glowdigitalmedia/docker-puller&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docker-puller&lt;/a&gt;
+listens to these web hooks and can be configured to run a particular
+script, given a specific hook. It&amp;rsquo;s a very simple service I wrote using
+Python/Flask. It&amp;rsquo;s also my first Flask application, so if you want to
+improve it, feel free to send me a pull request on GitHub.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; this is not the only existing service that is able to do this
+task. I took inspiration from this
+article &lt;a class=&#34;link&#34; href=&#34;http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://nathanleclaire.com/blog/2014/08/17/automagical-deploys-from-docker-hub/&lt;/a&gt;
+and I really tried to
+customize &lt;a class=&#34;link&#34; href=&#34;https://github.com/cpuguy83/dockerhub-webhook-listener&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/cpuguy83/dockerhub-webhook-listener&lt;/a&gt; for
+my own needs, but the problem is that &lt;strong&gt;dockerhub-webhook-listener&lt;/strong&gt; is
+not ready to be used as is (you have to customize it) and I&amp;rsquo;m not very
+good with &lt;strong&gt;Golang&lt;/strong&gt; (yet) to be able to do it in little time. This is
+why I rewrote the service in Python (that is my daily language). I want
+to thank &lt;a class=&#34;link&#34; href=&#34;https://github.com/cpuguy83&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Brian Goff&lt;/a&gt; for the idea and all
+the people in &lt;strong&gt;#docker @ FreeNode&lt;/strong&gt; for the support.&lt;/p&gt;
+&lt;h2 id=&#34;how-to-use-docker-puller&#34;&gt;How to use docker-puller&lt;/h2&gt;
+&lt;p&gt;Setting up the service should be quite easy. After you clone the
+repository from &lt;a class=&#34;link&#34; href=&#34;https://github.com/glowdigitalmedia/docker-puller&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/glowdigitalmedia/docker-puller&lt;/a&gt; there
+is a &lt;strong&gt;config.json&lt;/strong&gt; file where you define the &lt;strong&gt;host&lt;/strong&gt;, &lt;strong&gt;port&lt;/strong&gt;, a
+&lt;strong&gt;token&lt;/strong&gt; and a list of &lt;strong&gt;hooks&lt;/strong&gt; you want to react to. For example:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;host&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;port&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8000&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;token&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;abc123&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;hooks&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nt&#34;&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;scripts/hello.sh&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Create a &lt;strong&gt;bash script&lt;/strong&gt; (in this case it was called hello.sh) and put
+it under script folder and write the instructions to be executed to pull
+the new image and restart the container (example):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker pull andreagrandi/test:latest
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker stop &lt;span class=&#34;nb&#34;&gt;test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker rm &lt;span class=&#34;nb&#34;&gt;test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker run --name &lt;span class=&#34;nb&#34;&gt;test&lt;/span&gt; -d -p 8000:80 andreagrandi/test:latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Once configured, I suggest you to setup a &lt;strong&gt;Nginx&lt;/strong&gt; entry (instructions
+not covered here) that for example redirect
+&lt;strong&gt;yourhost.com/dockerpuller&lt;/strong&gt; to &lt;strong&gt;localhost:8000&lt;/strong&gt; (I would advise to
+enable SSL too, or people could be able to sniff your token). The
+service can be started with: &amp;ldquo;&lt;strong&gt;python app.py&lt;/strong&gt;&amp;rdquo; (or you can setup a
+Supervisor script).&lt;/p&gt;
+&lt;p&gt;At this point docker-puller is up and running. Go to &lt;strong&gt;docker.io&lt;/strong&gt;
+automatic build settings and setup a webhook like this:
+&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;http://yourhost.com/dockerpuller?token=abc123&amp;amp;hook=hello&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://yourhost.com/dockerpuller?token=abc123&amp;hook=hello&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Every time docker.io finishes building and pushing your image to the
+docker registry, it will &lt;strong&gt;POST&lt;/strong&gt; on that URL. docker-puller will catch
+the POST, check for a valid token, get the hook name and will execute
+the relative script.&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s all! I hope this very simple service can be useful to other
+people and once again, if you want to improve it, I will be glad to
+accept your pull requests on GitHub.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
