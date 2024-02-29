@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Vorta on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/vorta/</link>
+        <description>Recent content in Vorta on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 28 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/vorta/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>My Backup Strategy with Borg, Vorta and BorgBase</title>
+        <link>https://www.andreagrandi.it/posts/my-backup-strategy/</link>
+        <pubDate>Wed, 28 Feb 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/my-backup-strategy/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/my-backup-strategy/backup-strategy-cover.webp" alt="Featured image of post My Backup Strategy with Borg, Vorta and BorgBase" /&gt;&lt;p&gt;Recently I reviewed my backup strategy and started using a new open source software and a cloud service to keep my data safe.&lt;/p&gt;
+&lt;p&gt;Before this my only backup was keeping my data in the cloud (specifically I use pCloud), but I started thinking: what if they shut down? What if I loose access to my account?&lt;/p&gt;
+&lt;p&gt;This convinced me to have an additional copy of my data.&lt;/p&gt;
+&lt;p&gt;Actually two additional copies: a local one, on an &lt;strong&gt;USB disk&lt;/strong&gt;, which is of course not reliable (disks can and will break!), but it&amp;rsquo;s fast if I need to recover something and a remote one, on a &lt;strong&gt;dedicated cloud service&lt;/strong&gt;, which is of course slower but quite reliable (you pay for your data to be kept safe).&lt;/p&gt;
+&lt;h2 id=&#34;my-personal-requirements&#34;&gt;My personal requirements&lt;/h2&gt;
+&lt;p&gt;Requirements can be different from person to person, but in this case I think they are quite common sense.&lt;/p&gt;
+&lt;p&gt;The first thing I want from a backup solution is that it is &lt;strong&gt;encrypted&lt;/strong&gt; and that I will be the only one having the encryption keys.&lt;/p&gt;
+&lt;p&gt;The second requirement is that the backup is &lt;strong&gt;incremental&lt;/strong&gt;. This means that if I do a new backup every day, I expect the new backup to only contain the data which changed from the previous one.&lt;/p&gt;
+&lt;p&gt;The third requirement is that the backup can be &lt;strong&gt;automated&lt;/strong&gt;. I don’t want to have to remember to backup my data, I want it to happen automatically.&lt;/p&gt;
+&lt;p&gt;In addition to the above, I have a strong preference for solutions which are &lt;strong&gt;open source&lt;/strong&gt; and possibly &lt;strong&gt;free&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;borgbackup&#34;&gt;BorgBackup&lt;/h2&gt;
+&lt;p&gt;The solution which matches all the above requirements is &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.borgbackup.org&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;BorgBackup&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;I won&amp;rsquo;t spend time to explain how to install it, because the official documentation is very well made.&lt;/p&gt;
+&lt;p&gt;I also won&amp;rsquo;t spend time to explain how to configure it, because that&amp;rsquo;s not how I used it.&lt;/p&gt;
+&lt;p&gt;Borg is a command line software and using and configuring it is not straightforward, that&amp;rsquo;s why I immediately looked for a UI.&lt;/p&gt;
+&lt;h2 id=&#34;vorta&#34;&gt;Vorta&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/my-backup-strategy/vorta-ui.png&#34;
+	width=&#34;1728&#34;
+	height=&#34;1432&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;120&#34;
+		data-flex-basis=&#34;289px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Here comes &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://vorta.borgbase.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Vorta&lt;/a&gt;&lt;/strong&gt;. As I mentioned before, while Borg has all the features I need, unfortunately it&amp;rsquo;s not easy to use and configure. A command line utility is a must if you are backing up a remote server, but it&amp;rsquo;s not really user friendly for desktop usage.&lt;/p&gt;
+&lt;p&gt;Vorta allows you to &lt;strong&gt;easily configure a new backup&lt;/strong&gt;. All you have to do is &lt;strong&gt;create&lt;/strong&gt; a new &lt;strong&gt;repository&lt;/strong&gt;, set a &lt;strong&gt;password&lt;/strong&gt;, &lt;strong&gt;select&lt;/strong&gt; the files and folders you want to backup and decide from manual backup and regularly &lt;strong&gt;scheduled&lt;/strong&gt; one.&lt;/p&gt;
+&lt;p&gt;Optionally (but I strongly suggest you do it) you can flag a couple of options which will verify the &lt;strong&gt;backup integrity&lt;/strong&gt; regularly.&lt;/p&gt;
+&lt;p&gt;In case you need to recover your files, you just have to select an existing archive and a folder on your laptop which will be used to mount the volume. At this point you will be able to &lt;strong&gt;access your files&lt;/strong&gt; from the operating system &lt;strong&gt;file manager&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;borgbase&#34;&gt;BorgBase&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/my-backup-strategy/borgbase-plans.jpeg&#34;
+	width=&#34;2360&#34;
+	height=&#34;1496&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;157&#34;
+		data-flex-basis=&#34;378px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.borgbase.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;BorgBase&lt;/a&gt;&lt;/strong&gt; is a service which provides &lt;strong&gt;hosted repositories&lt;/strong&gt; for Borg backup.&lt;/p&gt;
+&lt;p&gt;They have three commercial plans, starting &lt;strong&gt;from $2/month for 250 GB&lt;/strong&gt; (which is the plan I have) but they also offer a &lt;strong&gt;free plan with 10 GB&lt;/strong&gt; included, so you can test the service as much as you want.&lt;/p&gt;
+&lt;p&gt;The same people also develop Vorta, so if you pay for the service you are also making sure the project remains funded.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;As you can see, configuring a good backup solution is not that difficult nor expensive. Remember the best day to start backing up is yesterday and today is still better than tomorrow 😉&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
