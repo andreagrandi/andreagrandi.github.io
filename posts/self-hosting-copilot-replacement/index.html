@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.'>
+<title>Self hosting a Copilot replacement: my personal experience</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Self hosting a Copilot replacement: my personal experience'>
+<meta property='og:description' content='Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='AI' /><meta property='article:tag' content='LLM' /><meta property='article:tag' content='Ollama' /><meta property='article:tag' content='GPT' /><meta property='article:tag' content='llama2' /><meta property='article:tag' content='Python' /><meta property='article:tag' content='API' /><meta property='article:tag' content='REST' /><meta property='article:tag' content='Copilot' /><meta property='article:tag' content='GitHub' /><meta property='article:tag' content='hosting' /><meta property='article:published_time' content='2024-03-03T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-03-03T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp' />
+<meta name="twitter:title" content="Self hosting a Copilot replacement: my personal experience">
+<meta name="twitter:description" content="Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/self-hosting-copilot-replacement/">
+                <img src="/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp"
+                        
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Self hosting a Copilot replacement: my personal experience" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/review/" >
+                Review
+            </a>
+        
+            <a href="/categories/tutorial/" >
+                Tutorial
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/self-hosting-copilot-replacement/">Self hosting a Copilot replacement: my personal experience</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 03, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>For my job (Software Developer) I make a daily use of tools like <a class="link" href="https://github.com/features/copilot"  target="_blank" rel="noopener"
+    >GitHub Copilot</a> and <a class="link" href="https://chat.openai.com/"  target="_blank" rel="noopener"
+    >ChatGPT</a>. I want to explore alternative solutions which can be hosted autonomusly, without relying on an external service.</p>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>Before I continue, let me clarify that these are <strong>tools</strong> which makes my job faster, they don&rsquo;t do the job for me: a wrong assumption made by so many people is that AI tools will do the work for you.</p>
+<p>This is quite <strong>not true</strong>. You are still responsible of knowing what to do, understanding the problem, asking the right questions and knowing what to do with the answers.</p>
+<p>If you regularly search for stuff on Google or any other engine, to find examples in blog posts or Stack Overflow, read someone else example and then adapt the code for your needs, there is nothing wrong automating this: <strong>you are still in charge of the final result</strong>.</p>
+<h2 id="the-experiment">The experiment</h2>
+<p>After I recently experimented with <a class="link" href="https://www.andreagrandi.it/posts/ollama-running-llm-locally/" >local LLMs using Ollama</a>, I wanted to figure out if I could use some of these models to <strong>replace GitHub Copilot</strong>.</p>
+<p>My intent is not to save some money (my company pays for these tools) or for privacy reasons (it would be pointless to keep your code &ldquo;secret&rdquo; from GitHub if you use it to host it), but to <strong>find out how good these alternative tools are</strong> and&hellip; for fun!</p>
+<h2 id="setup-and-available-resources">Setup and available resources</h2>
+<p>The laptop I&rsquo;m using is a MacBook Pro with <strong>M2 Pro</strong> CPU and <strong>32 GB RAM</strong>.</p>
+<p>This machine must be able to run my basic <strong>requirements</strong>, which are:</p>
+<ul>
+<li>Slack</li>
+<li>Docker (running my work containers)</li>
+<li>VSCode</li>
+<li>Safari / Chrome</li>
+</ul>
+<p>Let&rsquo;s see if it can also run a Copilot replacement.</p>
+<h2 id="tested-models-and-extensions">Tested models and extensions</h2>
+<p>Basically, to run a Copilot replacement, you need to be able to run an LLM and use one of the available extensions for VSCode (in my case I use VSCode, but similar extensions exist for other IDEs).</p>
+<p>I&rsquo;m running the models locally using <a class="link" href="https://ollama.com"  target="_blank" rel="noopener"
+    >Ollama</a>. If you need to know how to use it, you can refer to my <a class="link" href="https://www.andreagrandi.it/posts/ollama-running-llm-locally/" >previous post</a>.</p>
+<p>The <strong>models</strong> I tested are:</p>
+<ul>
+<li><code>stable-code:3b-code-q4_0</code></li>
+<li><code>codellama:7b-code-q4_K_M</code></li>
+<li><code>codellama:13b-code-q4_K_M</code></li>
+</ul>
+<p>The number before the <code>b</code> usually represents the number of parameters (<strong>3 billions</strong>, <strong>7 billions</strong>, <strong>13 billions</strong> etc&hellip;) and you approximately need <strong>4 GB</strong>, <strong>8 GB</strong> and <strong>16 GB RAM</strong> to use them.</p>
+<p><a class="link" href="https://about.meta.com"  target="_blank" rel="noopener"
+    >Meta</a> has released models with <strong>34 billions</strong> and <strong>70 billions</strong> parameters, which are even more powerful, and you can find them here: <a class="link" href="https://ollama.com/library/codellama"  target="_blank" rel="noopener"
+    >https://ollama.com/library/codellama</a> but you will need <strong>64-128 GB RAM</strong> to run them properly.</p>
+<p>The extensions I tested are:</p>
+<ul>
+<li><strong>LLama Coder</strong> <a class="link" href="https://marketplace.visualstudio.com/items?itemName=ex3ndr.llama-coder"  target="_blank" rel="noopener"
+    >https://marketplace.visualstudio.com/items?itemName=ex3ndr.llama-coder</a></li>
+<li><strong>Code GPT</strong> <a class="link" href="https://marketplace.visualstudio.com/items?itemName=DanielSanMedium.dscodegpt"  target="_blank" rel="noopener"
+    >https://marketplace.visualstudio.com/items?itemName=DanielSanMedium.dscodegpt</a></li>
+<li><strong>twinny</strong> <a class="link" href="https://marketplace.visualstudio.com/items?itemName=rjmacarthy.twinny"  target="_blank" rel="noopener"
+    >https://marketplace.visualstudio.com/items?itemName=rjmacarthy.twinny</a></li>
+</ul>
+<h2 id="results">Results</h2>
+<p>The results I got have been quite mixed and <strong>mostly depending on the LLM model</strong> I was testing, rather than on the extension I was using.</p>
+<p>A model like <code>stable-code:3b-code-q4_0</code> was quite <strong>fast</strong> to complete the code I was typing, <strong>but very often</strong> giving me <strong>wrong</strong> code or pure garbage (ie: the model wasn&rsquo;t even able to correctly structure a simple Python method or to maintain the correct indentation)</p>
+<p>Models like <code>codellama:7b-code-q4_K_M</code> or <code>codellama:13b-code-q4_K_M</code> were giving me <strong>better results</strong> but despite having 32 GB RAM available and a quite fast CPU, they were <strong>taking 3-4 seconds</strong> to complete what I was typing, making themselves useless (at least for my use case).</p>
+<p><strong>None of them was even remotely close to the speed and accuracy of GitHub Copilot</strong>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>While the idea of having a personal and private instance of a code assistant is interesting (and can also be the only available option in certain environments), <strong>the reality is that achieving the same level of performance as GitHub Copilot is quite challenging</strong>.</p>
+<p>Despite these challenges, I think with time both available models and extensions <strong>will get better</strong> and better, improving their quality and maybe reducing the amount of required resources.</p>
+<p>In case I missed some better model or extension, please feel free to <strong>let me know</strong> in the comments. I will be glad to do more tests and update this posts or write a new one in the future.</p>
+<p><strong>In the mean time</strong>, at least for my personale usage, I think I will <strong>stick with GitHub Copilot</strong>.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/ai/">AI</a>
+        
+            <a href="/tags/llm/">LLM</a>
+        
+            <a href="/tags/ollama/">Ollama</a>
+        
+            <a href="/tags/gpt/">GPT</a>
+        
+            <a href="/tags/llama2/">Llama2</a>
+        
+            <a href="/tags/python/">Python</a>
+        
+            <a href="/tags/api/">API</a>
+        
+            <a href="/tags/rest/">REST</a>
+        
+            <a href="/tags/copilot/">Copilot</a>
+        
+            <a href="/tags/github/">GitHub</a>
+        
+            <a href="/tags/hosting/">Hosting</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/ollama-running-llm-locally/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/ollama-running-llm-locally/ollama-cover.5f947d3467814f7df4124d12b6402464.webp" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Ollama: running Large Language Models locally"
+                        data-key="ollama-running-llm-locally" 
+                        data-hash="md5-X5R9NGeBT330Ek0StkAkZA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Ollama: running Large Language Models locally</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework – part 4</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/migrating-from-wordpress-to-static-generated-website/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Migrating from WordPress to a static generated website</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework – part 3</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework – part 2</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi-it" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

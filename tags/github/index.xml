@@ -1,12 +1,73 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Github on Andrea Grandi</title>
+        <title>GitHub on Andrea Grandi</title>
         <link>https://www.andreagrandi.it/tags/github/</link>
-        <description>Recent content in Github on Andrea Grandi</description>
+        <description>Recent content in GitHub on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 24 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/github/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 03 Mar 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/github/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Self hosting a Copilot replacement: my personal experience</title>
+        <link>https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/</link>
+        <pubDate>Sun, 03 Mar 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp" alt="Featured image of post Self hosting a Copilot replacement: my personal experience" /&gt;&lt;p&gt;For my job (Software Developer) I make a daily use of tools like &lt;a class=&#34;link&#34; href=&#34;https://github.com/features/copilot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub Copilot&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://chat.openai.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ChatGPT&lt;/a&gt;. I want to explore alternative solutions which can be hosted autonomusly, without relying on an external service.&lt;/p&gt;
+&lt;h2 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h2&gt;
+&lt;p&gt;Before I continue, let me clarify that these are &lt;strong&gt;tools&lt;/strong&gt; which makes my job faster, they don&amp;rsquo;t do the job for me: a wrong assumption made by so many people is that AI tools will do the work for you.&lt;/p&gt;
+&lt;p&gt;This is quite &lt;strong&gt;not true&lt;/strong&gt;. You are still responsible of knowing what to do, understanding the problem, asking the right questions and knowing what to do with the answers.&lt;/p&gt;
+&lt;p&gt;If you regularly search for stuff on Google or any other engine, to find examples in blog posts or Stack Overflow, read someone else example and then adapt the code for your needs, there is nothing wrong automating this: &lt;strong&gt;you are still in charge of the final result&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;the-experiment&#34;&gt;The experiment&lt;/h2&gt;
+&lt;p&gt;After I recently experimented with &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/posts/ollama-running-llm-locally/&#34; &gt;local LLMs using Ollama&lt;/a&gt;, I wanted to figure out if I could use some of these models to &lt;strong&gt;replace GitHub Copilot&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;My intent is not to save some money (my company pays for these tools) or for privacy reasons (it would be pointless to keep your code &amp;ldquo;secret&amp;rdquo; from GitHub if you use it to host it), but to &lt;strong&gt;find out how good these alternative tools are&lt;/strong&gt; and&amp;hellip; for fun!&lt;/p&gt;
+&lt;h2 id=&#34;setup-and-available-resources&#34;&gt;Setup and available resources&lt;/h2&gt;
+&lt;p&gt;The laptop I&amp;rsquo;m using is a MacBook Pro with &lt;strong&gt;M2 Pro&lt;/strong&gt; CPU and &lt;strong&gt;32 GB RAM&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This machine must be able to run my basic &lt;strong&gt;requirements&lt;/strong&gt;, which are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Slack&lt;/li&gt;
+&lt;li&gt;Docker (running my work containers)&lt;/li&gt;
+&lt;li&gt;VSCode&lt;/li&gt;
+&lt;li&gt;Safari / Chrome&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let&amp;rsquo;s see if it can also run a Copilot replacement.&lt;/p&gt;
+&lt;h2 id=&#34;tested-models-and-extensions&#34;&gt;Tested models and extensions&lt;/h2&gt;
+&lt;p&gt;Basically, to run a Copilot replacement, you need to be able to run an LLM and use one of the available extensions for VSCode (in my case I use VSCode, but similar extensions exist for other IDEs).&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m running the models locally using &lt;a class=&#34;link&#34; href=&#34;https://ollama.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Ollama&lt;/a&gt;. If you need to know how to use it, you can refer to my &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/posts/ollama-running-llm-locally/&#34; &gt;previous post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;models&lt;/strong&gt; I tested are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;stable-code:3b-code-q4_0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;codellama:7b-code-q4_K_M&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;codellama:13b-code-q4_K_M&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The number before the &lt;code&gt;b&lt;/code&gt; usually represents the number of parameters (&lt;strong&gt;3 billions&lt;/strong&gt;, &lt;strong&gt;7 billions&lt;/strong&gt;, &lt;strong&gt;13 billions&lt;/strong&gt; etc&amp;hellip;) and you approximately need &lt;strong&gt;4 GB&lt;/strong&gt;, &lt;strong&gt;8 GB&lt;/strong&gt; and &lt;strong&gt;16 GB RAM&lt;/strong&gt; to use them.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://about.meta.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Meta&lt;/a&gt; has released models with &lt;strong&gt;34 billions&lt;/strong&gt; and &lt;strong&gt;70 billions&lt;/strong&gt; parameters, which are even more powerful, and you can find them here: &lt;a class=&#34;link&#34; href=&#34;https://ollama.com/library/codellama&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://ollama.com/library/codellama&lt;/a&gt; but you will need &lt;strong&gt;64-128 GB RAM&lt;/strong&gt; to run them properly.&lt;/p&gt;
+&lt;p&gt;The extensions I tested are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;LLama Coder&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://marketplace.visualstudio.com/items?itemName=ex3ndr.llama-coder&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://marketplace.visualstudio.com/items?itemName=ex3ndr.llama-coder&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Code GPT&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://marketplace.visualstudio.com/items?itemName=DanielSanMedium.dscodegpt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://marketplace.visualstudio.com/items?itemName=DanielSanMedium.dscodegpt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;twinny&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://marketplace.visualstudio.com/items?itemName=rjmacarthy.twinny&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://marketplace.visualstudio.com/items?itemName=rjmacarthy.twinny&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
+&lt;p&gt;The results I got have been quite mixed and &lt;strong&gt;mostly depending on the LLM model&lt;/strong&gt; I was testing, rather than on the extension I was using.&lt;/p&gt;
+&lt;p&gt;A model like &lt;code&gt;stable-code:3b-code-q4_0&lt;/code&gt; was quite &lt;strong&gt;fast&lt;/strong&gt; to complete the code I was typing, &lt;strong&gt;but very often&lt;/strong&gt; giving me &lt;strong&gt;wrong&lt;/strong&gt; code or pure garbage (ie: the model wasn&amp;rsquo;t even able to correctly structure a simple Python method or to maintain the correct indentation)&lt;/p&gt;
+&lt;p&gt;Models like &lt;code&gt;codellama:7b-code-q4_K_M&lt;/code&gt; or &lt;code&gt;codellama:13b-code-q4_K_M&lt;/code&gt; were giving me &lt;strong&gt;better results&lt;/strong&gt; but despite having 32 GB RAM available and a quite fast CPU, they were &lt;strong&gt;taking 3-4 seconds&lt;/strong&gt; to complete what I was typing, making themselves useless (at least for my use case).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;None of them was even remotely close to the speed and accuracy of GitHub Copilot&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;While the idea of having a personal and private instance of a code assistant is interesting (and can also be the only available option in certain environments), &lt;strong&gt;the reality is that achieving the same level of performance as GitHub Copilot is quite challenging&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Despite these challenges, I think with time both available models and extensions &lt;strong&gt;will get better&lt;/strong&gt; and better, improving their quality and maybe reducing the amount of required resources.&lt;/p&gt;
+&lt;p&gt;In case I missed some better model or extension, please feel free to &lt;strong&gt;let me know&lt;/strong&gt; in the comments. I will be glad to do more tests and update this posts or write a new one in the future.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;In the mean time&lt;/strong&gt;, at least for my personale usage, I think I will &lt;strong&gt;stick with GitHub Copilot&lt;/strong&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>How to deploy a static website to Github Pages using CircleCI</title>
         <link>https://www.andreagrandi.it/posts/how-to-deploy-static-website-github-pages-circleci/</link>
         <pubDate>Sun, 24 Feb 2019 00:00:00 +0000</pubDate>
