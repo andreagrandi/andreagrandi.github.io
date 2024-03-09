@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Every now and then, my Mastodon or LinkedIn timelines are full of messages either praising or condemning the use of AI tools for coding. Are they good or bad then? As usual I think the truth is in the middle, or to be more precise: it depends on how you use them.'>
+<title>Using AI tools for coding: good or bad?</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/using-ai-tools-for-coding-good-or-bad/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Using AI tools for coding: good or bad?'>
+<meta property='og:description' content='Every now and then, my Mastodon or LinkedIn timelines are full of messages either praising or condemning the use of AI tools for coding. Are they good or bad then? As usual I think the truth is in the middle, or to be more precise: it depends on how you use them.'>
+<meta property='og:url' content='https://www.andreagrandi.it/posts/using-ai-tools-for-coding-good-or-bad/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='AI' /><meta property='article:tag' content='tools' /><meta property='article:tag' content='coding' /><meta property='article:tag' content='GPT' /><meta property='article:tag' content='ChatGPT' /><meta property='article:tag' content='GitHub Copilot' /><meta property='article:tag' content='LLM' /><meta property='article:tag' content='Large Language Models' /><meta property='article:tag' content='hallucination' /><meta property='article:tag' content='assistance' /><meta property='article:published_time' content='2024-03-09T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-03-09T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/using-ai-tools-for-coding-good-or-bad/ai-tools-cover.webp' />
+<meta name="twitter:title" content="Using AI tools for coding: good or bad?">
+<meta name="twitter:description" content="Every now and then, my Mastodon or LinkedIn timelines are full of messages either praising or condemning the use of AI tools for coding. Are they good or bad then? As usual I think the truth is in the middle, or to be more precise: it depends on how you use them."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/using-ai-tools-for-coding-good-or-bad/ai-tools-cover.webp' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/using-ai-tools-for-coding-good-or-bad/">
+                <img src="/posts/using-ai-tools-for-coding-good-or-bad/ai-tools-cover.webp"
+                        
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Using AI tools for coding: good or bad?" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/personal-opinion/" >
+                Personal Opinion
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/using-ai-tools-for-coding-good-or-bad/">Using AI tools for coding: good or bad?</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Every now and then, my Mastodon or LinkedIn timelines are full of messages either praising or condemning the use of AI tools for coding. Are they good or bad then? As usual I think the truth is in the middle, or to be more precise: it depends on how you use them.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 09, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Every now and then, my Mastodon or LinkedIn timelines are full of messages either praising or condemning the use of AI tools for coding.</p>
+<p>Are they <strong>good or bad</strong> then? As usual I think the truth is in the middle, or to be more precise: <strong>it depends on how you use them</strong>.</p>
+<h2 id="context">Context</h2>
+<p>In the last couple of years, thanks to the advancements in the field of <strong>Large Language Models</strong> (also known as <strong>Generative AI</strong>) a few &ldquo;AI tools&rdquo; have been made available, to help developers with coding tasks.</p>
+<p>Tools like <strong>GitHub Copilot</strong> or <strong>ChatGPT</strong> are being used more frequently by developers. They can either open <strong>new possibilities</strong> (like helping us to write code in a language we are not familiar with) or just <strong>speed up tasks</strong> we would do in a different (often slower) way.</p>
+<h2 id="beware-of-hallucinations">Beware of hallucinations</h2>
+<p>Before we get into good or bad examples, it&rsquo;s important to remember that by definition, LLMs (large language models) can <strong>hallucinate</strong>, which means that under certain conditions (which can occur unexpectedly) the <strong>model can make certain things up</strong>.</p>
+<p>Even ChatGPT reminds us about this, infact at the bottom of every page you will find:</p>
+<blockquote>
+<p>ChatGPT can make mistakes. Consider checking important information.</p>
+</blockquote>
+<h2 id="an-example-of-good-usage">An example of Good usage</h2>
+<p>Before the existance of ChatGPT, whenever I had to do something I didn&rsquo;t know exactly how to do it, my first &ldquo;go-to&rdquo; tool was Google.</p>
+<blockquote>
+<p>Example: &ldquo;How do I find duplicated SQL rows with the same field?&rdquo;</p>
+</blockquote>
+<p>I would search the thing I wanted to do, read a couple of blog posts talking about the subject, figure out if something was possible and then refining my search to find some code examples (usually on Stack Overflow) which then I had to adapt to my existing code base, after reading some documentation.</p>
+<p>Asking the <strong>same question to ChatGPT produced a correct</strong> (at least in my case) <strong>SQL query along with an explanation</strong> of the syntax being used (I tested this query on a local database, adapting field names to my own and it produced the expected result).</p>
+<p>I still had to adapt the produced code to my needs (renaming fields, inserting this script in a larger context etc&hellip;) but I certainly <strong>saved a lot of time</strong> compared to the previous workflow.</p>
+<p>AI tools are <strong>like driving assistance systems</strong>: <strong>they are not supposed to drive for you</strong>, but they will help you to maintain the correct distance from the front vehicle, stay below the speed limits, warn you of you start overtaking a car when another one is close behind you etc&hellip;</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>AI tools can be very helpful with coding tasks. Like any tool, we are in charge of using them correctly and ensuring the end result is accurate. Paying attention to avoid introducing false information or non working code is crucial.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/ai/">AI</a>
+        
+            <a href="/tags/tools/">Tools</a>
+        
+            <a href="/tags/coding/">Coding</a>
+        
+            <a href="/tags/gpt/">GPT</a>
+        
+            <a href="/tags/chatgpt/">ChatGPT</a>
+        
+            <a href="/tags/github-copilot/">GitHub Copilot</a>
+        
+            <a href="/tags/llm/">LLM</a>
+        
+            <a href="/tags/large-language-models/">Large Language Models</a>
+        
+            <a href="/tags/hallucination/">Hallucination</a>
+        
+            <a href="/tags/assistance/">Assistance</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/self-hosting-copilot-replacement/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.1af1e98bd3115262f921e6961c33f5ad.webp" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Self hosting a Copilot replacement: my personal experience"
+                        data-key="self-hosting-copilot-replacement" 
+                        data-hash="md5-GvHpi9MRUmL5IeaWHDP1rQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Self hosting a Copilot replacement: my personal experience</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/ollama-running-llm-locally/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/ollama-running-llm-locally/ollama-cover.5f947d3467814f7df4124d12b6402464.webp" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Ollama: running Large Language Models locally"
+                        data-key="ollama-running-llm-locally" 
+                        data-hash="md5-X5R9NGeBT330Ek0StkAkZA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Ollama: running Large Language Models locally</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/ia-writer-authorship-brilliant-feature-problematic-implementation/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/ia-writer-authorship-brilliant-feature-problematic-implementation/ia-writer-authorship-cover.33ef4bed76d01aab012a5903b750c4e0.webp" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post iA Writer Authorship: a brilliant feature with a problematic implementation"
+                        data-key="ia-writer-authorship-brilliant-feature-problematic-implementation" 
+                        data-hash="md5-M&#43;9L7XbQGqsBKlkDt1DE4A==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">iA Writer Authorship: a brilliant feature with a problematic implementation</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andrea-grandi-it" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>
