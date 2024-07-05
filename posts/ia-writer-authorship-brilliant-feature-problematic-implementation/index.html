@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="iA Writer recently introduced Authorship to help writers keep track of external contributors. The feature is brilliant but its implementation creates issues for static websites generators. I implemented a workaround and wrote some feedback for iA.">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='iA Writer recently introduced Authorship to help writers keep track of external contributors. The feature is brilliant but its implementation creates issues for static websites generators. I implemented a workaround and wrote some feedback for iA.'>
 <title>iA Writer Authorship: a brilliant feature with a problematic implementation</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/ia-writer-authorship-brilliant-feature-problematic-implementation/'>
 
-<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="iA Writer Authorship: a brilliant feature with a problematic implementation">
-<meta property='og:description' content="iA Writer recently introduced Authorship to help writers keep track of external contributors. The feature is brilliant but its implementation creates issues for static websites generators. I implemented a workaround and wrote some feedback for iA.">
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='iA Writer Authorship: a brilliant feature with a problematic implementation'>
+<meta property='og:description' content='iA Writer recently introduced Authorship to help writers keep track of external contributors. The feature is brilliant but its implementation creates issues for static websites generators. I implemented a workaround and wrote some feedback for iA.'>
 <meta property='og:url' content='https://www.andreagrandi.it/posts/ia-writer-authorship-brilliant-feature-problematic-implementation/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='iA' /><meta property='article:tag' content='Writer' /><meta property='article:tag' content='iAWriter' /><meta property='article:tag' content='writing' /><meta property='article:tag' content='review' /><meta property='article:tag' content='feedback' /><meta property='article:tag' content='iOS' /><meta property='article:tag' content='Hugo' /><meta property='article:tag' content='Authorship' /><meta property='article:tag' content='GPT' /><meta property='article:tag' content='YAML' /><meta property='article:tag' content='issue' /><meta property='article:published_time' content='2024-03-05T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-03-05T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/ia-writer-authorship-brilliant-feature-problematic-implementation/ia-writer-authorship-cover.webp' />
@@ -309,29 +309,29 @@
     >Authorship</a> which basically helps you to keep track of external contributors.</p>
 <p>For example, suppose you asked a friend (or even ChatGPT) to write a conclusion for one of your articles, you copy-paste the text on your article and you start editing it. How do you keep track of what you or the other source wrote? With the Authorship feature, text edited by you will be rendered in a different way, so you can distinguish it.</p>
 <p>I think this is a brilliant idea and even if I don&rsquo;t make much usage of GPT to write my posts (almost none so far), I may use it in the future.</p>
-<h2 id="the-problem">The problem
-</h2><p>The problem with this feature is that if you enable it for one of your documents, iA Writer will add an &ldquo;hidden&rdquo; <code>Authorship</code> section at the end of the file.</p>
+<h2 id="the-problem">The problem</h2>
+<p>The problem with this feature is that if you enable it for one of your documents, iA Writer will add an &ldquo;hidden&rdquo; <code>Authorship</code> section at the end of the file.</p>
 <p>This section won&rsquo;t be visible in iA while editing the text, but it will be visible in any other editor.</p>
 <p>In my case, I plan to use iA Writer to write my blog posts, which I then push to GitHub using <a class="link" href="https://workingcopy.app/"  target="_blank" rel="noopener"
     >Working Copy</a>, where they are finally transformed by Hugo to my static website.</p>
 <p><strong>Unless I edit the file with a different editor</strong>, if I submit my article as is, <strong>Hugo</strong> (but even Pelican, or Jekyll etc&hellip; basically any engine which doesn&rsquo;t know how to handle this block of information) <strong>will render the Authorship block into the final HTML page</strong>, which is something nobody really wants.</p>
-<h2 id="possible-solutions">Possible solutions
-</h2><p>I asked iA people on Mastodon about this issue and <a class="link" href="https://mastodon.online/@ia/112037948788436778"  target="_blank" rel="noopener"
+<h2 id="possible-solutions">Possible solutions</h2>
+<p>I asked iA people on Mastodon about this issue and <a class="link" href="https://mastodon.online/@ia/112037948788436778"  target="_blank" rel="noopener"
     >they told me</a> they had considered different options but in any case something will break for someone.</p>
 <p>I agree, it&rsquo;s not easy to find a solution which can cover every possible case, but I still think there could be margin for improvement.</p>
-<h3 id="saving-authorship-in-an-external-file">Saving Authorship in an external file
-</h3><p>If these additional data was saved in an external file, it would be much easier to exclude it from the built pages. By the way, this would mean spreading the information across different files, making it more difficult to maintain.</p>
-<h3 id="using-yaml-metadata">Using YAML metadata
-</h3><p>Adding the Authorship as metadata could be the best option, for a couple of reasons.</p>
+<h3 id="saving-authorship-in-an-external-file">Saving Authorship in an external file</h3>
+<p>If these additional data was saved in an external file, it would be much easier to exclude it from the built pages. By the way, this would mean spreading the information across different files, making it more difficult to maintain.</p>
+<h3 id="using-yaml-metadata">Using YAML metadata</h3>
+<p>Adding the Authorship as metadata could be the best option, for a couple of reasons.</p>
 <p>iA Writer already makes use of YAML metadata where you can add information, so existing users would be used to see something at the beginning of the file which is not their content.</p>
 <p>Any unknown metadata is usually ignored by static websites generators (at least Hugo and Pelican behave in this way) so the Authorship won&rsquo;t be rendered in the final HTML page.</p>
-<h2 id="a-workaround-for-hugo">A workaround for Hugo
-</h2><p>While I hope iA will consider giving alternative options in the future, I&rsquo;ve written a simple script you can use to remove all Authorship blocks from any MarkDown file found in your content.</p>
+<h2 id="a-workaround-for-hugo">A workaround for Hugo</h2>
+<p>While I hope iA will consider giving alternative options in the future, I&rsquo;ve written a simple script you can use to remove all Authorship blocks from any MarkDown file found in your content.</p>
 <script src="https://gist.github.com/andreagrandi/800e5e33ec05f8d51f61a1cdc4fc4d91.js?file=strip-annotation.sh"></script>
 
 <p>Please note that this will remove any Authorship block from your MarkDown files, even if you include them in a code block. If you want to improve the script, feel free to do it and let me know.</p>
-<h2 id="conclusion">Conclusion
-</h2><p>The introduction of the Authorship feature in iA Writer presents a creative solution for managing and distinguishing between original content and external contributions within documents.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The introduction of the Authorship feature in iA Writer presents a creative solution for managing and distinguishing between original content and external contributions within documents.</p>
 <p>While the feature offers significant advantages for content creators seeking to track their collaborations, it also introduces challenges, particularly in the integration with static site generators like Hugo.</p>
 <p>My advice is that, as users, we give some <strong>constructive feedback</strong> to iA (you can contact them at <code>support+newfeature@ia.net</code>) to let them know how to improve this feature.</p>
 <p>Additionally, if you are more familiar with GitHub, you can discuss this specific feature directly in their <a class="link" href="https://github.com/iainc/Markdown-Annotations"  target="_blank" rel="noopener"
@@ -570,7 +570,7 @@
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

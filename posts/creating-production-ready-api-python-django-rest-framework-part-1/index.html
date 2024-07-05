@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at:\u00a0https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial
+Summary of the complete tutorial Create the basic structure for the API'>
 <title>Creating a production ready API with Python and Django Rest Framework - part 1</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/creating-production-ready-api-python-django-rest-framework-part-1/'>
 
-<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Creating a production ready API with Python and Django Rest Framework - part 1">
-<meta property='og:description' content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at:\u00a0https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API">
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Creating a production ready API with Python and Django Rest Framework - part 1'>
+<meta property='og:description' content='The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial
+Summary of the complete tutorial Create the basic structure for the API'>
 <meta property='og:url' content='https://www.andreagrandi.it/posts/creating-production-ready-api-python-django-rest-framework-part-1/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='API' /><meta property='article:tag' content='Django' /><meta property='article:tag' content='framework' /><meta property='article:tag' content='Python' /><meta property='article:tag' content='rest' /><meta property='article:tag' content='tutorial' /><meta property='article:published_time' content='2016-09-28T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2016-09-28T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="Creating a production ready API with Python and Django Rest Framework - part 1">
-<meta name="twitter:description" content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at:\u00a0https://github.com/andreagrandi/drf-tutorial Summary of the complete tutorial Create the basic structure for the API">
+<meta name="twitter:description" content="The aim if this tutorial is to show how to create a production ready solution for a REST API, using Python and Django Rest Framework. I will show you how to first create a very basic API, how to handle the authentication and permissions and I will cover deployment and hosting of images. The full source code of the tutorial is available at: https://github.com/andreagrandi/drf-tutorial
+Summary of the complete tutorial Create the basic structure for the API">
   
 
 <style>
@@ -291,8 +294,8 @@ permissions and I will cover deployment and hosting of images. The full
 source code of the tutorial is available
 at: <a class="link" href="https://github.com/andreagrandi/drf-tutorial"  target="_blank" rel="noopener"
     >https://github.com/andreagrandi/drf-tutorial</a></p>
-<h3 id="summary-of-the-complete-tutorial">Summary of the complete tutorial
-</h3><ol>
+<h3 id="summary-of-the-complete-tutorial">Summary of the complete tutorial</h3>
+<ol>
 <li>
 <p>Create the basic structure for the API</p>
 </li>
@@ -317,8 +320,8 @@ data</a>```</p>
 <p>Add an Image field and save images to S3</p>
 </li>
 </ol>
-<h3 id="create-the-basic-structure-for-the-api">Create the basic structure for the API
-</h3><p>For this tutorial I will assume you have correctly installed at least
+<h3 id="create-the-basic-structure-for-the-api">Create the basic structure for the API</h3>
+<p>For this tutorial I will assume you have correctly installed at least
 <strong>Python</strong> (I will use Python 2.7.x),
 <a class="link" href="https://pypi.python.org/pypi/virtualenv"  target="_blank" rel="noopener"
     ><strong>virtualenv</strong></a> and
@@ -328,8 +331,8 @@ on your system and I will explain how to create everything else step by
 step.</p>
 <p><strong>Note:</strong> at the time of writing, the tutorial has been based on
 <strong>Django 1.10.1</strong> and <strong>Django Rest Framework 3.4.7</strong></p>
-<h3 id="creating-the-main-project-structure">Creating the main project structure
-</h3><div class="highlight"><div class="chroma">
+<h3 id="creating-the-main-project-structure">Creating the main project structure</h3>
+<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -349,8 +352,8 @@ step.</p>
 </span></span><span class="line"><span class="cl">django-admin.py startapp catalog
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="data-model">Data Model
-</h3><p>We will create the API for a generic products catalog, using a very
+</div><h3 id="data-model">Data Model</h3>
+<p>We will create the API for a generic products catalog, using a very
 simple structure (to keep things simple). Edit the file
 <strong>catalog/models.py</strong> adding these lines:</p>
 <div class="highlight"><div class="chroma">
@@ -456,8 +459,8 @@ and we can create and apply the schema migration:</p>
 </span></span><span class="line"><span class="cl">        Applying sessions.0001_initial... OK
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="api-serializer">API Serializer
-</h3><p><a class="link" href="http://www.django-rest-framework.org/api-guide/serializers/"  target="_blank" rel="noopener"
+</div><h3 id="api-serializer">API Serializer</h3>
+<p><a class="link" href="http://www.django-rest-framework.org/api-guide/serializers/"  target="_blank" rel="noopener"
     ><strong>Serializers</strong></a>
 are those components used to convert the received data from JSON format
 to the relative Django model and viceversa. Create the new file
@@ -489,8 +492,8 @@ to the relative Django model and viceversa. Create the new file
     ><strong>ModelSerializer</strong></a>.
 We need to create a new class from it, and specify the model attribute,
 that&rsquo;s it. In this case we also specify the fields we want to return.</p>
-<h3 id="api-view">API View
-</h3><p>The serializer alone is not able to respond to an API request, that&rsquo;s
+<h3 id="api-view">API View</h3>
+<p>The serializer alone is not able to respond to an API request, that&rsquo;s
 why we need to implement a view. In this first version of the view (that
 we will improve soon) we will &ldquo;manually&rdquo; transform the data available in
 the serializer dictionary to a JSON response. In <strong>catalog/views.py</strong>
@@ -587,8 +590,8 @@ certain URL is requested. We first need to add this code in
 </span></span><span class="line"><span class="cl"><span class="p">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h4 id="testing-our-work">Testing our work
-</h4><p>At this point we should be able to start our Django app:</p>
+</div><h4 id="testing-our-work">Testing our work</h4>
+<p>At this point we should be able to start our Django app:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -642,8 +645,8 @@ exactly this point of the tutorial doing:</p>
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.0
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="improving-the-api-view">Improving the API View
-</h3><p>There is a quicker and more efficient way of implementing the same API
+</div><h3 id="improving-the-api-view">Improving the API View</h3>
+<p>There is a quicker and more efficient way of implementing the same API
 view we have seen before. We can use a class based view, in particular
 the APIView class and also have the JSON response implemented
 automatically. Change the code inside <strong>catalog/views.py</strong> with this
@@ -742,8 +745,8 @@ this point, checking out the related git tag:</p>
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.2
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="creating-initial-data">Creating Initial Data
-</h3><p>An API that doesn&rsquo;t return any data is not very useful, right? Also, at
+</div><h3 id="creating-initial-data">Creating Initial Data</h3>
+<p>An API that doesn&rsquo;t return any data is not very useful, right? Also, at
 the moment we haven&rsquo;t implemented yet any feature that let us insert any
 data. That&rsquo;s why I&rsquo;ve created a data migration for you that will insert
 some data for you. You may notice that the example data contains some
@@ -950,8 +953,8 @@ these products back:</p>
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git checkout tutorial-1.3
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="one-more-thing">One more thing&hellip;
-</h3><p>No, we are not going to present a new amazing device, I&rsquo;m sorry, but I
+</div><h3 id="one-more-thing">One more thing&hellip;</h3>
+<p>No, we are not going to present a new amazing device, I&rsquo;m sorry, but I
 want to show you a nice Django Rest Framework feature you can have
 without much additional work. Edit <strong>settings.py</strong> and add
 <strong>rest_framework</strong> to the list of <strong>INSTALLED_APPS</strong>:</p>
@@ -985,8 +988,8 @@ without much additional work. Edit <strong>settings.py</strong> and add
 your browser: <a class="link" href="http://127.0.0.1:8000/products/"  target="_blank" rel="noopener"
     >http://127.0.0.1:8000/products/</a><br>
 That&rsquo;s very nice, isn&rsquo;t it? You can have browsable APIs at no cost.</p>
-<h3 id="wrapping-up">Wrapping Up
-</h3><p>I&rsquo;ve mentioned at the beginning that this is just the first part of my
+<h3 id="wrapping-up">Wrapping Up</h3>
+<p>I&rsquo;ve mentioned at the beginning that this is just the first part of my
 API tutorial. In the <a class="link" href="%7bfilename%7d7-creating-a-production-ready-api-with-python-and-django-rest-framework-part-2.md" >next
 part</a>
 I will show you how to let the consumer of your API add some products
@@ -995,8 +998,8 @@ will see how to set proper permissions to these new API methods so that
 only admin users will be able to add products while normal users will be
 able to add reviews. So, if you feel ready, you can begin to follow the
 <a class="link" href="%7bfilename%7d7-creating-a-production-ready-api-with-python-and-django-rest-framework-part-2.md" >second part of this tutorial</a></p>
-<h3 id="references">References
-</h3><p>Some parts of this tutorial and a few examples have been taken directly
+<h3 id="references">References</h3>
+<p>Some parts of this tutorial and a few examples have been taken directly
 from the original <a class="link" href="http://www.django-rest-framework.org/tutorial/quickstart/"  target="_blank" rel="noopener"
     >Django Rest Framework
 tutorial</a>.</p>
@@ -1167,7 +1170,7 @@ tutorial</a>.</p>
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

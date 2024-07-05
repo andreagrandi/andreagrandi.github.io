@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Best practices to store Arduino secrets safely">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Best practices to store Arduino secrets safely'>
 <title>How to safely store Arduino secrets</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/how-to-safely-store-arduino-secrets/'>
 
-<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="How to safely store Arduino secrets">
-<meta property='og:description' content="Best practices to store Arduino secrets safely">
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='How to safely store Arduino secrets'>
+<meta property='og:description' content='Best practices to store Arduino secrets safely'>
 <meta property='og:url' content='https://www.andreagrandi.it/posts/how-to-safely-store-arduino-secrets/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='arduino' /><meta property='article:tag' content='secrets' /><meta property='article:tag' content='secret' /><meta property='article:tag' content='security' /><meta property='article:tag' content='password' /><meta property='article:tag' content='passwords' /><meta property='article:tag' content='storage' /><meta property='article:tag' content='howto' /><meta property='article:tag' content='safe' /><meta property='article:tag' content='hide' /><meta property='article:tag' content='secure' /><meta property='article:published_time' content='2020-12-16T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2020-12-16T00:00:00&#43;00:00'/>
@@ -305,8 +305,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>do <strong>not</strong> share it! You would leak your ESSID, password and maybe othere secrets to everyone.</p>
-<h2 id="store-secrets-in-an-external-file">Store secrets in an external file
-</h2><p>Create a separate file named <code>arduino_secrets.h</code>:</p>
+<h2 id="store-secrets-in-an-external-file">Store secrets in an external file</h2>
+<p>Create a separate file named <code>arduino_secrets.h</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -338,10 +338,10 @@
 </div>
 </div><p><strong>Note:</strong> using the <strong><code>SECRET_...</code></strong> naming convention is also useful if you use the <strong>Arduino Web Editor</strong> <a class="link" href="https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0"  target="_blank" rel="noopener"
     >https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0</a> because these values will be automatically added to a secret tab and will only be visible to you, even if you share your project.</p>
-<h2 id="exclude-secrets-file-from-git">Exclude secrets file from git
-</h2><p>Moving secrets to <code>arduino_secrets.h</code> would be pointless if we pushed this file to GitHub. To avoid this mistake, add <code>arduino_secrets.h</code> to <code>.gitignore</code> (create it in the root of the project if it doesn&rsquo;t exist already).</p>
-<h2 id="add-an-example-for-secrets-file">Add an example for secrets file
-</h2><p>If you simply hide the original <code>arduino_secrets.h</code>, other users who would like to reuse your code may not know what to put inside. Create an example file named <code>arduino_secrets.h.example</code> with dummy values:</p>
+<h2 id="exclude-secrets-file-from-git">Exclude secrets file from git</h2>
+<p>Moving secrets to <code>arduino_secrets.h</code> would be pointless if we pushed this file to GitHub. To avoid this mistake, add <code>arduino_secrets.h</code> to <code>.gitignore</code> (create it in the root of the project if it doesn&rsquo;t exist already).</p>
+<h2 id="add-an-example-for-secrets-file">Add an example for secrets file</h2>
+<p>If you simply hide the original <code>arduino_secrets.h</code>, other users who would like to reuse your code may not know what to put inside. Create an example file named <code>arduino_secrets.h.example</code> with dummy values:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -353,10 +353,10 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>and document that this needs to be renamed to <code>arduino_secrets.h</code></p>
-<h2 id="what-if-i-need-to-build-my-code-in-a-ci">What if I need to build my code in a CI?
-</h2><p>In case you want to build your code in a CI environment, the full source code needs to be there, but at the same time you still don&rsquo;t want to push your secrets to GitHub. What to do then?</p>
-<h3 id="store-your-secrets-in-environment-variables">Store your secrets in environment variables
-</h3><p>Create an environment variable in your CI (or set it locally on your machine if you want to build it locally) for each secret:</p>
+<h2 id="what-if-i-need-to-build-my-code-in-a-ci">What if I need to build my code in a CI?</h2>
+<p>In case you want to build your code in a CI environment, the full source code needs to be there, but at the same time you still don&rsquo;t want to push your secrets to GitHub. What to do then?</p>
+<h3 id="store-your-secrets-in-environment-variables">Store your secrets in environment variables</h3>
+<p>Create an environment variable in your CI (or set it locally on your machine if you want to build it locally) for each secret:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -367,8 +367,8 @@
 </span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">WIFI_PASSWORD</span><span class="o">=</span><span class="s2">&#34;mypassword&#34;</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="create-a-makefile">Create a Makefile
-</h3><p>Add a <code>Makefile</code> to your project, similar to this one:</p>
+</div><h3 id="create-a-makefile">Create a Makefile</h3>
+<p>Add a <code>Makefile</code> to your project, similar to this one:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -394,10 +394,10 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>If you run <code>make</code> you will generate a file named <code>arduino_secrets.h</code> containing the proper values.</p>
-<h2 id="conclusion">Conclusion
-</h2><p>There may be alternative methods to safely store secrets. If you know a better one, you can leave a comment below.</p>
-<h2 id="references">References
-</h2><ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>There may be alternative methods to safely store secrets. If you know a better one, you can leave a comment below.</p>
+<h2 id="references">References</h2>
+<ul>
 <li><a class="link" href="https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0"  target="_blank" rel="noopener"
     >https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0</a></li>
 </ul>
@@ -578,7 +578,7 @@
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
