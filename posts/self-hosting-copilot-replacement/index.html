@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.">
 <title>Self hosting a Copilot replacement: my personal experience</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Self hosting a Copilot replacement: my personal experience'>
-<meta property='og:description' content='Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.'>
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Self hosting a Copilot replacement: my personal experience">
+<meta property='og:description' content="Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience.">
 <meta property='og:url' content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='AI' /><meta property='article:tag' content='LLM' /><meta property='article:tag' content='Ollama' /><meta property='article:tag' content='GPT' /><meta property='article:tag' content='llama2' /><meta property='article:tag' content='Python' /><meta property='article:tag' content='API' /><meta property='article:tag' content='REST' /><meta property='article:tag' content='Copilot' /><meta property='article:tag' content='GitHub' /><meta property='article:tag' content='hosting' /><meta property='article:published_time' content='2024-03-03T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-03-03T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp' />
 <meta name="twitter:title" content="Self hosting a Copilot replacement: my personal experience">
 <meta name="twitter:description" content="Being able to run a Large Language Model locally also means to be able to use existing models (fine tuned for coding) to implement a self hosted solution to replace GitHub Copilot. In this post I will talk about my personal experience."><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp' /><style>
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.webp' />
+  
+
+<style>
     .article-content code {
         color: #c25 !important;
         padding: 1px 3px;
@@ -303,15 +306,15 @@
     <p>For my job (Software Developer) I make a daily use of tools like <a class="link" href="https://github.com/features/copilot"  target="_blank" rel="noopener"
     >GitHub Copilot</a> and <a class="link" href="https://chat.openai.com/"  target="_blank" rel="noopener"
     >ChatGPT</a>. I want to explore alternative solutions which can be hosted autonomusly, without relying on an external service.</p>
-<h2 id="disclaimer">Disclaimer</h2>
-<p>Before I continue, let me clarify that these are <strong>tools</strong> which makes my job faster, they don&rsquo;t do the job for me: a wrong assumption made by so many people is that AI tools will do the work for you.</p>
+<h2 id="disclaimer">Disclaimer
+</h2><p>Before I continue, let me clarify that these are <strong>tools</strong> which makes my job faster, they don&rsquo;t do the job for me: a wrong assumption made by so many people is that AI tools will do the work for you.</p>
 <p>This is quite <strong>not true</strong>. You are still responsible of knowing what to do, understanding the problem, asking the right questions and knowing what to do with the answers.</p>
 <p>If you regularly search for stuff on Google or any other engine, to find examples in blog posts or Stack Overflow, read someone else example and then adapt the code for your needs, there is nothing wrong automating this: <strong>you are still in charge of the final result</strong>.</p>
-<h2 id="the-experiment">The experiment</h2>
-<p>After I recently experimented with <a class="link" href="https://www.andreagrandi.it/posts/ollama-running-llm-locally/" >local LLMs using Ollama</a>, I wanted to figure out if I could use some of these models to <strong>replace GitHub Copilot</strong>.</p>
+<h2 id="the-experiment">The experiment
+</h2><p>After I recently experimented with <a class="link" href="https://www.andreagrandi.it/posts/ollama-running-llm-locally/" >local LLMs using Ollama</a>, I wanted to figure out if I could use some of these models to <strong>replace GitHub Copilot</strong>.</p>
 <p>My intent is not to save some money (my company pays for these tools) or for privacy reasons (it would be pointless to keep your code &ldquo;secret&rdquo; from GitHub if you use it to host it), but to <strong>find out how good these alternative tools are</strong> and&hellip; for fun!</p>
-<h2 id="setup-and-available-resources">Setup and available resources</h2>
-<p>The laptop I&rsquo;m using is a MacBook Pro with <strong>M2 Pro</strong> CPU and <strong>32 GB RAM</strong>.</p>
+<h2 id="setup-and-available-resources">Setup and available resources
+</h2><p>The laptop I&rsquo;m using is a MacBook Pro with <strong>M2 Pro</strong> CPU and <strong>32 GB RAM</strong>.</p>
 <p>This machine must be able to run my basic <strong>requirements</strong>, which are:</p>
 <ul>
 <li>Slack</li>
@@ -320,8 +323,8 @@
 <li>Safari / Chrome</li>
 </ul>
 <p>Let&rsquo;s see if it can also run a Copilot replacement.</p>
-<h2 id="tested-models-and-extensions">Tested models and extensions</h2>
-<p>Basically, to run a Copilot replacement, you need to be able to run an LLM and use one of the available extensions for VSCode (in my case I use VSCode, but similar extensions exist for other IDEs).</p>
+<h2 id="tested-models-and-extensions">Tested models and extensions
+</h2><p>Basically, to run a Copilot replacement, you need to be able to run an LLM and use one of the available extensions for VSCode (in my case I use VSCode, but similar extensions exist for other IDEs).</p>
 <p>I&rsquo;m running the models locally using <a class="link" href="https://ollama.com"  target="_blank" rel="noopener"
     >Ollama</a>. If you need to know how to use it, you can refer to my <a class="link" href="https://www.andreagrandi.it/posts/ollama-running-llm-locally/" >previous post</a>.</p>
 <p>The <strong>models</strong> I tested are:</p>
@@ -343,13 +346,13 @@
 <li><strong>twinny</strong> <a class="link" href="https://marketplace.visualstudio.com/items?itemName=rjmacarthy.twinny"  target="_blank" rel="noopener"
     >https://marketplace.visualstudio.com/items?itemName=rjmacarthy.twinny</a></li>
 </ul>
-<h2 id="results">Results</h2>
-<p>The results I got have been quite mixed and <strong>mostly depending on the LLM model</strong> I was testing, rather than on the extension I was using.</p>
+<h2 id="results">Results
+</h2><p>The results I got have been quite mixed and <strong>mostly depending on the LLM model</strong> I was testing, rather than on the extension I was using.</p>
 <p>A model like <code>stable-code:3b-code-q4_0</code> was quite <strong>fast</strong> to complete the code I was typing, <strong>but very often</strong> giving me <strong>wrong</strong> code or pure garbage (ie: the model wasn&rsquo;t even able to correctly structure a simple Python method or to maintain the correct indentation)</p>
 <p>Models like <code>codellama:7b-code-q4_K_M</code> or <code>codellama:13b-code-q4_K_M</code> were giving me <strong>better results</strong> but despite having 32 GB RAM available and a quite fast CPU, they were <strong>taking 3-4 seconds</strong> to complete what I was typing, making themselves useless (at least for my use case).</p>
 <p><strong>None of them was even remotely close to the speed and accuracy of GitHub Copilot</strong>.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>While the idea of having a personal and private instance of a code assistant is interesting (and can also be the only available option in certain environments), <strong>the reality is that achieving the same level of performance as GitHub Copilot is quite challenging</strong>.</p>
+<h2 id="conclusion">Conclusion
+</h2><p>While the idea of having a personal and private instance of a code assistant is interesting (and can also be the only available option in certain environments), <strong>the reality is that achieving the same level of performance as GitHub Copilot is quite challenging</strong>.</p>
 <p>Despite these challenges, I think with time both available models and extensions <strong>will get better</strong> and better, improving their quality and maybe reducing the amount of required resources.</p>
 <p>In case I missed some better model or extension, please feel free to <strong>let me know</strong> in the comments. I will be glad to do more tests and update this posts or write a new one in the future.</p>
 <p><strong>In the mean time</strong>, at least for my personale usage, I think I will <strong>stick with GitHub Copilot</strong>.</p>
@@ -541,7 +544,7 @@
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
