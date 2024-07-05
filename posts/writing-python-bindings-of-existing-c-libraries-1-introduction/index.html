@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This summer I&amp;rsquo;m having the pleasure of working in Igalia (a spanish free software company) for a couple of months and they assigned me to an interesting project: developing Python bindings for MAFW library (a Maemo multimedia library that will be used in Fremantle release).
-Having the opportunity to work both with C (yes, Python bindings are almost C code) and Python (it&amp;rsquo;s a good practice to write unittest of all implemented methods) it&amp;rsquo;s a good way to improve my knowledges in both languages and since I wasn&amp;rsquo;t able to find much documentation about these kind of things, I&amp;rsquo;m going to share my own experiences.'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="This summer I&rsquo;m having the pleasure of working in Igalia (a spanish free software company) for a couple of months and they assigned me to an interesting project: developing Python bindings for MAFW library (a Maemo multimedia library that will be used in Fremantle release). Having the opportunity to work both with C (yes, Python bindings are almost C code) and Python (it&rsquo;s a good practice to write unittest of all implemented methods) it&rsquo;s a good way to improve my knowledges in both languages and since I wasn&rsquo;t able to find much documentation about these kind of things, I&rsquo;m going to share my own experiences.">
 <title>Writing Python bindings of existing C libraries - (1) - Introduction</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/writing-python-bindings-of-existing-c-libraries-1-introduction/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Writing Python bindings of existing C libraries - (1) - Introduction'>
-<meta property='og:description' content='This summer I&amp;rsquo;m having the pleasure of working in Igalia (a spanish free software company) for a couple of months and they assigned me to an interesting project: developing Python bindings for MAFW library (a Maemo multimedia library that will be used in Fremantle release).
-Having the opportunity to work both with C (yes, Python bindings are almost C code) and Python (it&amp;rsquo;s a good practice to write unittest of all implemented methods) it&amp;rsquo;s a good way to improve my knowledges in both languages and since I wasn&amp;rsquo;t able to find much documentation about these kind of things, I&amp;rsquo;m going to share my own experiences.'>
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Writing Python bindings of existing C libraries - (1) - Introduction">
+<meta property='og:description' content="This summer I&rsquo;m having the pleasure of working in Igalia (a spanish free software company) for a couple of months and they assigned me to an interesting project: developing Python bindings for MAFW library (a Maemo multimedia library that will be used in Fremantle release). Having the opportunity to work both with C (yes, Python bindings are almost C code) and Python (it&rsquo;s a good practice to write unittest of all implemented methods) it&rsquo;s a good way to improve my knowledges in both languages and since I wasn&rsquo;t able to find much documentation about these kind of things, I&rsquo;m going to share my own experiences.">
 <meta property='og:url' content='https://www.andreagrandi.it/posts/writing-python-bindings-of-existing-c-libraries-1-introduction/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='bindings' /><meta property='article:tag' content='C' /><meta property='article:tag' content='Igalia' /><meta property='article:tag' content='libraries' /><meta property='article:tag' content='library' /><meta property='article:tag' content='maemo' /><meta property='article:tag' content='pymaemo' /><meta property='article:tag' content='Python' /><meta property='article:published_time' content='2009-08-03T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2009-08-03T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="Writing Python bindings of existing C libraries - (1) - Introduction">
-<meta name="twitter:description" content="This summer I&amp;rsquo;m having the pleasure of working in Igalia (a spanish free software company) for a couple of months and they assigned me to an interesting project: developing Python bindings for MAFW library (a Maemo multimedia library that will be used in Fremantle release).
-Having the opportunity to work both with C (yes, Python bindings are almost C code) and Python (it&amp;rsquo;s a good practice to write unittest of all implemented methods) it&amp;rsquo;s a good way to improve my knowledges in both languages and since I wasn&amp;rsquo;t able to find much documentation about these kind of things, I&amp;rsquo;m going to share my own experiences.">
+<meta name="twitter:description" content="This summer I&rsquo;m having the pleasure of working in Igalia (a spanish free software company) for a couple of months and they assigned me to an interesting project: developing Python bindings for MAFW library (a Maemo multimedia library that will be used in Fremantle release). Having the opportunity to work both with C (yes, Python bindings are almost C code) and Python (it&rsquo;s a good practice to write unittest of all implemented methods) it&rsquo;s a good way to improve my knowledges in both languages and since I wasn&rsquo;t able to find much documentation about these kind of things, I&rsquo;m going to share my own experiences.">
   
 
 <style>
@@ -316,12 +313,12 @@ almost C code) and <strong>Python</strong> (it&rsquo;s a good practice to write 
 all implemented methods) it&rsquo;s a good way to improve my knowledges in
 both languages and since I wasn&rsquo;t able to find much documentation about
 these kind of things, I&rsquo;m going to share my own experiences.</p>
-<h2 id="what-is-a-binding">What is a Binding?</h2>
-<p>A binding is a Python module, written in C language, that allows Python
+<h2 id="what-is-a-binding">What is a Binding?
+</h2><p>A binding is a Python module, written in C language, that allows Python
 developers to call functions from existing C libraries from their python
 applications. It&rsquo;s just like a &ldquo;<em>bridge</em>&rdquo; from C world to Python one.</p>
-<h2 id="why-writing-bindings">Why writing bindings?</h2>
-<p>There are a couple of reasons to write python bindings instead of
+<h2 id="why-writing-bindings">Why writing bindings?
+</h2><p>There are a couple of reasons to write python bindings instead of
 writing a library in python language from scratch.</p>
 <p>First of all I don&rsquo;t think is good duplicating code, so if a library
 already exists and it&rsquo;s written in C, why writing it again in another
@@ -331,8 +328,8 @@ all we have to do is to create a bridge with python world.</p>
 is the fact that python code is slower than C code for some tasks (for
 example multimedia codecs). In these cases is good to implement the core
 library in C language and then create a python binding for it.</p>
-<h2 id="coming-next">Coming next</h2>
-<p>As the title of this post says, this is only an introduction to the
+<h2 id="coming-next">Coming next
+</h2><p>As the title of this post says, this is only an introduction to the
 subjects I&rsquo;m going to write about. If you have any particular request
 about any argument you would like to read, please feel free to leave me
 a comment. Next posts will talk about these things:</p>
@@ -529,7 +526,7 @@ overrides.</p>
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

@@ -19,34 +19,34 @@ decided to use it for GnuPG too, other than using it as hardware 2FA.&lt;/p&gt;
 on an &lt;strong&gt;offline&lt;/strong&gt; computer (in my case a simple RaspberryPi not connected to Internet) and &lt;strong&gt;generating a subkey&lt;/strong&gt;
 that will be moved to my &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h4&gt;
-&lt;p&gt;Always think about what your &lt;strong&gt;threat model&lt;/strong&gt; is before deciding something is 100% safe for you.
+&lt;h4 id=&#34;disclaimer&#34;&gt;Disclaimer
+&lt;/h4&gt;&lt;p&gt;Always think about what your &lt;strong&gt;threat model&lt;/strong&gt; is before deciding something is 100% safe for you.
 I&amp;rsquo;m not claiming this setup/configuration is bullet proof. If you want to protect your GnuPG key from most of the hackers,
 keyloggers and if you want to use it on different computers without ever compromising your secret key, this setup
 can be what you are looking for. If you think you may be victim of a targeted state sponsored attack, I&amp;rsquo;m not sure this
 setup could be enough.&lt;/p&gt;
-&lt;h4 id=&#34;why-keeping-offline-the-master-key&#34;&gt;Why keeping offline the master key?&lt;/h4&gt;
-&lt;p&gt;If you only use your master key on a computer that never connects to Internet (I reckon you will want to update/patch it
+&lt;h4 id=&#34;why-keeping-offline-the-master-key&#34;&gt;Why keeping offline the master key?
+&lt;/h4&gt;&lt;p&gt;If you only use your master key on a computer that never connects to Internet (I reckon you will want to update/patch it
 from time to time, that&amp;rsquo;s why we are going to keep the master key on an external USB key) you are at least safe from remote attacks.&lt;/p&gt;
-&lt;h4 id=&#34;why-using-subkeys&#34;&gt;Why using subkeys?&lt;/h4&gt;
-&lt;p&gt;Your GnuPG master key is also your &amp;ldquo;identity&amp;rdquo; among every PGP user. If you loose your master key or if your key is compromised
+&lt;h4 id=&#34;why-using-subkeys&#34;&gt;Why using subkeys?
+&lt;/h4&gt;&lt;p&gt;Your GnuPG master key is also your &amp;ldquo;identity&amp;rdquo; among every PGP user. If you loose your master key or if your key is compromised
 you need to rebuild your identity and reputation from scratch. Instead, if a subkey is compromised, you can revoke the subkey (using your
 master key) and generate a new subkey.&lt;/p&gt;
-&lt;h4 id=&#34;how-a-yubikey-makes-things-safer&#34;&gt;How a YubiKey makes things safer?&lt;/h4&gt;
-&lt;p&gt;If you always use your subkey from a &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h4 id=&#34;how-a-yubikey-makes-things-safer&#34;&gt;How a YubiKey makes things safer?
+&lt;/h4&gt;&lt;p&gt;If you always use your subkey from a &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt;, it&amp;rsquo;s very unlikely that your
 private key can be stolen: it&amp;rsquo;s impossible to read it from the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; and if you loose your YubiKey
 or if it&amp;rsquo;s physically stolen, the attacker will still need your passphrase and your YubiKey PIN.&lt;/p&gt;
-&lt;h3 id=&#34;requirements&#34;&gt;Requirements&lt;/h3&gt;
-&lt;ul&gt;
+&lt;h3 id=&#34;requirements&#34;&gt;Requirements
+&lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;1 &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey 4&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2 USB keys (in theory you only need one, but I strongly suggest you have another one as backup)&lt;/li&gt;
 &lt;li&gt;1 offline computer (a simple RaspberryPi with no Internet connection will be fine)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;initial-setup&#34;&gt;Initial setup&lt;/h3&gt;
-&lt;p&gt;From now on, I will assume that you have prepared a computer for offline use (in my case I&amp;rsquo;m using a RaspberryPi 2 with
+&lt;h3 id=&#34;initial-setup&#34;&gt;Initial setup
+&lt;/h3&gt;&lt;p&gt;From now on, I will assume that you have prepared a computer for offline use (in my case I&amp;rsquo;m using a RaspberryPi 2 with
 Raspbian) and you will type the next commands there and only there.&lt;/p&gt;
 &lt;p&gt;Plug one of the &lt;strong&gt;USB key&lt;/strong&gt; (you can format it with VFAT for simplicity) in the offline computer and wait for the system to mount it.
 At this point it should be mounted in a path like this: &lt;strong&gt;/media/AABB-BAAC&lt;/strong&gt;&lt;/p&gt;
@@ -61,19 +61,19 @@ At this point it should be mounted in a path like this: &lt;strong&gt;/media/AAB
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;user@debian:~$ mkdir $GNUPGHOME
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;second-disclaimer&#34;&gt;Second disclaimer&lt;/h4&gt;
-&lt;p&gt;If you think your threat model doesn&amp;rsquo;t include someone can hack your computer from remote,
+&lt;/div&gt;&lt;h4 id=&#34;second-disclaimer&#34;&gt;Second disclaimer
+&lt;/h4&gt;&lt;p&gt;If you think your threat model doesn&amp;rsquo;t include someone can hack your computer from remote,
 you can ignore my advice and type these commands on your main laptop (at your own risk).&lt;/p&gt;
-&lt;h4 id=&#34;note&#34;&gt;Note&lt;/h4&gt;
-&lt;p&gt;For my own convenience, to write this tutorial I reproduced all these steps on my MacBook because it was easier to copy/paste
+&lt;h4 id=&#34;note&#34;&gt;Note
+&lt;/h4&gt;&lt;p&gt;For my own convenience, to write this tutorial I reproduced all these steps on my MacBook because it was easier to copy/paste
 commands and outputs but I&amp;rsquo;ve tested it with the exact setup I&amp;rsquo;m describing, and it
 should be compatible with OSX and Linux.
 When you see something has been masked it&amp;rsquo;s just to hide (from spam) things like my email or to protect the serial number
 of my &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt;. Last but not least, the output shown here could not match exactly the one you get on your own PC and this also
 depends on the GnuPG version you are using.&lt;/p&gt;
-&lt;h3 id=&#34;generating-the-master-key&#34;&gt;Generating the master key&lt;/h3&gt;
-&lt;p&gt;The master key must be generated using the advanced mode, because by default when a new master key is generated, also a new subkey
+&lt;h3 id=&#34;generating-the-master-key&#34;&gt;Generating the master key
+&lt;/h3&gt;&lt;p&gt;The master key must be generated using the advanced mode, because by default when a new master key is generated, also a new subkey
 is created with all the capabilities (Authentication + Signing + Encryption), while we want something different.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; PGP keys up to &lt;strong&gt;4096 bits&lt;/strong&gt; are only supported in &lt;strong&gt;YubiKey 4&lt;/strong&gt; models. If you have a &lt;strong&gt;YubiKey NEO&lt;/strong&gt; you must use
 a &lt;strong&gt;2048 bits&lt;/strong&gt; key because it&amp;rsquo;s the maximum size supported. Here you will create a PGP key with &lt;strong&gt;only
@@ -261,8 +261,8 @@ create the encryption capability at this time.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; please remember to save your passphrase in a safe place. Choose something you
 can remember because you will need it every time you need to sign, encrypt or decrypt something.&lt;/p&gt;
-&lt;h3 id=&#34;creating-a-revocation-certificate&#34;&gt;Creating a revocation certificate&lt;/h3&gt;
-&lt;p&gt;It&amp;rsquo;s very important to create a revocation certificate to be used if and when
+&lt;h3 id=&#34;creating-a-revocation-certificate&#34;&gt;Creating a revocation certificate
+&lt;/h3&gt;&lt;p&gt;It&amp;rsquo;s very important to create a revocation certificate to be used if and when
 in the future you want to change your master key and revoke the existing one:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -332,8 +332,8 @@ in the future you want to change your master key and revoke the existing one:&lt
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;your machine might store the data and make it available to others!
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;creating-encryption-subkey&#34;&gt;Creating Encryption subkey&lt;/h3&gt;
-&lt;p&gt;To create a subkey we need to edit the existing key (please note that &lt;strong&gt;2240402E&lt;/strong&gt;
+&lt;/div&gt;&lt;h3 id=&#34;creating-encryption-subkey&#34;&gt;Creating Encryption subkey
+&lt;/h3&gt;&lt;p&gt;To create a subkey we need to edit the existing key (please note that &lt;strong&gt;2240402E&lt;/strong&gt;
 is the last 8 chars from the fingerprint of the previously generated master key)
 and specify we want to create an Encryption only key.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -438,8 +438,8 @@ and specify we want to create an Encryption only key.&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg&amp;gt; save
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;export-a-backup-of-the-secret-keys&#34;&gt;Export a backup of the secret keys&lt;/h3&gt;
-&lt;p&gt;It&amp;rsquo;s very important to export a backup of the secret keys at this point.
+&lt;/div&gt;&lt;h3 id=&#34;export-a-backup-of-the-secret-keys&#34;&gt;Export a backup of the secret keys
+&lt;/h3&gt;&lt;p&gt;It&amp;rsquo;s very important to export a backup of the secret keys at this point.
 Writing the secret subkey to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; is a destructive process: keys are moved
 to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -455,8 +455,8 @@ to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-15
 &lt;/div&gt;&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; this backup includes both the secret master key and the secret subkey.
 Please remember to &lt;strong&gt;save a backup of this key&lt;/strong&gt; on a couple of separate USB keys: you will need
 this keys to generate future subkeys and/or to revoke the existing ones.&lt;/p&gt;
-&lt;h3 id=&#34;programming-the-yubikey-with-all-gnupg-keys&#34;&gt;Programming the YubiKey with all GnuPG keys&lt;/h3&gt;
-&lt;p&gt;We have previously created the &lt;strong&gt;master key&lt;/strong&gt; and the &lt;strong&gt;encryption subkey&lt;/strong&gt;. Now we will
+&lt;h3 id=&#34;programming-the-yubikey-with-all-gnupg-keys&#34;&gt;Programming the YubiKey with all GnuPG keys
+&lt;/h3&gt;&lt;p&gt;We have previously created the &lt;strong&gt;master key&lt;/strong&gt; and the &lt;strong&gt;encryption subkey&lt;/strong&gt;. Now we will
 create the &lt;strong&gt;authentication&lt;/strong&gt; and &lt;strong&gt;signing&lt;/strong&gt; keys directly on the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; (we don&amp;rsquo;t
 need to have a copy of these keys) and we will move the secret encryption key
@@ -722,8 +722,8 @@ to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-15
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gpg&amp;gt; save
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;check-public-keys&#34;&gt;Check public keys&lt;/h4&gt;
-&lt;p&gt;Just to verify everything has been created correctly, we check the public keys.
+&lt;/div&gt;&lt;h4 id=&#34;check-public-keys&#34;&gt;Check public keys
+&lt;/h4&gt;&lt;p&gt;Just to verify everything has been created correctly, we check the public keys.
 We should see one &lt;strong&gt;pub&lt;/strong&gt; key and three &lt;strong&gt;sub&lt;/strong&gt;:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -747,8 +747,8 @@ We should see one &lt;strong&gt;pub&lt;/strong&gt; key and three &lt;strong&gt;s
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sub   4096R/A9B5334C 2017-09-25 [expires: 2019-09-25]
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;check-private-keys&#34;&gt;Check private keys&lt;/h4&gt;
-&lt;p&gt;When we check the private keys we should see that one key is still local, marked as &lt;strong&gt;sec&lt;/strong&gt; (it&amp;rsquo;s
+&lt;/div&gt;&lt;h4 id=&#34;check-private-keys&#34;&gt;Check private keys
+&lt;/h4&gt;&lt;p&gt;When we check the private keys we should see that one key is still local, marked as &lt;strong&gt;sec&lt;/strong&gt; (it&amp;rsquo;s
 the private key of the master key), while three other keys are marked as &lt;strong&gt;ssb&amp;gt;&lt;/strong&gt;
 which means they have been moved to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt;:&lt;/p&gt;
@@ -774,8 +774,8 @@ which means they have been moved to the &lt;a class=&#34;link&#34; href=&#34;htt
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssb&amp;gt;  4096R/A9B5334C 2017-09-25
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;import-back-secret-keys-from-backup-only-for-multiple-yubikeys&#34;&gt;Import back secret keys from backup (only for multiple YubiKeys)&lt;/h4&gt;
-&lt;p&gt;As previously said, when we write the encryption subkey to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/div&gt;&lt;h4 id=&#34;import-back-secret-keys-from-backup-only-for-multiple-yubikeys&#34;&gt;Import back secret keys from backup (only for multiple YubiKeys)
+&lt;/h4&gt;&lt;p&gt;As previously said, when we write the encryption subkey to the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt;, the key
 is &lt;strong&gt;moved&lt;/strong&gt; and not just copied, so we need to import back the secret key into
 the keyring. It&amp;rsquo;s important to have a backup of the subkey too, not because we need it
@@ -789,8 +789,8 @@ multiple YubiKeys with the same encryption key, so that we have a backup key to 
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;user@debian:~$ gpg --import &amp;lt; 2240402E-secret.pgp
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;completely-remove-secret-keys-from-laptop&#34;&gt;Completely remove secret keys from laptop&lt;/h4&gt;
-&lt;p&gt;Once you have programmed the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/div&gt;&lt;h4 id=&#34;completely-remove-secret-keys-from-laptop&#34;&gt;Completely remove secret keys from laptop
+&lt;/h4&gt;&lt;p&gt;Once you have programmed the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; and you are sure the secret keys are
 backed up on a couple of USB keys, you are ready to remove the secret keys from your laptop.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; you don&amp;rsquo;t need to remove anything if you have conducted the whole setup
@@ -803,8 +803,8 @@ on a spare offline PC (or on a RaspberryPi) because that&amp;rsquo;s not your ev
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;user@debian:~$ gpg --delete-secret-key 2240402E
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;exporting-the-public-pgp-key&#34;&gt;Exporting the public PGP key&lt;/h3&gt;
-&lt;p&gt;As you know, PGP keys are composed by a secret part and a public one. The public one
+&lt;/div&gt;&lt;h3 id=&#34;exporting-the-public-pgp-key&#34;&gt;Exporting the public PGP key
+&lt;/h3&gt;&lt;p&gt;As you know, PGP keys are composed by a secret part and a public one. The public one
 must be distributed publicly and it&amp;rsquo;s the one people will use to encrypt messages directed
 to you.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -818,8 +818,8 @@ to you.&lt;/p&gt;
 &lt;/div&gt;&lt;p&gt;If you have a personal blog/website I suggest to upload it there (for example mine
 can be found here &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/2240402E.asc&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://www.andreagrandi.it/2240402E.asc&lt;/a&gt;)&lt;/p&gt;
-&lt;h3 id=&#34;change-yubikey-pins-and-complete-configuration&#34;&gt;Change YubiKey PINs and complete configuration&lt;/h3&gt;
-&lt;p&gt;Every &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;h3 id=&#34;change-yubikey-pins-and-complete-configuration&#34;&gt;Change YubiKey PINs and complete configuration
+&lt;/h3&gt;&lt;p&gt;Every &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; is sold with a certain default configuration: there is a &lt;strong&gt;user PIN&lt;/strong&gt;
 that is required every time we need to use the key to sign/decrypt something (in addition
 to our passphrase) and there is an &lt;strong&gt;admin PIN&lt;/strong&gt; that is required every time we change
@@ -1001,8 +1001,8 @@ read automatically, you may need to give it a refresh using this command:&lt;/p&
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;user@debian:~$ gpg --card-status
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;careful-with-pins&#34;&gt;Careful with PINs&lt;/h4&gt;
-&lt;p&gt;Please remember that you can only digit a wrong user PIN for a maximum of three times.
+&lt;/div&gt;&lt;h4 id=&#34;careful-with-pins&#34;&gt;Careful with PINs
+&lt;/h4&gt;&lt;p&gt;Please remember that you can only digit a wrong user PIN for a maximum of three times.
 After three time you will need to edit the &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; (with &lt;strong&gt;gpg &amp;ndash;card-edit&lt;/strong&gt;) become admin
 and use the &lt;strong&gt;unblock PIN&lt;/strong&gt; option. If you digit the wrong admin PIN for three time, you will have
@@ -1010,8 +1010,8 @@ to follow a quite complicated procedure (explained at this address: &lt;a class=
     &gt;https://developers.yubico.com/ykneo-openpgp/ResetApplet.html&lt;/a&gt;)
 and your &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-158-YubiKey-4-Black/dp/B018Y1Q71M/ref=as_li_ss_tl?ie=UTF8&amp;amp;qid=1507054059&amp;amp;sr=8-1&amp;amp;keywords=yubico&amp;#43;4&amp;amp;linkCode=ll1&amp;amp;tag=andreagrandi-21&amp;amp;linkId=6da97357c6fe86ca94df918c172f6605&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;YubiKey&lt;/a&gt; will be reset with factory settings, deleting your PGP keys from it.&lt;/p&gt;
-&lt;h3 id=&#34;references&#34;&gt;References&lt;/h3&gt;
-&lt;p&gt;To write this tutorial I originally followed other articles online. The main ones are:&lt;/p&gt;
+&lt;h3 id=&#34;references&#34;&gt;References
+&lt;/h3&gt;&lt;p&gt;To write this tutorial I originally followed other articles online. The main ones are:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.esev.com/blog/post/2015-01-pgp-ssh-key-on-yubikey-neo/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://www.esev.com/blog/post/2015-01-pgp-ssh-key-on-yubikey-neo/&lt;/a&gt;&lt;/li&gt;
@@ -1026,8 +1026,8 @@ and your &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.co.uk/Yubico-Y-
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://rnorth.org/gpg-and-ssh-with-yubikey-for-mac&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://rnorth.org/gpg-and-ssh-with-yubikey-for-mac&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;amazon-association-disclaimer&#34;&gt;Amazon Association disclaimer&lt;/h4&gt;
-&lt;p&gt;I&amp;rsquo;m trying a little experiment with the Amazon Association program. Basically, if you click
+&lt;h4 id=&#34;amazon-association-disclaimer&#34;&gt;Amazon Association disclaimer
+&lt;/h4&gt;&lt;p&gt;I&amp;rsquo;m trying a little experiment with the Amazon Association program. Basically, if you click
 on any of the YubiKey links and decide to buy it, I will get a little commission from it.
 I&amp;rsquo;ve never tried this before and I&amp;rsquo;ve no idea if it works or not. I&amp;rsquo;m writing this here just for the
 sake of transparency.&lt;/p&gt;

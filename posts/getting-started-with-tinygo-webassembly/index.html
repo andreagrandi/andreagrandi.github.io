@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This tutorial explains how to call a method written in Go and compiled to WebAssembly (WASM) from JavaScript by using TinyGo'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="This tutorial explains how to call a method written in Go and compiled to WebAssembly (WASM) from JavaScript by using TinyGo">
 <title>Getting started with TinyGo and WebAssembly (WASM)</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/getting-started-with-tinygo-webassembly/'>
 
-<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Getting started with TinyGo and WebAssembly (WASM)'>
-<meta property='og:description' content='This tutorial explains how to call a method written in Go and compiled to WebAssembly (WASM) from JavaScript by using TinyGo'>
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Getting started with TinyGo and WebAssembly (WASM)">
+<meta property='og:description' content="This tutorial explains how to call a method written in Go and compiled to WebAssembly (WASM) from JavaScript by using TinyGo">
 <meta property='og:url' content='https://www.andreagrandi.it/posts/getting-started-with-tinygo-webassembly/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='go' /><meta property='article:tag' content='golang' /><meta property='article:tag' content='tinygo' /><meta property='article:tag' content='web' /><meta property='article:tag' content='webassembly' /><meta property='article:tag' content='wasm' /><meta property='article:tag' content='assembly' /><meta property='article:tag' content='js' /><meta property='article:tag' content='javascript' /><meta property='article:tag' content='html' /><meta property='article:tag' content='browser' /><meta property='article:tag' content='macos' /><meta property='article:tag' content='code' /><meta property='article:tag' content='development' /><meta property='article:tag' content='embedded' /><meta property='article:tag' content='programming' /><meta property='article:tag' content='language' /><meta property='article:published_time' content='2020-10-23T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2020-10-23T00:00:00&#43;00:00'/>
@@ -304,8 +304,8 @@
     >WebAssembly</a> we can write a library in almost any language, compile it to <strong>WebAssembly (WASM)</strong> and use it from <strong>JavaScript</strong>.</p>
 <p>In this tutorial I will show you how to get started with <a class="link" href="https://tinygo.org"  target="_blank" rel="noopener"
     >TinyGo</a> by writing a simple <code>add()</code> method in <strong>Go</strong> and using it from a web page. All the code will be running <strong>in the browser</strong> without any backend process involved (you only need a static server to serve the html page and JavaScript files, but I will cover this part too).</p>
-<h2 id="install-tinygo">Install TinyGo</h2>
-<p>To be able to install <a class="link" href="https://tinygo.org"  target="_blank" rel="noopener"
+<h2 id="install-tinygo">Install TinyGo
+</h2><p>To be able to install <a class="link" href="https://tinygo.org"  target="_blank" rel="noopener"
     >TinyGo</a> you need to have <a class="link" href="https://golang.org"  target="_blank" rel="noopener"
     >Go</a> installed first. I have personally tested this on my Mac, so I will provide instructions for MacOS, but you can find instructions for the other operating systems directly on the project website: <a class="link" href="https://tinygo.org/getting-started"  target="_blank" rel="noopener"
     >https://tinygo.org/getting-started</a></p>
@@ -331,8 +331,8 @@
 </span></span><span class="line"><span class="cl">tinygo version 0.15.0 darwin/amd64 <span class="o">(</span>using go version go1.15.3 and LLVM version 10.0.1<span class="o">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="implement-an-add-method-in-go">Implement an add() method in Go</h2>
-<p>Create a new empty project/repository using your favourite IDE (I personally used <strong>VSCode</strong>, but of course you can use anything else) and then create <code>main.go</code> file with this code:</p>
+</div><h2 id="implement-an-add-method-in-go">Implement an add() method in Go
+</h2><p>Create a new empty project/repository using your favourite IDE (I personally used <strong>VSCode</strong>, but of course you can use anything else) and then create <code>main.go</code> file with this code:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -361,8 +361,8 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="compile-to-webassembly-wasm">Compile to WebAssembly (WASM)</h2>
-<p>To compile the above code to <strong>WebAssembly</strong> you need to run this command:</p>
+</div><h2 id="compile-to-webassembly-wasm">Compile to WebAssembly (WASM)
+</h2><p>To compile the above code to <strong>WebAssembly</strong> you need to run this command:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -372,8 +372,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>that will create a file named <code>wasm.wasm</code> in the same directory of your project. This is the compiled web binary that will be loaded later by JavaScript.</p>
-<h2 id="add-required-wasm-library">Add required WASM library</h2>
-<p>There is a file that is provided with TinyGo that you need to distribute with your application: <code>wasm_exec.js</code>. To include it in your project, you need to run this:</p>
+<h2 id="add-required-wasm-library">Add required WASM library
+</h2><p>There is a file that is provided with TinyGo that you need to distribute with your application: <code>wasm_exec.js</code>. To include it in your project, you need to run this:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -382,8 +382,8 @@
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cp <span class="k">$(</span>tinygo env TINYGOROOT<span class="k">)</span>/targets/wasm_exec.js .
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="script-to-load-the-webassembly">Script to load the WebAssembly</h2>
-<p>At this point you will need an additional JavaScript file that will take care of loading the WebAssembly code. This file is not &ldquo;standard&rdquo; and may be different for every project, but the essential commands will be very similar.</p>
+</div><h2 id="script-to-load-the-webassembly">Script to load the WebAssembly
+</h2><p>At this point you will need an additional JavaScript file that will take care of loading the WebAssembly code. This file is not &ldquo;standard&rdquo; and may be different for every project, but the essential commands will be very similar.</p>
 <p>Create a new file named <code>wasm.js</code> with this code and save it in the root of your project along with the other files:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -425,8 +425,8 @@
 </span></span><span class="line"><span class="cl"><span class="nx">init</span><span class="p">();</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="html-page-to-collect-input-and-show-result">HTML page to collect input and show result</h2>
-<p>We create a simple HTML page that will display two input boxes and a third one to show the result. Create a new file named <code>index.html</code> in the root of your project:</p>
+</div><h2 id="html-page-to-collect-input-and-show-result">HTML page to collect input and show result
+</h2><p>We create a simple HTML page that will display two input boxes and a third one to show the result. Create a new file named <code>index.html</code> in the root of your project:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -496,8 +496,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>Please note:</strong> frontend development is really not my daily bread. I&rsquo;m sure the above code can be written in a better way, but I can assure you that at least it works.</p>
-<h2 id="serving-the-static-files">Serving the static files</h2>
-<p>The project itself would be complete, but you need something able to serve static pages and set a couple of required headers. We can implement one with a few lines of Go. Create a new file named <code>server.go</code>:</p>
+<h2 id="serving-the-static-files">Serving the static files
+</h2><p>The project itself would be complete, but you need something able to serve static pages and set a couple of required headers. We can implement one with a few lines of Go. Create a new file named <code>server.go</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -546,8 +546,8 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="testing-the-project">Testing the project</h2>
-<p>The project is now complete and can be tested. There are at least two methods to check if everything works: <strong>using the webpage</strong> we just created and <strong>calling the method from the JavaScript console</strong>.</p>
+</div><h2 id="testing-the-project">Testing the project
+</h2><p>The project is now complete and can be tested. There are at least two methods to check if everything works: <strong>using the webpage</strong> we just created and <strong>calling the method from the JavaScript console</strong>.</p>
 <p>To test the application using the web page, run the server from the command line:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -589,17 +589,17 @@
 		data-flex-basis="536px"
 	
 >{width=60%}</a></p>
-<h2 id="conclusion">Conclusion</h2>
-<p>If you want to learn more about <strong>TinyGo</strong> I suggest you to visit the project website <a class="link" href="https://tinygo.org"  target="_blank" rel="noopener"
+<h2 id="conclusion">Conclusion
+</h2><p>If you want to learn more about <strong>TinyGo</strong> I suggest you to visit the project website <a class="link" href="https://tinygo.org"  target="_blank" rel="noopener"
     >https://tinygo.org</a> while more technical information and details about <strong>WebAssembly</strong> can be found here <a class="link" href="https://webassembly.org"  target="_blank" rel="noopener"
     >https://webassembly.org</a></p>
 <p>You can find the <strong>complete source code</strong> of this project on <strong>GitHub</strong>: <a class="link" href="https://github.com/andreagrandi/tinygo-adder"  target="_blank" rel="noopener"
     >https://github.com/andreagrandi/tinygo-adder</a></p>
-<h2 id="credits">Credits</h2>
-<p>I want to thank my colleague <a class="link" href="https://twitter.com/rossjones"  target="_blank" rel="noopener"
+<h2 id="credits">Credits
+</h2><p>I want to thank my colleague <a class="link" href="https://twitter.com/rossjones"  target="_blank" rel="noopener"
     >Ross Jones</a> for introducing me to WASM and for the help given.</p>
-<h2 id="references">References</h2>
-<ul>
+<h2 id="references">References
+</h2><ul>
 <li><a class="link" href="https://tinygo.org/webassembly"  target="_blank" rel="noopener"
     >https://tinygo.org/webassembly</a></li>
 <li><a class="link" href="https://webassembly.org/"  target="_blank" rel="noopener"
@@ -794,7 +794,7 @@
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.21.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
