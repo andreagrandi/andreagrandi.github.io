@@ -6,7 +6,128 @@
         <description>Recent content in Gdpr on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 25 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/gdpr/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/gdpr/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Self hosting a website analytics at zero cost</title>
+        <link>https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/</link>
+        <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/cover-self-hosting-analytics.png" alt="Featured image of post Self hosting a website analytics at zero cost" /&gt;&lt;p&gt;I recently started using &lt;a class=&#34;link&#34; href=&#34;https://umami.is&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Umami&lt;/a&gt; (a &lt;strong&gt;privacy first&lt;/strong&gt;, &lt;strong&gt;GDPR compliant&lt;/strong&gt; solution) for this website analytics but I immediately found out that &lt;strong&gt;their free plan was not enough for my needs&lt;/strong&gt; (10k page views per month).&lt;/p&gt;
+&lt;p&gt;Since it&amp;rsquo;s completely &lt;strong&gt;open source&lt;/strong&gt;, you can self host it anywhere you want.&lt;/p&gt;
+&lt;p&gt;I was initially evaluating between &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/posts/buy-or-rent-raspberrypi-vs-vps&#34; &gt;buying a Raspberry Pi or renting a VPS&lt;/a&gt;, but I eventually found a third solution which comes at &lt;strong&gt;zero cost&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;requirements&#34;&gt;Requirements
+&lt;/h2&gt;&lt;p&gt;Your are going to need a few accounts if you want to follow exactly these steps, but keep in mind that my exact configuration is just an example and that you are free to use any other combination of services.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;GitHub&lt;/strong&gt;&lt;/a&gt;: used to login on other services and to host a fork of Umami&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/umami-software/umami&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Umami source code&lt;/strong&gt;&lt;/a&gt;: it&amp;rsquo;s available on their GitHub account&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://vercel.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Vercel&lt;/strong&gt;&lt;/a&gt;: used to host the app itself, they have a generous free plan&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://xata.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Xata&lt;/strong&gt;&lt;/a&gt;: they offer a very generous (15GB) free account for managed PostgreSQL&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.cloudflare.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Cloudflare&lt;/strong&gt;&lt;/a&gt;: this service is optional, but I found it quite useful to get a nice &lt;code&gt;stats.andreagrandi.it&lt;/code&gt; which points to the deployed instance on Vercel&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I won&amp;rsquo;t get into every specific detail of the next steps (like &amp;ldquo;click on the second link of this page, then click&amp;hellip;&amp;rdquo;). If you decide to self host something like this, you should have a basic understanding of how a web application works, what GitHub and a database are etc&amp;hellip;&lt;/p&gt;
+&lt;h2 id=&#34;github&#34;&gt;GitHub
+&lt;/h2&gt;&lt;p&gt;Create a GitHub account, if you don&amp;rsquo;t have one, then go to &lt;a class=&#34;link&#34; href=&#34;https://github.com/umami-software/umami&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/umami-software/umami&lt;/a&gt; and fork their repository into your own account.&lt;/p&gt;
+&lt;h3 id=&#34;fix-umami-migration-script&#34;&gt;Fix Umami migration script
+&lt;/h3&gt;&lt;p&gt;There is an existing &lt;strong&gt;issue with Umami initial migration script and Xata PostgreSQL&lt;/strong&gt; instance. Umami tries to create an extension (which Xata already has) but Xata doesn&amp;rsquo;t allow the creation of new extensions in the free plan and the returned error will make the script to fail.&lt;/p&gt;
+&lt;p&gt;To avoid this you need to comment &lt;a class=&#34;link&#34; href=&#34;https://github.com/umami-software/umami/blob/master/db/postgresql/migrations/01_init/migration.sql#L2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;the first line of this migration script&lt;/a&gt; (by the way, I got in touch with Xata support too and they mentioned they could eventually avoid returning an error in this case but I don&amp;rsquo;t have an estimate on when this will be done).&lt;/p&gt;
+&lt;h2 id=&#34;xata&#34;&gt;Xata
+&lt;/h2&gt;&lt;p&gt;Before you create the account on Vercel, I suggest you to create the Xata account. You will need the PostgreSQL connection string at hand during Vercel configuration, so it&amp;rsquo;s better to create it upfront.&lt;/p&gt;
+&lt;p&gt;You can use the GitHub account to login to Xata, then create a new database and select the &lt;strong&gt;&amp;ldquo;Enable direct access to Postgres&amp;rdquo;&lt;/strong&gt; option.&lt;/p&gt;
+&lt;p&gt;Xata &lt;strong&gt;free plan&lt;/strong&gt; allows you to have a database where &lt;strong&gt;you can store up to 15GB of data&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Finally copy the connection string in a safe place, you will need it later.&lt;/p&gt;
+&lt;h3 id=&#34;connections-limit&#34;&gt;Connections limit
+&lt;/h3&gt;&lt;p&gt;Since we are here, I suggest you also add &lt;code&gt;connection_limit=10&lt;/code&gt; to the connection string, otherwise you risk to saturate all the available connections in the free plan.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;postgresql://abc123:&amp;lt;YOUR_API_KEY&amp;gt;@eu-central-1.sql.xata.sh/umami:main?sslmode&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;require&lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;connection_limit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;vercel&#34;&gt;Vercel
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://vercel.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Vercel&lt;/a&gt; is an hosting service which allows you to run web applications in a &lt;strong&gt;completely managed environment&lt;/strong&gt;. You won&amp;rsquo;t have to think about OS upgrades, manually install any framework or think about security. Everything will be managed and all the options can be adjusted from a web interface.&lt;/p&gt;
+&lt;p&gt;The company behind it is the same behind &lt;a class=&#34;link&#34; href=&#34;https://nodejs.org&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;NodeJS&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create an account using GitHub login, so you won&amp;rsquo;t have to use a specific user/password to login.&lt;/li&gt;
+&lt;li&gt;Import the fork: in my case it&amp;rsquo;s the one at &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/umami&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/andreagrandi/umami&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Configure the project adding the PostgreSQL connection string: you can find this in the Xata dashboard.&lt;/li&gt;
+&lt;li&gt;Test the connection and do the first deployment.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;umami&#34;&gt;Umami
+&lt;/h2&gt;&lt;p&gt;Once the deployment is completed, &lt;strong&gt;Umami should be up and running&lt;/strong&gt; at the address specified here:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/vercel-domains.png&#34;
+	width=&#34;2594&#34;
+	height=&#34;1098&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Vercel deployment&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;566px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;At this point you need to change the default password as soon as possible. Login using &lt;code&gt;admin&lt;/code&gt; and &lt;code&gt;umami&lt;/code&gt; and then go to the settings page to change it.&lt;/p&gt;
+&lt;h2 id=&#34;cloudflare&#34;&gt;Cloudflare
+&lt;/h2&gt;&lt;p&gt;In case you already use Cloudflare (I don&amp;rsquo;t suggest you go through a configuration from scratch just to have a nice url), I will show you what I did to have my stats running on &lt;code&gt;stats.andreagrandi.it&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;To do this, you need to create a new CNAME record in your Cloudflare dashboard, pointing to the Vercel deployment url, like I did here:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/cloudflare-domain.png&#34;
+	width=&#34;1964&#34;
+	height=&#34;796&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Cloudflare CNAME record&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;246&#34;
+		data-flex-basis=&#34;592px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once the record has been created, you need to go back to Vercel and add the new domain to the project settings (see the previous screenshot), so that the application will be reachable from the new domain.&lt;/p&gt;
+&lt;h2 id=&#34;complete-the-configuration&#34;&gt;Complete the configuration
+&lt;/h2&gt;&lt;p&gt;The rest of the instructions are just about configuring the website and adding the analytics snippet to your website. I won&amp;rsquo;t go into details here, but you can find all the information you need in the &lt;a class=&#34;link&#34; href=&#34;https://umami.is/docs&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official Umami documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;add-a-website&#34;&gt;Add a website
+&lt;/h3&gt;&lt;p&gt;The first thing you have to do once you login to Umami is to add a new website. You can do this by clicking on &amp;ldquo;Settings&amp;rdquo; first, then &amp;ldquo;Websites&amp;rdquo; link in the left menu and then on the &amp;ldquo;Add website&amp;rdquo; button. You can find the complete instructions &lt;a class=&#34;link&#34; href=&#34;https://umami.is/docs/add-a-website&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;install-the-analytics-snippet-to-your-website&#34;&gt;Install the analytics snippet to your website
+&lt;/h3&gt;&lt;p&gt;Then you need to copy the tracking code and add it to your website. You can find the complete instructions &lt;a class=&#34;link&#34; href=&#34;https://umami.is/docs/collect-data&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;here&lt;/a&gt;. How to do this depends on the technology you are using to build your website, but in general it must be placed inside the &lt;code&gt;&amp;lt;head&amp;gt;&lt;/code&gt; tag of your website.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/umami-snippet.png&#34;
+	width=&#34;2116&#34;
+	height=&#34;804&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Umami snippet&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;263&#34;
+		data-flex-basis=&#34;631px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;If you are looking for a privacy first, GDPR compliant analytics solution, you should definitely consider Umami. It&amp;rsquo;s easy to use, free and open-source, and you don&amp;rsquo;t have to worry about your data being shared with third parties. You can host it yourself and have full control over your data.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Google is moving some EU citizens data to US</title>
         <link>https://www.andreagrandi.it/posts/google-is-moving-eu-citizens-data-to-us/</link>
         <pubDate>Tue, 25 Feb 2020 00:00:00 +0000</pubDate>

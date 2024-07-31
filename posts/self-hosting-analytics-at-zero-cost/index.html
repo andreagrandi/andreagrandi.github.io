@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to self host a website analytics solution at zero cost using Umami, Vercel, Xata and Cloudflare.">
+<title>Self hosting a website analytics at zero cost</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/'>
+
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Self hosting a website analytics at zero cost">
+<meta property='og:description' content="How to self host a website analytics solution at zero cost using Umami, Vercel, Xata and Cloudflare.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='umami' /><meta property='article:tag' content='hosting' /><meta property='article:tag' content='cloud' /><meta property='article:tag' content='analytics' /><meta property='article:tag' content='vercel' /><meta property='article:tag' content='xata' /><meta property='article:tag' content='cloudflare' /><meta property='article:tag' content='github' /><meta property='article:tag' content='postgresql' /><meta property='article:tag' content='privacy' /><meta property='article:tag' content='gdpr' /><meta property='article:published_time' content='2024-07-31T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-07-31T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/cover-self-hosting-analytics.png' />
+<meta name="twitter:title" content="Self hosting a website analytics at zero cost">
+<meta name="twitter:description" content="How to self host a website analytics solution at zero cost using Umami, Vercel, Xata and Cloudflare."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/self-hosting-analytics-at-zero-cost/cover-self-hosting-analytics.png' />
+  
+
+<style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/self-hosting-analytics-at-zero-cost/">
+                <img src="/posts/self-hosting-analytics-at-zero-cost/cover-self-hosting-analytics.png"
+                        
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Self hosting a website analytics at zero cost" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/howto/" >
+                HowTo
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/self-hosting-analytics-at-zero-cost/">Self hosting a website analytics at zero cost</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            How to self host a website analytics solution at zero cost using Umami, Vercel, Xata and Cloudflare.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 31, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>I recently started using <a class="link" href="https://umami.is"  target="_blank" rel="noopener"
+    >Umami</a> (a <strong>privacy first</strong>, <strong>GDPR compliant</strong> solution) for this website analytics but I immediately found out that <strong>their free plan was not enough for my needs</strong> (10k page views per month).</p>
+<p>Since it&rsquo;s completely <strong>open source</strong>, you can self host it anywhere you want.</p>
+<p>I was initially evaluating between <a class="link" href="/posts/buy-or-rent-raspberrypi-vs-vps" >buying a Raspberry Pi or renting a VPS</a>, but I eventually found a third solution which comes at <strong>zero cost</strong>.</p>
+<h2 id="requirements">Requirements
+</h2><p>Your are going to need a few accounts if you want to follow exactly these steps, but keep in mind that my exact configuration is just an example and that you are free to use any other combination of services.</p>
+<ul>
+<li><a class="link" href="https://github.com"  target="_blank" rel="noopener"
+    ><strong>GitHub</strong></a>: used to login on other services and to host a fork of Umami</li>
+<li><a class="link" href="https://github.com/umami-software/umami"  target="_blank" rel="noopener"
+    ><strong>Umami source code</strong></a>: it&rsquo;s available on their GitHub account</li>
+<li><a class="link" href="https://vercel.com"  target="_blank" rel="noopener"
+    ><strong>Vercel</strong></a>: used to host the app itself, they have a generous free plan</li>
+<li><a class="link" href="https://xata.io"  target="_blank" rel="noopener"
+    ><strong>Xata</strong></a>: they offer a very generous (15GB) free account for managed PostgreSQL</li>
+<li><a class="link" href="https://www.cloudflare.com"  target="_blank" rel="noopener"
+    ><strong>Cloudflare</strong></a>: this service is optional, but I found it quite useful to get a nice <code>stats.andreagrandi.it</code> which points to the deployed instance on Vercel</li>
+</ul>
+<p>I won&rsquo;t get into every specific detail of the next steps (like &ldquo;click on the second link of this page, then click&hellip;&rdquo;). If you decide to self host something like this, you should have a basic understanding of how a web application works, what GitHub and a database are etc&hellip;</p>
+<h2 id="github">GitHub
+</h2><p>Create a GitHub account, if you don&rsquo;t have one, then go to <a class="link" href="https://github.com/umami-software/umami"  target="_blank" rel="noopener"
+    >https://github.com/umami-software/umami</a> and fork their repository into your own account.</p>
+<h3 id="fix-umami-migration-script">Fix Umami migration script
+</h3><p>There is an existing <strong>issue with Umami initial migration script and Xata PostgreSQL</strong> instance. Umami tries to create an extension (which Xata already has) but Xata doesn&rsquo;t allow the creation of new extensions in the free plan and the returned error will make the script to fail.</p>
+<p>To avoid this you need to comment <a class="link" href="https://github.com/umami-software/umami/blob/master/db/postgresql/migrations/01_init/migration.sql#L2"  target="_blank" rel="noopener"
+    >the first line of this migration script</a> (by the way, I got in touch with Xata support too and they mentioned they could eventually avoid returning an error in this case but I don&rsquo;t have an estimate on when this will be done).</p>
+<h2 id="xata">Xata
+</h2><p>Before you create the account on Vercel, I suggest you to create the Xata account. You will need the PostgreSQL connection string at hand during Vercel configuration, so it&rsquo;s better to create it upfront.</p>
+<p>You can use the GitHub account to login to Xata, then create a new database and select the <strong>&ldquo;Enable direct access to Postgres&rdquo;</strong> option.</p>
+<p>Xata <strong>free plan</strong> allows you to have a database where <strong>you can store up to 15GB of data</strong>.</p>
+<p>Finally copy the connection string in a safe place, you will need it later.</p>
+<h3 id="connections-limit">Connections limit
+</h3><p>Since we are here, I suggest you also add <code>connection_limit=10</code> to the connection string, otherwise you risk to saturate all the available connections in the free plan.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">postgresql://abc123:&lt;YOUR_API_KEY&gt;@eu-central-1.sql.xata.sh/umami:main?sslmode<span class="o">=</span>require<span class="p">&amp;</span><span class="nv">connection_limit</span><span class="o">=</span><span class="m">10</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="vercel">Vercel
+</h2><p><a class="link" href="https://vercel.com"  target="_blank" rel="noopener"
+    >Vercel</a> is an hosting service which allows you to run web applications in a <strong>completely managed environment</strong>. You won&rsquo;t have to think about OS upgrades, manually install any framework or think about security. Everything will be managed and all the options can be adjusted from a web interface.</p>
+<p>The company behind it is the same behind <a class="link" href="https://nodejs.org"  target="_blank" rel="noopener"
+    ><strong>NodeJS</strong></a>.</p>
+<ol>
+<li>Create an account using GitHub login, so you won&rsquo;t have to use a specific user/password to login.</li>
+<li>Import the fork: in my case it&rsquo;s the one at <a class="link" href="https://github.com/andreagrandi/umami"  target="_blank" rel="noopener"
+    >https://github.com/andreagrandi/umami</a></li>
+<li>Configure the project adding the PostgreSQL connection string: you can find this in the Xata dashboard.</li>
+<li>Test the connection and do the first deployment.</li>
+</ol>
+<h2 id="umami">Umami
+</h2><p>Once the deployment is completed, <strong>Umami should be up and running</strong> at the address specified here:</p>
+<p><img src="/posts/self-hosting-analytics-at-zero-cost/vercel-domains.png"
+	width="2594"
+	height="1098"
+	
+	loading="lazy"
+	
+		alt="Vercel deployment"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="566px"
+	
+></p>
+<p>At this point you need to change the default password as soon as possible. Login using <code>admin</code> and <code>umami</code> and then go to the settings page to change it.</p>
+<h2 id="cloudflare">Cloudflare
+</h2><p>In case you already use Cloudflare (I don&rsquo;t suggest you go through a configuration from scratch just to have a nice url), I will show you what I did to have my stats running on <code>stats.andreagrandi.it</code></p>
+<p>To do this, you need to create a new CNAME record in your Cloudflare dashboard, pointing to the Vercel deployment url, like I did here:</p>
+<p><img src="/posts/self-hosting-analytics-at-zero-cost/cloudflare-domain.png"
+	width="1964"
+	height="796"
+	
+	loading="lazy"
+	
+		alt="Cloudflare CNAME record"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="246"
+		data-flex-basis="592px"
+	
+></p>
+<p>Once the record has been created, you need to go back to Vercel and add the new domain to the project settings (see the previous screenshot), so that the application will be reachable from the new domain.</p>
+<h2 id="complete-the-configuration">Complete the configuration
+</h2><p>The rest of the instructions are just about configuring the website and adding the analytics snippet to your website. I won&rsquo;t go into details here, but you can find all the information you need in the <a class="link" href="https://umami.is/docs"  target="_blank" rel="noopener"
+    >official Umami documentation</a>.</p>
+<h3 id="add-a-website">Add a website
+</h3><p>The first thing you have to do once you login to Umami is to add a new website. You can do this by clicking on &ldquo;Settings&rdquo; first, then &ldquo;Websites&rdquo; link in the left menu and then on the &ldquo;Add website&rdquo; button. You can find the complete instructions <a class="link" href="https://umami.is/docs/add-a-website"  target="_blank" rel="noopener"
+    >here</a>.</p>
+<h3 id="install-the-analytics-snippet-to-your-website">Install the analytics snippet to your website
+</h3><p>Then you need to copy the tracking code and add it to your website. You can find the complete instructions <a class="link" href="https://umami.is/docs/collect-data"  target="_blank" rel="noopener"
+    >here</a>. How to do this depends on the technology you are using to build your website, but in general it must be placed inside the <code>&lt;head&gt;</code> tag of your website.</p>
+<p><img src="/posts/self-hosting-analytics-at-zero-cost/umami-snippet.png"
+	width="2116"
+	height="804"
+	
+	loading="lazy"
+	
+		alt="Umami snippet"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="263"
+		data-flex-basis="631px"
+	
+></p>
+<h2 id="conclusion">Conclusion
+</h2><p>If you are looking for a privacy first, GDPR compliant analytics solution, you should definitely consider Umami. It&rsquo;s easy to use, free and open-source, and you don&rsquo;t have to worry about your data being shared with third parties. You can host it yourself and have full control over your data.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/umami/">Umami</a>
+        
+            <a href="/tags/hosting/">Hosting</a>
+        
+            <a href="/tags/cloud/">Cloud</a>
+        
+            <a href="/tags/analytics/">Analytics</a>
+        
+            <a href="/tags/vercel/">Vercel</a>
+        
+            <a href="/tags/xata/">Xata</a>
+        
+            <a href="/tags/cloudflare/">Cloudflare</a>
+        
+            <a href="/tags/github/">GitHub</a>
+        
+            <a href="/tags/postgresql/">Postgresql</a>
+        
+            <a href="/tags/privacy/">Privacy</a>
+        
+            <a href="/tags/gdpr/">Gdpr</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/buy-or-rent-raspberrypi-vs-vps/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/buy-or-rent-raspberrypi-vs-vps/cover-raspberrypi-vs-vps.54b6b2c975795c79e46a5d9631bbbcae.png" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Buy or Rent? RaspberryPi vs VPS"
+                        data-key="buy-or-rent-raspberrypi-vs-vps" 
+                        data-hash="md5-VLayyXV5XHnkal2WMbu8rg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Buy or Rent? RaspberryPi vs VPS</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/cryptomator-end-to-end-encrypt-files-in-cloud/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/cryptomator-end-to-end-encrypt-files-in-cloud/man-vault.a3fe5dc1cfe1dc0bbdde6bfe97e583de.png" 
+                        width="768" 
+                        height="533" 
+                        loading="lazy"
+                        alt="Featured image of post Cryptomator: end-to-end encrypt files in any cloud"
+                        data-key="cryptomator-end-to-end-encrypt-files-in-cloud" 
+                        data-hash="md5-o/5dwc/h3Au93mv&#43;l&#43;WD3g==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Cryptomator: end-to-end encrypt files in any cloud</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/google-is-moving-eu-citizens-data-to-us/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Google is moving some EU citizens data to US</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/self-hosting-copilot-replacement/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/self-hosting-copilot-replacement/self-hosting-copilot-cover.1af1e98bd3115262f921e6961c33f5ad.webp" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Self hosting a Copilot replacement: my personal experience"
+                        data-key="self-hosting-copilot-replacement" 
+                        data-hash="md5-GvHpi9MRUmL5IeaWHDP1rQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Self hosting a Copilot replacement: my personal experience</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/my-backup-strategy/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/my-backup-strategy/backup-strategy-cover.ce8b49bee876a5d74240a4a9ae1e78dc.webp" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post My Backup Strategy with Borg, Vorta and BorgBase"
+                        data-key="my-backup-strategy" 
+                        data-hash="md5-zotJvuh2pddCQKSprh543A==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">My Backup Strategy with Borg, Vorta and BorgBase</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>
