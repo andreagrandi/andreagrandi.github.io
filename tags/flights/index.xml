@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Flights on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/flights/</link>
+        <description>Recent content in Flights on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 10 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/flights/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Tracking airplanes with a Raspberry Pi and an ADS-B receiver</title>
+        <link>https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/</link>
+        <pubDate>Sat, 10 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/cover-adsbexchange-flights.png" alt="Featured image of post Tracking airplanes with a Raspberry Pi and an ADS-B receiver" /&gt;&lt;p&gt;If you have ever used a flight tracking app like &lt;a class=&#34;link&#34; href=&#34;https://www.flightradar24.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Flightradar24&lt;/a&gt; or &lt;a class=&#34;link&#34; href=&#34;https://flightaware.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;FlightAware&lt;/a&gt; you might have wondered how they get the data about the airplanes in real time. All these services use an existing network of ADS-B receivers to collect data about the airplanes in the sky.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-ads-b&#34;&gt;What is ADS-B?
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/Automatic_Dependent_Surveillance%e2%80%93Broadcast&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ADS-B&lt;/a&gt; stands for &lt;strong&gt;Automatic Dependent Surveillance-Broadcast&lt;/strong&gt; and it&amp;rsquo;s a technology that allows aircraft to determine their position via satellite navigation and periodically broadcast it, enabling them to be tracked. The information can be received by air traffic control ground stations as a replacement for secondary radar.&lt;/p&gt;
+&lt;p&gt;This is all &lt;strong&gt;public information&lt;/strong&gt; (it&amp;rsquo;s public data and &lt;strong&gt;you are legally allowed to receive it and share it&lt;/strong&gt;).&lt;/p&gt;
+&lt;h2 id=&#34;what-do-you-need&#34;&gt;What do you need?
+&lt;/h2&gt;&lt;p&gt;To build the tracking device you need a few things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a &lt;strong&gt;Raspberry Pi&lt;/strong&gt; (I&amp;rsquo;m using a Raspberry Pi 2 Model B)&lt;/li&gt;
+&lt;li&gt;an &lt;strong&gt;ADS-B receiver&lt;/strong&gt; (I&amp;rsquo;m using a &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.it/dp/B07K47P7XD?psc=1&amp;amp;ref=ppx_yo2ov_dt_b_product_details&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AirNav RadarBox FlightStick&lt;/a&gt; but any &lt;strong&gt;RTL2832/R820T2-based&lt;/strong&gt; USB dongle should work)&lt;/li&gt;
+&lt;li&gt;a &lt;strong&gt;1090MHz capable antenna&lt;/strong&gt; (I&amp;rsquo;m using a &lt;a class=&#34;link&#34; href=&#34;https://www.amazon.it/dp/B07ZH5FJBW?psc=1&amp;amp;ref=ppx_yo2ov_dt_b_product_details&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Bingfu Antenna RTL SDR&lt;/a&gt;, any similar antenna should work, just make sure the connector is compatible with your receiver otherwise you might need an adapter)&lt;/li&gt;
+&lt;li&gt;a &lt;strong&gt;microSD card&lt;/strong&gt; (I&amp;rsquo;m using a 16GB one) and a &lt;strong&gt;power supply&lt;/strong&gt; for the Raspberry Pi&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/raspberrypi-receiver.png&#34;
+	width=&#34;5712&#34;
+	height=&#34;4284&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;RaspberryPi 2 and ADS-B receiver&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;is-a-raspberry-pi-x-enough&#34;&gt;Is a Raspberry Pi x enough?
+&lt;/h3&gt;&lt;p&gt;I&amp;rsquo;m using a &lt;strong&gt;Raspberry Pi 2 Model B&lt;/strong&gt;, which is quite old (it was released in 2015) and it&amp;rsquo;s not the most powerful Raspberry Pi available. It&amp;rsquo;s still enough to run the software needed to track the airplanes, but if you have a newer Raspberry Pi (like a Raspberry Pi 4 or 5) you may be able to handle higher workloads (especially if you live nearby a busy airport) and feed multiple services.&lt;/p&gt;
+&lt;p&gt;If you are still not sure, have a look at the stats of my Raspberry Pi 2 while running the software: I&amp;rsquo;m using &lt;strong&gt;just 23% of the CPU&lt;/strong&gt; and &lt;strong&gt;~200MB&lt;/strong&gt; of the total available &lt;strong&gt;memory&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/raspberrypi-stats.png&#34;
+	width=&#34;1318&#34;
+	height=&#34;753&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;RaspberryPi 2 stats&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;setting-up-the-raspberry-pi&#34;&gt;Setting up the Raspberry Pi
+&lt;/h2&gt;&lt;p&gt;Once you have all the components, you have two options to set up the Raspberry Pi:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;install the software from scratch&lt;/strong&gt; (this is the most complicated way but it gives you more control over the system)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;use a pre-built image&lt;/strong&gt; (this is the easiest way, you just need to flash the image on the microSD card and you are ready to go) like the one provided by &lt;a class=&#34;link&#34; href=&#34;https://www.flightradar24.com/build-your-own&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;FlightRadar24&lt;/a&gt; or &lt;a class=&#34;link&#34; href=&#34;https://www.flightaware.com/adsb/piaware/build/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Flightaware&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I won&amp;rsquo;t cover the detailed instructions, but I opted for the first option (also because I wasn&amp;rsquo;t sure which service I was going to feed).&lt;/p&gt;
+&lt;p&gt;Something I can definitely suggest, in case you plan to install RaspbianOS from scratch, is to use the &lt;a class=&#34;link&#34; href=&#34;https://www.raspberrypi.com/software/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Raspberry Pi Imager&lt;/strong&gt;&lt;/a&gt; and to install the &lt;strong&gt;Lite version&lt;/strong&gt; of the OS (you don&amp;rsquo;t need the desktop environment for this project).&lt;/p&gt;
+&lt;p&gt;I also suggest to &lt;strong&gt;install the &lt;a class=&#34;link&#34; href=&#34;https://tailscale.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Tailscale&lt;/a&gt; client&lt;/strong&gt; and &lt;a class=&#34;link&#34; href=&#34;https://tailscale.com/kb/1193/tailscale-ssh&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;enable SSH access&lt;/strong&gt;&lt;/a&gt; to the Raspberry Pi so you will be able to easily access the RaspberryPi from your computer, regardless of the network you are connected to.&lt;/p&gt;
+&lt;h3 id=&#34;where-to-place-the-antenna&#34;&gt;Where to place the antenna?
+&lt;/h3&gt;&lt;p&gt;The antenna should be placed in a &lt;strong&gt;location where it has a clear view of the sky&lt;/strong&gt;. The higher you can place it, the better the reception will be. I placed mine on the window sill, but if you have a balcony or a terrace you can place it there. To facilitate the installation of the device, I strongly recommend to at least use a WiFi connection for the Raspberry Pi, so all you need is a power supply and you just have to pass the antenna cable through the window.&lt;/p&gt;
+&lt;h2 id=&#34;configuring-the-feeder&#34;&gt;Configuring the feeder
+&lt;/h2&gt;&lt;p&gt;Once you have the Raspberry Pi up and running, you need to install the software to &lt;strong&gt;receive&lt;/strong&gt; the data from the ADS-B receiver and &lt;strong&gt;feed&lt;/strong&gt; it to the services.&lt;/p&gt;
+&lt;p&gt;The instructions for this step depend on the service you want to feed. In my case I decided to feed to &lt;a class=&#34;link&#34; href=&#34;https://www.adsbexchange.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;ADS-B Exchange&lt;/strong&gt;&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://www.flightradar24.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Flightradar24&lt;/strong&gt;&lt;/a&gt;, which they booth provide detailed instructions and scripts to install the software:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.adsbexchange.com/ways-to-join-the-exchange/existing-equipment/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ADS-B Exchange&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.flightradar24.com/share-your-data&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Flightradar24&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; it&amp;rsquo;s worth saying that if you opt for the easier setup (using a pre-built image) you won&amp;rsquo;t have to install the software manually, but you will still need to configure the feeder to send the data to the services (by answering a few questions during the setup, about your location and type of receiver).&lt;/p&gt;
+&lt;h3 id=&#34;add-nice-stats-to-your-raspberry-pi&#34;&gt;Add nice stats to your Raspberry Pi
+&lt;/h3&gt;&lt;p&gt;If you want to have some nice stats like the ones I showed you before, you can install install and utility called &lt;a class=&#34;link&#34; href=&#34;https://github.com/wiedehopf/graphs1090#graphs1090&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;graphs1090&lt;/strong&gt;&lt;/a&gt;. This utility doesn&amp;rsquo;t just show you CPU and memory stats, but also data from the ADS-B receiver like the number of messages received, the number of aircrafts tracked, and the number of positions reported.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/adsb-performances.png&#34;
+	width=&#34;1322&#34;
+	height=&#34;845&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;ADS-B Performances - graphs1090&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;156&#34;
+		data-flex-basis=&#34;375px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;which-other-services-could-or-i-should-feed&#34;&gt;Which other services could or I should feed?
+&lt;/h2&gt;&lt;p&gt;There are a few other serviced you could feed, and it&amp;rsquo;s totally up to you which one you want to use. Just keep in mind these two things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;each service you feed will likely give you back a &lt;strong&gt;premium account&lt;/strong&gt;, which will give you access to more features and data. So if you are interested in a specific service, you might want to feed it.&lt;/li&gt;
+&lt;li&gt;most of the services are &amp;ldquo;censored&amp;rdquo; (didn&amp;rsquo;t I say the data is public?) and they don&amp;rsquo;t show all the flights. If you want to see all the flights you need to feed to &lt;a class=&#34;link&#34; href=&#34;https://www.adsbexchange.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;ADS-B Exchange&lt;/strong&gt;&lt;/a&gt; which is the only service that shows all the flights, regardless of the aircraft owner 😏&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here are a few other services you could feed:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://flightaware.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;FlightAware&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.radarbox24.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;RadarBox24&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://planefinder.net&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Planefinder&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://opensky-network.org&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;OpenSky Network&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; some of these services may also send you a &lt;strong&gt;free ADS-B receiver&lt;/strong&gt; or a complete kit if you provide them with a good location to place the receiver (but if you don&amp;rsquo;t live in a location they are interested in, they won&amp;rsquo;t send you anything).&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;With a total budget of around &lt;strong&gt;120€&lt;/strong&gt; (Raspberry Pi 2 Model B, AirNav RadarBox FlightStick, Bingfu Antenna RTL SDR) and a couple of hours available, you can build your own flight tracking device and feed multiple services. It&amp;rsquo;s a fun project and it&amp;rsquo;s also useful to track the flights in your area. I didn&amp;rsquo;t know anything about ADS-B receivers before a couple of weeks ago and I totally have to &amp;ldquo;blame&amp;rdquo; my friend &lt;a class=&#34;link&#34; href=&#34;https://popey.com/blog/about/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Alan Pope&lt;/strong&gt;&lt;/a&gt; who told me about this project 😅&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References
+&lt;/h2&gt;&lt;p&gt;Here are other useful resources I found while setting up the Raspberry Pi:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.raspberrypi.com/tutorials/build-your-own-raspberry-pi-flight-tracker/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Build your own Raspberry Pi flight tracker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/wiedehopf/adsb-wiki&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ADSB Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
