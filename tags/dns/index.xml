@@ -6,7 +6,94 @@
         <description>Recent content in Dns on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 02 Sep 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/dns/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 13 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/dns/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>It&#39;s now possible to use ControlD DNS with Tailscale</title>
+        <link>https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/</link>
+        <pubDate>Tue, 13 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/cover-controld-tailscale.png" alt="Featured image of post It&#39;s now possible to use ControlD DNS with Tailscale" /&gt;&lt;p&gt;If you are using &lt;a class=&#34;link&#34; href=&#34;https://tailscale.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Tailscale&lt;/strong&gt;&lt;/a&gt; in some of your devices, you also need to use Tailscale own DNS server to resolve the names of the devices in the network. If you are also a user of &lt;a class=&#34;link&#34; href=&#34;https://controld.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;ControlD&lt;/strong&gt;&lt;/a&gt; DNS, and you want to use it with Tailscale, you can finally do it!&lt;/p&gt;
+&lt;h2 id=&#34;configure-a-new-endpoint-on-controld&#34;&gt;Configure a new Endpoint on ControlD
+&lt;/h2&gt;&lt;p&gt;First of all, you need to create a new &lt;strong&gt;endpoint&lt;/strong&gt; on ControlD. You can do it by logging in to your ControlD account, select &lt;strong&gt;Endpoints&lt;/strong&gt; from the left menu, and then click on the plus button.&lt;/p&gt;
+&lt;p&gt;Scroll down to &lt;strong&gt;Router&lt;/strong&gt; section and select &lt;strong&gt;Other&lt;/strong&gt; as the device type. In the next screen you need to specify a name, I used &lt;code&gt;tailscale-global&lt;/code&gt; but you can use any name you want.&lt;/p&gt;
+&lt;p&gt;Once you have created it, take note of the &lt;strong&gt;Resolver ID&lt;/strong&gt;, because you will need it in the next step.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/configure-endpoint.png&#34;
+	width=&#34;1665&#34;
+	height=&#34;811&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Configure endpoint on ControlD - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;492px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;configure-the-dns-on-tailscale&#34;&gt;Configure the DNS on Tailscale
+&lt;/h2&gt;&lt;p&gt;At this point you need to go to &lt;a class=&#34;link&#34; href=&#34;https://login.tailscale.com/admin/dns&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Tailscale admin console&lt;/a&gt;, and select the &lt;strong&gt;DNS&lt;/strong&gt; tab. Click on the &lt;strong&gt;Add nameserver&lt;/strong&gt; menu, and select &amp;ldquo;Control D&amp;rdquo; from the list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/add-controld-tailscale.png&#34;
+	width=&#34;1052&#34;
+	height=&#34;629&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Configure Nameserver - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;167&#34;
+		data-flex-basis=&#34;401px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once you have selected &lt;strong&gt;ControlD&lt;/strong&gt; from the list, you will get this window and you will need to fill the &lt;strong&gt;Endpoint&lt;/strong&gt; using the &lt;strong&gt;Resolver ID&lt;/strong&gt; you got from the previous step.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/add-controld-endpoint.png&#34;
+	width=&#34;1739&#34;
+	height=&#34;507&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Configure ControlD DNS - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;342&#34;
+		data-flex-basis=&#34;823px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you can click on the &lt;strong&gt;Save&lt;/strong&gt; button.&lt;/p&gt;
+&lt;h2 id=&#34;verify-the-configuration-is-working&#34;&gt;Verify the configuration is working
+&lt;/h2&gt;&lt;p&gt;The configuration is done! If you already have some devices connected to your Tailscale network, you will be able to check if the configuration is working by checking the endpoints visible in the ControlD dashboard: &lt;a class=&#34;link&#34; href=&#34;https://controld.com/dashboard/endpoints&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://controld.com/dashboard/endpoints&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/check-controld-endpoints.png&#34;
+	width=&#34;1641&#34;
+	height=&#34;446&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Check ControlD Endpoints - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;367&#34;
+		data-flex-basis=&#34;883px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you see a &lt;strong&gt;green dot&lt;/strong&gt; next to the router icon, it means the endpoint is in use and the configuration is working.&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://tailscale.com/kb/1403/control-d&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Tailscale Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.controld.com/docs/tailscale-integration&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ControlD Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>Configuring ddclient to update your dynamic DNS at noip.com</title>
         <link>https://www.andreagrandi.it/posts/configuring-ddclient-to-update-your-dynamic-dns-at-noip-com/</link>
         <pubDate>Tue, 02 Sep 2014 00:00:00 +0000</pubDate>

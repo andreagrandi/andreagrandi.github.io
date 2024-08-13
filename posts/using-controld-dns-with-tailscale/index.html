@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="With this tutorial, you will learn how to use ControlD DNS with Tailscale and deliver a secure and ad blocking DNS service to your devices.">
+<title>It&#39;s now possible to use ControlD DNS with Tailscale</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/'>
+
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="It's now possible to use ControlD DNS with Tailscale">
+<meta property='og:description' content="With this tutorial, you will learn how to use ControlD DNS with Tailscale and deliver a secure and ad blocking DNS service to your devices.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='controld' /><meta property='article:tag' content='dns' /><meta property='article:tag' content='tailscale' /><meta property='article:tag' content='networking' /><meta property='article:tag' content='tutorial' /><meta property='article:published_time' content='2024-08-13T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-08-13T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/cover-controld-tailscale.png' />
+<meta name="twitter:title" content="It's now possible to use ControlD DNS with Tailscale">
+<meta name="twitter:description" content="With this tutorial, you will learn how to use ControlD DNS with Tailscale and deliver a secure and ad blocking DNS service to your devices."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/cover-controld-tailscale.png' />
+  
+
+<style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/using-controld-dns-with-tailscale/">
+                <img src="/posts/using-controld-dns-with-tailscale/cover-controld-tailscale.png"
+                        
+                        width="1152" 
+                        height="594" 
+                        loading="lazy"
+                        alt="Featured image of post It&#39;s now possible to use ControlD DNS with Tailscale" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/howto/" >
+                HowTo
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/using-controld-dns-with-tailscale/">It&#39;s now possible to use ControlD DNS with Tailscale</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            With this tutorial, you will learn how to use ControlD DNS with Tailscale and deliver a secure and ad blocking DNS service to your devices.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 13, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>If you are using <a class="link" href="https://tailscale.com"  target="_blank" rel="noopener"
+    ><strong>Tailscale</strong></a> in some of your devices, you also need to use Tailscale own DNS server to resolve the names of the devices in the network. If you are also a user of <a class="link" href="https://controld.com"  target="_blank" rel="noopener"
+    ><strong>ControlD</strong></a> DNS, and you want to use it with Tailscale, you can finally do it!</p>
+<h2 id="configure-a-new-endpoint-on-controld">Configure a new Endpoint on ControlD
+</h2><p>First of all, you need to create a new <strong>endpoint</strong> on ControlD. You can do it by logging in to your ControlD account, select <strong>Endpoints</strong> from the left menu, and then click on the plus button.</p>
+<p>Scroll down to <strong>Router</strong> section and select <strong>Other</strong> as the device type. In the next screen you need to specify a name, I used <code>tailscale-global</code> but you can use any name you want.</p>
+<p>Once you have created it, take note of the <strong>Resolver ID</strong>, because you will need it in the next step.</p>
+<p><img src="/posts/using-controld-dns-with-tailscale/configure-endpoint.png"
+	width="1665"
+	height="811"
+	
+	loading="lazy"
+	
+		alt="Configure endpoint on ControlD - screenshot from ControlD docs"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="205"
+		data-flex-basis="492px"
+	
+></p>
+<h2 id="configure-the-dns-on-tailscale">Configure the DNS on Tailscale
+</h2><p>At this point you need to go to <a class="link" href="https://login.tailscale.com/admin/dns"  target="_blank" rel="noopener"
+    >Tailscale admin console</a>, and select the <strong>DNS</strong> tab. Click on the <strong>Add nameserver</strong> menu, and select &ldquo;Control D&rdquo; from the list.</p>
+<p><img src="/posts/using-controld-dns-with-tailscale/add-controld-tailscale.png"
+	width="1052"
+	height="629"
+	
+	loading="lazy"
+	
+		alt="Configure Nameserver - screenshot from ControlD docs"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="167"
+		data-flex-basis="401px"
+	
+></p>
+<p>Once you have selected <strong>ControlD</strong> from the list, you will get this window and you will need to fill the <strong>Endpoint</strong> using the <strong>Resolver ID</strong> you got from the previous step.</p>
+<p><img src="/posts/using-controld-dns-with-tailscale/add-controld-endpoint.png"
+	width="1739"
+	height="507"
+	
+	loading="lazy"
+	
+		alt="Configure ControlD DNS - screenshot from ControlD docs"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="342"
+		data-flex-basis="823px"
+	
+></p>
+<p>Now you can click on the <strong>Save</strong> button.</p>
+<h2 id="verify-the-configuration-is-working">Verify the configuration is working
+</h2><p>The configuration is done! If you already have some devices connected to your Tailscale network, you will be able to check if the configuration is working by checking the endpoints visible in the ControlD dashboard: <a class="link" href="https://controld.com/dashboard/endpoints"  target="_blank" rel="noopener"
+    >https://controld.com/dashboard/endpoints</a></p>
+<p><img src="/posts/using-controld-dns-with-tailscale/check-controld-endpoints.png"
+	width="1641"
+	height="446"
+	
+	loading="lazy"
+	
+		alt="Check ControlD Endpoints - screenshot from ControlD docs"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="367"
+		data-flex-basis="883px"
+	
+></p>
+<p>If you see a <strong>green dot</strong> next to the router icon, it means the endpoint is in use and the configuration is working.</p>
+<h2 id="references">References
+</h2><ul>
+<li><a class="link" href="https://tailscale.com/kb/1403/control-d"  target="_blank" rel="noopener"
+    >Tailscale Documentation</a></li>
+<li><a class="link" href="https://docs.controld.com/docs/tailscale-integration"  target="_blank" rel="noopener"
+    >ControlD Documentation</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/controld/">Controld</a>
+        
+            <a href="/tags/dns/">Dns</a>
+        
+            <a href="/tags/tailscale/">Tailscale</a>
+        
+            <a href="/tags/networking/">Networking</a>
+        
+            <a href="/tags/tutorial/">Tutorial</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/buy-or-rent-raspberrypi-vs-vps/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/buy-or-rent-raspberrypi-vs-vps/cover-raspberrypi-vs-vps.54b6b2c975795c79e46a5d9631bbbcae.png" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Buy or Rent? RaspberryPi vs VPS"
+                        data-key="buy-or-rent-raspberrypi-vs-vps" 
+                        data-hash="md5-VLayyXV5XHnkal2WMbu8rg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Buy or Rent? RaspberryPi vs VPS</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/blogging-from-an-ipad/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/blogging-from-an-ipad/editing-markdown-with-mweb.8ce79d6a390be664558ad07ddc87ea98.jpeg" 
+                        width="2360" 
+                        height="1640" 
+                        loading="lazy"
+                        alt="Featured image of post Blogging from an iPad"
+                        data-key="blogging-from-an-ipad" 
+                        data-hash="md5-jOedajkL5mRVitB93IfqmA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Blogging from an iPad</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/use-openai-api-to-make-two-gpt-bots-talk/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/use-openai-api-to-make-two-gpt-bots-talk/two-chatgpt-robots.ffadeccddcfe01b31c242a06feb07b9f.jpeg" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Use OpenAI API to make two GPT bots talk to each other"
+                        data-key="use-openai-api-to-make-two-gpt-bots-talk" 
+                        data-hash="md5-/63szdz&#43;AbMcJCoG/rB7nw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Use OpenAI API to make two GPT bots talk to each other</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/how-to-use-openai-api-for-chatgpt-in-python/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/how-to-use-openai-api-for-chatgpt-in-python/python-chatgpt.7bbb11c3d13de2aabfca7266e2980c22.jpeg" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post HowTo use OpenAI API for ChatGPT in Python"
+                        data-key="how-to-use-openai-api-for-chatgpt-in-python" 
+                        data-hash="md5-e7sRw9E94qq/ynJm4pgMIg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HowTo use OpenAI API for ChatGPT in Python</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/creating-a-production-ready-api-with-python-and-django-rest-framework-part-4/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Creating a production ready API with Python and Django Rest Framework – part 4</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2024 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

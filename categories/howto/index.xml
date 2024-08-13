@@ -6,7 +6,94 @@
         <description>Recent content in HowTo on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 10 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/howto/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 13 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/howto/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>It&#39;s now possible to use ControlD DNS with Tailscale</title>
+        <link>https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/</link>
+        <pubDate>Tue, 13 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/cover-controld-tailscale.png" alt="Featured image of post It&#39;s now possible to use ControlD DNS with Tailscale" /&gt;&lt;p&gt;If you are using &lt;a class=&#34;link&#34; href=&#34;https://tailscale.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Tailscale&lt;/strong&gt;&lt;/a&gt; in some of your devices, you also need to use Tailscale own DNS server to resolve the names of the devices in the network. If you are also a user of &lt;a class=&#34;link&#34; href=&#34;https://controld.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;ControlD&lt;/strong&gt;&lt;/a&gt; DNS, and you want to use it with Tailscale, you can finally do it!&lt;/p&gt;
+&lt;h2 id=&#34;configure-a-new-endpoint-on-controld&#34;&gt;Configure a new Endpoint on ControlD
+&lt;/h2&gt;&lt;p&gt;First of all, you need to create a new &lt;strong&gt;endpoint&lt;/strong&gt; on ControlD. You can do it by logging in to your ControlD account, select &lt;strong&gt;Endpoints&lt;/strong&gt; from the left menu, and then click on the plus button.&lt;/p&gt;
+&lt;p&gt;Scroll down to &lt;strong&gt;Router&lt;/strong&gt; section and select &lt;strong&gt;Other&lt;/strong&gt; as the device type. In the next screen you need to specify a name, I used &lt;code&gt;tailscale-global&lt;/code&gt; but you can use any name you want.&lt;/p&gt;
+&lt;p&gt;Once you have created it, take note of the &lt;strong&gt;Resolver ID&lt;/strong&gt;, because you will need it in the next step.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/configure-endpoint.png&#34;
+	width=&#34;1665&#34;
+	height=&#34;811&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Configure endpoint on ControlD - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;492px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;configure-the-dns-on-tailscale&#34;&gt;Configure the DNS on Tailscale
+&lt;/h2&gt;&lt;p&gt;At this point you need to go to &lt;a class=&#34;link&#34; href=&#34;https://login.tailscale.com/admin/dns&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Tailscale admin console&lt;/a&gt;, and select the &lt;strong&gt;DNS&lt;/strong&gt; tab. Click on the &lt;strong&gt;Add nameserver&lt;/strong&gt; menu, and select &amp;ldquo;Control D&amp;rdquo; from the list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/add-controld-tailscale.png&#34;
+	width=&#34;1052&#34;
+	height=&#34;629&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Configure Nameserver - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;167&#34;
+		data-flex-basis=&#34;401px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Once you have selected &lt;strong&gt;ControlD&lt;/strong&gt; from the list, you will get this window and you will need to fill the &lt;strong&gt;Endpoint&lt;/strong&gt; using the &lt;strong&gt;Resolver ID&lt;/strong&gt; you got from the previous step.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/add-controld-endpoint.png&#34;
+	width=&#34;1739&#34;
+	height=&#34;507&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Configure ControlD DNS - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;342&#34;
+		data-flex-basis=&#34;823px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Now you can click on the &lt;strong&gt;Save&lt;/strong&gt; button.&lt;/p&gt;
+&lt;h2 id=&#34;verify-the-configuration-is-working&#34;&gt;Verify the configuration is working
+&lt;/h2&gt;&lt;p&gt;The configuration is done! If you already have some devices connected to your Tailscale network, you will be able to check if the configuration is working by checking the endpoints visible in the ControlD dashboard: &lt;a class=&#34;link&#34; href=&#34;https://controld.com/dashboard/endpoints&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://controld.com/dashboard/endpoints&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-controld-dns-with-tailscale/check-controld-endpoints.png&#34;
+	width=&#34;1641&#34;
+	height=&#34;446&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Check ControlD Endpoints - screenshot from ControlD docs&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;367&#34;
+		data-flex-basis=&#34;883px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you see a &lt;strong&gt;green dot&lt;/strong&gt; next to the router icon, it means the endpoint is in use and the configuration is working.&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://tailscale.com/kb/1403/control-d&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Tailscale Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.controld.com/docs/tailscale-integration&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ControlD Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>Tracking airplanes with a Raspberry Pi and an ADS-B receiver</title>
         <link>https://www.andreagrandi.it/posts/tracking-airplanes-raspberrypi-adsb/</link>
         <pubDate>Sat, 10 Aug 2024 00:00:00 +0000</pubDate>
@@ -3786,67 +3873,6 @@ To fix this, you just need to open this file
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;of course substituting &lt;strong&gt;&lt;code&gt;123.123.123.123:1234&lt;/code&gt;&lt;/strong&gt; with your &lt;em&gt;proxyip:proxyport&lt;/em&gt;.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Using Cloud9 IDE to develop Django applications</title>
-        <link>https://www.andreagrandi.it/posts/using-cloud9-ide-to-develop-django-applications/</link>
-        <pubDate>Sat, 05 Jan 2013 00:00:00 +0000</pubDate>
-        
-        <guid>https://www.andreagrandi.it/posts/using-cloud9-ide-to-develop-django-applications/</guid>
-        <description>&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.djangoproject.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Django&lt;/a&gt; is becoming very popular for
-dynamic websites development (actually it already is) so I decided to
-start learning it, with the help of a &lt;a class=&#34;link&#34; href=&#34;http://www.apress.com/9781430219361&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;good
-book&lt;/a&gt;. To develop Django web
-applications you need a good IDE and an environment that support at
-least Python and a database (SQL Lite, MySQL etc&amp;hellip;). If you have
-multiple machines and you alternate from multiple operating systems, the
-best thing is using an environment that you can use everywhere, from
-your favourite browser.&lt;/p&gt;
-&lt;p&gt;Here comes &lt;a class=&#34;link&#34; href=&#34;https://c9.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;&lt;strong&gt;Cloud9&lt;/strong&gt;&lt;/a&gt;, a very nice service that you
-could define as the &amp;ldquo;Google Docs&amp;rdquo; for developers. C9 offers you a
-shared, always available on the cloud, environment to write your code.
-They also offer access to a Linux terminal (so you can install
-applications, like Django) and your websites are istantly available
-online for remote testing.&lt;/p&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;c9ide_django.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-cloud9-ide-to-develop-django-applications/c9ide_django.png&#34;
-	width=&#34;1004&#34;
-	height=&#34;737&#34;
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;c9ide\_django&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;136&#34;
-		data-flex-basis=&#34;326px&#34;
-	
-&gt;{ width=100% }&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Installing and using Django on C9 is very easy. You just need to open a
-new terminal tab (ALT+T) in C9 and execute these commands&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;easy_install django  
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python ./../bin/django-admin.py startproject myproject  
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python ./myproject/manage.py runserver &lt;span class=&#34;nv&#34;&gt;$OPENSHIFT_INTERNAL_IP&lt;/span&gt;:&lt;span class=&#34;nv&#34;&gt;$PORT&lt;/span&gt;  
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;After these commands, your Django website will be live and accessible
-using &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;http://projectname.username.c9.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;http://projectname.username.c9.io&lt;/a&gt;&lt;/strong&gt; (where &lt;em&gt;projectname&lt;/em&gt; is the
-name of the project you just created and &lt;em&gt;username&lt;/em&gt; is your C9 user
-name).&lt;/p&gt;
-&lt;p&gt;source: &lt;a class=&#34;link&#34; href=&#34;http://support.cloud9ide.com/entries/21830983-django-development-in-c9&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;http://support.cloud9ide.com/entries/21830983-django-development-in-c9&lt;/a&gt;&lt;/p&gt;
 </description>
         </item>
         
