@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="To understand how a Django Middleware works we need to remember that the basic architecture of Django is composed by a request and a response. A middleware is something that stays in the middle. Let&rsquo;s give a look to the next diagram, taken from official Django documentation: { width=100% } Important things to know There are four\u00a0important things to know about middlewares: You need to write a class that just inherit from object The order where you place your middleware in settings.">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="To understand how a Django Middleware works we need to remember that the basic architecture of Django is composed by a request and a response. A middleware is something that stays in the middle. Let&rsquo;s give a look to the next diagram, taken from official Django documentation:\n{ width=100% }\nImportant things to know There are four\u00a0important things to know about middlewares:\nYou need to write a class that just inherit from object The order where you place your middleware in settings.py is important: middlewares are processed from top to bottom during a request and from bottom to top during a response. You don&rsquo;t need to implement all the available methods of a middleware. For example you can just implement\u00a0process_request and\u00a0process_template_response If you implement process_request\u00a0and you decide to return an HttpResponse, all the other middlewares, views etc&hellip; will be ignored and only your response will be returned Writing a middleware In my example I wanted to implement a feature that saves the time when a request is made and the time when a request has been processed, then calculates the time delta and exposes this value in the context so that is accessible from our templates. How to implement a similar feature using a middleware? Here is my example:\n">
 <title>How to write a custom Django Middleware</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/how-to-write-a-custom-django-middleware/'>
 
-<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="How to write a custom Django Middleware">
-<meta property='og:description' content="To understand how a Django Middleware works we need to remember that the basic architecture of Django is composed by a request and a response. A middleware is something that stays in the middle. Let&rsquo;s give a look to the next diagram, taken from official Django documentation: { width=100% } Important things to know There are four\u00a0important things to know about middlewares: You need to write a class that just inherit from object The order where you place your middleware in settings.">
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="How to write a custom Django Middleware">
+<meta property='og:description' content="To understand how a Django Middleware works we need to remember that the basic architecture of Django is composed by a request and a response. A middleware is something that stays in the middle. Let&rsquo;s give a look to the next diagram, taken from official Django documentation:\n{ width=100% }\nImportant things to know There are four\u00a0important things to know about middlewares:\nYou need to write a class that just inherit from object The order where you place your middleware in settings.py is important: middlewares are processed from top to bottom during a request and from bottom to top during a response. You don&rsquo;t need to implement all the available methods of a middleware. For example you can just implement\u00a0process_request and\u00a0process_template_response If you implement process_request\u00a0and you decide to return an HttpResponse, all the other middlewares, views etc&hellip; will be ignored and only your response will be returned Writing a middleware In my example I wanted to implement a feature that saves the time when a request is made and the time when a request has been processed, then calculates the time delta and exposes this value in the context so that is accessible from our templates. How to implement a similar feature using a middleware? Here is my example:\n">
 <meta property='og:url' content='https://www.andreagrandi.it/posts/how-to-write-a-custom-django-middleware/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Django' /><meta property='article:tag' content='HowTo' /><meta property='article:tag' content='middleware' /><meta property='article:tag' content='Python' /><meta property='article:tag' content='tutorial' /><meta property='article:published_time' content='2015-08-23T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2015-08-23T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="How to write a custom Django Middleware">
-<meta name="twitter:description" content="To understand how a Django Middleware works we need to remember that the basic architecture of Django is composed by a request and a response. A middleware is something that stays in the middle. Let&rsquo;s give a look to the next diagram, taken from official Django documentation: { width=100% } Important things to know There are four\u00a0important things to know about middlewares: You need to write a class that just inherit from object The order where you place your middleware in settings.">
-  
-
-<style>
+<meta name="twitter:description" content="To understand how a Django Middleware works we need to remember that the basic architecture of Django is composed by a request and a response. A middleware is something that stays in the middle. Let&rsquo;s give a look to the next diagram, taken from official Django documentation:\n{ width=100% }\nImportant things to know There are four\u00a0important things to know about middlewares:\nYou need to write a class that just inherit from object The order where you place your middleware in settings.py is important: middlewares are processed from top to bottom during a request and from bottom to top during a response. You don&rsquo;t need to implement all the available methods of a middleware. For example you can just implement\u00a0process_request and\u00a0process_template_response If you implement process_request\u00a0and you decide to return an HttpResponse, all the other middlewares, views etc&hellip; will be ignored and only your response will be returned Writing a middleware In my example I wanted to implement a feature that saves the time when a request is made and the time when a request has been processed, then calculates the time delta and exposes this value in the context so that is accessible from our templates. How to implement a similar feature using a middleware? Here is my example:\n"><style>
     .article-content code {
         color: #c25 !important;
         padding: 1px 3px;
@@ -552,7 +549,7 @@ code: <a class="link" href="https://github.com/andreagrandi/benchmark-middlewar
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -641,7 +638,7 @@ code: <a class="link" href="https://github.com/andreagrandi/benchmark-middlewar
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');

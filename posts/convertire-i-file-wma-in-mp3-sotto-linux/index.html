@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Se abbiamo dei file audio in formato .wma e li vogliamo convertire in formato .mp3 utilizzando Linux, è sufficiente creare un piccolo script in bash che facendo uso di mplayer e lame provveda a convertire tutti i file che si trovano all&rsquo;interno di una certa directory. Creiamo un file chiamato wma2mp3.sh con all&rsquo;interno il seguente script: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 #!">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Se abbiamo dei file audio in formato .wma e li vogliamo convertire in formato .mp3 utilizzando Linux, è sufficiente creare un piccolo script in bash che facendo uso di mplayer e lame provveda a convertire tutti i file che si trovano all&rsquo;interno di una certa directory.\nCreiamo un file chiamato wma2mp3.sh con all&rsquo;interno il seguente script:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 #!/bin/bash current_directory=$( pwd ) #remove spaces for i in *.wma; do mv &#34;$i&#34; `echo $i | tr &#39; &#39; &#39;_&#39;`; done #remove uppercase for i in *.[Ww][Mm][Aa]; do mv &#34;$i&#34; `echo $i | tr &#39;[A-Z]&#39; &#39;[a-z]&#39;`; done #Rip with Mplayer / encode with LAME for i in *.wma ; do mplayer -vo null -vc dummy -af resample=44100 -ao pcm:waveheader $i &amp;&amp; lame -m s audiodump.wav -o $i; done #convert file names for i in *.wma; do mv &#34;$i&#34; &#34;`basename &#34;$i&#34; .wma`.mp3&#34;; done rm audiodump.wav a questo punto basta mettere lo script nella cartella dove ci sono i file .wma, dare i permessi di esecuzione a tale file (chmod +x wma2mp3.sh) ed eseguirlo con ./wma2mp3.sh\n">
 <title>Convertire i file WMA in MP3 sotto Linux</title>
 
 <link rel='canonical' href='https://www.andreagrandi.it/posts/convertire-i-file-wma-in-mp3-sotto-linux/'>
 
-<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Convertire i file WMA in MP3 sotto Linux">
-<meta property='og:description' content="Se abbiamo dei file audio in formato .wma e li vogliamo convertire in formato .mp3 utilizzando Linux, è sufficiente creare un piccolo script in bash che facendo uso di mplayer e lame provveda a convertire tutti i file che si trovano all&rsquo;interno di una certa directory. Creiamo un file chiamato wma2mp3.sh con all&rsquo;interno il seguente script: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 #!">
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Convertire i file WMA in MP3 sotto Linux">
+<meta property='og:description' content="Se abbiamo dei file audio in formato .wma e li vogliamo convertire in formato .mp3 utilizzando Linux, è sufficiente creare un piccolo script in bash che facendo uso di mplayer e lame provveda a convertire tutti i file che si trovano all&rsquo;interno di una certa directory.\nCreiamo un file chiamato wma2mp3.sh con all&rsquo;interno il seguente script:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 #!/bin/bash current_directory=$( pwd ) #remove spaces for i in *.wma; do mv &#34;$i&#34; `echo $i | tr &#39; &#39; &#39;_&#39;`; done #remove uppercase for i in *.[Ww][Mm][Aa]; do mv &#34;$i&#34; `echo $i | tr &#39;[A-Z]&#39; &#39;[a-z]&#39;`; done #Rip with Mplayer / encode with LAME for i in *.wma ; do mplayer -vo null -vc dummy -af resample=44100 -ao pcm:waveheader $i &amp;&amp; lame -m s audiodump.wav -o $i; done #convert file names for i in *.wma; do mv &#34;$i&#34; &#34;`basename &#34;$i&#34; .wma`.mp3&#34;; done rm audiodump.wav a questo punto basta mettere lo script nella cartella dove ci sono i file .wma, dare i permessi di esecuzione a tale file (chmod +x wma2mp3.sh) ed eseguirlo con ./wma2mp3.sh\n">
 <meta property='og:url' content='https://www.andreagrandi.it/posts/convertire-i-file-wma-in-mp3-sotto-linux/'>
 <meta property='og:site_name' content='Andrea Grandi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='conversione' /><meta property='article:tag' content='mp3' /><meta property='article:tag' content='wma' /><meta property='article:published_time' content='2009-02-22T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2009-02-22T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="Convertire i file WMA in MP3 sotto Linux">
-<meta name="twitter:description" content="Se abbiamo dei file audio in formato .wma e li vogliamo convertire in formato .mp3 utilizzando Linux, è sufficiente creare un piccolo script in bash che facendo uso di mplayer e lame provveda a convertire tutti i file che si trovano all&rsquo;interno di una certa directory. Creiamo un file chiamato wma2mp3.sh con all&rsquo;interno il seguente script: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 #!">
-  
-
-<style>
+<meta name="twitter:description" content="Se abbiamo dei file audio in formato .wma e li vogliamo convertire in formato .mp3 utilizzando Linux, è sufficiente creare un piccolo script in bash che facendo uso di mplayer e lame provveda a convertire tutti i file che si trovano all&rsquo;interno di una certa directory.\nCreiamo un file chiamato wma2mp3.sh con all&rsquo;interno il seguente script:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 #!/bin/bash current_directory=$( pwd ) #remove spaces for i in *.wma; do mv &#34;$i&#34; `echo $i | tr &#39; &#39; &#39;_&#39;`; done #remove uppercase for i in *.[Ww][Mm][Aa]; do mv &#34;$i&#34; `echo $i | tr &#39;[A-Z]&#39; &#39;[a-z]&#39;`; done #Rip with Mplayer / encode with LAME for i in *.wma ; do mplayer -vo null -vc dummy -af resample=44100 -ao pcm:waveheader $i &amp;&amp; lame -m s audiodump.wav -o $i; done #convert file names for i in *.wma; do mv &#34;$i&#34; &#34;`basename &#34;$i&#34; .wma`.mp3&#34;; done rm audiodump.wav a questo punto basta mettere lo script nella cartella dove ci sono i file .wma, dare i permessi di esecuzione a tale file (chmod +x wma2mp3.sh) ed eseguirlo con ./wma2mp3.sh\n"><style>
     .article-content code {
         color: #c25 !important;
         padding: 1px 3px;
@@ -453,7 +450,7 @@ wma2mp3.sh</strong>) ed eseguirlo con <strong><code>./wma2mp3.sh</code></strong>
         
             source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -542,7 +539,7 @@ wma2mp3.sh</strong>) ed eseguirlo con <strong><code>./wma2mp3.sh</code></strong>
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');
