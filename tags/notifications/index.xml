@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Notifications on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/notifications/</link>
+        <description>Recent content in Notifications on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 12 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/notifications/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Using terminal-notifier in Claude Code to get custom notifications</title>
+        <link>https://www.andreagrandi.it/posts/using-terminal-notifier-claude-code-custom-notifications/</link>
+        <pubDate>Sat, 12 Jul 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/using-terminal-notifier-claude-code-custom-notifications/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;When working with Claude Code on macOS, you might find yourself waiting for long-running tasks to complete or missing important prompts for user input. The &lt;code&gt;terminal-notifier&lt;/code&gt; utility provides an elegant solution by sending desktop notifications directly from the command line, helping you stay informed about your Claude Code sessions even when you&amp;rsquo;re focused on other tasks.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; I decided to use &lt;code&gt;terminal-notifier&lt;/code&gt; both because I can customise the notification I receive and also because my setup was having issues and I didn&amp;rsquo;t always get notifications from my terminal.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-terminal-notifier&#34;&gt;What is terminal-notifier?
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;terminal-notifier&lt;/code&gt; is a command-line tool for macOS that allows you to send user notifications from the terminal to the Notification Center. It&amp;rsquo;s particularly useful for automation scripts and development workflows where you need to be alerted about specific events.&lt;/p&gt;
+&lt;h2 id=&#34;installing-terminal-notifier&#34;&gt;Installing terminal-notifier
+&lt;/h2&gt;&lt;p&gt;The easiest way to install &lt;code&gt;terminal-notifier&lt;/code&gt; is through Homebrew:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install terminal-notifier
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;using-terminal-notifier-with-claude-code&#34;&gt;Using terminal-notifier with Claude Code
+&lt;/h2&gt;&lt;p&gt;Claude Code can be configured to use &lt;code&gt;terminal-notifier&lt;/code&gt; for sending notifications in different ways. The most realiable (and deterministic)
+would be using the new &lt;code&gt;/hooks&lt;/code&gt; feature, but honestly I couldn&amp;rsquo;t make it work.&lt;/p&gt;
+&lt;p&gt;The other method (which works for me, but I warn you that is not deterministic - ie: it depends on the intepretation of the model)
+is to add instructions to your global or project-specific &lt;code&gt;CLAUDE.md&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gu&#34;&gt;## Notification
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gu&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; IMPORTANT: YOU MUST ALWAYS DO THIS: When you need to send me a notification because you need input or when you have finished a task, please use terminal-notifier tool like this: terminal-notifier -title &amp;#34;🔔 Claude Code: request&amp;#34; -message &amp;#34;Claude needs your permission to use ...&amp;#34;, or terminal-notifier -title &amp;#34;✅ Claude Code: done&amp;#34; -message &amp;#34;The task has been completed&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; Always customise the message using a short summary of the input needed or the task just completed
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Save the file and start a new Claude Code session.&lt;/p&gt;
+&lt;h2 id=&#34;final-result&#34;&gt;Final result
+&lt;/h2&gt;&lt;p&gt;If everything worked, once Claude has finished elaborating a task, you should get a notification like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-terminal-notifier-claude-code-custom-notifications/cc-notification.png&#34;
+	width=&#34;750&#34;
+	height=&#34;228&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Claude Code notification using terminal notifier&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;328&#34;
+		data-flex-basis=&#34;789px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;troubleshooting&#34;&gt;Troubleshooting
+&lt;/h2&gt;&lt;h3 id=&#34;notifications-not-appearing&#34;&gt;Notifications Not Appearing
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Check that notifications are enabled for Terminal in System Preferences &amp;gt; Notifications&lt;/li&gt;
+&lt;li&gt;Ensure &lt;code&gt;terminal-notifier&lt;/code&gt; is properly installed and in your PATH&lt;/li&gt;
+&lt;li&gt;Try running a test notification manually to verify functionality: &lt;code&gt;terminal-notifier -title &amp;quot;Hello&amp;quot; -message &amp;quot;World!&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Integrating &lt;code&gt;terminal-notifier&lt;/code&gt; with Claude Code creates a more efficient and responsive development workflow. By receiving timely notifications about task completion and input requests, you can maintain focus on other work while staying connected to your Claude Code sessions.&lt;/p&gt;
+&lt;p&gt;The combination of Claude Code&amp;rsquo;s automation capabilities with macOS&amp;rsquo;s native notification system provides a seamless development experience that keeps you informed without being intrusive.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
