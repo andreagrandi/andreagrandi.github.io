@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Worktree on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/worktree/</link>
+        <description>Recent content in Worktree on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 13 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/worktree/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to use git worktree effectively with Python projects</title>
+        <link>https://www.andreagrandi.it/posts/how-to-use-git-worktree-effectively-with-python-projects/</link>
+        <pubDate>Sun, 13 Jul 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-to-use-git-worktree-effectively-with-python-projects/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Working with multiple branches in Python projects can be challenging, especially when you need to switch between different features, bug fixes, or versions while maintaining separate virtual environments and dependencies.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://git-scm.com/docs/git-worktree&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;git worktree&lt;/code&gt;&lt;/a&gt; provides an elegant solution to this problem by allowing you to check out multiple branches simultaneously in separate working directories, but it doesn&amp;rsquo;t keep Python development requirements in mind.&lt;/p&gt;
+&lt;p&gt;I won&amp;rsquo;t go into details about how to use &lt;code&gt;git worktree&lt;/code&gt; in this post (for that you can check the manual I linked),
+but I will explain its limitations and present my workaround.&lt;/p&gt;
+&lt;h2 id=&#34;the-problem-with-traditional-branch-switching&#34;&gt;The Problem with Traditional Branch Switching
+&lt;/h2&gt;&lt;p&gt;When working on Python projects, switching branches often means recreating the virtual environment,
+reinstalling the dependencies, setting the env variables etc&amp;hellip;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git&lt;/code&gt; isn&amp;rsquo;t tight to a specific programming language, so by default it can&amp;rsquo;t do any of this.&lt;/p&gt;
+&lt;p&gt;In my case I create the virtual environments with &lt;code&gt;uv&lt;/code&gt; (like I explain in &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/posts/using-uv-to-install-python-create-virtualenv/&#34; &gt;this other post&lt;/a&gt;) but this won&amp;rsquo;t be automatically available in the worktree folder and it won&amp;rsquo;t be active.&lt;/p&gt;
+&lt;h2 id=&#34;the-helper-script&#34;&gt;The Helper Script
+&lt;/h2&gt;&lt;p&gt;To streamline the git worktree workflow with Python projects, I&amp;rsquo;ve created a helper script that automates the common tasks:&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/andreagrandi/542b438bf0017d93aff2b640037e3ce1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://gist.github.com/andreagrandi/542b438bf0017d93aff2b640037e3ce1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The script basically does this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;it uses &lt;code&gt;git worktree&lt;/code&gt; as usual&lt;/li&gt;
+&lt;li&gt;it creates a symbolic link to the existing &lt;code&gt;.venv/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;it creates a symbolic link to the existing &lt;code&gt;.envrc&lt;/code&gt; (which is where I keep my env variables, automatically activated by &lt;code&gt;direnv&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;it runs &lt;code&gt;direnv allow&lt;/code&gt; to give direnv permissions to read the env variables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; You will need to customise the script replacing &lt;code&gt;/my-project-worktrees/&lt;/code&gt; with the name of the folder where you intend to keep your worktrees and &lt;code&gt;/my-project/&lt;/code&gt; with the main folder of your project.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Git worktree is a great tool for working on multiple branches, but it needs some extra setup for Python projects. The helper script makes this much easier by automatically linking your virtual environment and environment variables to new worktrees, saving you time and hassle.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
