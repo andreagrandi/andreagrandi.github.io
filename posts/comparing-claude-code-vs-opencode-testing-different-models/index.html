@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="A practical comparison of Claude Code and OpenCode (using Sonnet-4, Gemini Pro 2.5, and GPT-4.1), evaluating their reliability, code generation quality, and integration with developer workflows based on a real-world task.">
+<title>Comparing Claude Code vs OpenCode (and testing different models)</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Comparing Claude Code vs OpenCode (and testing different models)">
+<meta property='og:description' content="A practical comparison of Claude Code and OpenCode (using Sonnet-4, Gemini Pro 2.5, and GPT-4.1), evaluating their reliability, code generation quality, and integration with developer workflows based on a real-world task.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='claude-code' /><meta property='article:tag' content='opencode' /><meta property='article:tag' content='ai-tools' /><meta property='article:tag' content='development' /><meta property='article:tag' content='productivity' /><meta property='article:tag' content='comparison' /><meta property='article:tag' content='models' /><meta property='article:published_time' content='2025-07-17T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2025-07-17T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/opencode.png' />
+<meta name="twitter:title" content="Comparing Claude Code vs OpenCode (and testing different models)">
+<meta name="twitter:description" content="A practical comparison of Claude Code and OpenCode (using Sonnet-4, Gemini Pro 2.5, and GPT-4.1), evaluating their reliability, code generation quality, and integration with developer workflows based on a real-world task."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/opencode.png' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+<meta name="fediverse:creator" content="@andreagrandi@mastodon.social">
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/comparing-claude-code-vs-opencode-testing-different-models/">
+                <img src="/posts/comparing-claude-code-vs-opencode-testing-different-models/opencode.png"
+                        
+                        width="2024" 
+                        height="1534" 
+                        loading="lazy"
+                        alt="Featured image of post Comparing Claude Code vs OpenCode (and testing different models)" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+            <a href="/categories/ai/" >
+                AI
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/comparing-claude-code-vs-opencode-testing-different-models/">Comparing Claude Code vs OpenCode (and testing different models)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            A practical comparison of Claude Code and OpenCode (using Sonnet-4, Gemini Pro 2.5, and GPT-4.1), evaluating their reliability, code generation quality, and integration with developer workflows based on a real-world task.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 17, 2025</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>In the past few days <a class="link" href="https://github.com/anthropics/claude-code"  target="_blank" rel="noopener"
+    ><strong>Claude Code</strong></a> had some reliability issues and was sometimes unavailable. I started looking for alternative solutions (for context: through my job, I already have paid subscriptions to <a class="link" href="https://github.com/features/copilot"  target="_blank" rel="noopener"
+    ><strong>GitHub Copilot</strong></a> and <a class="link" href="https://chatgpt.com"  target="_blank" rel="noopener"
+    ><strong>ChatGPT</strong></a>) but I wanted something that would better fit my workflow.</p>
+<p>While I initially used Copilot in <strong>VSCode</strong>, in the last month I’ve mostly been using VSCode for small fixes, code reviews, and navigating the codebase (asking questions using <code>@workspace</code> still beats any other tool I’ve tried so far). I was primarily using Claude Code (I have a <strong>Pro</strong> subscription, which is usually enough for my needs).</p>
+<p>I discovered <a class="link" href="https://opencode.ai"  target="_blank" rel="noopener"
+    ><strong>OpenCode</strong></a> and liked that it’s not tied to a single provider—it can be used with most existing subscriptions and API keys (in particular, <strong>you can use your existing Claude Code Pro/Max or GitHub Copilot subscription</strong>).</p>
+<p>Having recently worked on a task at work (which I admit it&rsquo;s simple to medium difficulty), after work I decided to give the same task to Claude Code and OpenCode (used with different models) logged in with my GitHub Copilot subscription.</p>
+<h2 id="the-task">The Task
+</h2><p>I won&rsquo;t (and I can&rsquo;t) go into specific details of the task, since it&rsquo;s work stuff, but I can say it was about:</p>
+<ul>
+<li>add a new field <code>new_field</code> to <code>ExistingEntity</code> entity</li>
+<li>add <code>new_field</code> to <code>ExistingModel</code> model</li>
+<li>create an <code>alembic</code> migration</li>
+<li>fix existing tests</li>
+</ul>
+<h2 id="the-results">The results
+</h2><p>Overall, the code produced by these models was correct (with one exception), but in a few cases I had to make some manual fixes or request a second iteration, specifying what needed to be corrected.</p>
+<h3 id="claude-code">Claude Code
+</h3><p>Claude was, hands down, the best overall. The initial iteration had a couple of minor problems:</p>
+<ul>
+<li>the field was marked as not nullable while I wanted it nullable, but I didn&rsquo;t specify this initially so it couldn&rsquo;t guess it correctly</li>
+<li>the default value given to the field was quite &ldquo;odd&rdquo;</li>
+</ul>
+<h3 id="opencode-copilotsonnet-4">OpenCode (copilot/sonnet-4)
+</h3><p>OpenCode (configured with the Anthropic <code>sonnet-4</code> model from Copilot) unsurprisingly produced almost the same code as Claude Code (with the same minor problems), but it also reformatted some existing code without permission. Last but not least, it added two tests (like Claude), but it removed six existing ones 😨</p>
+<p>I had to iterate and tell it to fix, which was very quick to do.</p>
+<h3 id="opencode-copilotgemini-pro-25">OpenCode (copilot/gemini-pro-2.5)
+</h3><p>Gemini… oh dear! I’m not sure if it’s the model itself or if it’s just not optimized for agentic coding (though it should be, since Google just released <code>gemini-cli</code> 🤷🏻‍♂️). It started hallucinating (I could see this as the code was being written) about existing fixtures, added a new unnecessary one, duplicated some existing code, and completely rewrote an existing class—in a bad way—instead of importing it. I honestly didn’t try a second iteration; I just scrapped the whole thing.</p>
+<h3 id="opencode-copilotgpt-41">OpenCode (copilot/gpt-4.1)
+</h3><p>Last, but not least, I switched to <code>gpt-4.1</code> from the Copilot subscription. The first iteration wasn’t perfect (it was probably a bit inferior to the one produced by <code>sonnet-4</code>) and needed a couple of fixes, but once I told it what to correct, it did so quickly, and the final version was perfect.</p>
+<p>Bonus point: using <code>gpt-4.1</code> through a Copilot subscription offers <strong>unlimited</strong> usage 🎉</p>
+<h2 id="conclusion">Conclusion
+</h2><p>The best tool I’ve tried so far remains Claude Code, but I have to admit that OpenCode with <code>sonnet-4</code> could replace it soon (especially considering it was released less than a month ago). Even <code>gpt-4.1</code> wasn’t bad, and honestly, using it through OpenCode yields much better results than using it from within VSCode.</p>
+<p>All three models I used with OpenCode tried to reformat existing code. This must be an OpenCode bug, which I’ve tried to mitigate with a rule in the <code>AGENT.md</code> file.</p>
+<p>I will keep testing OpenCode over the next few days, and maybe I’ll write a dedicated review about it.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/claude-code/">Claude-Code</a>
+        
+            <a href="/tags/opencode/">Opencode</a>
+        
+            <a href="/tags/ai-tools/">Ai-Tools</a>
+        
+            <a href="/tags/development/">Development</a>
+        
+            <a href="/tags/productivity/">Productivity</a>
+        
+            <a href="/tags/comparison/">Comparison</a>
+        
+            <a href="/tags/models/">Models</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/posts/how-to-use-git-worktree-effectively-with-python-projects/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to use git worktree effectively with Python projects</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/using-terminal-notifier-claude-code-custom-notifications/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using terminal-notifier in Claude Code to get custom notifications</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-workaround-ollama-pull-issues/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to workaround Ollama models pull issues</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/building-healthy-sustainable-funding-model-opensource-software/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Building a healthy and sustainable funding model for open source software</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/python-now-time-to-migrate-from-utcnow/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/python-now-time-to-migrate-from-utcnow/cover-python-utcnow.453e80fa4c20265b433a43443f39c256.png" 
+                        width="1792" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Python: it is now() time to migrate from utcnow()"
+                        data-key="python-now-time-to-migrate-from-utcnow" 
+                        data-hash="md5-RT6A&#43;kwgJltDOkNEPznCVg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Python: it is now() time to migrate from utcnow()</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2025 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

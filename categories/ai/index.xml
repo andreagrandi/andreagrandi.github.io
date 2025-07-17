@@ -6,7 +6,52 @@
         <description>Recent content in AI on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 01 May 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/ai/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 17 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/ai/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Comparing Claude Code vs OpenCode (and testing different models)</title>
+        <link>https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/</link>
+        <pubDate>Thu, 17 Jul 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/opencode.png" alt="Featured image of post Comparing Claude Code vs OpenCode (and testing different models)" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;In the past few days &lt;a class=&#34;link&#34; href=&#34;https://github.com/anthropics/claude-code&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Claude Code&lt;/strong&gt;&lt;/a&gt; had some reliability issues and was sometimes unavailable. I started looking for alternative solutions (for context: through my job, I already have paid subscriptions to &lt;a class=&#34;link&#34; href=&#34;https://github.com/features/copilot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;GitHub Copilot&lt;/strong&gt;&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://chatgpt.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;ChatGPT&lt;/strong&gt;&lt;/a&gt;) but I wanted something that would better fit my workflow.&lt;/p&gt;
+&lt;p&gt;While I initially used Copilot in &lt;strong&gt;VSCode&lt;/strong&gt;, in the last month I’ve mostly been using VSCode for small fixes, code reviews, and navigating the codebase (asking questions using &lt;code&gt;@workspace&lt;/code&gt; still beats any other tool I’ve tried so far). I was primarily using Claude Code (I have a &lt;strong&gt;Pro&lt;/strong&gt; subscription, which is usually enough for my needs).&lt;/p&gt;
+&lt;p&gt;I discovered &lt;a class=&#34;link&#34; href=&#34;https://opencode.ai&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;OpenCode&lt;/strong&gt;&lt;/a&gt; and liked that it’s not tied to a single provider—it can be used with most existing subscriptions and API keys (in particular, &lt;strong&gt;you can use your existing Claude Code Pro/Max or GitHub Copilot subscription&lt;/strong&gt;).&lt;/p&gt;
+&lt;p&gt;Having recently worked on a task at work (which I admit it&amp;rsquo;s simple to medium difficulty), after work I decided to give the same task to Claude Code and OpenCode (used with different models) logged in with my GitHub Copilot subscription.&lt;/p&gt;
+&lt;h2 id=&#34;the-task&#34;&gt;The Task
+&lt;/h2&gt;&lt;p&gt;I won&amp;rsquo;t (and I can&amp;rsquo;t) go into specific details of the task, since it&amp;rsquo;s work stuff, but I can say it was about:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;add a new field &lt;code&gt;new_field&lt;/code&gt; to &lt;code&gt;ExistingEntity&lt;/code&gt; entity&lt;/li&gt;
+&lt;li&gt;add &lt;code&gt;new_field&lt;/code&gt; to &lt;code&gt;ExistingModel&lt;/code&gt; model&lt;/li&gt;
+&lt;li&gt;create an &lt;code&gt;alembic&lt;/code&gt; migration&lt;/li&gt;
+&lt;li&gt;fix existing tests&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;the-results&#34;&gt;The results
+&lt;/h2&gt;&lt;p&gt;Overall, the code produced by these models was correct (with one exception), but in a few cases I had to make some manual fixes or request a second iteration, specifying what needed to be corrected.&lt;/p&gt;
+&lt;h3 id=&#34;claude-code&#34;&gt;Claude Code
+&lt;/h3&gt;&lt;p&gt;Claude was, hands down, the best overall. The initial iteration had a couple of minor problems:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the field was marked as not nullable while I wanted it nullable, but I didn&amp;rsquo;t specify this initially so it couldn&amp;rsquo;t guess it correctly&lt;/li&gt;
+&lt;li&gt;the default value given to the field was quite &amp;ldquo;odd&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;opencode-copilotsonnet-4&#34;&gt;OpenCode (copilot/sonnet-4)
+&lt;/h3&gt;&lt;p&gt;OpenCode (configured with the Anthropic &lt;code&gt;sonnet-4&lt;/code&gt; model from Copilot) unsurprisingly produced almost the same code as Claude Code (with the same minor problems), but it also reformatted some existing code without permission. Last but not least, it added two tests (like Claude), but it removed six existing ones 😨&lt;/p&gt;
+&lt;p&gt;I had to iterate and tell it to fix, which was very quick to do.&lt;/p&gt;
+&lt;h3 id=&#34;opencode-copilotgemini-pro-25&#34;&gt;OpenCode (copilot/gemini-pro-2.5)
+&lt;/h3&gt;&lt;p&gt;Gemini… oh dear! I’m not sure if it’s the model itself or if it’s just not optimized for agentic coding (though it should be, since Google just released &lt;code&gt;gemini-cli&lt;/code&gt; 🤷🏻‍♂️). It started hallucinating (I could see this as the code was being written) about existing fixtures, added a new unnecessary one, duplicated some existing code, and completely rewrote an existing class—in a bad way—instead of importing it. I honestly didn’t try a second iteration; I just scrapped the whole thing.&lt;/p&gt;
+&lt;h3 id=&#34;opencode-copilotgpt-41&#34;&gt;OpenCode (copilot/gpt-4.1)
+&lt;/h3&gt;&lt;p&gt;Last, but not least, I switched to &lt;code&gt;gpt-4.1&lt;/code&gt; from the Copilot subscription. The first iteration wasn’t perfect (it was probably a bit inferior to the one produced by &lt;code&gt;sonnet-4&lt;/code&gt;) and needed a couple of fixes, but once I told it what to correct, it did so quickly, and the final version was perfect.&lt;/p&gt;
+&lt;p&gt;Bonus point: using &lt;code&gt;gpt-4.1&lt;/code&gt; through a Copilot subscription offers &lt;strong&gt;unlimited&lt;/strong&gt; usage 🎉&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;The best tool I’ve tried so far remains Claude Code, but I have to admit that OpenCode with &lt;code&gt;sonnet-4&lt;/code&gt; could replace it soon (especially considering it was released less than a month ago). Even &lt;code&gt;gpt-4.1&lt;/code&gt; wasn’t bad, and honestly, using it through OpenCode yields much better results than using it from within VSCode.&lt;/p&gt;
+&lt;p&gt;All three models I used with OpenCode tried to reformat existing code. This must be an OpenCode bug, which I’ve tried to mitigate with a rule in the &lt;code&gt;AGENT.md&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;I will keep testing OpenCode over the next few days, and maybe I’ll write a dedicated review about it.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>AI won’t take your Software Developer job (not yet)</title>
         <link>https://www.andreagrandi.it/posts/ai-wont-take-your-job-yet/</link>
         <pubDate>Wed, 01 May 2024 00:00:00 +0000</pubDate>
