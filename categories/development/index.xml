@@ -6,7 +6,141 @@
         <description>Recent content in Development on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 17 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/development/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 28 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/development/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Releasing Log Basset: an open source CLI to access Scalyr logs</title>
+        <link>https://www.andreagrandi.it/posts/releasing-log-basset-open-source-cli-access-scalyr-logs/</link>
+        <pubDate>Mon, 28 Jul 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/releasing-log-basset-open-source-cli-access-scalyr-logs/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;img src=&#34;logbasset.png&#34; alt=&#34;Log Basset: an open source CLI to access Scalyr logs&#34; width=&#34;20%&#34; /&gt;
+&lt;p&gt;At work, we use &lt;strong&gt;Scalyr&lt;/strong&gt; to access our logs. They provide a web interface and a &lt;a class=&#34;link&#34; href=&#34;https://github.com/scalyr/scalyr-tool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;client&lt;/a&gt; written in Python, but it hasn&amp;rsquo;t been updated in the last couple of years, and I&amp;rsquo;m not sure if it&amp;rsquo;s abandoned.&lt;/p&gt;
+&lt;p&gt;As CLI coding agents become more popular, it&amp;rsquo;s important to have reliable CLI tools for accessing various services.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Log Basset&lt;/strong&gt;&lt;/a&gt; is a CLI tool for accessing Scalyr logs, written from scratch in Go.&lt;/p&gt;
+&lt;h2 id=&#34;why-log-basset&#34;&gt;Why Log Basset?
+&lt;/h2&gt;&lt;p&gt;There are a few reasons why I decided to rewrite their tool in Go:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I wanted to have fun 🙂&lt;/li&gt;
+&lt;li&gt;A tool written in Go is easier to distribute and use (no need to set up a virtual environment)&lt;/li&gt;
+&lt;li&gt;I was curious to stress test &lt;a class=&#34;link&#34; href=&#34;https://opencode.ai&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;OpenCode&lt;/strong&gt;&lt;/a&gt; and &lt;code&gt;sonnet-4&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Yes, this tool was mostly written using AI tools. If that&amp;rsquo;s a problem for you, please do not use it.&lt;/p&gt;
+&lt;h2 id=&#34;key-features&#34;&gt;Key Features
+&lt;/h2&gt;&lt;p&gt;Log Basset maintains most of the original features, but I focused on the &amp;ldquo;read-only&amp;rdquo; ones. In particular, you can:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;query&lt;/strong&gt;: Retrieve log data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;power-query&lt;/strong&gt;: Execute PowerQuery&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;numeric-query&lt;/strong&gt;: Retrieve numeric/graph data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;facet-query&lt;/strong&gt;: Retrieve common values for a field&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;timeseries-query&lt;/strong&gt;: Retrieve numeric/graph data from a timeseries&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;tail&lt;/strong&gt;: Provide a live &amp;rsquo;tail&amp;rsquo; of a log&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Compared to the original version, it also offers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Flexible time formats and output types&lt;/li&gt;
+&lt;li&gt;Strong input validation&lt;/li&gt;
+&lt;li&gt;Multi-layer configuration&lt;/li&gt;
+&lt;li&gt;Cross-platform support and high performance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;You can either use one of the packages from the GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset/releases&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;release page&lt;/a&gt; or:&lt;/p&gt;
+&lt;h3 id=&#34;homebrew-macoslinux&#34;&gt;Homebrew (macOS/Linux)
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap andreagrandi/tap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;from-source&#34;&gt;From Source
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git clone https://github.com/andreagrandi/logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;make build
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;usage-examples&#34;&gt;Usage Examples
+&lt;/h2&gt;&lt;p&gt;Once you have set your API key like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;scalyr_readlog_token&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;your-api-token-here&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You can query logs like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the last 10 log records&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the last 100 log records, showing only timestamp, severity, and message&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query --count&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;100&lt;/span&gt; --columns&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;timestamp,severity,message&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the first 10 log records beginning at 3:00 PM today, from host100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query &lt;span class=&#34;s1&#34;&gt;&amp;#39;$serverHost=&amp;#34;host100&amp;#34;&amp;#39;&lt;/span&gt; --start&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;3:00 PM&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the last 1000 entries in CSV format&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query &lt;span class=&#34;s1&#34;&gt;&amp;#39;$source=&amp;#34;accessLog&amp;#34;&amp;#39;&lt;/span&gt; --output&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;csv --columns&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;status,uriPath&amp;#39;&lt;/span&gt; --count&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Or tail them:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display a live tail of all log records&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset tail
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display a live tail from a specific host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset tail &lt;span class=&#34;s1&#34;&gt;&amp;#39;$serverHost=&amp;#34;host100&amp;#34;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display live tail with full record details&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset tail --output multiline
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;A complete guide is available in the &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset/blob/master/README.md&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;project readme&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Log Basset is my attempt to make working with Scalyr logs a bit easier and more enjoyable. If you give it a try and have feedback or ideas, let me know—or even better, open an issue or PR on GitHub!&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Comparing Claude Code vs OpenCode (and testing different models)</title>
         <link>https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/</link>
         <pubDate>Thu, 17 Jul 2025 00:00:00 +0000</pubDate>
@@ -4550,99 +4684,6 @@ two parts and swaps the first with sixth, the second with fifth, etc&amp;hellip;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description>
-        </item>
-        <item>
-        <title>How to write a custom Django Middleware</title>
-        <link>https://www.andreagrandi.it/posts/how-to-write-a-custom-django-middleware/</link>
-        <pubDate>Sun, 23 Aug 2015 00:00:00 +0000</pubDate>
-        
-        <guid>https://www.andreagrandi.it/posts/how-to-write-a-custom-django-middleware/</guid>
-        <description>&lt;p&gt;To understand how a &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.djangoproject.com/en/1.8/topics/http/middleware/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Django
-Middleware&lt;/a&gt;&lt;/strong&gt;
-works we need to remember that the basic architecture of Django is
-composed by a &lt;strong&gt;request&lt;/strong&gt; and a &lt;strong&gt;response&lt;/strong&gt;. A middleware is something
-that stays in the middle. Let&amp;rsquo;s give a look to the next diagram, taken
-from official Django documentation:&lt;/p&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;middleware.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/how-to-write-a-custom-django-middleware/middleware.png&#34;
-	width=&#34;601&#34;
-	height=&#34;511&#34;
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;middleware&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;117&#34;
-		data-flex-basis=&#34;282px&#34;
-	
-&gt;{ width=100% }&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;important-things-to-know&#34;&gt;Important things to know
-&lt;/h2&gt;&lt;p&gt;There are four important things to know about middlewares:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;You need to write a class that just inherit from &lt;em&gt;&lt;strong&gt;object&lt;/strong&gt;&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;The &lt;strong&gt;order&lt;/strong&gt; where you place your middleware in &lt;strong&gt;settings.py&lt;/strong&gt; is
-important: middlewares are processed from top to bottom during a
-request and from bottom to top during a response.&lt;/li&gt;
-&lt;li&gt;You don&amp;rsquo;t need to implement all the available methods of a
-middleware. For example you can just implement &lt;code&gt;process_request&lt;/code&gt;
-and &lt;code&gt;process_template_response&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;If you implement &lt;code&gt;process_request&lt;/code&gt; and you decide to return an
-&lt;code&gt;HttpResponse&lt;/code&gt;, all the other middlewares, views etc&amp;hellip; will be
-ignored and only your response will be returned&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;writing-a-middleware&#34;&gt;Writing a middleware
-&lt;/h2&gt;&lt;p&gt;In my example I wanted to implement a feature that saves the time when a
-request is made and the time when a request has been processed, then
-calculates the time delta and exposes this value in the context so that
-is accessible from our templates. How to implement a similar feature
-using a middleware? Here is my example:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;datetime&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;BenchmarkMiddleware&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;process_request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_request_time&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;now&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;process_template_response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;response_time&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;_request_time&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;now&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;context_data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;response_time&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;abs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;response_time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;response&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;Please don&amp;rsquo;t care about how I calculated the time. I&amp;rsquo;m aware that there
-are better ways to do it, but I just wanted to keep it simple and show
-how to implement a simple middleware.&lt;/p&gt;
-&lt;p&gt;If you want to see a &lt;strong&gt;complete example&lt;/strong&gt; of a project that includes and
-uses this middleware, here you can find the complete source
-code: &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/benchmark-middleware-example&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://github.com/andreagrandi/benchmark-middleware-example&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;references&#34;&gt;References
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.djangoproject.com/en/1.8/topics/http/middleware/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://docs.djangoproject.com/en/1.8/topics/http/middleware/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://agiliq.com/blog/2015/07/understanding-django-middlewares/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;http://agiliq.com/blog/2015/07/understanding-django-middlewares/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;http://code.runnable.com/UrSGolK00ygpAAAQ/creating-a-custom-middleware-for-python-and-django&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
         </item>
         
     </channel>

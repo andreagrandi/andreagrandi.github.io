@@ -6,7 +6,141 @@
         <description>Recent content on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 17 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 28 Jul 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Releasing Log Basset: an open source CLI to access Scalyr logs</title>
+        <link>https://www.andreagrandi.it/posts/releasing-log-basset-open-source-cli-access-scalyr-logs/</link>
+        <pubDate>Mon, 28 Jul 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/releasing-log-basset-open-source-cli-access-scalyr-logs/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;img src=&#34;logbasset.png&#34; alt=&#34;Log Basset: an open source CLI to access Scalyr logs&#34; width=&#34;20%&#34; /&gt;
+&lt;p&gt;At work, we use &lt;strong&gt;Scalyr&lt;/strong&gt; to access our logs. They provide a web interface and a &lt;a class=&#34;link&#34; href=&#34;https://github.com/scalyr/scalyr-tool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;client&lt;/a&gt; written in Python, but it hasn&amp;rsquo;t been updated in the last couple of years, and I&amp;rsquo;m not sure if it&amp;rsquo;s abandoned.&lt;/p&gt;
+&lt;p&gt;As CLI coding agents become more popular, it&amp;rsquo;s important to have reliable CLI tools for accessing various services.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Log Basset&lt;/strong&gt;&lt;/a&gt; is a CLI tool for accessing Scalyr logs, written from scratch in Go.&lt;/p&gt;
+&lt;h2 id=&#34;why-log-basset&#34;&gt;Why Log Basset?
+&lt;/h2&gt;&lt;p&gt;There are a few reasons why I decided to rewrite their tool in Go:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I wanted to have fun 🙂&lt;/li&gt;
+&lt;li&gt;A tool written in Go is easier to distribute and use (no need to set up a virtual environment)&lt;/li&gt;
+&lt;li&gt;I was curious to stress test &lt;a class=&#34;link&#34; href=&#34;https://opencode.ai&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;OpenCode&lt;/strong&gt;&lt;/a&gt; and &lt;code&gt;sonnet-4&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Yes, this tool was mostly written using AI tools. If that&amp;rsquo;s a problem for you, please do not use it.&lt;/p&gt;
+&lt;h2 id=&#34;key-features&#34;&gt;Key Features
+&lt;/h2&gt;&lt;p&gt;Log Basset maintains most of the original features, but I focused on the &amp;ldquo;read-only&amp;rdquo; ones. In particular, you can:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;query&lt;/strong&gt;: Retrieve log data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;power-query&lt;/strong&gt;: Execute PowerQuery&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;numeric-query&lt;/strong&gt;: Retrieve numeric/graph data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;facet-query&lt;/strong&gt;: Retrieve common values for a field&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;timeseries-query&lt;/strong&gt;: Retrieve numeric/graph data from a timeseries&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;tail&lt;/strong&gt;: Provide a live &amp;rsquo;tail&amp;rsquo; of a log&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Compared to the original version, it also offers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Flexible time formats and output types&lt;/li&gt;
+&lt;li&gt;Strong input validation&lt;/li&gt;
+&lt;li&gt;Multi-layer configuration&lt;/li&gt;
+&lt;li&gt;Cross-platform support and high performance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;You can either use one of the packages from the GitHub &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset/releases&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;release page&lt;/a&gt; or:&lt;/p&gt;
+&lt;h3 id=&#34;homebrew-macoslinux&#34;&gt;Homebrew (macOS/Linux)
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap andreagrandi/tap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;from-source&#34;&gt;From Source
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git clone https://github.com/andreagrandi/logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;make build
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;usage-examples&#34;&gt;Usage Examples
+&lt;/h2&gt;&lt;p&gt;Once you have set your API key like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;scalyr_readlog_token&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;your-api-token-here&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You can query logs like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the last 10 log records&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the last 100 log records, showing only timestamp, severity, and message&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query --count&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;100&lt;/span&gt; --columns&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;timestamp,severity,message&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the first 10 log records beginning at 3:00 PM today, from host100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query &lt;span class=&#34;s1&#34;&gt;&amp;#39;$serverHost=&amp;#34;host100&amp;#34;&amp;#39;&lt;/span&gt; --start&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;3:00 PM&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display the last 1000 entries in CSV format&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset query &lt;span class=&#34;s1&#34;&gt;&amp;#39;$source=&amp;#34;accessLog&amp;#34;&amp;#39;&lt;/span&gt; --output&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;csv --columns&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;status,uriPath&amp;#39;&lt;/span&gt; --count&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Or tail them:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display a live tail of all log records&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset tail
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display a live tail from a specific host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset tail &lt;span class=&#34;s1&#34;&gt;&amp;#39;$serverHost=&amp;#34;host100&amp;#34;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Display live tail with full record details&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;logbasset tail --output multiline
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;A complete guide is available in the &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset/blob/master/README.md&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;project readme&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Log Basset is my attempt to make working with Scalyr logs a bit easier and more enjoyable. If you give it a try and have feedback or ideas, let me know—or even better, open an issue or PR on GitHub!&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Comparing Claude Code vs OpenCode (and testing different models)</title>
         <link>https://www.andreagrandi.it/posts/comparing-claude-code-vs-opencode-testing-different-models/</link>
         <pubDate>Thu, 17 Jul 2025 00:00:00 +0000</pubDate>
@@ -1967,67 +2101,6 @@ Bonus point, he&amp;rsquo;s also a very nice person!&lt;/p&gt;
     &gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
 &lt;/h2&gt;&lt;p&gt;I think Ollama is a great tool for people who want to experiment with Large Language Models without the need of a cloud service. It&amp;rsquo;s easy to use and it&amp;rsquo;s available for different programming languages. I&amp;rsquo;m looking forward to see how it will evolve in the future.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>My Backup Strategy with Borg, Vorta and BorgBase</title>
-        <link>https://www.andreagrandi.it/posts/my-backup-strategy/</link>
-        <pubDate>Wed, 28 Feb 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://www.andreagrandi.it/posts/my-backup-strategy/</guid>
-        <description>&lt;img src="https://www.andreagrandi.it/posts/my-backup-strategy/backup-strategy-cover.webp" alt="Featured image of post My Backup Strategy with Borg, Vorta and BorgBase" /&gt;&lt;p&gt;Recently I reviewed my backup strategy and started using a new open source software and a cloud service to keep my data safe.&lt;/p&gt;
-&lt;p&gt;Before this my only backup was keeping my data in the cloud (specifically I use pCloud), but I started thinking: what if they shut down? What if I loose access to my account?&lt;/p&gt;
-&lt;p&gt;This convinced me to have an additional copy of my data.&lt;/p&gt;
-&lt;p&gt;Actually two additional copies: a local one, on an &lt;strong&gt;USB disk&lt;/strong&gt;, which is of course not reliable (disks can and will break!), but it&amp;rsquo;s fast if I need to recover something and a remote one, on a &lt;strong&gt;dedicated cloud service&lt;/strong&gt;, which is of course slower but quite reliable (you pay for your data to be kept safe).&lt;/p&gt;
-&lt;h2 id=&#34;my-personal-requirements&#34;&gt;My personal requirements
-&lt;/h2&gt;&lt;p&gt;Requirements can be different from person to person, but in this case I think they are quite common sense.&lt;/p&gt;
-&lt;p&gt;The first thing I want from a backup solution is that it is &lt;strong&gt;encrypted&lt;/strong&gt; and that I will be the only one having the encryption keys.&lt;/p&gt;
-&lt;p&gt;The second requirement is that the backup is &lt;strong&gt;incremental&lt;/strong&gt;. This means that if I do a new backup every day, I expect the new backup to only contain the data which changed from the previous one.&lt;/p&gt;
-&lt;p&gt;The third requirement is that the backup can be &lt;strong&gt;automated&lt;/strong&gt;. I don’t want to have to remember to backup my data, I want it to happen automatically.&lt;/p&gt;
-&lt;p&gt;In addition to the above, I have a strong preference for solutions which are &lt;strong&gt;open source&lt;/strong&gt; and possibly &lt;strong&gt;free&lt;/strong&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;borgbackup&#34;&gt;BorgBackup
-&lt;/h2&gt;&lt;p&gt;The solution which matches all the above requirements is &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.borgbackup.org&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;BorgBackup&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;I won&amp;rsquo;t spend time to explain how to install it, because the official documentation is very well made.&lt;/p&gt;
-&lt;p&gt;I also won&amp;rsquo;t spend time to explain how to configure it, because that&amp;rsquo;s not how I used it.&lt;/p&gt;
-&lt;p&gt;Borg is a command line software and using and configuring it is not straightforward, that&amp;rsquo;s why I immediately looked for a UI.&lt;/p&gt;
-&lt;h2 id=&#34;vorta&#34;&gt;Vorta
-&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/my-backup-strategy/vorta-ui.png&#34;
-	width=&#34;1728&#34;
-	height=&#34;1432&#34;
-	
-	loading=&#34;lazy&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;120&#34;
-		data-flex-basis=&#34;289px&#34;
-	
-&gt;&lt;/p&gt;
-&lt;p&gt;Here comes &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://vorta.borgbase.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Vorta&lt;/a&gt;&lt;/strong&gt;. As I mentioned before, while Borg has all the features I need, unfortunately it&amp;rsquo;s not easy to use and configure. A command line utility is a must if you are backing up a remote server, but it&amp;rsquo;s not really user friendly for desktop usage.&lt;/p&gt;
-&lt;p&gt;Vorta allows you to &lt;strong&gt;easily configure a new backup&lt;/strong&gt;. All you have to do is &lt;strong&gt;create&lt;/strong&gt; a new &lt;strong&gt;repository&lt;/strong&gt;, set a &lt;strong&gt;password&lt;/strong&gt;, &lt;strong&gt;select&lt;/strong&gt; the files and folders you want to backup and decide from manual backup and regularly &lt;strong&gt;scheduled&lt;/strong&gt; one.&lt;/p&gt;
-&lt;p&gt;Optionally (but I strongly suggest you do it) you can flag a couple of options which will verify the &lt;strong&gt;backup integrity&lt;/strong&gt; regularly.&lt;/p&gt;
-&lt;p&gt;In case you need to recover your files, you just have to select an existing archive and a folder on your laptop which will be used to mount the volume. At this point you will be able to &lt;strong&gt;access your files&lt;/strong&gt; from the operating system &lt;strong&gt;file manager&lt;/strong&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;borgbase&#34;&gt;BorgBase
-&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/my-backup-strategy/borgbase-plans.jpeg&#34;
-	width=&#34;2360&#34;
-	height=&#34;1496&#34;
-	
-	loading=&#34;lazy&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;157&#34;
-		data-flex-basis=&#34;378px&#34;
-	
-&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.borgbase.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;BorgBase&lt;/a&gt;&lt;/strong&gt; is a service which provides &lt;strong&gt;hosted repositories&lt;/strong&gt; for Borg backup.&lt;/p&gt;
-&lt;p&gt;They have three commercial plans, starting &lt;strong&gt;from $2/month for 250 GB&lt;/strong&gt; (which is the plan I have) but they also offer a &lt;strong&gt;free plan with 10 GB&lt;/strong&gt; included, so you can test the service as much as you want.&lt;/p&gt;
-&lt;p&gt;The same people also develop Vorta, so if you pay for the service you are also making sure the project remains funded.&lt;/p&gt;
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
-&lt;/h2&gt;&lt;p&gt;As you can see, configuring a good backup solution is not that difficult nor expensive. Remember the best day to start backing up is yesterday and today is still better than tomorrow 😉&lt;/p&gt;
 </description>
         </item>
         
