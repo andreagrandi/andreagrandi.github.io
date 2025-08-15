@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Statusline on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/statusline/</link>
+        <description>Recent content in Statusline on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 15 Aug 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/statusline/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Claude Code Status Line Script</title>
+        <link>https://www.andreagrandi.it/posts/claude-code-status-line-script/</link>
+        <pubDate>Fri, 15 Aug 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/claude-code-status-line-script/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/claude-code-status-line-script/cc-statusline.png" alt="Featured image of post Claude Code Status Line Script" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;A few days ago, Anthropic released an update for Claude Code that adds an &lt;a class=&#34;link&#34; href=&#34;https://docs.anthropic.com/en/docs/claude-code/statusline&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;interesting feature&lt;/a&gt;: a new command named &lt;code&gt;/statusline&lt;/code&gt;, which will create a script to fetch and show useful information in the app’s status bar and automatically add the configuration for it.&lt;/p&gt;
+&lt;p&gt;You can either let Claude generate the script for you, or provide your own.&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;To install my script, you need to download the bash script from &lt;a class=&#34;link&#34; href=&#34;https://gist.github.com/andreagrandi/362c1fc77909b202476aba9b57cb0145&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;this location&lt;/a&gt; save it in &lt;code&gt;~/.claude/statusline-script.sh&lt;/code&gt;, make it executable with&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod +x ~/.claude/statusline-script.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;and add this configuration in &lt;code&gt;~/.claude/settings.json&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;statusLine&amp;#34;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;command&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;command&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;~/.claude/statusline-script.sh&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;features&#34;&gt;Features
+&lt;/h2&gt;&lt;p&gt;As you can see from the above screenshot, the script will display the following information:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;📁 logbasset &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; 🦫 1.24.5 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; 🌿 10-logging &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; 🤖 Opus 4.1 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; 💸 &lt;span class=&#34;nv&#34;&gt;$0&lt;/span&gt;.00 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; 💰 &lt;span class=&#34;nv&#34;&gt;$14&lt;/span&gt;.64/day
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;📁 current folder&lt;/li&gt;
+&lt;li&gt;🦫 language version (in this case it&amp;rsquo;s a Go app but for Python it will show &lt;code&gt;💼 (my-app) | 🐍 3.12.9&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;🌿 git branch name&lt;/li&gt;
+&lt;li&gt;🤖 current model&lt;/li&gt;
+&lt;li&gt;💸 cost of the current session&lt;/li&gt;
+&lt;li&gt;💰 total cost for the day&lt;/li&gt;
+&lt;li&gt;⏱️ time left for the current session&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The app uses &lt;code&gt;ccusage&lt;/code&gt; to fetch costs.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;In the last few days there has been an explosion of scripts and small apps which can provide a status line for Claude Code. I decided to give it a try and do my custom one. I hope it can be useful for other people too 😉&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
