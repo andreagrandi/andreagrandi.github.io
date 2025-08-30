@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Sentry on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/sentry/</link>
+        <description>Recent content in Sentry on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 30 Aug 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/sentry/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Sentire - a command line interface for Sentry API</title>
+        <link>https://www.andreagrandi.it/posts/sentire-command-line-interface-sentry-api/</link>
+        <pubDate>Sat, 30 Aug 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/sentire-command-line-interface-sentry-api/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/sentire-command-line-interface-sentry-api/sentire.png" alt="Featured image of post Sentire - a command line interface for Sentry API" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;When I use coding agents, I often need to retrieve details from a Sentry issue to provide context for diagnosing the root cause. I’ve been using the Sentry MCP for this, but I wanted to switch to a simpler command-line tool. I assumed &lt;code&gt;sentry-cli&lt;/code&gt; would fit the bill, until I realized it’s designed for a different purpose (per their docs):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;It’s primarily used for managing debug information files for iOS, 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Android as well as release and source maps management for other platforms.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;At this point I realised I needed a different CLI. I tried to search around but I couldn&amp;rsquo;t find exactly what I was looking for, so I decided to give it a shot.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-sentire&#34;&gt;What is Sentire?
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/sentire&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Sentire&lt;/a&gt; is a simple and user-friendly command line interface for the Sentry API, written in Go. The name &amp;ldquo;sentire&amp;rdquo; comes from Italian, meaning &amp;ldquo;to feel&amp;rdquo; - reflecting its purpose of helping developers feel the pulse of their application&amp;rsquo;s health through Sentry&amp;rsquo;s monitoring data.&lt;/p&gt;
+&lt;p&gt;Sentire provides an intuitive CLI for interacting with Sentry&amp;rsquo;s API, covering essential operations including managing events, issues, projects, and organizations.&lt;/p&gt;
+&lt;h2 id=&#34;key-features&#34;&gt;Key Features
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Multiple Output Formats&lt;/strong&gt;: JSON, table, text, and markdown formats to suit different use cases&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Comprehensive API Coverage&lt;/strong&gt;: Essential Sentry operations for debugging workflows&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Built-in Pagination and Rate Limiting&lt;/strong&gt;: Handles Sentry&amp;rsquo;s API constraints automatically&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Human-readable Output&lt;/strong&gt;: Perfect for terminal usage and quick analysis&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Machine-readable JSON&lt;/strong&gt;: Ideal for scripting and automation&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;URL Inspection&lt;/strong&gt;: Parse Sentry URLs directly to get detailed event information&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; this CLI doesn&amp;rsquo;t implement (yet) all the Sentry API. I focussed on the commands needed to retrieve projects, issues and events. More commands will be added in future releases.&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;Install via Homebrew (macOS):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap andreagrandi/tap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install sentire
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For other installation methods (Go install, pre-built binaries, building from source), see the &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/sentire#installation&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official README&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Complete &lt;strong&gt;source code&lt;/strong&gt; is available on GitHub: &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/sentire&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/andreagrandi/sentire&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;getting-started&#34;&gt;Getting Started
+&lt;/h2&gt;&lt;p&gt;First, set your Sentry API token as an environment variable:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;SENTRY_API_TOKEN&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;your_sentry_api_token_here
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You can obtain an API token from your Sentry organization settings under &amp;ldquo;Auth Tokens&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;Then you can start exploring your projects and issues:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# List all your projects&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire projects list
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Get a specific project&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire projects get &amp;lt;organization&amp;gt; &amp;lt;project&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# List recent issues for an organization&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire events list-issues &amp;lt;organization&amp;gt; --query&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;is:unresolved&amp;#34;&lt;/span&gt; --period&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;24h
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Get detailed information about a specific issue&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire events get-issue &amp;lt;organization&amp;gt; &amp;lt;issue-id&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;output-formats&#34;&gt;Output Formats
+&lt;/h2&gt;&lt;p&gt;Sentire supports multiple output formats to suit different workflows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;JSON&lt;/strong&gt; (default): Machine-readable format for scripting&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Table&lt;/strong&gt;: Human-readable format with borders for terminal viewing&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Text&lt;/strong&gt;: Clean plain text format for simple parsing&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Markdown&lt;/strong&gt;: Documentation-friendly format for reports&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Human-readable table format&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire events list-issues my-org --format table
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Markdown format for documentation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire org stats my-org --format markdown
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;url-inspection&#34;&gt;URL Inspection
+&lt;/h2&gt;&lt;p&gt;One of Sentire&amp;rsquo;s unique features is the ability to parse Sentry URLs directly:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Inspect a Sentry issue URL and get detailed event information&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sentire inspect &lt;span class=&#34;s2&#34;&gt;&amp;#34;https://my-org.sentry.io/issues/123456789/&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This automatically extracts the organization and issue ID from the URL and fetches the most relevant debugging information.&lt;/p&gt;
+&lt;h2 id=&#34;use-cases&#34;&gt;Use Cases
+&lt;/h2&gt;&lt;p&gt;Sentire is particularly useful for:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Debugging Workflows&lt;/strong&gt;: Quickly inspect Sentry URLs and get detailed event information without leaving the terminal&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DevOps Teams&lt;/strong&gt;: Integrating error monitoring into deployment pipelines with machine-readable JSON output&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;On-call Engineers&lt;/strong&gt;: Using table format for quick issue triage and markdown format for incident reports&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Development Teams&lt;/strong&gt;: Multiple output formats reduce context switching between terminal and web interface&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Automation and Scripting&lt;/strong&gt;: Built-in rate limiting and pagination make it reliable for automated workflows&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Documentation&lt;/strong&gt;: Markdown output format perfect for including error analysis in reports and documentation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Sentire brings Sentry to your terminal because, let&amp;rsquo;s be honest, who has time to click around web interfaces when bugs are breathing down your neck?&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s open source, so if you find bugs (oh, the irony!), have feature requests, or just want to make it less terrible, feel free to &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/sentire/issues&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;open an issue&lt;/a&gt; or send a pull request. I hope you will enjoy it 🙂&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
