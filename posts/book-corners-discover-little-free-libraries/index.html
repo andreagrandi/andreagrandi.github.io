@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Introducing Book Corners, a community-driven platform to discover, map, and contribute little free libraries around the world.">
+<title>Book Corners - discover and share little free libraries around the world</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Book Corners - discover and share little free libraries around the world">
+<meta property='og:description' content="Introducing Book Corners, a community-driven platform to discover, map, and contribute little free libraries around the world.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='book-corners' /><meta property='article:tag' content='little-free-libraries' /><meta property='article:tag' content='open-source' /><meta property='article:tag' content='community' /><meta property='article:tag' content='maps' /><meta property='article:tag' content='books' /><meta property='article:tag' content='django' /><meta property='article:tag' content='python' /><meta property='article:published_time' content='2026-03-07T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-03-07T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/cover-little-free-library.jpg' />
+<meta name="twitter:title" content="Book Corners - discover and share little free libraries around the world">
+<meta name="twitter:description" content="Introducing Book Corners, a community-driven platform to discover, map, and contribute little free libraries around the world."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/cover-little-free-library.jpg' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+<meta name="fediverse:creator" content="@andreagrandi@mastodon.social">
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/book-corners-discover-little-free-libraries/">
+                <img src="/posts/book-corners-discover-little-free-libraries/cover-little-free-library.jpg"
+                        
+                        width="1024" 
+                        height="768" 
+                        loading="lazy"
+                        alt="Featured image of post Book Corners - discover and share little free libraries around the world" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+            <a href="/categories/community/" >
+                Community
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/book-corners-discover-little-free-libraries/">Book Corners - discover and share little free libraries around the world</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Introducing Book Corners, a community-driven platform to discover, map, and contribute little free libraries around the world.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 07, 2026</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="introduction">Introduction
+</h2><p>If you&rsquo;ve ever walked around a neighbourhood and stumbled upon a small wooden box full of books, you know the feeling: a mix of curiosity and warmth. These little free libraries are scattered across cities and towns everywhere, yet there was no easy way to find them or share new ones you discover.</p>
+<p>I&rsquo;ve always been a book lover, and after spotting a few of these gems near my home, I started wondering: how many more are out there? Is there a place where people can map them and help others find them? I couldn&rsquo;t find anything that really worked well, so I decided to build one myself.</p>
+<h2 id="what-is-book-corners">What is Book Corners?
+</h2><p><a class="link" href="https://www.bookcorners.org/"  target="_blank" rel="noopener"
+    ><strong>Book Corners</strong></a> is a community-driven platform to discover, map, and contribute little free libraries from all over the world. Think of it as a collaborative map where anyone can browse existing libraries, submit new ones, and contribute photos.</p>
+<p>At the time of writing, the platform already lists over <strong>37,000 libraries</strong> across multiple countries. Most of the initial data was imported from <a class="link" href="https://www.openstreetmap.org/"  target="_blank" rel="noopener"
+    ><strong>OpenStreetMap</strong></a>, and the number keeps growing thanks to community contributions.</p>
+<p><a href="bookcorners-homepage.png"><img src="bookcorners-homepage.png" alt="Book Corners homepage showing the search bar and latest community entries" width="60%" /></a></p>
+<h2 id="browsing-and-discovering-libraries">Browsing and Discovering Libraries
+</h2><p>The core experience is the <strong>interactive map</strong>. You can explore libraries visually, with markers clustered by density so it doesn&rsquo;t become overwhelming. Zooming in reveals individual locations, and clicking a marker shows a quick preview with the library&rsquo;s name and photo.</p>
+<p>If you prefer a more targeted approach, there&rsquo;s a <strong>search</strong> feature: you can look up libraries by city, area, postcode, or address. There are also filters by country, city, and postal code, and you can switch between map, list, or split view depending on how you like to browse.</p>
+<p><a href="bookcorners-map.png"><img src="bookcorners-map.png" alt="Book Corners map page showing library clusters across Europe" width="60%" /></a></p>
+<h2 id="adding-a-new-library">Adding a New Library
+</h2><p>Found a little free library that&rsquo;s not on the map? You can submit it in just a few steps. Take a photo, upload it, and if your photo has GPS data embedded (most phone cameras do), the location will be extracted automatically. Otherwise, you can simply click on the map to set the exact position, and the address fields will be filled in for you. Once submitted, it goes through a quick review before appearing on the map.</p>
+<h2 id="each-library-has-its-own-page">Each Library Has Its Own Page
+</h2><p>Every library on the platform has a dedicated detail page showing its photo, address, a small location map, and any additional details. Community members can also contribute extra photos and report issues (like a damaged or missing library), helping keep the information accurate and up to date.</p>
+<p><a href="bookcorners-library-detail.png"><img src="bookcorners-library-detail.png" alt="Book Corners library detail page showing a little free library in Lisbon" width="60%" /></a></p>
+<h2 id="follow-us">Follow Us
+</h2><p>New libraries are automatically shared on our social channels, so following us is a great way to discover interesting reading spots from around the world:</p>
+<ul>
+<li><a class="link" href="https://mastodon.social/@bookcorners"  target="_blank" rel="noopener"
+    >Mastodon</a></li>
+<li><a class="link" href="https://bsky.app/profile/bookcorners.org"  target="_blank" rel="noopener"
+    >Bluesky</a></li>
+<li><a class="link" href="https://www.instagram.com/bookcornersorg/"  target="_blank" rel="noopener"
+    >Instagram</a></li>
+</ul>
+<h2 id="contributing">Contributing
+</h2><p>Book Corners is an <strong>open source</strong> project and it thrives on community contributions. There are many ways you can help:</p>
+<ul>
+<li><strong>Add missing libraries</strong>: if you know of a little free library that&rsquo;s not on the map yet, submit it! It only takes a minute.</li>
+<li><strong>Contribute photos</strong>: visit a library detail page and add your own pictures. Many libraries in the database still don&rsquo;t have a photo.</li>
+<li><strong>Report issues</strong>: if something is wrong or a library no longer exists, use the report feature to let us know.</li>
+<li><strong>Contribute code</strong>: the project is fully open source on <a class="link" href="https://github.com/andreagrandi/book-corners"  target="_blank" rel="noopener"
+    >GitHub</a>. Whether it&rsquo;s a bug fix, a new feature, or a translation, pull requests are always welcome.</li>
+</ul>
+<h2 id="whats-next">What&rsquo;s Next
+</h2><p>This post was meant to give you an overview of what Book Corners is and how to use it. In a follow-up post I&rsquo;ll go into the technical details of how it was built and implemented, from the tech stack to the architecture decisions. Stay tuned!</p>
+<p>In the meantime, head over to <a class="link" href="https://www.bookcorners.org/"  target="_blank" rel="noopener"
+    >bookcorners.org</a>, explore the map, and maybe add a library you know about. Every contribution helps build a better resource for book lovers everywhere.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/book-corners/">Book-Corners</a>
+        
+            <a href="/tags/little-free-libraries/">Little-Free-Libraries</a>
+        
+            <a href="/tags/open-source/">Open-Source</a>
+        
+            <a href="/tags/community/">Community</a>
+        
+            <a href="/tags/maps/">Maps</a>
+        
+            <a href="/tags/books/">Books</a>
+        
+            <a href="/tags/django/">Django</a>
+        
+            <a href="/tags/python/">Python</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/posts/building-healthy-sustainable-funding-model-opensource-software/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Building a healthy and sustainable funding model for open source software</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/releasing-log-basset-open-source-cli-access-scalyr-logs/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Releasing Log Basset: an open source CLI to access Scalyr logs</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/releasing-mcp-wire-tool-easily-configure-mcps-coding-agents/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/releasing-mcp-wire-tool-easily-configure-mcps-coding-agents/mcp-wire-logo.34409667d817f584dc00e88d1119523a.png" 
+                        width="1024" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Releasing mcp-wire: a tool to easily configure MCPs in coding agents"
+                        data-key="releasing-mcp-wire-tool-easily-configure-mcps-coding-agents" 
+                        data-hash="md5-NECWZ9gX9YTcAOiNERlSOg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Releasing mcp-wire: a tool to easily configure MCPs in coding agents</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-use-git-worktree-effectively-with-python-projects/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to use git worktree effectively with Python projects</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/using-uv-to-install-python-create-virtualenv/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using uv to install Python and create a virtual environment</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2026 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>
