@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Metabase on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/metabase/</link>
+        <description>Recent content in Metabase on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 22 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/metabase/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Releasing mb-cli 0.3.0: a read-only CLI for the Metabase API</title>
+        <link>https://www.andreagrandi.it/posts/releasing-mb-cli-0-3-0-read-only-cli-metabase-api/</link>
+        <pubDate>Fri, 22 May 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/releasing-mb-cli-0-3-0-read-only-cli-metabase-api/</guid>
+        <description>&lt;h2 id=&#34;what-is-mb-cli&#34;&gt;What is mb-cli?
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/mb-cli&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;mb-cli&lt;/strong&gt;&lt;/a&gt; is a read-only command-line interface for the Metabase API, written in Go. It lets you explore databases, inspect schemas and run ad-hoc queries straight from the terminal, without opening the Metabase UI. It was designed with AI coding agents in mind, so tools like Claude Code can investigate data on their own, and it redacts PII (emails, names, phone numbers) from results by default so the output is safe to hand to an agent.&lt;/p&gt;
+&lt;h2 id=&#34;whats-new-in-030&#34;&gt;What&amp;rsquo;s new in 0.3.0
+&lt;/h2&gt;&lt;p&gt;Version 0.3.0 focuses on making Metabase resources easier to discover and on giving agents the context they need to explore an instance without guessing. Here&amp;rsquo;s what&amp;rsquo;s new:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Exploration recipes&lt;/strong&gt;: a cookbook of exploration recipes to discover Metabase resources step by step.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Collection management&lt;/strong&gt;: new commands to browse collections and discover their metadata.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Parameter discovery&lt;/strong&gt;: new commands to find the parameters available on cards and dashboards.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Context-aware requests&lt;/strong&gt;: requests now carry context, with configurable timeout settings.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Session token authentication&lt;/strong&gt;: added support for authenticating via &lt;code&gt;MB_SESSION_TOKEN&lt;/code&gt;, alongside the existing API key option.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This release also improves error handling by classifying errors from typed JSON instead of matching message strings, strengthens the PII redaction tests, and adds mocked CLI-level integration tests for the new exploration flows.&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;You can install mb-cli via Homebrew (macOS/Linux):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap andreagrandi/tap
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install mb-cli
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Or build it from source:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git clone https://github.com/andreagrandi/mb-cli
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; mb-cli
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;make build
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;The full source code and release notes are available on GitHub: &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/mb-cli&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/andreagrandi/mb-cli&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;mb-cli is open source and contributions are welcome. If you have feedback or run into issues, feel free to &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/mb-cli/issues&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;open an issue&lt;/a&gt; or send a pull request 🙂&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
