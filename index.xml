@@ -6,7 +6,42 @@
         <description>Recent content on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 22 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 07 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Why add an agent skill to a CLI that already has a context command?</title>
+        <link>https://www.andreagrandi.it/posts/why-add-agent-skill-cli-context-command/</link>
+        <pubDate>Sun, 07 Jun 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/why-add-agent-skill-cli-context-command/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/why-add-agent-skill-cli-context-command/logbasset.png" alt="Featured image of post Why add an agent skill to a CLI that already has a context command?" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/logbasset&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;logbasset&lt;/strong&gt;&lt;/a&gt;, my open source CLI for querying &lt;a class=&#34;link&#34; href=&#34;https://www.dataset.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Scalyr&lt;/a&gt; logs, was already built to be friendly to AI coding agents. It ships a &lt;code&gt;context&lt;/code&gt; command that prints an agent-facing reference — every command, flag, output format, time syntax, and even a list of flags that &lt;em&gt;look&lt;/em&gt; plausible but don&amp;rsquo;t exist — plus a &lt;code&gt;schema&lt;/code&gt; command that emits the same information as machine-readable JSON.&lt;/p&gt;
+&lt;p&gt;So when I sat down to add an installable &lt;a class=&#34;link&#34; href=&#34;https://www.skills.sh/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;agent skill&lt;/a&gt;, I had a fair question to answer first: if the binary already documents itself, what&amp;rsquo;s the skill even for?&lt;/p&gt;
+&lt;h2 id=&#34;self-documentation-isnt-discovery&#34;&gt;Self-documentation isn&amp;rsquo;t discovery
+&lt;/h2&gt;&lt;p&gt;The &lt;code&gt;context&lt;/code&gt; command answers &lt;em&gt;how&lt;/em&gt; to use logbasset. But it only helps an agent that has &lt;strong&gt;already decided&lt;/strong&gt; to reach for logbasset in the first place. Nothing tells the agent &amp;ldquo;this tool exists, and it&amp;rsquo;s the right one when the user mentions Scalyr logs.&amp;rdquo; That&amp;rsquo;s a separate problem — discovery — and a context command can&amp;rsquo;t solve it, because the agent has to know to run it.&lt;/p&gt;
+&lt;p&gt;An agent skill fills exactly that gap. A skill is matched by its description, so it acts as the trigger layer: &lt;em&gt;&amp;ldquo;when the user wants to investigate, search, or tail Scalyr/DataSet logs, use logbasset.&amp;rdquo;&lt;/em&gt; Once it fires, it hands off to the binary.&lt;/p&gt;
+&lt;h2 id=&#34;a-thin-skill-not-a-second-copy-of-the-docs&#34;&gt;A thin skill, not a second copy of the docs
+&lt;/h2&gt;&lt;p&gt;The obvious mistake would be to stuff the whole command reference into the skill. That instantly creates a second source of truth that goes stale the moment I add a flag — and now I&amp;rsquo;m maintaining the same documentation in two places.&lt;/p&gt;
+&lt;p&gt;So the skill does almost nothing. It tells the agent: check that &lt;code&gt;logbasset&lt;/code&gt; is installed, then run &lt;code&gt;logbasset context&lt;/code&gt; and &lt;code&gt;logbasset schema&lt;/code&gt; to load the &lt;em&gt;current&lt;/em&gt; reference, then build the query. It deliberately lists no flags of its own. A CLI change can never make it lie, because it never claims anything specific — it just points at the binary, which is always right.&lt;/p&gt;
+&lt;p&gt;That combination is the whole idea: the &lt;code&gt;context&lt;/code&gt; command makes logbasset &lt;strong&gt;usable&lt;/strong&gt; by an agent, and the skill makes it &lt;strong&gt;discoverable&lt;/strong&gt; — with near-zero maintenance, because the skill delegates instead of duplicating.&lt;/p&gt;
+&lt;h2 id=&#34;try-it&#34;&gt;Try it
+&lt;/h2&gt;&lt;p&gt;If you use logbasset with a coding agent, install the skill alongside the binary:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npx skills add andreagrandi/logbasset
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;It works with any &lt;a class=&#34;link&#34; href=&#34;https://www.skills.sh/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;skills.sh-supported agent&lt;/a&gt; — Claude Code, Codex, Cursor, and others — and the binary stays a separate install.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;Giving your CLI a &lt;code&gt;context&lt;/code&gt; or &lt;code&gt;schema&lt;/code&gt; command is great: it lets an agent use the tool correctly. But a small, thin skill on top is what gets the agent to reach for it in the first place. If your CLI already self-documents, you&amp;rsquo;re most of the way there — a discovery layer is a cheap, high-leverage addition, as long as you keep it thin and let the binary remain the source of truth.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Releasing mb-cli 0.3.0: a read-only CLI for the Metabase API</title>
         <link>https://www.andreagrandi.it/posts/releasing-mb-cli-0-3-0-read-only-cli-metabase-api/</link>
         <pubDate>Fri, 22 May 2026 00:00:00 +0000</pubDate>
@@ -2498,61 +2533,6 @@ Bonus point, he&amp;rsquo;s also a very nice person!&lt;/p&gt;
 &lt;p&gt;Other AI companies, like &lt;strong&gt;PerplexityAI&lt;/strong&gt;, seem to have found a way around these blocks, because if you try to ask Perplexity to summarise one of the pages of this website, it will still be able to do it, but I&amp;rsquo;m sure that Cloudflare will soon find a way to block them too.&lt;/p&gt;
 &lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
 &lt;/h2&gt;&lt;p&gt;I think people should be able to decide if they want their content to be used by AI models or not and Cloudflare is now providing an easy option to do that. AI tools are not bad per se, but they should not be built using other people&amp;rsquo;s content without their &lt;strong&gt;consent&lt;/strong&gt;.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>We need an evolved robots.txt and regulations to enforce it</title>
-        <link>https://www.andreagrandi.it/posts/we-need-evolved-robotstxt-and-regulations/</link>
-        <pubDate>Sat, 22 Jun 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://www.andreagrandi.it/posts/we-need-evolved-robotstxt-and-regulations/</guid>
-        <description>&lt;img src="https://www.andreagrandi.it/posts/we-need-evolved-robotstxt-and-regulations/we-need-new-robots.png" alt="Featured image of post We need an evolved robots.txt and regulations to enforce it" /&gt;&lt;p&gt;The &lt;code&gt;robots.txt&lt;/code&gt; file is a simple text file that tells web robots (like search engine crawlers) which pages on your site to crawl and which not to crawl. It&amp;rsquo;s a &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/Robots.txt&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;standard&lt;/a&gt; that has been around for a long time and it&amp;rsquo;s still used today.&lt;/p&gt;
-&lt;p&gt;Some examples of rules you can put in a &lt;code&gt;robots.txt&lt;/code&gt; file are:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-txt&#34; data-lang=&#34;txt&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;User-agent: *
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Disallow: /private/
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;This rule tells all web robots to not crawl the &lt;code&gt;/private/&lt;/code&gt; directory.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-txt&#34; data-lang=&#34;txt&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;User-agent: Googlebot
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Disallow: /users/
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;This rule tells Googlebot to not crawl the &lt;code&gt;/users/&lt;/code&gt; directory.&lt;/p&gt;
-&lt;h2 id=&#34;then-ai-came&#34;&gt;Then AI came
-&lt;/h2&gt;&lt;p&gt;In the age of AI, the existing &lt;code&gt;robots.txt&lt;/code&gt; specification is not enough to express the rules for web crawlers. We can only tell agent if they can or cannot crawl a certain path, but we cannot express more complex rules.&lt;/p&gt;
-&lt;p&gt;In my opinion we should be able to express more detailed rules, like:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Indexing:&lt;/strong&gt; should a web crawler be able to index the content?&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Caching:&lt;/strong&gt; should a web crawler be able to cache the content?&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;LLM Training:&lt;/strong&gt; should a web crawler be able to use the content to train a language model?&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Summarising:&lt;/strong&gt; should a web crawler be able to summarise the content?&lt;/li&gt;
-&lt;li&gt;etc&amp;hellip;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Some of the above things were not possible in the past and it should be up to the website owner to decide if they want their content to be used in such ways.&lt;/p&gt;
-&lt;h2 id=&#34;enforcing-the-rules&#34;&gt;Enforcing the rules
-&lt;/h2&gt;&lt;p&gt;In addition to more detailed rules, &lt;strong&gt;we need new regulations to enforce them&lt;/strong&gt;. It looks like the &lt;code&gt;robots.txt&lt;/code&gt; file is not enough to stop certain companies from doing what they want.&lt;/p&gt;
-&lt;p&gt;As someone &lt;a class=&#34;link&#34; href=&#34;https://rknight.me/blog/perplexity-ai-is-lying-about-its-user-agent/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;recently found out&lt;/a&gt;, &lt;strong&gt;Perplexity AI is using a fake user agent to crawl websites&lt;/strong&gt;, pretending to be a regular user. This is a clear violation of the rules specified in &lt;code&gt;robots.txt&lt;/code&gt; file. This claim has recently been &lt;a class=&#34;link&#34; href=&#34;https://www.wired.com/story/perplexity-is-a-bullshit-machine/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;confirmed by Wired&lt;/a&gt; and by &lt;a class=&#34;link&#34; href=&#34;https://www.macstories.net/stories/wired-confirms-perplexity-is-bypassing-efforts-by-websites-to-block-its-web-crawler/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;MacStories&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
-&lt;/h2&gt;&lt;p&gt;As we have seen, having good rules is not enough if they are not enforced. In particular we need regulators to take care of complaints from content owners and &lt;strong&gt;fine companies that do not respect the rules&lt;/strong&gt; (like Perplexity AI), because small content creators cannot afford to take legal actions against big companies.&lt;/p&gt;
-&lt;p&gt;As with every single thing, it&amp;rsquo;s never &amp;ldquo;the tool&amp;rdquo;, but rather &amp;ldquo;how you use it&amp;rdquo;. AI itself can bring innovation in certain fields, but this can&amp;rsquo;t be done at the expense of other people&amp;rsquo;s work and rights.&lt;/p&gt;
-&lt;h3 id=&#34;disclaimer&#34;&gt;Disclaimer
-&lt;/h3&gt;&lt;p&gt;Yes, of course the cover image has been generated with AI. It&amp;rsquo;s far from perfect, but it&amp;rsquo;s still better than my drawing skills. The content of this article instead is 100% human generated.&lt;/p&gt;
 </description>
         </item>
         
