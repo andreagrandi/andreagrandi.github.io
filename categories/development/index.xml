@@ -6,7 +6,126 @@
         <description>Recent content in Development on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 14 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/development/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 19 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/categories/development/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Releasing Meeting Notes Sync for Obsidian, with an agent skill</title>
+        <link>https://www.andreagrandi.it/posts/releasing-meeting-notes-sync-for-obsidian-with-agent-skill/</link>
+        <pubDate>Fri, 19 Jun 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/releasing-meeting-notes-sync-for-obsidian-with-agent-skill/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/releasing-meeting-notes-sync-for-obsidian-with-agent-skill/meeting-notes-sync-banner.png" alt="Featured image of post Releasing Meeting Notes Sync for Obsidian, with an agent skill" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;I spend a good amount of time in meetings, and over time I started using different tools around them. &lt;a class=&#34;link&#34; href=&#34;https://macparakeet.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MacParakeet&lt;/a&gt; is great for local meeting transcription, &lt;a class=&#34;link&#34; href=&#34;https://fellow.app/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Fellow&lt;/a&gt; is useful for meeting recaps and action items, and &lt;a class=&#34;link&#34; href=&#34;https://obsidian.md/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Obsidian&lt;/a&gt; is where I keep my own notes and long-term knowledge base.&lt;/p&gt;
+&lt;p&gt;The problem was not generating meeting notes. The problem was keeping them in the right place.&lt;/p&gt;
+&lt;p&gt;I often had a transcript in one tool, a summary in another, and my own notes somewhere in Obsidian. When I wanted to go back to a meeting days or weeks later, I had to remember where each piece of information lived. That got annoying quickly, especially for recurring meetings.&lt;/p&gt;
+&lt;p&gt;So I built &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/obsidian-meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Meeting Notes Sync&lt;/strong&gt;&lt;/a&gt;, an Obsidian plugin that syncs meeting transcripts, notes, and AI summaries into your vault.&lt;/p&gt;
+&lt;p&gt;I also wrote a companion &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/agents-skills/tree/master/meeting-notes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;meeting-notes agent skill&lt;/strong&gt;&lt;/a&gt;, so tools like Claude Code and Codex can search those notes in a contextual way when you ask about past meetings.&lt;/p&gt;
+&lt;p&gt;The plugin is now available in the &lt;a class=&#34;link&#34; href=&#34;https://community.obsidian.md/plugins/meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official Obsidian plugin list&lt;/a&gt;, so you can install it directly from Obsidian.&lt;/p&gt;
+&lt;h2 id=&#34;why-i-built-it&#34;&gt;Why I built it
+&lt;/h2&gt;&lt;p&gt;I wanted Obsidian to be the final archive for my meetings.&lt;/p&gt;
+&lt;p&gt;External tools are useful, and I do not want to replace them. They are good at recording, transcribing, summarising, or helping with follow-ups. But once a meeting is done, I want the useful output to live next to the rest of my notes, links, projects, and personal context.&lt;/p&gt;
+&lt;p&gt;There were a few things I cared about from the beginning:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;One place to search&lt;/strong&gt;: if I remember something from a meeting, I want to search my Obsidian vault, not three different apps.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No manual copy and paste&lt;/strong&gt;: moving summaries and transcripts by hand is boring, easy to forget, and easy to do inconsistently.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No duplicate meetings&lt;/strong&gt;: if the same meeting exists in both MacParakeet and Fellow, I do not want two folders for it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Keep my own notes safe&lt;/strong&gt;: the plugin should sync generated content, but it should not delete my own files or treat the source apps as the only truth.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That last point is important. My vault is the archive. If something disappears from a source app, I do not want that deletion to automatically remove it from Obsidian.&lt;/p&gt;
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works
+&lt;/h2&gt;&lt;p&gt;After installing the plugin, you enable the sources you want to use. At the moment it supports:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MacParakeet&lt;/strong&gt;, using its local command-line tool&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fellow&lt;/strong&gt;, using its API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each source is optional. If you only use MacParakeet, you can enable only MacParakeet. If you only use Fellow, enable only Fellow. If you use both, the plugin can combine them.&lt;/p&gt;
+&lt;p&gt;When the plugin syncs, it creates one folder per meeting in your Obsidian vault. A folder can contain the meeting index, summaries, notes, action items, and transcripts depending on what is available and what you enabled.&lt;/p&gt;
+&lt;p&gt;For example, a meeting captured by both tools can end up with files like:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Meetings/2026/06 - June/2 - Weekly Standup - Jun 11th/
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  2 - Weekly Standup - Jun 11th.md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Summary (MacParakeet).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Transcript (MacParakeet).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Summary (Fellow).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Action Items (Fellow).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Transcript (Fellow).md
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The source name in the filename makes it clear where each file came from. If the same meeting is found in multiple sources, the plugin tries to merge it into the same folder instead of creating duplicates.&lt;/p&gt;
+&lt;p&gt;Sync runs automatically after Obsidian starts and then at a configurable interval. You can also run it manually with &lt;strong&gt;Sync now&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;a-few-design-choices&#34;&gt;A few design choices
+&lt;/h2&gt;&lt;p&gt;I tried to keep the plugin practical rather than clever.&lt;/p&gt;
+&lt;p&gt;It is incremental, so unchanged meetings are skipped. It is also non-destructive: deleting a meeting in MacParakeet or Fellow does not delete the copy already imported into your vault.&lt;/p&gt;
+&lt;p&gt;Synced files are treated as mirrors of the source content and may be updated when the source changes. For my own thoughts, I prefer keeping separate notes in the same meeting folder. This keeps generated content and personal notes close together, without mixing ownership.&lt;/p&gt;
+&lt;p&gt;The plugin is desktop-only for now because the MacParakeet integration uses a local command-line tool. Fellow support works through its API, so you will need a Fellow plan and API access if you want to use that source.&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;The easiest way to install it is from Obsidian:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;strong&gt;Settings&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Go to &lt;strong&gt;Community plugins&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Search for &lt;strong&gt;Meeting Notes Sync&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Install and enable it&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You can also open the plugin page directly from the &lt;a class=&#34;link&#34; href=&#34;https://community.obsidian.md/plugins/meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official Obsidian plugin list&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The source code is available on GitHub: &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/obsidian-meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/andreagrandi/obsidian-meeting-notes-sync&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;using-the-notes-with-claude-and-codex&#34;&gt;Using the notes with Claude and Codex
+&lt;/h2&gt;&lt;p&gt;Getting meeting notes into Obsidian is only one part of the workflow. The other part is being able to ask useful questions about them later.&lt;/p&gt;
+&lt;p&gt;I often want to ask things like:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;What did we decide about this project?&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Who owns that action item?&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Did we already discuss this in a standup?&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Open the notes from the last demo call.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For that, I wrote a &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/agents-skills/tree/master/meeting-notes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;meeting-notes agent skill&lt;/a&gt;. The idea is simple: when Claude Code, Codex, or another skills-aware agent sees that you are asking about past meetings, it knows how to search your local Obsidian meeting notes instead of guessing from memory.&lt;/p&gt;
+&lt;p&gt;The skill uses local semantic search through &lt;a class=&#34;link&#34; href=&#34;https://github.com/tobi/qmd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;QMD&lt;/a&gt;, so it can find notes by meaning, not only by exact keywords. It also returns the real source notes with dates and paths, so the answer can cite where the information came from. If you want to inspect the original note, you can ask the agent to open one of the cited sources directly in Obsidian.&lt;/p&gt;
+&lt;p&gt;This is the part I find most useful: the plugin keeps the meeting archive organised, while the skill gives agents a safe and repeatable way to consult that archive when I need context.&lt;/p&gt;
+&lt;p&gt;If you use the &lt;code&gt;skills&lt;/code&gt; CLI, you can install the skill with:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npx skills add andreagrandi/agents-skills --skill meeting-notes -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The full instructions are in the &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/agents-skills/tree/master/meeting-notes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;meeting-notes skill repository&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;feedback-welcome&#34;&gt;Feedback welcome
+&lt;/h2&gt;&lt;p&gt;This plugin started from my own workflow, but meeting workflows are very personal. Some people care mostly about transcripts, some about action items, some about recurring meeting history, and some about having clean folder structures.&lt;/p&gt;
+&lt;p&gt;If you try Meeting Notes Sync, I would love to know what works well and what feels awkward. In particular, I am interested in feedback about:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Other meeting tools that would be useful to support&lt;/li&gt;
+&lt;li&gt;Better defaults for folder structure and naming&lt;/li&gt;
+&lt;li&gt;Recurring meeting workflows&lt;/li&gt;
+&lt;li&gt;Ways to make merging meetings from different sources more obvious&lt;/li&gt;
+&lt;li&gt;Better ways for agents to query and cite meeting context&lt;/li&gt;
+&lt;li&gt;Anything that would make the plugin easier for non-technical users&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you have feedback, ideas, or bug reports, please &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/obsidian-meeting-notes-sync/issues&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;open an issue on GitHub&lt;/a&gt;. Pull requests are welcome too.&lt;/p&gt;
+&lt;p&gt;My goal is simple: make it easier to keep useful meeting knowledge inside Obsidian, without turning meeting notes into yet another thing to manually organise.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Announcing mcp-wire 0.3.0</title>
         <link>https://www.andreagrandi.it/posts/announcing-mcp-wire-0-3-0/</link>
         <pubDate>Sun, 14 Jun 2026 00:00:00 +0000</pubDate>
@@ -3324,65 +3443,6 @@ if you checkout this version of the code:&lt;/p&gt;
 &lt;/div&gt;&lt;p&gt;I&amp;rsquo;ve only tested the views but it would be nice to test even the permission class, for example.
 Please remember to write your tests first, if possible: implementing the code will be much more natural
 once the tests are already in place.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Migrating from WordPress to a static generated website</title>
-        <link>https://www.andreagrandi.it/posts/migrating-from-wordpress-to-static-generated-website/</link>
-        <pubDate>Sun, 02 Jul 2017 00:00:00 +0000</pubDate>
-        
-        <guid>https://www.andreagrandi.it/posts/migrating-from-wordpress-to-static-generated-website/</guid>
-        <description>&lt;p&gt;As you may have noticed, my website looks very different compared to a few days ago.
-It&amp;rsquo;s just a different theme or template, I completely changed how the pages are generated and
-I&amp;rsquo;m hosting it in a completely different way.&lt;/p&gt;
-&lt;h3 id=&#34;a-brief-history&#34;&gt;A brief history
-&lt;/h3&gt;&lt;p&gt;When I started this blog 10 years ago, I was hosting it on a shared hosting service and it was based on &lt;strong&gt;WordPress&lt;/strong&gt;.
-I then decided to keep WordPress as backend (I don&amp;rsquo;t like PHP very much but I wasn&amp;rsquo;t even good at front end development at the time,
-so using a tool that allowed me to concentrate on the content rather than on design was a natural choice for me) but to move my website
-to a &lt;strong&gt;VPS&lt;/strong&gt; on &lt;strong&gt;DigitalOcean&lt;/strong&gt;, where I&amp;rsquo;ve self-hosted &lt;strong&gt;Nginx + PHP + MySQL&lt;/strong&gt; and even Postfix for email aliases until a few days ago.&lt;/p&gt;
-&lt;h3 id=&#34;why-moving-to-a-static-website&#34;&gt;Why moving to a static website?
-&lt;/h3&gt;&lt;p&gt;In these three or four years I&amp;rsquo;ve been using a VPS, I must say I&amp;rsquo;ve been good enough (or maybe lucky?) at keeping &amp;ldquo;bad people&amp;rdquo; out
-of my server, but it&amp;rsquo;s true that &lt;strong&gt;maintaining a VPS can be very time consuming&lt;/strong&gt; and you can never be sure that your website is always safe.
-I&amp;rsquo;ve heard about static website before, but I was a bit skeptic because I had not spent enough time investigating all the possibilities
-(search and comments are still possible, thanks to external services and plugins).&lt;/p&gt;
-&lt;p&gt;Another advantage of a static website is that I can perfectly &amp;ldquo;run&amp;rdquo; (preview) on my local computer without publishing it online. Pages can be rendered locally
-and will appear in the browser exactly as they will appear once published online.&lt;/p&gt;
-&lt;p&gt;If you use a tool like WordPress, you need to be constantly connected to Internet to write any change. With static pages &lt;strong&gt;I can write my content offline&lt;/strong&gt;
-(so I can do it while commuting on the train or while I&amp;rsquo;m flying somewhere) and publish it once I&amp;rsquo;m back online.&lt;/p&gt;
-&lt;h3 id=&#34;pelican&#34;&gt;Pelican
-&lt;/h3&gt;&lt;p&gt;The tool that I&amp;rsquo;m using to generate this website is called &lt;a class=&#34;link&#34; href=&#34;https://blog.getpelican.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Pelican&lt;/a&gt;.
-There are many &lt;a class=&#34;link&#34; href=&#34;https://www.staticgen.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;static website generators&lt;/a&gt;, the reason why I chose Pelican is because it&amp;rsquo;s written in &lt;strong&gt;Python&lt;/strong&gt;,
-so if I need to do any change I can do them and because its templates use Jinja2 which I&amp;rsquo;m already familiar with. It can also import posts from WordPress
-(and I had over 180 posts to import from my previous website) so if you are migrating from it it&amp;rsquo;s a good choice. Please note that the import script is not perfect
-and that you may have to adjust some formatting here and there.&lt;/p&gt;
-&lt;h3 id=&#34;a-new-deployment-pipeline&#34;&gt;A new deployment pipeline
-&lt;/h3&gt;&lt;p&gt;When you use WordPress your website is already online and all you have to do is to login, use the integrated editor, write content and finally publish it.
-A static website doesn&amp;rsquo;t have any admin tool, it&amp;rsquo;s just static pages. How do you publish content then? There are of course multiple solutions available.
-In my case my website source code is hosted in &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/andreagrandi.it&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;a repository on GitHub&lt;/a&gt;. When I commit on &lt;strong&gt;master&lt;/strong&gt; branch
-there is a webhook that triggers a &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/andreagrandi.it/blob/master/.travis.yml&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;build job&lt;/a&gt; on &lt;a class=&#34;link&#34; href=&#34;https://travis-ci.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;TravisCI&lt;/a&gt;.
-TravisCI fetches the latest source code, installs Pelican on the CI and builds the static pages. Once the build is finished, a &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/andreagrandi.it/blob/master/deploy.sh&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;bash script&lt;/a&gt; is used to &lt;strong&gt;publish&lt;/strong&gt;
-the generated pages on the static website hosting service.&lt;/p&gt;
-&lt;h3 id=&#34;hosting-a-static-website&#34;&gt;Hosting a static website
-&lt;/h3&gt;&lt;p&gt;The good thing about hosting a static website is that you don&amp;rsquo;t need a database so you can host it almost anywhere at a cheaper price or even for free.
-In my case I&amp;rsquo;ve decided to use &lt;strong&gt;GitHub pages&lt;/strong&gt;, mainly for simplicity. Every GitHub user can have a static website hosted at &amp;lt;yourusername&amp;gt;.github.io for free.
-To start using it, you just have to create a repository named &amp;lt;yourusername&amp;gt;.github.io under your GitHub account. In my case the repository is &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/andreagrandi.github.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://github.com/andreagrandi/andreagrandi.github.io&lt;/a&gt;. My deploy script simply takes the generated content
-that is in the output/ folder and &lt;strong&gt;git push&lt;/strong&gt; it on this repository. Once the website has been pushed to git, it&amp;rsquo;s immediately available at &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://andreagrandi.github.io&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://andreagrandi.github.io&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;h4 id=&#34;cloudflare&#34;&gt;CloudFlare
-&lt;/h4&gt;&lt;p&gt;GitHub Pages service has a little limitation: you can either have your website served from a URL similar to the one I&amp;rsquo;ve just mentioned, including SSL support &lt;em&gt;or&lt;/em&gt; you can use your own domain, but &lt;strong&gt;you can&amp;rsquo;t have both things&lt;/strong&gt; (SSL + custom domain). To workaround this, you can instruct your domain registrar (in my case is &lt;a class=&#34;link&#34; href=&#34;https://www.gandi.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Gandi.net&lt;/a&gt;) to let CloudFlare manage your domain and just enabling &amp;ldquo;Full SSL&amp;rdquo; support will do the trick. I won&amp;rsquo;t repeat here how to use CloudFlare since they have a very nice tutorial explaining how to configure their service to be used with GitHub Pages: &lt;a class=&#34;link&#34; href=&#34;https://blog.cloudflare.com/secure-and-fast-github-pages-with-cloudflare/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://blog.cloudflare.com/secure-and-fast-github-pages-with-cloudflare/&lt;/a&gt;. Remember to include a &lt;strong&gt;CNAME&lt;/strong&gt; file containing your domain name and let your static generetor put it on the root of your website, otherwise GitHub pages won&amp;rsquo;t serve the pages correctly.&lt;/p&gt;
-&lt;h4 id=&#34;why-not-amazon-s3&#34;&gt;Why not Amazon S3?
-&lt;/h4&gt;&lt;p&gt;While I was looking for instructions about how to host a static websites, I found many examples of websites using Amazon S3. There is nothing wrong with using this service (just keep in mind that it&amp;rsquo;s not free, Amazon charges you for space usage and requests, so keep an eye on the AWS bill) but the way these websites were using it was completely wrong. The most common error I noticed was the fact they were enabling the &lt;strong&gt;flexible SSL&lt;/strong&gt; option on CloudFlare: this means that the connection between the visitor and CloudFlare was encrypted (and visitor could see the the SSL enabled) but the connection between CloudFlare and Amazon S3 was being served with &lt;strong&gt;HTTP only&lt;/strong&gt;, meaning that potentially the pages could have been modified before being served. Infact Amazon doesn&amp;rsquo;t serve the S3 website buckets with SSL, they use plain HTTP (Why are you doing this Amazon?!). To use the S3 bucket correctly one should also configure Route 53 (to manage DNS) and CloudFront (the Amazon equivalent of CloudFlare service, beware because this is also charged separately depending on usage/traffic), making the whole setup a bit more complicated.&lt;/p&gt;
-&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion
-&lt;/h3&gt;&lt;p&gt;I finally moved away from my VPS and from now on I will be able to concentrate my time on content only instead of spending part of it to maintain my server. Last but not least, the possibility to write my content offline, will hopefully allow me to write from places (train, airplane) where I&amp;rsquo;ve never written from before. If you have any suggestion or if if you notice any error, feel free to leave a comment here below. In alternative, since now this blog is completely open source and on GitHub, you can fork it and make a pull request!&lt;/p&gt;
 </description>
         </item>
         

@@ -6,7 +6,126 @@
         <description>Recent content in Productivity on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 25 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/productivity/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 19 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/productivity/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Releasing Meeting Notes Sync for Obsidian, with an agent skill</title>
+        <link>https://www.andreagrandi.it/posts/releasing-meeting-notes-sync-for-obsidian-with-agent-skill/</link>
+        <pubDate>Fri, 19 Jun 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/releasing-meeting-notes-sync-for-obsidian-with-agent-skill/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/releasing-meeting-notes-sync-for-obsidian-with-agent-skill/meeting-notes-sync-banner.png" alt="Featured image of post Releasing Meeting Notes Sync for Obsidian, with an agent skill" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;I spend a good amount of time in meetings, and over time I started using different tools around them. &lt;a class=&#34;link&#34; href=&#34;https://macparakeet.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MacParakeet&lt;/a&gt; is great for local meeting transcription, &lt;a class=&#34;link&#34; href=&#34;https://fellow.app/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Fellow&lt;/a&gt; is useful for meeting recaps and action items, and &lt;a class=&#34;link&#34; href=&#34;https://obsidian.md/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Obsidian&lt;/a&gt; is where I keep my own notes and long-term knowledge base.&lt;/p&gt;
+&lt;p&gt;The problem was not generating meeting notes. The problem was keeping them in the right place.&lt;/p&gt;
+&lt;p&gt;I often had a transcript in one tool, a summary in another, and my own notes somewhere in Obsidian. When I wanted to go back to a meeting days or weeks later, I had to remember where each piece of information lived. That got annoying quickly, especially for recurring meetings.&lt;/p&gt;
+&lt;p&gt;So I built &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/obsidian-meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Meeting Notes Sync&lt;/strong&gt;&lt;/a&gt;, an Obsidian plugin that syncs meeting transcripts, notes, and AI summaries into your vault.&lt;/p&gt;
+&lt;p&gt;I also wrote a companion &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/agents-skills/tree/master/meeting-notes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;meeting-notes agent skill&lt;/strong&gt;&lt;/a&gt;, so tools like Claude Code and Codex can search those notes in a contextual way when you ask about past meetings.&lt;/p&gt;
+&lt;p&gt;The plugin is now available in the &lt;a class=&#34;link&#34; href=&#34;https://community.obsidian.md/plugins/meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official Obsidian plugin list&lt;/a&gt;, so you can install it directly from Obsidian.&lt;/p&gt;
+&lt;h2 id=&#34;why-i-built-it&#34;&gt;Why I built it
+&lt;/h2&gt;&lt;p&gt;I wanted Obsidian to be the final archive for my meetings.&lt;/p&gt;
+&lt;p&gt;External tools are useful, and I do not want to replace them. They are good at recording, transcribing, summarising, or helping with follow-ups. But once a meeting is done, I want the useful output to live next to the rest of my notes, links, projects, and personal context.&lt;/p&gt;
+&lt;p&gt;There were a few things I cared about from the beginning:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;One place to search&lt;/strong&gt;: if I remember something from a meeting, I want to search my Obsidian vault, not three different apps.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No manual copy and paste&lt;/strong&gt;: moving summaries and transcripts by hand is boring, easy to forget, and easy to do inconsistently.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No duplicate meetings&lt;/strong&gt;: if the same meeting exists in both MacParakeet and Fellow, I do not want two folders for it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Keep my own notes safe&lt;/strong&gt;: the plugin should sync generated content, but it should not delete my own files or treat the source apps as the only truth.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That last point is important. My vault is the archive. If something disappears from a source app, I do not want that deletion to automatically remove it from Obsidian.&lt;/p&gt;
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works
+&lt;/h2&gt;&lt;p&gt;After installing the plugin, you enable the sources you want to use. At the moment it supports:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MacParakeet&lt;/strong&gt;, using its local command-line tool&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fellow&lt;/strong&gt;, using its API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each source is optional. If you only use MacParakeet, you can enable only MacParakeet. If you only use Fellow, enable only Fellow. If you use both, the plugin can combine them.&lt;/p&gt;
+&lt;p&gt;When the plugin syncs, it creates one folder per meeting in your Obsidian vault. A folder can contain the meeting index, summaries, notes, action items, and transcripts depending on what is available and what you enabled.&lt;/p&gt;
+&lt;p&gt;For example, a meeting captured by both tools can end up with files like:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Meetings/2026/06 - June/2 - Weekly Standup - Jun 11th/
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  2 - Weekly Standup - Jun 11th.md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Summary (MacParakeet).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Transcript (MacParakeet).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Summary (Fellow).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Action Items (Fellow).md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Transcript (Fellow).md
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The source name in the filename makes it clear where each file came from. If the same meeting is found in multiple sources, the plugin tries to merge it into the same folder instead of creating duplicates.&lt;/p&gt;
+&lt;p&gt;Sync runs automatically after Obsidian starts and then at a configurable interval. You can also run it manually with &lt;strong&gt;Sync now&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;a-few-design-choices&#34;&gt;A few design choices
+&lt;/h2&gt;&lt;p&gt;I tried to keep the plugin practical rather than clever.&lt;/p&gt;
+&lt;p&gt;It is incremental, so unchanged meetings are skipped. It is also non-destructive: deleting a meeting in MacParakeet or Fellow does not delete the copy already imported into your vault.&lt;/p&gt;
+&lt;p&gt;Synced files are treated as mirrors of the source content and may be updated when the source changes. For my own thoughts, I prefer keeping separate notes in the same meeting folder. This keeps generated content and personal notes close together, without mixing ownership.&lt;/p&gt;
+&lt;p&gt;The plugin is desktop-only for now because the MacParakeet integration uses a local command-line tool. Fellow support works through its API, so you will need a Fellow plan and API access if you want to use that source.&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation
+&lt;/h2&gt;&lt;p&gt;The easiest way to install it is from Obsidian:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;strong&gt;Settings&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Go to &lt;strong&gt;Community plugins&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Search for &lt;strong&gt;Meeting Notes Sync&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Install and enable it&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;You can also open the plugin page directly from the &lt;a class=&#34;link&#34; href=&#34;https://community.obsidian.md/plugins/meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;official Obsidian plugin list&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The source code is available on GitHub: &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/obsidian-meeting-notes-sync&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/andreagrandi/obsidian-meeting-notes-sync&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;using-the-notes-with-claude-and-codex&#34;&gt;Using the notes with Claude and Codex
+&lt;/h2&gt;&lt;p&gt;Getting meeting notes into Obsidian is only one part of the workflow. The other part is being able to ask useful questions about them later.&lt;/p&gt;
+&lt;p&gt;I often want to ask things like:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;What did we decide about this project?&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Who owns that action item?&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Did we already discuss this in a standup?&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Open the notes from the last demo call.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For that, I wrote a &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/agents-skills/tree/master/meeting-notes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;meeting-notes agent skill&lt;/a&gt;. The idea is simple: when Claude Code, Codex, or another skills-aware agent sees that you are asking about past meetings, it knows how to search your local Obsidian meeting notes instead of guessing from memory.&lt;/p&gt;
+&lt;p&gt;The skill uses local semantic search through &lt;a class=&#34;link&#34; href=&#34;https://github.com/tobi/qmd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;QMD&lt;/a&gt;, so it can find notes by meaning, not only by exact keywords. It also returns the real source notes with dates and paths, so the answer can cite where the information came from. If you want to inspect the original note, you can ask the agent to open one of the cited sources directly in Obsidian.&lt;/p&gt;
+&lt;p&gt;This is the part I find most useful: the plugin keeps the meeting archive organised, while the skill gives agents a safe and repeatable way to consult that archive when I need context.&lt;/p&gt;
+&lt;p&gt;If you use the &lt;code&gt;skills&lt;/code&gt; CLI, you can install the skill with:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npx skills add andreagrandi/agents-skills --skill meeting-notes -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The full instructions are in the &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/agents-skills/tree/master/meeting-notes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;meeting-notes skill repository&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;feedback-welcome&#34;&gt;Feedback welcome
+&lt;/h2&gt;&lt;p&gt;This plugin started from my own workflow, but meeting workflows are very personal. Some people care mostly about transcripts, some about action items, some about recurring meeting history, and some about having clean folder structures.&lt;/p&gt;
+&lt;p&gt;If you try Meeting Notes Sync, I would love to know what works well and what feels awkward. In particular, I am interested in feedback about:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Other meeting tools that would be useful to support&lt;/li&gt;
+&lt;li&gt;Better defaults for folder structure and naming&lt;/li&gt;
+&lt;li&gt;Recurring meeting workflows&lt;/li&gt;
+&lt;li&gt;Ways to make merging meetings from different sources more obvious&lt;/li&gt;
+&lt;li&gt;Better ways for agents to query and cite meeting context&lt;/li&gt;
+&lt;li&gt;Anything that would make the plugin easier for non-technical users&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you have feedback, ideas, or bug reports, please &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/obsidian-meeting-notes-sync/issues&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;open an issue on GitHub&lt;/a&gt;. Pull requests are welcome too.&lt;/p&gt;
+&lt;p&gt;My goal is simple: make it easier to keep useful meeting knowledge inside Obsidian, without turning meeting notes into yet another thing to manually organise.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Using VibeTunnel to control Claude Code instances remotely</title>
         <link>https://www.andreagrandi.it/posts/using-vibetunnel-to-control-claude-code-instances-remotely/</link>
         <pubDate>Sun, 25 Jan 2026 00:00:00 +0000</pubDate>
