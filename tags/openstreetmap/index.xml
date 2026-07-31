@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Openstreetmap on Andrea Grandi</title>
+        <link>https://www.andreagrandi.it/tags/openstreetmap/</link>
+        <description>Recent content in Openstreetmap on Andrea Grandi</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 31 Jul 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/openstreetmap/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Why Book Corners won&#39;t sync contributions back to OpenStreetMap</title>
+        <link>https://www.andreagrandi.it/posts/why-book-corners-wont-sync-contributions-back-to-openstreetmap/</link>
+        <pubDate>Fri, 31 Jul 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/why-book-corners-wont-sync-contributions-back-to-openstreetmap/</guid>
+        <description>&lt;h2 id=&#34;a-feature-that-sounded-obviously-good&#34;&gt;A feature that sounded obviously good
+&lt;/h2&gt;&lt;p&gt;When I introduced &lt;a class=&#34;link&#34; href=&#34;https://www.bookcorners.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Book Corners&lt;/a&gt;, I explained that much of its initial data came from &lt;a class=&#34;link&#34; href=&#34;https://www.openstreetmap.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;OpenStreetMap&lt;/a&gt;. OSM gave the project a useful starting point, with thousands of public bookcases already mapped around the world.&lt;/p&gt;
+&lt;p&gt;Book Corners also accepts new libraries directly from its users. People can submit a location and a photo, and the contribution becomes public after moderation. It seemed only fair that, when one of those submissions was missing from OSM, Book Corners should be able to contribute it back.&lt;/p&gt;
+&lt;p&gt;The idea was not to create an uncontrolled background synchronisation process. The workflow I had in mind was deliberately cautious:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The person submitting the library would explicitly allow the contribution.&lt;/li&gt;
+&lt;li&gt;An administrator would review the library first.&lt;/li&gt;
+&lt;li&gt;Book Corners would search OSM for possible duplicates.&lt;/li&gt;
+&lt;li&gt;The administrator would preview the exact data being sent.&lt;/li&gt;
+&lt;li&gt;Nothing would be written until the administrator confirmed it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;From a software-development perspective, this looked like a manageable integration: add consent, track contribution state, build a preview, authenticate with OSM, and create the new feature through its API.&lt;/p&gt;
+&lt;p&gt;The code was not the difficult part.&lt;/p&gt;
+&lt;h2 id=&#34;contributing-data-is-not-just-an-api-call&#34;&gt;Contributing data is not just an API call
+&lt;/h2&gt;&lt;p&gt;Once I started researching the implementation properly, I discovered that writing to the API was only a small part of the work.&lt;/p&gt;
+&lt;p&gt;Because the information would come from the Book Corners database, OSM could consider it an external-data import. Because software would prepare and submit the changes, it could also fall under the rules for script-assisted or automated edits, even though an administrator would review each individual library.&lt;/p&gt;
+&lt;p&gt;Following the conservative interpretation of the &lt;a class=&#34;link&#34; href=&#34;https://wiki.openstreetmap.org/wiki/Import/Guidelines&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;OSM Import Guidelines&lt;/a&gt; and the &lt;a class=&#34;link&#34; href=&#34;https://wiki.openstreetmap.org/wiki/Automated_Edits_code_of_conduct&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Automated Edits code of conduct&lt;/a&gt; would require more than a dedicated account and an OAuth token.&lt;/p&gt;
+&lt;p&gt;Before the first production contribution, I would need to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create and maintain a dedicated OSM import account.&lt;/li&gt;
+&lt;li&gt;Publish a detailed import plan on the OSM Wiki.&lt;/li&gt;
+&lt;li&gt;Document the data source, licensing, field mapping, duplicate detection, software, quality checks, changeset policy, and rollback procedure.&lt;/li&gt;
+&lt;li&gt;Open a proposal on the OSM Community Forum.&lt;/li&gt;
+&lt;li&gt;Contact the relevant local communities affected by the contributions.&lt;/li&gt;
+&lt;li&gt;Wait through the review period and resolve any concerns.&lt;/li&gt;
+&lt;li&gt;Keep permanent links between the import account, plan, discussions, and changesets.&lt;/li&gt;
+&lt;li&gt;Maintain a contact and opt-out route for future questions or complaints.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are also important licensing questions. A user&amp;rsquo;s permission to send a library to OSM is not automatically the same as having a sufficiently clear right to release that factual information under terms compatible with OSM. The user-facing explanation and consent would need to cover that distinction, including confirming that the information was not copied from an incompatible source.&lt;/p&gt;
+&lt;p&gt;These requirements are not a one-time form to complete and forget. They create an ongoing responsibility around the account, the documented process, community feedback, failures, and potential reversions.&lt;/p&gt;
+&lt;h2 id=&#34;i-understand-why-these-rules-exist&#34;&gt;I understand why these rules exist
+&lt;/h2&gt;&lt;p&gt;OpenStreetMap is a shared global database. A bad import can create thousands of duplicates, overwrite better local knowledge, or introduce errors that are difficult to remove once other people have edited the same objects.&lt;/p&gt;
+&lt;p&gt;From that perspective, requiring documentation, licensing clarity, duplicate handling, accountable operators, and community discussion is reasonable. The OSM community has to protect the quality of the map, and good intentions do not guarantee good data.&lt;/p&gt;
+&lt;p&gt;Book Corners itself benefited from that data quality. It would be hypocritical to expect OSM to accept changes from an external service without safeguards.&lt;/p&gt;
+&lt;p&gt;At the same time, the process has a real cost. It asks a small project to become not only an API client, but also the operator of a documented import programme. That may be appropriate for organisations importing large datasets, but it is a considerable commitment for a low-volume feature whose only purpose was to contribute a few carefully reviewed public bookcases back to the commons.&lt;/p&gt;
+&lt;h2 id=&#34;the-operational-work-outweighs-the-value&#34;&gt;The operational work outweighs the value
+&lt;/h2&gt;&lt;p&gt;Book Corners has a simple purpose: help people discover little free libraries and share new ones with others.&lt;/p&gt;
+&lt;p&gt;Operating an OSM contribution pipeline is not central to that purpose. It would add credentials, production safeguards, audit and reconciliation code, community processes, licensing work, and a long-term support obligation. Every part is individually defensible, but together they make this a much larger feature than I initially intended.&lt;/p&gt;
+&lt;p&gt;There is also an opportunity cost. Time spent operating this integration is time not spent improving library discovery, moderation, photos, accessibility, translations, or the mobile experience. Those improvements directly help Book Corners users and are much easier for a small project to sustain.&lt;/p&gt;
+&lt;p&gt;I started from the feeling that contributing back was simply the nice and fair thing to do. After investigating it, I no longer think goodwill alone is enough reason to accept an open-ended operational responsibility.&lt;/p&gt;
+&lt;h2 id=&#34;the-decision&#34;&gt;The decision
+&lt;/h2&gt;&lt;p&gt;I have decided to suspend the OSM write-back implementation indefinitely.&lt;/p&gt;
+&lt;p&gt;Book Corners will continue to acknowledge OpenStreetMap as the source of records imported from it, and OSM-imported libraries will never be submitted back as if they were new. But libraries contributed directly to Book Corners will remain in Book Corners; the service will not automatically or manually create matching OSM objects.&lt;/p&gt;
+&lt;p&gt;Nothing currently writes from Book Corners to production OSM, so suspending the work does not require disabling or migrating an existing integration.&lt;/p&gt;
+&lt;p&gt;I may reconsider the decision if a genuinely lightweight workflow becomes available, or if the scale and value of Book Corners contributions eventually justify the process. Another possibility would be a user-driven workflow that opens a proposed feature in an existing OSM editor, although that would still need to be discussed with the community rather than treated as a way around the rules.&lt;/p&gt;
+&lt;p&gt;For now, the responsible choice is not to build and operate a feature I am not confident I can support properly.&lt;/p&gt;
+&lt;h2 id=&#34;sometimes-the-right-feature-is-no-feature&#34;&gt;Sometimes the right feature is no feature
+&lt;/h2&gt;&lt;p&gt;It is easy to think of implementation decisions as purely technical: can the API do it, can the application authenticate, and can the code avoid duplicates?&lt;/p&gt;
+&lt;p&gt;This experience was a reminder that external integrations also come with organisational and social contracts. Sometimes those contracts are more expensive than the code. Discovering that before deployment is useful, even when the result is disappointing.&lt;/p&gt;
+&lt;p&gt;I still believe contributing data back to shared open projects is valuable. I also understand why OSM protects its database so carefully. But for Book Corners, at its current scale, the balance between benefit and responsibility does not work.&lt;/p&gt;
+&lt;p&gt;So this is one feature I am choosing not to ship.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
