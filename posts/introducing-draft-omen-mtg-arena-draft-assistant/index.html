@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Draft Omen is a free desktop app that follows your MTG Arena draft, ranks the cards in every pack and suggests a 40-card deck when you are done.">
+<title>Introducing Draft Omen, a draft assistant for MTG Arena</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Introducing Draft Omen, a draft assistant for MTG Arena">
+<meta property='og:description' content="Draft Omen is a free desktop app that follows your MTG Arena draft, ranks the cards in every pack and suggests a 40-card deck when you are done.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='draft-omen' /><meta property='article:tag' content='mtg-arena' /><meta property='article:tag' content='magic-the-gathering' /><meta property='article:tag' content='17lands' /><meta property='article:tag' content='scryfall' /><meta property='article:tag' content='draftmancer' /><meta property='article:tag' content='moxgate' /><meta property='article:tag' content='python' /><meta property='article:published_time' content='2026-10-03T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-10-03T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/draftomen_banner.png' />
+<meta name="twitter:title" content="Introducing Draft Omen, a draft assistant for MTG Arena">
+<meta name="twitter:description" content="Draft Omen is a free desktop app that follows your MTG Arena draft, ranks the cards in every pack and suggests a 40-card deck when you are done."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/draftomen_banner.png' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+<meta name="fediverse:creator" content="@andreagrandi@mastodon.social">
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/introducing-draft-omen-mtg-arena-draft-assistant/">
+                <img src="/posts/introducing-draft-omen-mtg-arena-draft-assistant/draftomen_banner.png"
+                        
+                        width="2172" 
+                        height="724" 
+                        loading="lazy"
+                        alt="Featured image of post Introducing Draft Omen, a draft assistant for MTG Arena" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+            <a href="/categories/python/" >
+                Python
+            </a>
+        
+            <a href="/categories/gaming/" >
+                Gaming
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/introducing-draft-omen-mtg-arena-draft-assistant/">Introducing Draft Omen, a draft assistant for MTG Arena</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Draft Omen is a free desktop app that follows your MTG Arena draft, ranks the cards in every pack and suggests a 40-card deck when you are done.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 03, 2026</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="what-is-draft-omen">What is Draft Omen
+</h2><p>I like drafting on MTG Arena, but I am not great at remembering which commons are actually good in a new set. So I built <a class="link" href="https://www.draftomen.com/"  target="_blank" rel="noopener"
+    >Draft Omen</a>, a desktop app that sits next to Arena while you draft and tells you which cards in the pack are worth taking.</p>
+<p>It reads Arena&rsquo;s local <code>Player.log</code>, works out which pack and pick you are on, and ranks the cards in front of you. When the draft is over, it suggests a 40-card deck from your pool. You can still take whatever card you want. The app only shows you the numbers behind each pick.</p>
+<p>Draft Omen is read-only. It never writes to Arena, injects anything into it or clicks for you. It runs on macOS and Windows, and the source is on <a class="link" href="https://github.com/andreagrandi/draftomen"  target="_blank" rel="noopener"
+    >GitHub</a>.</p>
+<h2 id="picking-cards">Picking cards
+</h2><p>Each card in the pack gets a DO Score from 0 to 100, together with its 17Lands win rate, a letter grade and how well it fits the colors you have drafted so far. Early picks stay open. From pick 6 the app starts to favour cards in your colors, so it doesn&rsquo;t tell you to take a random off-color rare in pack 3.</p>
+<p><a class="link" href="draft-pick-recommendations.png" ><img src="/posts/introducing-draft-omen-mtg-arena-draft-assistant/draft-pick-recommendations.png"
+	width="1920"
+	height="1023"
+	
+	loading="lazy"
+	
+		alt="Draft Omen pick view showing ranked cards for pack 1, pick 3"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="450px"
+	
+></a></p>
+<p>If you don&rsquo;t trust the DO Score, you can sort the pack by raw 17Lands win rate, ALSA or mana value instead.</p>
+<h2 id="building-the-deck">Building the deck
+</h2><p>When the last pick is done, Draft Omen picks the best two-color pair for your pool and builds a 40-card deck. It looks at card quality, the curve, the number of creatures and the mana you need. It can also suggest a small splash when a bomb is worth it.</p>
+<p><a class="link" href="suggested-deck-build.png" ><img src="/posts/introducing-draft-omen-mtg-arena-draft-assistant/suggested-deck-build.png"
+	width="1920"
+	height="1022"
+	
+	loading="lazy"
+	
+		alt="Draft Omen suggested deck view with a UR build of 23 spells and 17 lands"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="450px"
+	
+></a></p>
+<h2 id="supported-drafts">Supported drafts
+</h2><p>Draft Omen follows four Arena formats:</p>
+<ul>
+<li>Quick Draft</li>
+<li>Premier Draft</li>
+<li>Traditional Draft</li>
+<li>Pick-Two Draft</li>
+</ul>
+<p>It reads the format from the event name, so you don&rsquo;t have to set anything before you join.</p>
+<h2 id="drafting-on-moxgate">Drafting on Moxgate
+</h2><p>Arena is not the only place to draft. Draft Omen also works with <a class="link" href="https://www.moxgate.com/"  target="_blank" rel="noopener"
+    >Moxgate</a>. A small Chrome extension reads the pack and your pool from the Moxgate page and sends them to Draft Omen on your own computer. The extension only talks to <code>127.0.0.1</code> and doesn&rsquo;t contact any other server. Choose Moxgate as the draft source in the app and you get the same recommendations you would get on Arena.</p>
+<h2 id="mocked-drafts-with-draftmancer">Mocked drafts with Draftmancer
+</h2><p>Testing a draft assistant by playing real drafts costs gems, and it is slow. So Draft Omen can run a mocked draft locally using <a class="link" href="https://draftmancer.com/"  target="_blank" rel="noopener"
+    >Draftmancer</a>, an open source draft simulator. You draft against bots in a Quick or Pick-Two pod, either picking cards yourself or letting the app pick on its own, and you get the same deck builder at the end. For now it is a developer feature. You need a local Draftmancer checkout and Node.js, and you turn it on from the developer section in Settings. Once it runs, it is also a nice way to practise a new set without spending anything.</p>
+<h2 id="where-the-data-comes-from">Where the data comes from
+</h2><ul>
+<li>Card details and images come from <a class="link" href="https://scryfall.com/"  target="_blank" rel="noopener"
+    >Scryfall</a>.</li>
+<li>Win rates and other draft statistics come from <a class="link" href="https://www.17lands.com/"  target="_blank" rel="noopener"
+    >17Lands</a>.</li>
+</ul>
+<p>Draft Omen downloads both and caches them, so ratings from your last session are ready as soon as you open the app. If 17Lands has no data for the format you are playing yet, it falls back to Premier Draft data and marks those ratings with a <code>*</code>.</p>
+<h2 id="try-it">Try it
+</h2><p>On Windows you can install Draft Omen from the <a class="link" href="https://apps.microsoft.com/detail/9NPCD3VLZQMX"  target="_blank" rel="noopener"
+    >Microsoft Store</a>. On macOS, download the DMG for your Mac from the <a class="link" href="https://github.com/andreagrandi/draftomen/releases/latest"  target="_blank" rel="noopener"
+    >GitHub releases</a>. Before your first draft, turn on <strong>Detailed Logs (Plugin Support)</strong> in Arena under Settings, Account, then restart Arena.</p>
+<p>If you find a bug or have an idea, open an issue on <a class="link" href="https://github.com/andreagrandi/draftomen/issues"  target="_blank" rel="noopener"
+    >GitHub</a>. See you in the draft queue.</p>
+<p><em>Draft Omen is unofficial Fan Content permitted under the Fan Content Policy. Not approved or endorsed by Wizards of the Coast, Scryfall or 17Lands.</em></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/draft-omen/">Draft-Omen</a>
+        
+            <a href="/tags/mtg-arena/">Mtg-Arena</a>
+        
+            <a href="/tags/magic-the-gathering/">Magic-the-Gathering</a>
+        
+            <a href="/tags/17lands/">17lands</a>
+        
+            <a href="/tags/scryfall/">Scryfall</a>
+        
+            <a href="/tags/draftmancer/">Draftmancer</a>
+        
+            <a href="/tags/moxgate/">Moxgate</a>
+        
+            <a href="/tags/python/">Python</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/book-corners-discover-little-free-libraries/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/book-corners-discover-little-free-libraries/cover-little-free-library.ae0864caaa6a931e171f5a71ade305b3.jpg" 
+                        width="1024" 
+                        height="768" 
+                        loading="lazy"
+                        alt="Featured image of post Book Corners - discover and share little free libraries around the world"
+                        data-key="book-corners-discover-little-free-libraries" 
+                        data-hash="md5-rghkyqpqkx4XH1pxreMFsw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Book Corners - discover and share little free libraries around the world</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/releasing-log-basset-open-source-cli-access-scalyr-logs/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Releasing Log Basset: an open source CLI to access Scalyr logs</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/how-to-use-git-worktree-effectively-with-python-projects/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to use git worktree effectively with Python projects</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/using-uv-to-install-python-create-virtualenv/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using uv to install Python and create a virtual environment</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/stepping-my-feet-into-uv-world-part-1/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/stepping-my-feet-into-uv-world-part-1/uv-speed.5af029b048de10cee5ec16d262151768.png" 
+                        width="714" 
+                        height="234" 
+                        loading="lazy"
+                        alt="Featured image of post Stepping my feet into uv world - part 1"
+                        data-key="stepping-my-feet-into-uv-world-part-1" 
+                        data-hash="md5-WvApsEjeEM7l7BbSYhUXaA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Stepping my feet into uv world - part 1</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2026 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

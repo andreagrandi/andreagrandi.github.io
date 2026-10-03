@@ -6,7 +6,84 @@
         <description>Recent content in Python on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 07 Mar 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/python/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 03 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/python/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Introducing Draft Omen, a draft assistant for MTG Arena</title>
+        <link>https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/</link>
+        <pubDate>Sat, 03 Oct 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/draftomen_banner.png" alt="Featured image of post Introducing Draft Omen, a draft assistant for MTG Arena" /&gt;&lt;h2 id=&#34;what-is-draft-omen&#34;&gt;What is Draft Omen
+&lt;/h2&gt;&lt;p&gt;I like drafting on MTG Arena, but I am not great at remembering which commons are actually good in a new set. So I built &lt;a class=&#34;link&#34; href=&#34;https://www.draftomen.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Draft Omen&lt;/a&gt;, a desktop app that sits next to Arena while you draft and tells you which cards in the pack are worth taking.&lt;/p&gt;
+&lt;p&gt;It reads Arena&amp;rsquo;s local &lt;code&gt;Player.log&lt;/code&gt;, works out which pack and pick you are on, and ranks the cards in front of you. When the draft is over, it suggests a 40-card deck from your pool. You can still take whatever card you want. The app only shows you the numbers behind each pick.&lt;/p&gt;
+&lt;p&gt;Draft Omen is read-only. It never writes to Arena, injects anything into it or clicks for you. It runs on macOS and Windows, and the source is on &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/draftomen&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;picking-cards&#34;&gt;Picking cards
+&lt;/h2&gt;&lt;p&gt;Each card in the pack gets a DO Score from 0 to 100, together with its 17Lands win rate, a letter grade and how well it fits the colors you have drafted so far. Early picks stay open. From pick 6 the app starts to favour cards in your colors, so it doesn&amp;rsquo;t tell you to take a random off-color rare in pack 3.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;draft-pick-recommendations.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/draft-pick-recommendations.png&#34;
+	width=&#34;1920&#34;
+	height=&#34;1023&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Draft Omen pick view showing ranked cards for pack 1, pick 3&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;187&#34;
+		data-flex-basis=&#34;450px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you don&amp;rsquo;t trust the DO Score, you can sort the pack by raw 17Lands win rate, ALSA or mana value instead.&lt;/p&gt;
+&lt;h2 id=&#34;building-the-deck&#34;&gt;Building the deck
+&lt;/h2&gt;&lt;p&gt;When the last pick is done, Draft Omen picks the best two-color pair for your pool and builds a 40-card deck. It looks at card quality, the curve, the number of creatures and the mana you need. It can also suggest a small splash when a bomb is worth it.&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;suggested-deck-build.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/introducing-draft-omen-mtg-arena-draft-assistant/suggested-deck-build.png&#34;
+	width=&#34;1920&#34;
+	height=&#34;1022&#34;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Draft Omen suggested deck view with a UR build of 23 spells and 17 lands&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;187&#34;
+		data-flex-basis=&#34;450px&#34;
+	
+&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;supported-drafts&#34;&gt;Supported drafts
+&lt;/h2&gt;&lt;p&gt;Draft Omen follows four Arena formats:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Quick Draft&lt;/li&gt;
+&lt;li&gt;Premier Draft&lt;/li&gt;
+&lt;li&gt;Traditional Draft&lt;/li&gt;
+&lt;li&gt;Pick-Two Draft&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It reads the format from the event name, so you don&amp;rsquo;t have to set anything before you join.&lt;/p&gt;
+&lt;h2 id=&#34;drafting-on-moxgate&#34;&gt;Drafting on Moxgate
+&lt;/h2&gt;&lt;p&gt;Arena is not the only place to draft. Draft Omen also works with &lt;a class=&#34;link&#34; href=&#34;https://www.moxgate.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Moxgate&lt;/a&gt;. A small Chrome extension reads the pack and your pool from the Moxgate page and sends them to Draft Omen on your own computer. The extension only talks to &lt;code&gt;127.0.0.1&lt;/code&gt; and doesn&amp;rsquo;t contact any other server. Choose Moxgate as the draft source in the app and you get the same recommendations you would get on Arena.&lt;/p&gt;
+&lt;h2 id=&#34;mocked-drafts-with-draftmancer&#34;&gt;Mocked drafts with Draftmancer
+&lt;/h2&gt;&lt;p&gt;Testing a draft assistant by playing real drafts costs gems, and it is slow. So Draft Omen can run a mocked draft locally using &lt;a class=&#34;link&#34; href=&#34;https://draftmancer.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Draftmancer&lt;/a&gt;, an open source draft simulator. You draft against bots in a Quick or Pick-Two pod, either picking cards yourself or letting the app pick on its own, and you get the same deck builder at the end. For now it is a developer feature. You need a local Draftmancer checkout and Node.js, and you turn it on from the developer section in Settings. Once it runs, it is also a nice way to practise a new set without spending anything.&lt;/p&gt;
+&lt;h2 id=&#34;where-the-data-comes-from&#34;&gt;Where the data comes from
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Card details and images come from &lt;a class=&#34;link&#34; href=&#34;https://scryfall.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Scryfall&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Win rates and other draft statistics come from &lt;a class=&#34;link&#34; href=&#34;https://www.17lands.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;17Lands&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Draft Omen downloads both and caches them, so ratings from your last session are ready as soon as you open the app. If 17Lands has no data for the format you are playing yet, it falls back to Premier Draft data and marks those ratings with a &lt;code&gt;*&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;try-it&#34;&gt;Try it
+&lt;/h2&gt;&lt;p&gt;On Windows you can install Draft Omen from the &lt;a class=&#34;link&#34; href=&#34;https://apps.microsoft.com/detail/9NPCD3VLZQMX&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Microsoft Store&lt;/a&gt;. On macOS, download the DMG for your Mac from the &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/draftomen/releases/latest&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub releases&lt;/a&gt;. Before your first draft, turn on &lt;strong&gt;Detailed Logs (Plugin Support)&lt;/strong&gt; in Arena under Settings, Account, then restart Arena.&lt;/p&gt;
+&lt;p&gt;If you find a bug or have an idea, open an issue on &lt;a class=&#34;link&#34; href=&#34;https://github.com/andreagrandi/draftomen/issues&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt;. See you in the draft queue.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Draft Omen is unofficial Fan Content permitted under the Fan Content Policy. Not approved or endorsed by Wizards of the Coast, Scryfall or 17Lands.&lt;/em&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Book Corners - discover and share little free libraries around the world</title>
         <link>https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/</link>
         <pubDate>Sat, 07 Mar 2026 00:00:00 +0000</pubDate>
@@ -4274,65 +4351,6 @@ the production server:&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;This is everything you need to do if you want to publish a Python
 package on PyPI. Happy coding!&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Using a light sensor with BBC micro:bit and MicroPython</title>
-        <link>https://www.andreagrandi.it/posts/using-a-light-sensor-with-bbc-microbit-and-micropython/</link>
-        <pubDate>Mon, 08 Feb 2016 00:00:00 +0000</pubDate>
-        
-        <guid>https://www.andreagrandi.it/posts/using-a-light-sensor-with-bbc-microbit-and-micropython/</guid>
-        <description>&lt;p&gt;A &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/Photoresistor&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;light sensor&lt;/a&gt;&lt;/strong&gt; is a
-small component with a particular characteristic: it is basically a
-resistor and its resistance decreases if the light is more intense. To
-use it with micro:bit we need to use one of the &lt;strong&gt;analogic ports&lt;/strong&gt;. To
-build this circuit you will need a &lt;strong&gt;breadboard&lt;/strong&gt;, &lt;strong&gt;3 jumper wires&lt;/strong&gt;, a
-&lt;strong&gt;10k resistance&lt;/strong&gt; and possibly a &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.kitronik.co.uk/5609-prototyping-system-for-the-bbc-microbit.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Kitronik breadboard
-kit&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
-&lt;h3 id=&#34;the-project&#34;&gt;The project
-&lt;/h3&gt;&lt;p&gt;I wanted to realise a simple project where, depending on the light
-intensity captured by the light sensor, the &lt;strong&gt;micro:bit&lt;/strong&gt; shows an image
-of the &lt;strong&gt;Sun&lt;/strong&gt; if the light is intense and an image of the &lt;strong&gt;Moon&lt;/strong&gt; if
-the light is less intense.&lt;/p&gt;
-&lt;p&gt;Here is the complete &lt;strong&gt;circuit scheme&lt;/strong&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;microbit_breadboard_schema_light.png&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-a-light-sensor-with-bbc-microbit-and-micropython/microbit_breadboard_schema_light.png&#34;
-	width=&#34;767&#34;
-	height=&#34;813&#34;
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;microbit\_breadboard\_schema\_light&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;94&#34;
-		data-flex-basis=&#34;226px&#34;
-	
-&gt;{ width=40% }&lt;/a&gt;&lt;/p&gt;
-&lt;h6 id=&#34;image-copyright--kitronik&#34;&gt;&amp;ldquo;Image Copyright © Kitronik&amp;rdquo;
-&lt;/h6&gt;&lt;p&gt;and here is a picture of the &lt;strong&gt;finished project&lt;/strong&gt; I created:&lt;/p&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;microbit_breadboard_example_2.jpg&#34; &gt;&lt;img src=&#34;https://www.andreagrandi.it/posts/using-a-light-sensor-with-bbc-microbit-and-micropython/microbit_breadboard_example_2.jpg&#34;
-	width=&#34;600&#34;
-	height=&#34;800&#34;
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;microbit\_breadboard\_example\_2&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;75&#34;
-		data-flex-basis=&#34;180px&#34;
-	
-&gt;{ width=40% }&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The &lt;strong&gt;source code&lt;/strong&gt; I needed is available here:&lt;/p&gt;
-&lt;p&gt;
-&lt;script src=&#34;https://gist.github.com/andreagrandi/99a09be27c9626b1119d.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-and as a demo I realised this small **video**:
-&lt;iframe width=&#34;420&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/6vLE_AQc4Bc&#34; frameborder=&#34;0&#34; allowfullscreen=&#34;allowfullscreen&#34;&gt;&lt;/iframe&gt;
 </description>
         </item>
         
