@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="I use Claude Code with a 20€/month Claude Pro subscription. Opus 5.5 makes the decisions, while Sonnet and Haiku subagents write the code and open the pull requests. Here are my agent files, my CLAUDE.md and how much it saves compared to using only Opus.">
+<title>How I use Claude Code subagents to make my Claude Pro limits last longer</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/claude-code-subagents-to-save-usage/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="How I use Claude Code subagents to make my Claude Pro limits last longer">
+<meta property='og:description' content="I use Claude Code with a 20€/month Claude Pro subscription. Opus 5.5 makes the decisions, while Sonnet and Haiku subagents write the code and open the pull requests. Here are my agent files, my CLAUDE.md and how much it saves compared to using only Opus.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/claude-code-subagents-to-save-usage/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='claude-code' /><meta property='article:tag' content='coding-agents' /><meta property='article:tag' content='subagents' /><meta property='article:tag' content='productivity' /><meta property='article:tag' content='configuration' /><meta property='article:published_time' content='2026-10-07T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-10-07T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/claude-code-subagents-to-save-usage/banner.png' />
+<meta name="twitter:title" content="How I use Claude Code subagents to make my Claude Pro limits last longer">
+<meta name="twitter:description" content="I use Claude Code with a 20€/month Claude Pro subscription. Opus 5.5 makes the decisions, while Sonnet and Haiku subagents write the code and open the pull requests. Here are my agent files, my CLAUDE.md and how much it saves compared to using only Opus."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/claude-code-subagents-to-save-usage/banner.png' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+<meta name="fediverse:creator" content="@andreagrandi@mastodon.social">
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/claude-code-subagents-to-save-usage/">
+                <img src="/posts/claude-code-subagents-to-save-usage/banner.png"
+                        
+                        width="2160" 
+                        height="720" 
+                        loading="lazy"
+                        alt="Featured image of post How I use Claude Code subagents to make my Claude Pro limits last longer" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+            <a href="/categories/ai/" >
+                AI
+            </a>
+        
+            <a href="/categories/tools/" >
+                Tools
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/claude-code-subagents-to-save-usage/">How I use Claude Code subagents to make my Claude Pro limits last longer</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            I use Claude Code with a 20€/month Claude Pro subscription. Opus 5.5 makes the decisions, while Sonnet and Haiku subagents write the code and open the pull requests. Here are my agent files, my CLAUDE.md and how much it saves compared to using only Opus.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 07, 2026</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="why">Why
+</h2><p>I pay for Claude Pro, the 20€/month plan, and I use Claude Code almost every day on my side projects, mostly <a class="link" href="https://github.com/andreagrandi/draftomen"  target="_blank" rel="noopener"
+    >Draft Omen</a> and <a class="link" href="https://github.com/andreagrandi/book-corners"  target="_blank" rel="noopener"
+    >Book Corners</a>. Pro is a flat fee, so I never pay more than 20€ a month. What I can run out of is usage. Pro gives you a limited amount of usage every 5 hours and every week, and when I hit the limit I have to wait for it to reset before I can keep working.</p>
+<p>Until last week every session ran on Opus 5.5 from start to finish. Opus read the files, wrote the code, ran the tests, fixed the lint errors, ran the tests again, committed and opened the pull request. Only a small part of that work needs the best model. Once the plan is clear, a cheaper model can write the code and run the tests.</p>
+<p>So I changed my setup. The main session still runs on Opus 5.5 at medium effort and makes the decisions. A Sonnet 5.5 subagent writes the code, and two smaller jobs go to Haiku 5.5. In this post I will show the setup, all the files you need to copy it and how much it saved me.</p>
+<h2 id="the-setup">The setup
+</h2><p>Claude Code can load custom subagents from Markdown files in <code>~/.claude/agents/</code>. The frontmatter of each file sets the model, the effort and the tools the agent is allowed to use, and the rest of the file becomes the agent&rsquo;s system prompt. A subagent starts with an empty context, so it only knows what the main session tells it.</p>
+<p>These are the four agents I use:</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>Agent</th>
+          <th>Model</th>
+          <th>Effort</th>
+          <th>Tools</th>
+          <th>Job</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>implementer</code></td>
+          <td>Sonnet 5.5</td>
+          <td>medium</td>
+          <td>Read, Write, Edit, Grep, Glob, Bash</td>
+          <td>Writes the code and the tests, runs the checks</td>
+      </tr>
+      <tr>
+          <td><code>reviewer</code></td>
+          <td>Opus 5.5</td>
+          <td>medium</td>
+          <td>Read, Grep, Glob, Bash</td>
+          <td>Reviews risky changes, only when asked</td>
+      </tr>
+      <tr>
+          <td><code>scoper</code></td>
+          <td>Haiku 5.5</td>
+          <td>medium</td>
+          <td>Read, Grep, Glob, Bash</td>
+          <td>Collects the facts before planning an unfamiliar task</td>
+      </tr>
+      <tr>
+          <td><code>shipper</code></td>
+          <td>Haiku 5.5</td>
+          <td>low</td>
+          <td>Read, Bash</td>
+          <td>Commits, pushes and opens the pull request</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>Opus is my default model, and I set medium effort for both Opus 5.5 and Sonnet 5.5 in <code>~/.claude/settings.json</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;model&#34;</span><span class="p">:</span> <span class="s2">&#34;opus&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;modelSettings&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;claude-opus-5-5&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;effortLevel&#34;</span><span class="p">:</span> <span class="s2">&#34;medium&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;claude-sonnet-5-5&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;effortLevel&#34;</span><span class="p">:</span> <span class="s2">&#34;medium&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Creating the agents is not enough. Claude Code decides when to call a subagent by reading its <code>description</code>, so it&rsquo;s up to the model to remember to use it. To make it happen every time, I added some instructions to my user <code>CLAUDE.md</code>. They tell the main session when to delegate, what to write in the handoff and how to review what comes back.</p>
+<h2 id="how-a-session-works">How a session works
+</h2><p>This is what usually happens when I give Claude Code a task:</p>
+<ol>
+<li>I give the main session an issue number.</li>
+<li>If the session doesn&rsquo;t know the code yet, it runs <code>scoper</code>. Haiku reads the issue, finds the files and the tests involved and writes a short brief with file paths. A small model can get things wrong, so the main session opens a few of those files before trusting the brief.</li>
+<li>The main session decides how to implement the change. This is the part where Opus is worth it.</li>
+<li>It passes the plan to <code>implementer</code>, together with the acceptance criteria, the files, the decisions already taken and the commands to run. Sonnet writes the code and the tests and runs them until they pass.</li>
+<li>The main session reads the diff, compares it with the plan and runs the whole test suite. If something is wrong, it sends the fix back to the same implementer with <code>SendMessage</code>, so the implementer doesn&rsquo;t lose its context.</li>
+<li>When I ask for a pull request, <code>shipper</code> checks the working tree, stages only the files that belong to the change, commits, pushes and opens the PR with a description.</li>
+</ol>
+<p><code>reviewer</code> is not part of the normal flow. The main session already reviews every diff, and a second review by another Opus agent can cost almost as much as writing the code. I only use it when I ask for a review, or when a change touches security, concurrency, data migrations or a public API.</p>
+<p>A few details make a big difference:</p>
+<ul>
+<li>Small changes stay in the main session. Writing the handoff and reviewing the diff cost tokens too, so if the change is a few lines and Opus already knows what to write, it just writes it.</li>
+<li>The implementer doesn&rsquo;t redesign anything. If the plan doesn&rsquo;t match the code, its prompt tells it to report back instead of taking a big decision on its own.</li>
+<li>The scoper can&rsquo;t change anything. It runs in plan mode, it has no edit tools and it stops after 12 turns. Every claim in its report must point to a file.</li>
+<li>The shipper stops when something looks wrong, for example an unrelated file, a missing changelog entry or a branch that is <code>master</code>. It reports the problem and the main session fixes it. It never edits files and never force-pushes.</li>
+</ul>
+<h2 id="the-files">The files
+</h2><p>Click on a file name to expand it.</p>
+<h3 id="my-user-claudemd">My user CLAUDE.md
+</h3><p>This is my <code>~/.claude/CLAUDE.md</code>. The first line imports <code>~/.agents/AGENTS.md</code>, which contains my general coding and writing rules and is shared with other coding agents, so I&rsquo;m not including it here. Everything else is specific to Claude Code.</p>
+
+<details>
+  <summary>~/.claude/CLAUDE.md</summary>
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">@~/.agents/AGENTS.md
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Claude Code only
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## Delegate implementation to the implementer agent
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">This is a standing request to use subagents. Do not wait for me to ask.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Once the task is sufficiently understood and the intended solution is clear, hand substantial, well-defined code or test changes to the <span class="sb">`implementer`</span> agent. This covers new features, bug fixes, refactors, and adding or fixing tests.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Delegate when the change spans several files or you expect more than one edit-and-test cycle. Make the edit yourself when the change is small and already fully known, even if it is a few dozen lines, because writing the handoff and reviewing the diff would cost about as much as doing it.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Give the implementer the issue number, acceptance criteria, relevant files, architectural constraints, decisions already made, important edge cases, and the validation commands to run. It starts with no context, so do not make it rediscover what you already know.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Keep architectural decisions, ambiguous scope decisions, root-cause analysis, and other judgment-heavy work in the main session. The implementer should execute a sufficiently defined solution rather than independently redesign the task.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Split work larger than one subsystem into file-owned or subsystem-owned slices and give each independent slice to its own implementer run. Start dependent slices only after the slices they depend on are complete.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Scope unfamiliar tasks with the scoper agent
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> At the start of a non-trivial task whose code you do not know yet, run the <span class="sb">`scoper`</span> agent to collect the goal, acceptance criteria, relevant files, tests and suggested slices.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Skip it when the task is small, when you already know the relevant code from this session, or when a project skill such as a ticket-size assessment already covers the same discovery.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Treat its report as input, not as a decision. It runs on a small model, so spot-check the files it names before you build a plan on them. You still own scope, architecture and any split-or-combine decision.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> If it flags the task as complex, ambiguous or risky, plan it yourself.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Ship with the shipper agent
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> When I ask you to commit, push or open a pull request, hand the git and GitHub steps to the <span class="sb">`shipper`</span> agent once your review and verification are done.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Tell it exactly which steps I asked for, which files belong to the change, the issue number if there is one, and the verification you ran. It does not run tests and does not edit files.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> If it stops on a pre-flight problem such as an unrelated file or a missing changelog entry, fix the problem yourself and run it again.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Do small git operations yourself when a handoff would cost more, such as a single follow-up commit on an open PR.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Print the pull request link it returns in your final response.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Main agent responsibilities
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">Do these yourself:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Read and understand the issue or request.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Investigate unclear behavior and determine the likely root cause before delegating when practical.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Decide scope, architecture, and implementation strategy.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Perform branch setup and other git operations. Delegate commits, pushes and pull requests to <span class="sb">`shipper`</span> as described above.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Review every implementation returned by the implementer.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Run the full relevant test suite and any broader validation that the implementer did not run.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Perform the final end-to-end check on the real surface when applicable.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Decide whether the task is actually complete.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Mandatory review after implementation
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">After the implementer returns, do not rely on its summary or its statement that tests passed as proof that the work is correct.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Before reporting the task as complete:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> Inspect the actual git diff.
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> Read the important changed code.
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Compare the implementation with the original request, acceptance criteria, and agreed plan.
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> Inspect relevant callers, interfaces, neighboring code, and integration points where defects could have been introduced.
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> Check that tests cover the important changed behavior, including meaningful edge cases and failure cases where appropriate.
+</span></span><span class="line"><span class="cl"><span class="k">6.</span> Look specifically for:
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> incorrect assumptions
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> missing cases
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> regressions
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> architectural inconsistencies
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> unnecessary scope expansion
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> weakened or insufficient tests
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> behavior that passes tests but does not satisfy the real requirement
+</span></span><span class="line"><span class="cl"><span class="k">7.</span> Run additional targeted tests or checks when the diff raises doubts.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If you find a concrete implementation defect:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Delegate the correction back to the <span class="sb">`implementer`</span> when it is substantial, then review the new diff again. Continue the same implementer with <span class="sb">`SendMessage`</span> so it keeps its context. Spawn a new one only if the original is gone.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Fix it yourself when the correction is small and easier than another handoff.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Do not duplicate the entire implementation merely to verify it. Review proportionally to the complexity and risk of the change.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">This review in the main session is the only default review. Do not also run the <span class="sb">`reviewer`</span> agent or other review agents and skills on the same change. Use <span class="sb">`reviewer`</span> only when I ask for it, or when the change falls under the risky categories listed in Escalation.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Escalation
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">Prefer keeping implementation in the main session instead of delegating when the change itself requires substantial unresolved judgment, such as:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> architecture-heavy refactors
+</span></span><span class="line"><span class="cl"><span class="k">-</span> difficult concurrency or synchronization changes
+</span></span><span class="line"><span class="cl"><span class="k">-</span> security-sensitive changes
+</span></span><span class="line"><span class="cl"><span class="k">-</span> complex data migrations
+</span></span><span class="line"><span class="cl"><span class="k">-</span> tricky state machines
+</span></span><span class="line"><span class="cl"><span class="k">-</span> broad public API changes
+</span></span><span class="line"><span class="cl"><span class="k">-</span> changes spanning many tightly coupled subsystems
+</span></span><span class="line"><span class="cl"><span class="k">-</span> cases where the implementation repeatedly diverges from the agreed plan
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">In these cases, the main agent may implement directly or reduce the problem into smaller, well-defined pieces before delegating.
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+
+<h3 id="the-agents">The agents
+</h3><p>Put these files in <code>~/.claude/agents/</code> if you want them in every project, or in <code>.claude/agents/</code> inside a repository if you only want them there.</p>
+
+<details>
+  <summary>~/.claude/agents/implementer.md</summary>
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: implementer
+</span></span><span class="line"><span class="cl">description: Use proactively whenever code needs to be written, modified, refactored, or tests need to be added or fixed after the task is sufficiently understood. Delegate substantial implementation work to this agent.
+</span></span><span class="line"><span class="cl">model: sonnet
+</span></span><span class="line"><span class="cl">effort: medium
+</span></span><span class="line"><span class="cl">tools: Read, Write, Edit, Grep, Glob, Bash
+</span></span><span class="line"><span class="cl">color: green
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You are a senior software engineer responsible for implementing changes.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your job is to take a well-defined task or implementation plan and complete it
+</span></span><span class="line"><span class="cl">correctly with minimal unnecessary changes.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">The parent agent owns architecture, scope, and final review. Your responsibility
+</span></span><span class="line"><span class="cl">is implementation, not redefining the task.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">When invoked:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> Read CLAUDE.md and relevant project instructions.
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> Inspect the existing implementation and nearby tests.
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Follow existing architecture, conventions, and patterns.
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> Implement the smallest complete solution.
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> Add or update tests where appropriate.
+</span></span><span class="line"><span class="cl"><span class="k">6.</span> Run the relevant tests, linters, type checks, and formatting commands.
+</span></span><span class="line"><span class="cl"><span class="k">7.</span> Fix regressions caused by your changes.
+</span></span><span class="line"><span class="cl"><span class="k">8.</span> Review your own diff before finishing.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Prefer modifying existing abstractions over introducing new ones.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Do not:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> broaden the scope unnecessarily
+</span></span><span class="line"><span class="cl"><span class="k">-</span> perform unrelated cleanup
+</span></span><span class="line"><span class="cl"><span class="k">-</span> redesign working code without a reason
+</span></span><span class="line"><span class="cl"><span class="k">-</span> make a significant architectural decision that contradicts or materially
+</span></span><span class="line"><span class="cl">  extends the supplied plan
+</span></span><span class="line"><span class="cl"><span class="k">-</span> hide failing tests
+</span></span><span class="line"><span class="cl"><span class="k">-</span> weaken tests merely to make them pass
+</span></span><span class="line"><span class="cl"><span class="k">-</span> commit or push unless explicitly instructed
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If the supplied plan conflicts with the actual codebase, adapt when the correct
+</span></span><span class="line"><span class="cl">solution is straightforward. If resolving the conflict requires a significant
+</span></span><span class="line"><span class="cl">architectural or product decision, report it to the parent rather than making
+</span></span><span class="line"><span class="cl">that decision implicitly.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">When finished, report:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Changes
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>A concise summary of what you changed, including the files modified.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Validation
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Commands run and their results.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Notes
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Any remaining issue, assumption, architectural discrepancy, untested behavior,
+</span></span><span class="line"><span class="cl">or deviation from the requested plan.
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+
+
+<details>
+  <summary>~/.claude/agents/reviewer.md</summary>
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: reviewer
+</span></span><span class="line"><span class="cl">description: Use only when the user asks for a code review, or when a change is risky (security, concurrency, data migrations, state machines, broad public API changes). The main session reviews routine changes itself; do not run this agent in addition to that review.
+</span></span><span class="line"><span class="cl">model: opus
+</span></span><span class="line"><span class="cl">effort: medium
+</span></span><span class="line"><span class="cl">tools: Read, Grep, Glob, Bash
+</span></span><span class="line"><span class="cl">color: blue
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You are a senior software engineer performing an independent code review.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Review the implementation rather than redesigning it.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">When invoked:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> Read CLAUDE.md and relevant project instructions.
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> Inspect the requested task or plan if available.
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Inspect the actual diff and relevant surrounding code.
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> Check correctness and completeness.
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> Look for regressions, edge cases, race conditions, error-handling problems, and security issues.
+</span></span><span class="line"><span class="cl"><span class="k">6.</span> Check that tests meaningfully exercise the changed behavior.
+</span></span><span class="line"><span class="cl"><span class="k">7.</span> Run relevant tests or validation commands when useful.
+</span></span><span class="line"><span class="cl"><span class="k">8.</span> Verify that the implementation follows existing project architecture and conventions.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Do not modify files.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Do not invent theoretical problems with no realistic impact.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Prioritize findings by severity:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> BLOCKER: implementation is incorrect, unsafe, or cannot be merged
+</span></span><span class="line"><span class="cl"><span class="k">-</span> MAJOR: meaningful bug, regression, missing requirement, or serious maintainability problem
+</span></span><span class="line"><span class="cl"><span class="k">-</span> MINOR: worthwhile improvement that does not block completion
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">For each finding provide:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> severity
+</span></span><span class="line"><span class="cl"><span class="k">-</span> file and location
+</span></span><span class="line"><span class="cl"><span class="k">-</span> concrete problem
+</span></span><span class="line"><span class="cl"><span class="k">-</span> why it matters
+</span></span><span class="line"><span class="cl"><span class="k">-</span> specific recommended fix
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If there are no meaningful findings, explicitly say:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">PASS — no blocking or major issues found.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Do not manufacture findings merely to produce a review.
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+
+
+<details>
+  <summary>~/.claude/agents/scoper.md</summary>
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: scoper
+</span></span><span class="line"><span class="cl">description: Use at the start of a non-trivial coding task when the relevant code is unfamiliar, to gather scope, acceptance criteria, relevant code, tests and implementation boundaries before planning. Skip it when the main session already knows the code involved.
+</span></span><span class="line"><span class="cl">model: haiku
+</span></span><span class="line"><span class="cl">effort: medium
+</span></span><span class="line"><span class="cl">tools: Read, Grep, Glob, Bash
+</span></span><span class="line"><span class="cl">permissionMode: plan
+</span></span><span class="line"><span class="cl">maxTurns: 12
+</span></span><span class="line"><span class="cl">color: yellow
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You are a software task scoping specialist.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Your job is to turn a request, issue, or bug report into a concise implementation brief for the parent agent. The parent agent owns the scope and design decisions. You supply the facts it needs to make them.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Read CLAUDE.md and the project instructions it references. If those instructions require a scope or ticket-size assessment, read the referenced skill or document and report what it would flag. Leave the final split-or-combine decision to the parent agent.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Investigate only enough of the repository to establish scope accurately.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">When useful, inspect:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> relevant source files
+</span></span><span class="line"><span class="cl"><span class="k">-</span> existing tests
+</span></span><span class="line"><span class="cl"><span class="k">-</span> nearby implementations
+</span></span><span class="line"><span class="cl"><span class="k">-</span> git history
+</span></span><span class="line"><span class="cl"><span class="k">-</span> the issue, its parent epic and linked PRs, using read-only <span class="sb">`gh`</span> commands such as <span class="sb">`gh issue view`</span> and <span class="sb">`gh pr view`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Rules:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Do not modify files, branches or GitHub state.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Do not implement anything.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Do not make architecture decisions. Report the options you see and leave the choice to the parent agent.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Use <span class="sb">`rg`</span> for searching and <span class="sb">`gh`</span> for GitHub. Do not fetch GitHub pages with curl or a browser.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Never quote private data the project instructions protect, such as real logs or player identifiers.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Every claim about the code cites a file path, and a line number or symbol where it helps. Mark anything you inferred without reading the code as an assumption.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Report under these headings:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Goal
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>What behavior needs to change.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Acceptance criteria
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Concrete conditions that mean the task is complete. Copy them from the issue when it has them, and list any you added separately.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Relevant code
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Files, modules, symbols and tests likely involved.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Scope
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>What should change and what should stay untouched.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Validation
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Focused test commands, and the end-to-end check on the real surface if the change is user-facing.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Risks and unknowns
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Only uncertainties that could change the implementation.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Suggested slices
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>If the work splits into independent pieces, list them with the files each one owns and the order they depend on.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If the task looks architecturally complex, ambiguous or risky, say so at the top of the report and recommend that the parent agent plan it, rather than trying to resolve the design yourself.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Keep the report short. Its purpose is to save the parent agent from repeating repository discovery, so leave out anything it would not act on.
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+
+
+<details>
+  <summary>~/.claude/agents/shipper.md</summary>
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: shipper
+</span></span><span class="line"><span class="cl">description: Commit, push and open or update a pull request after implementation and review are complete. Use only when the user has explicitly asked to commit, push, open a PR or ship the completed changes.
+</span></span><span class="line"><span class="cl">model: haiku
+</span></span><span class="line"><span class="cl">effort: low
+</span></span><span class="line"><span class="cl">tools: Read, Bash
+</span></span><span class="line"><span class="cl">permissionMode: default
+</span></span><span class="line"><span class="cl">maxTurns: 10
+</span></span><span class="line"><span class="cl">color: purple
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You are responsible only for git and GitHub publishing operations.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Do not implement, fix, refactor or otherwise modify files. If a file needs to change, stop and return control to the parent agent.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Only proceed when the parent agent states that implementation and review are complete and that the user asked for the changes to be committed, pushed or opened as a pull request. Do only the steps the user asked for. A request to commit is not a request to push.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Read CLAUDE.md and the project instructions it references before touching git state.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Pre-flight checks
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> Run <span class="sb">`git status --short --untracked-files=all`</span>.
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> Check the current branch. If it is the default branch, such as <span class="sb">`master`</span> or <span class="sb">`main`</span>, stop and report.
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Read <span class="sb">`git diff --stat`</span> and the diff of every file you will stage.
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> Check for unresolved conflicts.
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> Check the project&#39;s pre-commit requirements in CLAUDE.md, such as a <span class="sb">`CHANGELOG.md`</span> entry under <span class="sb">`## [Unreleased]`</span>, or private files and logs that must never be committed.
+</span></span><span class="line"><span class="cl"><span class="k">6.</span> Identify unexpected or unrelated files.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If any check fails or anything looks unrelated, stop and report it. Do not include it and do not fix it.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Publishing
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> Stage only the files that belong to the completed task, by name. Never use <span class="sb">`git add -A`</span> or <span class="sb">`git add .`</span>.
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> Write a short commit message: a summary line in the imperative mood, and a body only when the reason is not obvious from the diff. Follow the repository&#39;s existing commit style, which <span class="sb">`git log --oneline -10`</span> shows.
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Commit. Commit signing goes through 1Password and can fail when the user is away. If a signed commit fails twice, commit with <span class="sb">`git -c commit.gpgsign=false commit`</span> and mention it in the report.
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> Push with <span class="sb">`git push -u origin HEAD`</span>. If the SSH agent refuses the push, push once over HTTPS with the gh token, for example <span class="sb">`git -c credential.helper= -c &#39;credential.helper=!gh auth git-credential&#39; push https://github.com/&lt;owner&gt;/&lt;repo&gt;.git &lt;branch&gt;`</span>. Leave the remote config unchanged.
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> If asked, open the pull request with <span class="sb">`gh pr create --body-file`</span>. Never open a PR without a description.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Pull request description
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">Use <span class="sb">`.github/pull_request_template.md`</span> when the repository has one. Otherwise use the template from the user&#39;s global instructions: Summary, Changes, Scope notes, Verification, then <span class="sb">`Closes #&lt;issue&gt;`</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Take the issue number and the verification already performed from the parent agent&#39;s handoff. Do not invent checks that were not reported to you.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Add <span class="sb">`Closes #&lt;issue&gt;`</span> only when the PR fully resolves that issue.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Never guess issue or JIRA numbers.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Rules
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> No email addresses or other personal information in commits or PR descriptions.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> No test pass counts in commit messages.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> No attribution, Co-Authored-By or &#34;generated with&#34; lines.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Never force-push, amend, rebase or reset unless the parent agent explicitly asks.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Never bypass hooks or failing checks, for example with <span class="sb">`--no-verify`</span>.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Never merge the pull request.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Never reply to or post review comments on a pull request.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Report
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">At the end, report:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> the commit hash and message
+</span></span><span class="line"><span class="cl"><span class="k">-</span> the branch pushed, and whether the commit or push used the signing or HTTPS fallback
+</span></span><span class="line"><span class="cl"><span class="k">-</span> the pull request URL, if one was created or updated
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+
+<h2 id="how-much-a-pull-request-costs-now">How much a pull request costs now
+</h2><p>To measure it I added a few lines to my status line script. Claude Code passes the script a JSON object that contains, among other things, how much of the 5-hour and 7-day windows I have used and the cost of the session. Every time one of the two percentages changes, the script appends a line to <code>~/.claude/usage-log.jsonl</code>.</p>
+
+<details>
+  <summary>Logging block from ~/.claude/statusline-script.sh</summary>
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">five_h</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$input</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s1">&#39;.rate_limits.five_hour.used_percentage // empty&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">seven_d</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$input</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s1">&#39;.rate_limits.seven_day.used_percentage // empty&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">cost_usd</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$input</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s1">&#39;.cost.total_cost_usd // 0&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$five_h</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> -n <span class="s2">&#34;</span><span class="nv">$seven_d</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">usage_key</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">five_h</span><span class="si">}</span><span class="s2">|</span><span class="si">${</span><span class="nv">seven_d</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">usage_state</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$HOME</span><span class="s2">/.claude/usage-log.last&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="k">$(</span>cat <span class="s2">&#34;</span><span class="nv">$usage_state</span><span class="s2">&#34;</span> 2&gt;/dev/null<span class="k">)</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$usage_key</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$usage_key</span><span class="s2">&#34;</span> &gt; <span class="s2">&#34;</span><span class="nv">$usage_state</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        jq -cn <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --arg ts <span class="s2">&#34;</span><span class="k">$(</span>date -u +%Y-%m-%dT%H:%M:%SZ<span class="k">)</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --arg session <span class="s2">&#34;</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$input</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s1">&#39;.session_id // empty&#39;</span><span class="k">)</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --arg model <span class="s2">&#34;</span><span class="nv">$model</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --argjson five <span class="s2">&#34;</span><span class="si">${</span><span class="nv">five_h</span><span class="k">:-</span><span class="nv">null</span><span class="si">}</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --argjson seven <span class="s2">&#34;</span><span class="si">${</span><span class="nv">seven_d</span><span class="k">:-</span><span class="nv">null</span><span class="si">}</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            --argjson cost <span class="s2">&#34;</span><span class="nv">$cost_usd</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            <span class="s1">&#39;{ts: $ts, session_id: $session, model: $model, five_hour: $five, seven_day: $seven, session_cost_usd: $cost}&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>            &gt;&gt; <span class="s2">&#34;</span><span class="nv">$HOME</span><span class="s2">/.claude/usage-log.jsonl&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+
+<p>Then I matched each session in the log with the pull requests it opened, looking for the <code>gh pr create</code> calls in the session transcripts. This table shows the last ten sessions where Claude Code delegated work to a subagent, the most recent first. Three of them opened two pull requests, so the table covers 13 PRs.</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>PR</th>
+          <th>Description</th>
+          <th>Files changed</th>
+          <th>Lines changed</th>
+          <th>5h used</th>
+          <th>7d used</th>
+          <th>Session cost</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/book-corners/pull/208"  target="_blank" rel="noopener"
+    >book-corners #208</a>, <a class="link" href="https://github.com/andreagrandi/book-corners/pull/209"  target="_blank" rel="noopener"
+    >#209</a></td>
+          <td>Block secret-file scanner probes and drop their Sentry traces, then fix the nginx steps in the hosting docs</td>
+          <td>8 + 1</td>
+          <td>+167 -1, +16 -6</td>
+          <td>5%</td>
+          <td>1%</td>
+          <td>$1.94</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/933"  target="_blank" rel="noopener"
+    >draftomen #933</a></td>
+          <td>Check the Microsoft Store for updates in the Store build</td>
+          <td>12</td>
+          <td>+703 -23</td>
+          <td>6%</td>
+          <td>1%</td>
+          <td>$1.98</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/924"  target="_blank" rel="noopener"
+    >draftomen #924</a></td>
+          <td>Show an update dialog once per launch in the desktop app</td>
+          <td>10</td>
+          <td>+487 -6</td>
+          <td>6%</td>
+          <td>&lt;1%</td>
+          <td>$1.93</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/916"  target="_blank" rel="noopener"
+    >draftomen #916</a></td>
+          <td>Publish the unsigned Windows exe on GitHub Releases again</td>
+          <td>9</td>
+          <td>+74 -47</td>
+          <td>7%</td>
+          <td>1%</td>
+          <td>$2.41</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/899"  target="_blank" rel="noopener"
+    >draftomen #899</a>, <a class="link" href="https://github.com/andreagrandi/draftomen/pull/902"  target="_blank" rel="noopener"
+    >#902</a></td>
+          <td>Add basic lands that Scryfall lists without Arena ids, then use the draft&rsquo;s own format profile in replay</td>
+          <td>10 + 8</td>
+          <td>+398 -6, +331 -28</td>
+          <td>19%</td>
+          <td>2%</td>
+          <td>$7.69</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/898"  target="_blank" rel="noopener"
+    >draftomen #898</a></td>
+          <td>Use PremierDraft ratings for Pick-Two and Traditional profile gaps</td>
+          <td>16</td>
+          <td>+358 -46</td>
+          <td>8%</td>
+          <td>1%</td>
+          <td>$3.08</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/889"  target="_blank" rel="noopener"
+    >draftomen #889</a></td>
+          <td>Resend the latest Moxgate snapshot until Draft Omen answers</td>
+          <td>10</td>
+          <td>+389 -19</td>
+          <td>5%</td>
+          <td>&lt;1%</td>
+          <td>$1.80</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/882"  target="_blank" rel="noopener"
+    >draftomen #882</a>, <a class="link" href="https://github.com/andreagrandi/draftomen/pull/883"  target="_blank" rel="noopener"
+    >#883</a></td>
+          <td>Verify HTTPS with the system trust store, then log draft lifecycle, card image and preferences errors</td>
+          <td>14 + 12</td>
+          <td>+384 -2, +776 -37</td>
+          <td>11%</td>
+          <td>1%</td>
+          <td>$4.53</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/881"  target="_blank" rel="noopener"
+    >draftomen #881</a></td>
+          <td>Log the cause of hosted fetch failures and worker errors</td>
+          <td>11</td>
+          <td>+507 -5</td>
+          <td>7%</td>
+          <td>&lt;1%</td>
+          <td>$2.50</td>
+      </tr>
+      <tr>
+          <td><a class="link" href="https://github.com/andreagrandi/draftomen/pull/876"  target="_blank" rel="noopener"
+    >draftomen #876</a></td>
+          <td>Show a dialog when Arena&rsquo;s Detailed Logs are off</td>
+          <td>12</td>
+          <td>+512 -16</td>
+          <td>6%</td>
+          <td>1%</td>
+          <td>$2.19</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>In total these sessions used 80% of a 5-hour window and cost $30.05. That&rsquo;s about 6% of the 5-hour window and $2.31 for each pull request, and a session with a single PR moved the weekly counter by about 1%.</p>
+<p>A few things to keep in mind when you read these numbers:</p>
+<ul>
+<li>The cost is not what I pay. I pay 20€/month. The dollar figure is what Claude Code calculates the session would cost through the API, subagents included. It&rsquo;s still useful to compare sessions.</li>
+<li>Claude Code reports the percentages without decimals. &ldquo;&lt;1%&rdquo; means the weekly counter didn&rsquo;t move during the session.</li>
+<li>The limits are per account, not per session. If two sessions run at the same time, part of the usage of one can end up in the log of the other. I counted every increase only once.</li>
+<li>I left out one session. It was a release day with eight pull requests in four and a half hours, mostly version bumps and website updates, for 25% of the 5-hour window and $10.67. Splitting that across eight tiny PRs would have made my numbers look better than they are.</li>
+<li>I added the scoper and the shipper only a few days ago, so most of the rows only use the implementer. Only the most recent one uses the shipper.</li>
+</ul>
+<h2 id="how-much-im-saving-compared-to-using-only-opus">How much I&rsquo;m saving compared to using only Opus
+</h2><p>I started logging the usage when I changed the setup, so I don&rsquo;t have the percentages for the sessions before. What I do have is the cost, because Claude Code keeps the transcript of every session with the token usage of each request. I took the last 24 sessions before the change that opened a single pull request. They ran on Opus 5.5 at medium effort, the same model and effort my main session uses now, but without any subagent. Then I calculated the cost of those sessions and of the ten above in the same way.</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>Only Opus</th>
+          <th>Opus + subagents</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Sessions</td>
+          <td>24</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>Pull requests</td>
+          <td>24</td>
+          <td>13</td>
+      </tr>
+      <tr>
+          <td>Average lines added per PR</td>
+          <td>248</td>
+          <td>392</td>
+      </tr>
+      <tr>
+          <td>Average cost per PR</td>
+          <td>$3.59</td>
+          <td>$2.14</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>Each pull request now costs about 40% less, even if the PRs are bigger. My calculation comes out a few percent lower than the cost Claude Code shows, so I only use it to compare the two groups. If I convert the cost to usage with the ratio I measured above, a PR made with only Opus would take about 10% of the 5-hour window instead of 6%. On Pro, that means running out after about ten pull requests instead of about sixteen.</p>
+<p>What surprised me is where the saving comes from. I expected it to come from Sonnet being cheaper than Opus, but if I price the subagents&rsquo; tokens at Opus rates, the ten sessions only get 5% more expensive. Most of the tokens in a Claude Code session are cache reads, and when these sessions ran, cache reads cost the same on Opus 5.5 and Sonnet 5.5, $0.20 per million tokens.</p>
+<p>Anthropic <a class="link" href="https://platform.claude.com/docs/en/release-notes/overview"  target="_blank" rel="noopener"
+    >lowered the Sonnet 5.5 cache read price</a> to $0.10 per million tokens today. Using my calculation again, with the new price the ten sessions would have cost $27.31 instead of $27.84, so $2.10 per PR instead of $2.14. It helps a bit, but the subagents only use a small part of the tokens of each session.</p>
+<p>The real saving is that the main session stays small. Every request sends the whole conversation again, so when Opus runs the edit and test loop itself, every test output and every fix makes all the following requests a bit bigger. When the loop runs in a subagent, the main session only sees the plan and a short report, and the implementer&rsquo;s context goes away when it&rsquo;s done. In numbers, the Opus session went from an average of 75 requests per session to 54, and from 119k to 107k tokens of context per request.</p>
+<h2 id="is-it-worth-it">Is it worth it?
+</h2><p>For me, yes. With Pro the 5-hour window is what stops me, and now I get about sixteen pull requests out of it instead of ten.</p>
+<p>The review step is what keeps the quality up. The implementer never has the last word. The main session reads the diff, runs the tests again and sends the work back if it doesn&rsquo;t match the plan. That review is cheap, because reading a diff costs Opus much less than writing the code.</p>
+<p>If you want to try it, copy the four agent files and the <code>CLAUDE.md</code> instructions, set the effort in <code>settings.json</code> and add the logging to your status line, so you can compare your own numbers before and after.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/claude-code/">Claude-Code</a>
+        
+            <a href="/tags/coding-agents/">Coding-Agents</a>
+        
+            <a href="/tags/subagents/">Subagents</a>
+        
+            <a href="/tags/productivity/">Productivity</a>
+        
+            <a href="/tags/configuration/">Configuration</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/announcing-mcp-wire-0-3-0/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/announcing-mcp-wire-0-3-0/mcp-wire-logo.34409667d817f584dc00e88d1119523a.png" 
+                        width="1024" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Announcing mcp-wire 0.3.0"
+                        data-key="announcing-mcp-wire-0-3-0" 
+                        data-hash="md5-NECWZ9gX9YTcAOiNERlSOg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Announcing mcp-wire 0.3.0</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/releasing-mcp-wire-tool-easily-configure-mcps-coding-agents/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/releasing-mcp-wire-tool-easily-configure-mcps-coding-agents/mcp-wire-logo.34409667d817f584dc00e88d1119523a.png" 
+                        width="1024" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Releasing mcp-wire: a tool to easily configure MCPs in coding agents"
+                        data-key="releasing-mcp-wire-tool-easily-configure-mcps-coding-agents" 
+                        data-hash="md5-NECWZ9gX9YTcAOiNERlSOg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Releasing mcp-wire: a tool to easily configure MCPs in coding agents</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/why-add-agent-skill-cli-context-command/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/why-add-agent-skill-cli-context-command/logbasset.ed254736b2ff61571e573ef948ecceeb.png" 
+                        width="1024" 
+                        height="1024" 
+                        loading="lazy"
+                        alt="Featured image of post Why add an agent skill to a CLI that already has a context command?"
+                        data-key="why-add-agent-skill-cli-context-command" 
+                        data-hash="md5-7SVHNrL/YVceVz75SOzO6w==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Why add an agent skill to a CLI that already has a context command?</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/using-vibetunnel-to-control-claude-code-instances-remotely/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/using-vibetunnel-to-control-claude-code-instances-remotely/claude_from_browser.b91e985131d0c09543246a741542f830.png" 
+                        width="1496" 
+                        height="815" 
+                        loading="lazy"
+                        alt="Featured image of post Using VibeTunnel to control Claude Code instances remotely"
+                        data-key="using-vibetunnel-to-control-claude-code-instances-remotely" 
+                        data-hash="md5-uR6YUTHQwJVDJGp0FUL4MA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using VibeTunnel to control Claude Code instances remotely</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/claude-code-status-line-script/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/claude-code-status-line-script/cc-statusline.b3867fc2eb05d23ee7fabc827899b8f5.png" 
+                        width="1092" 
+                        height="313" 
+                        loading="lazy"
+                        alt="Featured image of post Claude Code Status Line Script"
+                        data-key="claude-code-status-line-script" 
+                        data-hash="md5-s4Z/wusF0j7n&#43;ryCeJm49Q==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Claude Code Status Line Script</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2026 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>
