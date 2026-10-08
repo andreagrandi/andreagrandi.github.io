@@ -570,11 +570,11 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="gu">## Scope unfamiliar tasks with the scoper agent
 </span></span></span><span class="line"><span class="cl"><span class="gu"></span>
-</span></span><span class="line"><span class="cl"><span class="k">-</span> At the start of a non-trivial task whose code you do not know yet, run the <span class="sb">`scoper`</span> agent to collect the goal, acceptance criteria, relevant files, tests and suggested slices.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> At the start of a non-trivial task whose code you do not know yet, run the <span class="sb">`scoper`</span> agent to collect the goal, acceptance criteria, relevant files, tests and a possible split.
 </span></span><span class="line"><span class="cl"><span class="k">-</span> Skip it only when you expect to read 3 or fewer files you have not already read in this session.
 </span></span><span class="line"><span class="cl"><span class="k">-</span> A project skill&#39;s ticket-size assessment uses scoper&#39;s report and does not replace it. Data or network checks that scoper cannot run stay with the main session and must not be skipped.
 </span></span><span class="line"><span class="cl"><span class="k">-</span> Treat its report as input, not as a decision. It runs on a small model, so spot-check the files it names before you build a plan on them. You still own scope, architecture and any split-or-combine decision.
-</span></span><span class="line"><span class="cl"><span class="k">-</span> If it flags the task as complex, ambiguous or risky, plan it yourself.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> You always write the plan. When the scoper flags the task as complex, ambiguous or risky, read the key files it names yourself before planning, instead of spot-checking.
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="gu">## Ship with the shipper agent
 </span></span></span><span class="line"><span class="cl"><span class="gu"></span>
@@ -938,6 +938,11 @@
 </span><span class="lnt">58
 </span><span class="lnt">59
 </span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
@@ -994,10 +999,15 @@
 </span></span><span class="line"><span class="cl"><span class="gu">## Risks and unknowns
 </span></span></span><span class="line"><span class="cl"><span class="gu"></span>Only uncertainties that could change the implementation.
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="gu">## Suggested slices
-</span></span></span><span class="line"><span class="cl"><span class="gu"></span>If the work splits into independent pieces, list them with the files each one owns and the order they depend on.
+</span></span><span class="line"><span class="cl"><span class="gu">## Possible split
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Facts only: which files and tests group together, and which pieces depend on others. Do not propose an order of work.
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">If the task looks architecturally complex, ambiguous or risky, say so at the top of the report and recommend that the parent agent plan it, rather than trying to resolve the design yourself.
+</span></span><span class="line"><span class="cl">If the task is complex, say so at the top of the report and name which of these conditions apply, citing the code, so the parent checks the brief closely:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> it touches more than one subsystem;
+</span></span><span class="line"><span class="cl"><span class="k">-</span> it changes a published format, schema, public API or CLI;
+</span></span><span class="line"><span class="cl"><span class="k">-</span> it involves concurrency, security, a migration or cached data;
+</span></span><span class="line"><span class="cl"><span class="k">-</span> the issue has no acceptance criteria, or criteria that contradict the code;
+</span></span><span class="line"><span class="cl"><span class="k">-</span> you could not find where the behaviour lives.
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Keep the report short. Its purpose is to save the parent agent from repeating repository discovery, so leave out anything it would not act on.
 </span></span></code></pre></td></tr></table>
