@@ -96,7 +96,7 @@
 &lt;/h2&gt;&lt;p&gt;This is what usually happens when I give Claude Code a task:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;I give the main session an issue number.&lt;/li&gt;
-&lt;li&gt;If the session doesn&amp;rsquo;t know the code yet, it runs &lt;code&gt;scoper&lt;/code&gt;. Haiku reads the issue, finds the files and the tests involved and writes a short brief with file paths. A small model can get things wrong, so the main session opens a few of those files before trusting the brief.&lt;/li&gt;
+&lt;li&gt;Unless the change only touches a few files the session has already read, it runs &lt;code&gt;scoper&lt;/code&gt;. Haiku reads the issue, finds the files and the tests involved and writes a short brief with file paths. A small model can get things wrong, so the main session opens a few of those files before trusting the brief. Checks that need the network, such as looking at live data from an API, stay with the main session.&lt;/li&gt;
 &lt;li&gt;The main session decides how to implement the change. This is the part where Opus is worth it.&lt;/li&gt;
 &lt;li&gt;It passes the plan to &lt;code&gt;implementer&lt;/code&gt;, together with the acceptance criteria, the files, the decisions already taken and the commands to run. Sonnet writes the code and the tests and runs them until they pass.&lt;/li&gt;
 &lt;li&gt;The main session reads the diff, compares it with the plan and runs the whole test suite. If something is wrong, it sends the fix back to the same implementer with &lt;code&gt;SendMessage&lt;/code&gt;, so the implementer doesn&amp;rsquo;t lose its context.&lt;/li&gt;
@@ -205,6 +205,7 @@
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;84
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;85
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;86
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;87
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;@~/.agents/AGENTS.md
@@ -224,7 +225,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gu&#34;&gt;## Scope unfamiliar tasks with the scoper agent
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;gu&#34;&gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; At the start of a non-trivial task whose code you do not know yet, run the &lt;span class=&#34;sb&#34;&gt;`scoper`&lt;/span&gt; agent to collect the goal, acceptance criteria, relevant files, tests and suggested slices.
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; Skip it when the task is small, when you already know the relevant code from this session, or when a project skill such as a ticket-size assessment already covers the same discovery.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; Skip it only when you expect to read 3 or fewer files you have not already read in this session.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; A project skill&amp;#39;s ticket-size assessment uses scoper&amp;#39;s report and does not replace it. Data or network checks that scoper cannot run stay with the main session and must not be skipped.
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; Treat its report as input, not as a decision. It runs on a small model, so spot-check the files it names before you build a plan on them. You still own scope, architecture and any split-or-combine decision.
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;-&lt;/span&gt; If it flags the task as complex, ambiguous or risky, plan it yourself.
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
@@ -594,7 +596,7 @@
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;---
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;name: scoper
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;description: Use at the start of a non-trivial coding task when the relevant code is unfamiliar, to gather scope, acceptance criteria, relevant code, tests and implementation boundaries before planning. Skip it when the main session already knows the code involved.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;description: Use at the start of a non-trivial coding task when the relevant code is unfamiliar, to gather scope, acceptance criteria, relevant code, tests and implementation boundaries before planning. Skip it only when the main session expects to read 3 or fewer files it has not already read.
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;model: haiku
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;effort: medium
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tools: Read, Grep, Glob, Bash
