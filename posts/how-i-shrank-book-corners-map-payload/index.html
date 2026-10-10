@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="The Book Corners map endpoint could return every library in a single 13.85 MB GeoJSON response. This is how I fixed it with server-side clustering in PostGIS, and the numbers measured in production before and after.">
+<title>How I shrank the Book Corners map payload from 13.85 MB to 7 KB</title>
+
+<link rel='canonical' href='https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="How I shrank the Book Corners map payload from 13.85 MB to 7 KB">
+<meta property='og:description' content="The Book Corners map endpoint could return every library in a single 13.85 MB GeoJSON response. This is how I fixed it with server-side clustering in PostGIS, and the numbers measured in production before and after.">
+<meta property='og:url' content='https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/'>
+<meta property='og:site_name' content='Andrea Grandi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='book-corners' /><meta property='article:tag' content='django' /><meta property='article:tag' content='postgis' /><meta property='article:tag' content='python' /><meta property='article:tag' content='performance' /><meta property='article:tag' content='geojson' /><meta property='article:tag' content='maps' /><meta property='article:published_time' content='2026-10-10T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-10-10T00:00:00&#43;00:00'/><meta property='og:image' content='https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/cover.png' />
+<meta name="twitter:title" content="How I shrank the Book Corners map payload from 13.85 MB to 7 KB">
+<meta name="twitter:description" content="The Book Corners map endpoint could return every library in a single 13.85 MB GeoJSON response. This is how I fixed it with server-side clustering in PostGIS, and the numbers measured in production before and after."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/cover.png' /><style>
+    .article-content code {
+        color: #c25 !important;
+        padding: 1px 3px;
+        background-color: #f7f7f9;
+        border: 1px solid #e1e1e8;
+        border-radius: 3px;
+        font-family: var(--code-font-family);
+    }
+
+    .social-menu {
+        display: flex;
+        align-items: center;  
+        justify-content: center;  
+        list-style-type: none;  
+        padding: 0;  
+        margin: 0;  
+    }
+
+    .social-menu li {
+        margin: 0 10px;  
+    }
+
+    .social-menu svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--body-text-color);
+        stroke-width: 1.33;
+    }
+
+    .left-sidebar {
+        --sidebar-avatar-size: 150px;
+        align-items: center;
+    }
+
+    .sidebar header .site-avatar {
+        align-self: center;
+    }
+
+    .sidebar header .site-name {
+        align-self: center;
+        font-size: 2.6rem;
+    }
+
+    .sidebar header .site-description {
+        font-size: 1.8rem;
+        align-self: center;
+    }
+
+    .menu li span {
+        font-size: 2.0rem;
+    }
+
+    .menu li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-coffee {
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .article-coffee .article-subheading {
+        font-size: 1.2em;  
+        font-weight: bold;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+    }
+
+    .article-coffee p {
+        font-size: 1em;  
+        line-height: 1.5;  
+        margin-bottom: 10px;  
+        text-transform: none;  
+        display: block;  
+        text-align: center;  
+    }
+
+    .article-coffee a {
+        display: block;  
+        margin-top: 10px;  
+    }
+
+    .article-coffee a img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script defer src="https://stats.andreagrandi.it/script.js" data-website-id="51266056-4071-4cbd-8157-ab4dc339407e"></script>
+<meta name="fediverse:creator" content="@andreagrandi@mastodon.social">
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "light");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    <img src="/about/images/me_pycon_2019_2.jpg" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Andrea Grandi</a></h1>
+            <h2 class="site-description">Software Developer</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/andreagrandi'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mastodon.social/@andreagrandi'
+                        target="_blank"
+                        title="Mastodon"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-mastodon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.648 15.254c-1.816 1.763 -6.648 1.626 -6.648 1.626a18.262 18.262 0 0 1 -3.288 -.256c1.127 1.985 4.12 2.81 8.982 2.475c-1.945 2.013 -13.598 5.257 -13.668 -7.636l-.026 -1.154c0 -3.036 .023 -4.115 1.352 -5.633c1.671 -1.91 6.648 -1.666 6.648 -1.666s4.977 -.243 6.648 1.667c1.329 1.518 1.352 2.597 1.352 5.633s-.456 4.074 -1.352 4.944z" /><path d="M12 11.204v-2.926c0 -1.258 -.895 -2.278 -2 -2.278s-2 1.02 -2 2.278v4.722m4 -4.722c0 -1.258 .895 -2.278 2 -2.278s2 1.02 2 2.278v4.722" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/andreagrandi/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/curriculum/' >
+                
+                
+                
+                <span>Curriculum</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+
+            
+        </div>
+    </ol>
+
+    <a href='https://ko-fi.com/G2G83E9SV' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/posts/how-i-shrank-book-corners-map-payload/">
+                <img src="/posts/how-i-shrank-book-corners-map-payload/cover.png"
+                        
+                        width="2160" 
+                        height="720" 
+                        loading="lazy"
+                        alt="Featured image of post How I shrank the Book Corners map payload from 13.85 MB to 7 KB" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/development/" >
+                Development
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/how-i-shrank-book-corners-map-payload/">How I shrank the Book Corners map payload from 13.85 MB to 7 KB</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            The Book Corners map endpoint could return every library in a single 13.85 MB GeoJSON response. This is how I fixed it with server-side clustering in PostGIS, and the numbers measured in production before and after.
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 10, 2026</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><a class="link" href="https://www.bookcorners.org/"  target="_blank" rel="noopener"
+    >Book Corners</a> has grown quite a lot since I <a class="link" href="/posts/book-corners-discover-little-free-libraries/" >introduced it</a> earlier this year.
+Today it has <strong>37,238 approved public bookcases</strong>, and the map is the page people use the most. A few days ago I looked at how much data the map
+endpoint was sending and I didn&rsquo;t like what I found.</p>
+<h2 id="the-problem">The problem
+</h2><p>The map page loads its markers from a GeoJSON endpoint: <code>/map/libraries.geojson</code>. The page always sends the current zoom level and the
+visible area (the &ldquo;bounds&rdquo;), and at low zoom levels the server already groups libraries into clusters using PostGIS.</p>
+<p>That works fine for the map page itself, but there were a few cases where the endpoint returned <strong>one feature for every single library</strong>:</p>
+<ul>
+<li>requests without any parameter (direct calls, old links, bots&hellip;)</li>
+<li>requests with a <code>zoom</code> but without bounds</li>
+<li>requests with invalid bounds, which silently fell back to the full dataset</li>
+<li>any search filter (keywords, city, country, postal code), which turned clustering off at every zoom level</li>
+</ul>
+<p>These are the numbers I measured in production:</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>Request</th>
+          <th>Features</th>
+          <th>Uncompressed</th>
+          <th>Gzipped</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>No parameters</td>
+          <td>37,238</td>
+          <td>13.85 MB, 4.9s</td>
+          <td>1.98 MB, 0.56s</td>
+      </tr>
+      <tr>
+          <td><code>?zoom=13</code>, no bounds</td>
+          <td>37,238</td>
+          <td>13.85 MB</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>?zoom=4&amp;country=DE</code>, world bounds</td>
+          <td>5,235</td>
+          <td>1.9 MB, 0.75s</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table></div>
+<p>On top of that, the full response was serialized and stored in the database cache every 5 minutes, or every time a library was edited.
+A search for &ldquo;Germany&rdquo; from the world view was sending <strong>5,235 pins</strong> to the browser, which then had to cluster them again on the client side.</p>
+<h2 id="clustering-with-st_snaptogrid">Clustering with ST_SnapToGrid
+</h2><p>Server-side clustering was already in place for unfiltered requests. The idea is simple: PostGIS <code>ST_SnapToGrid</code> snaps every point to a grid
+whose cell size depends on the zoom level (40 degrees at zoom 0, 0.1 degrees at zoom 11), and then I group by the snapped point. Each group
+becomes a single cluster feature with a count, a centroid and the bounding box of its points, so the client can zoom to it when you click it.</p>
+<p>The limitation was that the SQL query was written by hand and only knew how to filter by <code>status = 'approved'</code> and by bounds. Search filters
+live in the Django ORM (full text search, <code>icontains</code>, <code>iexact</code>&hellip;) and I really didn&rsquo;t want to duplicate all of them in raw SQL.</p>
+<h2 id="using-the-orm-queryset-as-a-subquery">Using the ORM queryset as a subquery
+</h2><p>The solution I found is to let Django compile the filtered queryset and use it as a subquery in the clustering SQL. This way <strong>every search
+filter goes through exactly the same code</strong> used by the list view and the individual pins:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">build_clustered_features</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bounds</span><span class="p">:</span> <span class="n">Polygon</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">queryset</span><span class="p">:</span> <span class="n">QuerySet</span><span class="p">[</span><span class="n">Library</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]]:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">grid_size</span> <span class="o">=</span> <span class="n">get_grid_size_for_zoom</span><span class="p">(</span><span class="n">zoom</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">queryset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">queryset</span> <span class="o">=</span> <span class="n">Library</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">Library</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">APPROVED</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">queryset</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">location__within</span><span class="o">=</span><span class="n">bounds</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">inner_sql</span><span class="p">,</span> <span class="n">inner_params</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">queryset</span><span class="o">.</span><span class="n">order_by</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&#34;location&#34;</span><span class="p">,</span> <span class="s2">&#34;city&#34;</span><span class="p">,</span> <span class="s2">&#34;country&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">sql_with_params</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">        SELECT
+</span></span></span><span class="line"><span class="cl"><span class="s2">            ST_X(ST_Centroid(ST_Collect(location))) AS lng,
+</span></span></span><span class="line"><span class="cl"><span class="s2">            ST_Y(ST_Centroid(ST_Collect(location))) AS lat,
+</span></span></span><span class="line"><span class="cl"><span class="s2">            COUNT(*) AS point_count,
+</span></span></span><span class="line"><span class="cl"><span class="s2">            MIN(city) AS sample_city,
+</span></span></span><span class="line"><span class="cl"><span class="s2">            MIN(country) AS sample_country,
+</span></span></span><span class="line"><span class="cl"><span class="s2">            ST_Extent(location) AS extent
+</span></span></span><span class="line"><span class="cl"><span class="s2">        FROM (</span><span class="si">{</span><span class="n">inner_sql</span><span class="si">}</span><span class="s2">) AS filtered_libraries
+</span></span></span><span class="line"><span class="cl"><span class="s2">        GROUP BY ST_SnapToGrid(location, %s)
+</span></span></span><span class="line"><span class="cl"><span class="s2">        ORDER BY point_count DESC
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">inner_params</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>A couple of details are worth mentioning:</p>
+<ul>
+<li><code>order_by()</code> with no arguments removes the ordering, which would be useless (and slower) inside a subquery. The full text search, for example, orders by rank.</li>
+<li><code>values()</code> keeps the subquery small: the clustering only needs the location, the city and the country.</li>
+<li><code>sql_with_params()</code> returns the parameters separately, so the user input is still passed safely to the database driver and never formatted into the SQL string.</li>
+</ul>
+<p>Proximity searches (&ldquo;near Berlin&rdquo;) are the only exception: they already re-center the map at zoom 12 and are limited by a radius, so they keep returning individual pins.</p>
+<h2 id="caching-and-counts">Caching and counts
+</h2><p>Clustered responses are cached, and the cache key now includes a hash of the filter values. Without it, a search for Germany could have been
+served the clusters cached for Italy. The key also includes a version number which is increased every time a library changes, so an edit or an
+approval invalidates every cached cluster response at once.</p>
+<p>I also had to be careful with the counts. The map shows a summary like &ldquo;Showing 86 of 5235 libraries on the map&rdquo;: the first number is how many
+libraries are in the visible area and the second one is the total for the current search. Clustered responses keep exactly the same meaning,
+so the text is still correct when you look at clusters instead of pins.</p>
+<h2 id="requests-without-bounds">Requests without bounds
+</h2><p>The last change was about requests without bounds. My first version capped their zoom at 11, the last zoom level with clustering. When I checked
+production after deploying, I noticed that <code>?zoom=13</code> without bounds was still returning <strong>12,203 clusters and 3.16 MB</strong>: a grid of 0.1 degrees
+over the whole world is still a lot of cells!</p>
+<p>A request without bounds is a request for the whole world, so now it always uses the zoom 0 grid, whatever zoom it sends. The map page always
+sends bounds, so users don&rsquo;t notice any difference.</p>
+<h2 id="results">Results
+</h2><p>These are the numbers measured in production after the three changes were deployed:</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>Request</th>
+          <th>Before</th>
+          <th>After</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>No parameters</td>
+          <td>37,238 pins, 13.85 MB</td>
+          <td>24 clusters, 6.7 KB</td>
+      </tr>
+      <tr>
+          <td><code>zoom=13</code>, no bounds</td>
+          <td>37,238 pins, 13.85 MB</td>
+          <td>24 clusters, 6.7 KB</td>
+      </tr>
+      <tr>
+          <td><code>country=DE</code>, no bounds</td>
+          <td>5,235 pins, 1.9 MB</td>
+          <td>1 cluster, 491 B</td>
+      </tr>
+      <tr>
+          <td><code>zoom=4&amp;country=DE</code>, world bounds</td>
+          <td>5,235 pins, 1.9 MB</td>
+          <td>1 cluster, 490 B</td>
+      </tr>
+      <tr>
+          <td><code>zoom=14&amp;country=DE</code>, Berlin bounds</td>
+          <td></td>
+          <td>86 pins, 31.5 KB</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>The last row is there to show that nothing was lost: when you are zoomed into a city you still get individual pins, with their popups.</p>
+<p>I also checked the real map in a browser. I searched for Germany and kept clicking the first cluster until the pins appeared:</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>Step</th>
+          <th>Map shows</th>
+          <th>Summary text</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Page load</td>
+          <td>4 clusters: 1493, 1488, 1387, 867</td>
+          <td>Showing 5235 libraries on the map.</td>
+      </tr>
+      <tr>
+          <td>1st click</td>
+          <td>10 clusters, from 247 down to 1</td>
+          <td>Showing 817 of 5235 libraries on the map.</td>
+      </tr>
+      <tr>
+          <td>2nd click</td>
+          <td>14 clusters, from 17 down to 2</td>
+          <td>Showing 98 of 5235 libraries on the map.</td>
+      </tr>
+      <tr>
+          <td>3rd click</td>
+          <td>4 pins, no clusters</td>
+          <td>Showing 4 of 5235 libraries on the map.</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>The first click shows 817 libraries and not 1,493 because zooming in leaves part of that cluster outside the visible area, and the summary only counts what you can see.</p>
+<h2 id="conclusion">Conclusion
+</h2><p>The worst case went from <strong>13.85 MB to 6.7 KB</strong>, and a country search from the world view went from 1.9 MB to less than 500 bytes. The most
+useful part, in my opinion, was reusing the Django queryset as a subquery: it let me cluster any search without writing a single filter twice.</p>
+<p>If you want to see it in action, go to the <a class="link" href="https://www.bookcorners.org/map/"  target="_blank" rel="noopener"
+    >Book Corners map</a>, search for your country and start clicking on the clusters.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-coffee">
+        <p>If you enjoyed this article and want to show your appreciation, consider buying me a coffee using the button below. Your support, even a small gesture, means a lot and will inspire me to continue writing and sharing more articles on my blog ❤️</p>
+        <a href='https://ko-fi.com/G2G83E9SV' target='_blank'>
+            <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
+    </section>
+
+    
+    <section class="article-tags">
+        
+            <a href="/tags/book-corners/">Book-Corners</a>
+        
+            <a href="/tags/django/">Django</a>
+        
+            <a href="/tags/postgis/">Postgis</a>
+        
+            <a href="/tags/python/">Python</a>
+        
+            <a href="/tags/performance/">Performance</a>
+        
+            <a href="/tags/geojson/">Geojson</a>
+        
+            <a href="/tags/maps/">Maps</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/posts/book-corners-discover-little-free-libraries/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/book-corners-discover-little-free-libraries/cover-little-free-library.ae0864caaa6a931e171f5a71ade305b3.jpg" 
+                        width="1024" 
+                        height="768" 
+                        loading="lazy"
+                        alt="Featured image of post Book Corners - discover and share little free libraries around the world"
+                        data-key="book-corners-discover-little-free-libraries" 
+                        data-hash="md5-rghkyqpqkx4XH1pxreMFsw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Book Corners - discover and share little free libraries around the world</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/using-uv-to-install-python-create-virtualenv/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Using uv to install Python and create a virtual environment</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/stepping-my-feet-into-uv-world-part-1/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/stepping-my-feet-into-uv-world-part-1/uv-speed.5af029b048de10cee5ec16d262151768.png" 
+                        width="714" 
+                        height="234" 
+                        loading="lazy"
+                        alt="Featured image of post Stepping my feet into uv world - part 1"
+                        data-key="stepping-my-feet-into-uv-world-part-1" 
+                        data-hash="md5-WvApsEjeEM7l7BbSYhUXaA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Stepping my feet into uv world - part 1</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/posts/building-healthy-sustainable-funding-model-opensource-software/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Building a healthy and sustainable funding model for open source software</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/posts/introducing-draft-omen-mtg-arena-draft-assistant/">
+        
+        
+            <div class="article-image">
+                <img src="/posts/introducing-draft-omen-mtg-arena-draft-assistant/draftomen_banner.668384c9930711bd9fc6dab623af9d45.png" 
+                        width="2172" 
+                        height="724" 
+                        loading="lazy"
+                        alt="Featured image of post Introducing Draft Omen, a draft assistant for MTG Arena"
+                        data-key="introducing-draft-omen-mtg-arena-draft-assistant" 
+                        data-hash="md5-ZoOEyZMHEb2fxtq2I6&#43;dRQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Introducing Draft Omen, a draft assistant for MTG Arena</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2007 - 
+        
+        2026 Andrea Grandi
+    </section>
+    
+    <section class="powerby">
+        
+            source code available on <a href="https://github.com/andreagrandi/andreagrandi-hugo">GitHub</a> <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link href="https://mastodon.social/@andreagrandi" rel="me">
+
+    </body>
+</html>

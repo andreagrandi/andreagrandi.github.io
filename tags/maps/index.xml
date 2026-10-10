@@ -6,7 +6,236 @@
         <description>Recent content in Maps on Andrea Grandi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 07 Mar 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/maps/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 10 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.andreagrandi.it/tags/maps/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How I shrank the Book Corners map payload from 13.85 MB to 7 KB</title>
+        <link>https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/</link>
+        <pubDate>Sat, 10 Oct 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/</guid>
+        <description>&lt;img src="https://www.andreagrandi.it/posts/how-i-shrank-book-corners-map-payload/cover.png" alt="Featured image of post How I shrank the Book Corners map payload from 13.85 MB to 7 KB" /&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.bookcorners.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Book Corners&lt;/a&gt; has grown quite a lot since I &lt;a class=&#34;link&#34; href=&#34;https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/&#34; &gt;introduced it&lt;/a&gt; earlier this year.
+Today it has &lt;strong&gt;37,238 approved public bookcases&lt;/strong&gt;, and the map is the page people use the most. A few days ago I looked at how much data the map
+endpoint was sending and I didn&amp;rsquo;t like what I found.&lt;/p&gt;
+&lt;h2 id=&#34;the-problem&#34;&gt;The problem
+&lt;/h2&gt;&lt;p&gt;The map page loads its markers from a GeoJSON endpoint: &lt;code&gt;/map/libraries.geojson&lt;/code&gt;. The page always sends the current zoom level and the
+visible area (the &amp;ldquo;bounds&amp;rdquo;), and at low zoom levels the server already groups libraries into clusters using PostGIS.&lt;/p&gt;
+&lt;p&gt;That works fine for the map page itself, but there were a few cases where the endpoint returned &lt;strong&gt;one feature for every single library&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;requests without any parameter (direct calls, old links, bots&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;requests with a &lt;code&gt;zoom&lt;/code&gt; but without bounds&lt;/li&gt;
+&lt;li&gt;requests with invalid bounds, which silently fell back to the full dataset&lt;/li&gt;
+&lt;li&gt;any search filter (keywords, city, country, postal code), which turned clustering off at every zoom level&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These are the numbers I measured in production:&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Request&lt;/th&gt;
+          &lt;th&gt;Features&lt;/th&gt;
+          &lt;th&gt;Uncompressed&lt;/th&gt;
+          &lt;th&gt;Gzipped&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;No parameters&lt;/td&gt;
+          &lt;td&gt;37,238&lt;/td&gt;
+          &lt;td&gt;13.85 MB, 4.9s&lt;/td&gt;
+          &lt;td&gt;1.98 MB, 0.56s&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;?zoom=13&lt;/code&gt;, no bounds&lt;/td&gt;
+          &lt;td&gt;37,238&lt;/td&gt;
+          &lt;td&gt;13.85 MB&lt;/td&gt;
+          &lt;td&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;?zoom=4&amp;amp;country=DE&lt;/code&gt;, world bounds&lt;/td&gt;
+          &lt;td&gt;5,235&lt;/td&gt;
+          &lt;td&gt;1.9 MB, 0.75s&lt;/td&gt;
+          &lt;td&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;On top of that, the full response was serialized and stored in the database cache every 5 minutes, or every time a library was edited.
+A search for &amp;ldquo;Germany&amp;rdquo; from the world view was sending &lt;strong&gt;5,235 pins&lt;/strong&gt; to the browser, which then had to cluster them again on the client side.&lt;/p&gt;
+&lt;h2 id=&#34;clustering-with-st_snaptogrid&#34;&gt;Clustering with ST_SnapToGrid
+&lt;/h2&gt;&lt;p&gt;Server-side clustering was already in place for unfiltered requests. The idea is simple: PostGIS &lt;code&gt;ST_SnapToGrid&lt;/code&gt; snaps every point to a grid
+whose cell size depends on the zoom level (40 degrees at zoom 0, 0.1 degrees at zoom 11), and then I group by the snapped point. Each group
+becomes a single cluster feature with a count, a centroid and the bounding box of its points, so the client can zoom to it when you click it.&lt;/p&gt;
+&lt;p&gt;The limitation was that the SQL query was written by hand and only knew how to filter by &lt;code&gt;status = &#39;approved&#39;&lt;/code&gt; and by bounds. Search filters
+live in the Django ORM (full text search, &lt;code&gt;icontains&lt;/code&gt;, &lt;code&gt;iexact&lt;/code&gt;&amp;hellip;) and I really didn&amp;rsquo;t want to duplicate all of them in raw SQL.&lt;/p&gt;
+&lt;h2 id=&#34;using-the-orm-queryset-as-a-subquery&#34;&gt;Using the ORM queryset as a subquery
+&lt;/h2&gt;&lt;p&gt;The solution I found is to let Django compile the filtered queryset and use it as a subquery in the clustering SQL. This way &lt;strong&gt;every search
+filter goes through exactly the same code&lt;/strong&gt; used by the list view and the individual pins:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;build_clustered_features&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;zoom&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;bounds&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Polygon&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;queryset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;QuerySet&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Library&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;dict&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;str&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;grid_size&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;get_grid_size_for_zoom&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;zoom&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;queryset&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;queryset&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Library&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;objects&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Library&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;APPROVED&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bounds&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;queryset&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;queryset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;location__within&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bounds&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;inner_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;inner_params&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;queryset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;order_by&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;values&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;location&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;city&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;country&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;query&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sql_with_params&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;sql&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;        SELECT
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;            ST_X(ST_Centroid(ST_Collect(location))) AS lng,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;            ST_Y(ST_Centroid(ST_Collect(location))) AS lat,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;            COUNT(*) AS point_count,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;            MIN(city) AS sample_city,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;            MIN(country) AS sample_country,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;            ST_Extent(location) AS extent
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;        FROM (&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inner_sql&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;) AS filtered_libraries
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;        GROUP BY ST_SnapToGrid(location, %s)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;        ORDER BY point_count DESC
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;    &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;params&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;inner_params&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;grid_size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;A couple of details are worth mentioning:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;order_by()&lt;/code&gt; with no arguments removes the ordering, which would be useless (and slower) inside a subquery. The full text search, for example, orders by rank.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;values()&lt;/code&gt; keeps the subquery small: the clustering only needs the location, the city and the country.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sql_with_params()&lt;/code&gt; returns the parameters separately, so the user input is still passed safely to the database driver and never formatted into the SQL string.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Proximity searches (&amp;ldquo;near Berlin&amp;rdquo;) are the only exception: they already re-center the map at zoom 12 and are limited by a radius, so they keep returning individual pins.&lt;/p&gt;
+&lt;h2 id=&#34;caching-and-counts&#34;&gt;Caching and counts
+&lt;/h2&gt;&lt;p&gt;Clustered responses are cached, and the cache key now includes a hash of the filter values. Without it, a search for Germany could have been
+served the clusters cached for Italy. The key also includes a version number which is increased every time a library changes, so an edit or an
+approval invalidates every cached cluster response at once.&lt;/p&gt;
+&lt;p&gt;I also had to be careful with the counts. The map shows a summary like &amp;ldquo;Showing 86 of 5235 libraries on the map&amp;rdquo;: the first number is how many
+libraries are in the visible area and the second one is the total for the current search. Clustered responses keep exactly the same meaning,
+so the text is still correct when you look at clusters instead of pins.&lt;/p&gt;
+&lt;h2 id=&#34;requests-without-bounds&#34;&gt;Requests without bounds
+&lt;/h2&gt;&lt;p&gt;The last change was about requests without bounds. My first version capped their zoom at 11, the last zoom level with clustering. When I checked
+production after deploying, I noticed that &lt;code&gt;?zoom=13&lt;/code&gt; without bounds was still returning &lt;strong&gt;12,203 clusters and 3.16 MB&lt;/strong&gt;: a grid of 0.1 degrees
+over the whole world is still a lot of cells!&lt;/p&gt;
+&lt;p&gt;A request without bounds is a request for the whole world, so now it always uses the zoom 0 grid, whatever zoom it sends. The map page always
+sends bounds, so users don&amp;rsquo;t notice any difference.&lt;/p&gt;
+&lt;h2 id=&#34;results&#34;&gt;Results
+&lt;/h2&gt;&lt;p&gt;These are the numbers measured in production after the three changes were deployed:&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Request&lt;/th&gt;
+          &lt;th&gt;Before&lt;/th&gt;
+          &lt;th&gt;After&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;No parameters&lt;/td&gt;
+          &lt;td&gt;37,238 pins, 13.85 MB&lt;/td&gt;
+          &lt;td&gt;24 clusters, 6.7 KB&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;zoom=13&lt;/code&gt;, no bounds&lt;/td&gt;
+          &lt;td&gt;37,238 pins, 13.85 MB&lt;/td&gt;
+          &lt;td&gt;24 clusters, 6.7 KB&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;country=DE&lt;/code&gt;, no bounds&lt;/td&gt;
+          &lt;td&gt;5,235 pins, 1.9 MB&lt;/td&gt;
+          &lt;td&gt;1 cluster, 491 B&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;zoom=4&amp;amp;country=DE&lt;/code&gt;, world bounds&lt;/td&gt;
+          &lt;td&gt;5,235 pins, 1.9 MB&lt;/td&gt;
+          &lt;td&gt;1 cluster, 490 B&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;zoom=14&amp;amp;country=DE&lt;/code&gt;, Berlin bounds&lt;/td&gt;
+          &lt;td&gt;&lt;/td&gt;
+          &lt;td&gt;86 pins, 31.5 KB&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The last row is there to show that nothing was lost: when you are zoomed into a city you still get individual pins, with their popups.&lt;/p&gt;
+&lt;p&gt;I also checked the real map in a browser. I searched for Germany and kept clicking the first cluster until the pins appeared:&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Step&lt;/th&gt;
+          &lt;th&gt;Map shows&lt;/th&gt;
+          &lt;th&gt;Summary text&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Page load&lt;/td&gt;
+          &lt;td&gt;4 clusters: 1493, 1488, 1387, 867&lt;/td&gt;
+          &lt;td&gt;Showing 5235 libraries on the map.&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;1st click&lt;/td&gt;
+          &lt;td&gt;10 clusters, from 247 down to 1&lt;/td&gt;
+          &lt;td&gt;Showing 817 of 5235 libraries on the map.&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;2nd click&lt;/td&gt;
+          &lt;td&gt;14 clusters, from 17 down to 2&lt;/td&gt;
+          &lt;td&gt;Showing 98 of 5235 libraries on the map.&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;3rd click&lt;/td&gt;
+          &lt;td&gt;4 pins, no clusters&lt;/td&gt;
+          &lt;td&gt;Showing 4 of 5235 libraries on the map.&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The first click shows 817 libraries and not 1,493 because zooming in leaves part of that cluster outside the visible area, and the summary only counts what you can see.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;The worst case went from &lt;strong&gt;13.85 MB to 6.7 KB&lt;/strong&gt;, and a country search from the world view went from 1.9 MB to less than 500 bytes. The most
+useful part, in my opinion, was reusing the Django queryset as a subquery: it let me cluster any search without writing a single filter twice.&lt;/p&gt;
+&lt;p&gt;If you want to see it in action, go to the &lt;a class=&#34;link&#34; href=&#34;https://www.bookcorners.org/map/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Book Corners map&lt;/a&gt;, search for your country and start clicking on the clusters.&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Book Corners - discover and share little free libraries around the world</title>
         <link>https://www.andreagrandi.it/posts/book-corners-discover-little-free-libraries/</link>
         <pubDate>Sat, 07 Mar 2026 00:00:00 +0000</pubDate>
